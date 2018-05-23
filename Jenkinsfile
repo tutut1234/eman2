@@ -126,13 +126,13 @@ pipeline {
       }
       
       steps {
-        sh 'source $(conda info --root)/bin/activate eman-deps-13.0 && bash ci_support/build_no_recipe.sh'
+        echo 'source $(conda info --root)/bin/activate eman-deps-13.0 && bash ci_support/build_no_recipe.sh'
       }
     }
     
     stage('build-recipe') {
       steps {
-        sh 'bash ci_support/build_recipe.sh'
+        echo 'bash ci_support/build_recipe.sh'
       }
     }
     
@@ -142,7 +142,7 @@ pipeline {
       }
       
       steps {
-        sh "bash ci_support/package.sh ${INSTALLERS_DIR} " + '${WORKSPACE}/ci_support/'
+        echo "bash ci_support/package.sh ${INSTALLERS_DIR} " + '${WORKSPACE}/ci_support/'
       }
     }
     
@@ -152,7 +152,7 @@ pipeline {
       }
       
       steps {
-        testPackage()
+        echo 'testPackage()'
       }
     }
     
@@ -162,7 +162,7 @@ pipeline {
       }
       
       steps {
-        deployPackage()
+        echo 'deployPackage()'
       }
     }
   }
