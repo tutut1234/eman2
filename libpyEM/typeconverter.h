@@ -46,7 +46,7 @@
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
 
-#include <numpy/arrayobject.h>
+#include <numpy/ndarrayobject.h>
 
 #include <vector>
 #include <map>
@@ -69,8 +69,8 @@ using std::endl;
 namespace EMAN {
 
 	python::numeric::array make_numeric_array(const float *const data, vector<npy_intp> dims);
-	python::numeric::array make_numeric_complex_array(const std::complex<float> *const data,
-	                                                  vector<npy_intp> dims);
+	python::numeric::array make_numeric_complex_array(const std::complex<float> *const data,vector<npy_intp> dims);
+
 	class EMNumPy {
 	public:
 		/** Get an EMData image's pixel data as a numeric numpy array.

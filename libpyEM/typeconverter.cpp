@@ -30,6 +30,7 @@
  * */
 
 #define NO_IMPORT_ARRAY
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
 #ifdef _WIN32
 #pragma warning(disable:4819)
@@ -40,7 +41,6 @@
 #include "emdata.h"
 
 namespace python = boost::python;
-namespace np = boost::python::numpy;
 
 using namespace EMAN;
 
