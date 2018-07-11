@@ -32,19 +32,18 @@
 #define NO_IMPORT_ARRAY
 
 #ifdef _WIN32
-	#pragma warning(disable:4819)
+#pragma warning(disable:4819)
 #endif	//_WIN32
 
 #include <Python.h>
-#include <boost/python/tuple.hpp>
-#include <boost/python/numpy.hpp>
 #include "typeconverter.h"
 #include "emdata.h"
 
 using namespace EMAN;
 
-namespace p = boost::python;
+namespace python = boost::python;
 namespace np = boost::python::numpy;
+
 
 np::ndarray EMAN::make_numeric_array(const float *const data, vector<npy_intp> dims)
 {
@@ -55,28 +54,14 @@ np::ndarray EMAN::make_numeric_array(const float *const data, vector<npy_intp> d
 		++iter;
 	}
 
-	p::object obj(p::handle<>(PyArray_SimpleNewFromData(dims.size(),&dims[0],PyArray_FLOAT, (char*)data)));
+	python::object obj(python::handle<>(PyArray_SimpleNewFromData(dims.size(),&dims[0],
+	                                                              PyArray_FLOAT, (char*)data)));
 
-	return p::extract<np::ndarray>(obj);
+	return python::extract<np::ndarray>(obj);
 }
 
-//
-//np::ndarray EMAN::make_numeric_array(const float *const data, vector<npy_intp> dims)
-//{
-//	size_t total = 1;
-//	vector<npy_intp>::iterator iter = dims.begin();
-//	while(iter != dims.end()){
-//		total *= *iter;
-//		++iter;
-//	}
-//
-//	p::object obj(p::handle<>(PyArray_SimpleNewFromData(dims.size(),&dims[0],
-//																	PyArray_FLOAT, (char*)data)));
-//
-//	return p::extract<np::ndarray>(obj);
-//}
-
-boost::python::numeric::array EMAN::make_numeric_complex_array(const std::complex<float> *const data, vector<npy_intp> dims)
+python::numeric::array EMAN::make_numeric_complex_array(const std::complex<float> *const data,
+                                                        vector<npy_intp> dims)
 {
 	size_t total = 1;
 	vector<npy_intp>::iterator iter = dims.begin();
@@ -85,9 +70,10 @@ boost::python::numeric::array EMAN::make_numeric_complex_array(const std::comple
 		++iter;
 	}
 
-	p::object obj(p::handle<>(PyArray_SimpleNewFromData(dims.size(),&dims[0], PyArray_CFLOAT, (char*)data)));
+	python::object obj(python::handle<>(PyArray_SimpleNewFromData(dims.size(),&dims[0],
+	                                                              PyArray_CFLOAT, (char*)data)));
 
-	return p::extract<boost::python::numeric::array>(obj);
+	return python::extract<python::numeric::array>(obj);
 }
 
 np::ndarray EMNumPy::em2numpy(const EMData *const image)
@@ -112,7 +98,7 @@ np::ndarray EMNumPy::em2numpy(const EMData *const image)
 	return make_numeric_array(data, dims);
 }
 
-EMData* EMNumPy::numpy2em(const np::ndarray& array)
+EMData* EMNumPy::numpy2em(const python::numeric::array& array)
 {
 	if (!PyArray_Check(array.ptr())) {
 		PyErr_SetString(PyExc_ValueError, "expected a PyArrayObject");
@@ -125,8 +111,8 @@ EMData* EMNumPy::numpy2em(const np::ndarray& array)
 	char data_type = array_ptr->descr->type;
 
 #if defined (__LP64__) //is it a 64-bit platform?
- 	long * dims_ptr = (long*)array_ptr->dimensions;
- 	long nx=1, ny=1, nz=1;
+	long * dims_ptr = (long*)array_ptr->dimensions;
+	long nx=1, ny=1, nz=1;
 #else	//for 32 bit platform
 	int * dims_ptr = (int*)array_ptr->dimensions;
 	int nx=1, ny=1, nz=1;
@@ -171,7 +157,7 @@ EMData* EMNumPy::numpy2em(const np::ndarray& array)
 
 
 
-EMData* EMNumPy::assign_numpy_to_emdata(const np::ndarray& array)
+EMData* EMNumPy::assign_numpy_to_emdata(const python::numeric::array& array)
 {
 	if (!PyArray_Check(array.ptr())) {
 		PyErr_SetString(PyExc_ValueError, "expected a PyArrayObject");
@@ -184,8 +170,8 @@ EMData* EMNumPy::assign_numpy_to_emdata(const np::ndarray& array)
 	char data_type = array_ptr->descr->type;
 
 #if defined (__LP64__) //is it a 64-bit platform?
- 	long * dims_ptr = (long*)array_ptr->dimensions;
- 	long nx=1, ny=1, nz=1;
+	long * dims_ptr = (long*)array_ptr->dimensions;
+	long nx=1, ny=1, nz=1;
 #else	//for 32 bit platform
 	int * dims_ptr = (int*)array_ptr->dimensions;
 	int nx=1, ny=1, nz=1;
@@ -224,7 +210,7 @@ EMNumPy::~EMNumPy()
 	emdata_buffer.unregister_buffer_data();
 }
 
-EMData* EMNumPy::register_numpy_to_emdata(const np::ndarray& array)
+EMData* EMNumPy::register_numpy_to_emdata(const python::numeric::array& array)
 {
 	if (!PyArray_Check(array.ptr())) {
 		PyErr_SetString(PyExc_ValueError, "expected a PyArrayObject");
@@ -237,8 +223,8 @@ EMData* EMNumPy::register_numpy_to_emdata(const np::ndarray& array)
 //	char data_type = array_ptr->descr->type;
 
 #if defined (__LP64__) //is it a 64-bit platform?
- 	long * dims_ptr = (long*)array_ptr->dimensions;
- 	long nx=1, ny=1, nz=1;
+	long * dims_ptr = (long*)array_ptr->dimensions;
+	long nx=1, ny=1, nz=1;
 #else	//for 32 bit platform
 	int * dims_ptr = (int*)array_ptr->dimensions;
 	int nx=1, ny=1, nz=1;
@@ -316,15 +302,15 @@ PyObject* EMObject_to_python::convert(EMObject const& emobj)
 	}
 	else if (t == EMObject::EMDATA) {
 		EMData * img = (EMData*) emobj;
-		result = p::incref(p::object(img).ptr());
+		result = python::incref(python::object(img).ptr());
 	}
 	else if (t == EMObject::XYDATA) {
 		XYData * xyd = (XYData*) emobj;
-		result = p::incref(p::object(xyd).ptr());
+		result = python::incref(python::object(xyd).ptr());
 	}
 	else if (t == EMObject::TRANSFORM ) {
 		Transform * trans = (Transform*) emobj;
-		result = p::incref(p::object(trans).ptr());
+		result = python::incref(python::object(trans).ptr());
 	}
 	else if (t == EMObject::CTF ) {
 		Ctf * ctf_ = (Ctf*) emobj;
@@ -332,11 +318,11 @@ PyObject* EMObject_to_python::convert(EMObject const& emobj)
 
 		if(str.at(0) == 'O') {
 			EMAN1Ctf* c = dynamic_cast<EMAN1Ctf*>(ctf_);
-			result = p::incref(p::object(c).ptr());
+			result = python::incref(python::object(c).ptr());
 		}
 		else if(str.at(0) == 'E') {
 			EMAN2Ctf* c = dynamic_cast<EMAN2Ctf*>(ctf_);
-			result = p::incref(p::object(c).ptr());
+			result = python::incref(python::object(c).ptr());
 		}
 		else {
 			printf("Ctf object wrong...\n");
@@ -344,54 +330,54 @@ PyObject* EMObject_to_python::convert(EMObject const& emobj)
 	}
 	else if (t == EMObject::FLOATARRAY) {
 		vector<float> farray = emobj;
-		p::list flist;
+		python::list flist;
 
 		for (size_t i = 0; i < farray.size(); i++) {
 			flist.append(farray[i]);
 		}
 
-		result = p::incref(p::list(flist).ptr());
+		result = python::incref(python::list(flist).ptr());
 	}
 	else if (t == EMObject::INTARRAY) {
 		vector<int> iarray = emobj;
-		p::list ilist;
+		python::list ilist;
 
 		for (size_t i = 0; i < iarray.size(); i++) {
 			ilist.append(iarray[i]);
 		}
 
-		result = p::incref(p::list(ilist).ptr());
+		result = python::incref(python::list(ilist).ptr());
 	}
 	else if (t == EMObject::STRINGARRAY) {
 		vector<string> strarray = emobj;
-		p::list flist;
+		python::list flist;
 
 		for (size_t i = 0; i < strarray.size(); i++) {
 			flist.append(strarray[i]);
 		}
 
-		result = p::incref(p::list(flist).ptr());
+		result = python::incref(python::list(flist).ptr());
 	}
 	else if (t == EMObject::TRANSFORMARRAY) {
 		vector<Transform> transformarray = emobj;
-		p::list tlist;
+		python::list tlist;
 
 		for (size_t i = 0; i < transformarray.size(); i++) {
 			tlist.append(transformarray[i]);
 		}
 
-		result = p::incref(p::list(tlist).ptr());
+		result = python::incref(python::list(tlist).ptr());
 	}
 	else if (t == EMObject::FLOAT_POINTER) {
 		float* fp = (float*) emobj;
-		result = p::incref(p::object(fp).ptr());
+		result = python::incref(python::object(fp).ptr());
 	}
 	else if (t == EMObject::INT_POINTER) {
 		int* ip = (int*) emobj;
-		result = p::incref(p::object(ip).ptr());
+		result = python::incref(python::object(ip).ptr());
 	}
 	else if (t == EMObject::UNKNOWN) {
-		result = p::incref(Py_None);
+		result = python::incref(Py_None);
 	}
 
 	return result;
@@ -410,6 +396,6 @@ PyObject* MArray2D_to_python::convert(MArray2D const & marray2d)
     float * data = (float*)marray2d.data();
     np::ndarray numarray = make_numeric_array(data, dims);
 
-    return p::incref(numarray.ptr());
+    return python::incref(numarray.ptr());
 }
 #endif
