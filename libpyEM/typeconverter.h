@@ -32,6 +32,7 @@
 #ifndef eman__typeconverter_h__
 #define eman__typeconverter_h__ 1
 
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define PY_ARRAY_UNIQUE_SYMBOL PyArrayHandle
 
 #include "emobject.h"
@@ -51,7 +52,6 @@
 #include <map>
 #include <string>
 
-
 namespace python = boost::python;
 namespace np = boost::python::numpy;
 
@@ -68,7 +68,7 @@ using std::endl;
 
 namespace EMAN {
 
-	np::ndarray make_numeric_array(const float *const data, vector<npy_intp> dims);
+	python::numeric::array make_numeric_array(const float *const data, vector<npy_intp> dims);
 	python::numeric::array make_numeric_complex_array(const std::complex<float> *const data,
 	                                                  vector<npy_intp> dims);
 	class EMNumPy {
@@ -76,7 +76,7 @@ namespace EMAN {
 		/** Get an EMData image's pixel data as a numeric numpy array.
 		 * The array and EMData image share the same memory block.
 		 */
-		static np::ndarray em2numpy(const EMData *const image);
+		static python::numeric::array em2numpy(const EMData *const image);
 
 		/** Create an EMData image from a numeric numpy array.
 		 * returned EMData object will take the ownership of the numpy array data.
@@ -215,7 +215,7 @@ namespace EMAN {
 			}
 
 			const float * data = (const float*)marray.data();
-			np::ndarray numarray = make_numeric_array(data, dims);
+			python::numeric::array numarray = make_numeric_array(data, dims);
 
 			return python::incref(numarray.ptr());
 		}
