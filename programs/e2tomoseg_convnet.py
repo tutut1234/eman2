@@ -1,18 +1,14 @@
 #!/usr/bin/env python
 from __future__ import print_function
 # Muyuan July 2015
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
-from builtins import object
 import sys
 import random
 import numpy as np
 from EMAN2 import *
-import pickle
+import cPickle
 import time
 import threading
-from queue import Queue
+from Queue import Queue
 from multiprocessing import Array
 
 def import_theano():
@@ -87,7 +83,7 @@ def main():
 		exit()
 	
 	
-	if "CUDA_VISIBLE_DEVICES" in os.environ:
+	if os.environ.has_key("CUDA_VISIBLE_DEVICES"):
 		print("CUDA_VISIBLE_DEVICES is already set as environment variable. This will overwrite the device option...")
 	else:
 		if options.device=="gpu":
@@ -454,9 +450,9 @@ def load_particles(ptcls,labelshrink,ncopy=5, rng=None):
 	
 	if ntrain<0: ntrain=len(data)
 	## randomize
-	rndid=list(range(ntrain))
+	rndid=range(ntrain)
 	rng.shuffle(rndid)	
-	rndid=rndid+list(range(ntrain, len(data)))
+	rndid=rndid+range(ntrain, len(data))
 	data=[data[i] for i in rndid]
 	label=[label[i] for i in rndid]
 	

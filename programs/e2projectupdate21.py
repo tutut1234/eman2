@@ -32,7 +32,6 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
 from math import *
 import time
 import os
@@ -95,7 +94,7 @@ It is strongly suggested that you run 'e2bdb.py -c' prior to running this progra
 """)
 
 	if not options.yes :
-		a=eval(input("Are you sure you want to proceed (enter YES) ? "))
+		a=raw_input("Are you sure you want to proceed (enter YES) ? ")
 		if a!="YES" : sys.exit(2)
 
 
@@ -126,7 +125,7 @@ It is strongly suggested that you run 'e2bdb.py -c' prior to running this progra
 		ctf=db_open_dict("bdb:.#e2ctf.parms",ro=True)
 		ctfbg=db_open_dict("bdb:.#e2ctf.bg2d",ro=True)
 		ctffg=db_open_dict("bdb:.#e2ctf.im2d",ro=True)
-		for k in list(ctf.keys()):
+		for k in ctf.keys():
 			try:
 				if options.verbose>1 : print("\t",k)
 				js=js_open_dict("{}/{}".format(dest,info_name("bdb:particles#"+k)))
@@ -150,7 +149,7 @@ It is strongly suggested that you run 'e2bdb.py -c' prior to running this progra
 	if options.verbose : print("Converting Boxes")
 	boxes=db_open_dict("bdb:e2boxercache#boxes",ro=True)
 	try:
-		for k in list(boxes.keys()):
+		for k in boxes.keys():
 			try:
 				if options.verbose>1 : print("\t",k)
 				js=js_open_dict("{}/{}".format(dest,info_name(k)))
@@ -170,7 +169,7 @@ It is strongly suggested that you run 'e2bdb.py -c' prior to running this progra
 			lst=LSXFile("{}/sets/{}.lst".format(dest,dct))
 			src=db_open_dict("bdb:sets#{}".format(dct))
 			if options.verbose>1 : print("\t",dct)
-			for i in range(len(src)):
+			for i in xrange(len(src)):
 				attr=src.get_header(i)
 				lst.write(i,attr["data_n"],"particles/{}.hdf".format(attr["data_source"].split("#")[-1].replace("_ctf","__ctf")))
 		except:
@@ -194,7 +193,7 @@ It is strongly suggested that you run 'e2bdb.py -c' prior to running this progra
 				else:
 					if d=="particles" : dct2=dct.replace("_ctf","__ctf")
 					else : dct2=dct
-					for k in range(n):
+					for k in xrange(n):
 						if options.verbose>1 : 
 							print("  {}/{}  \r".format(k,n), end=' ')
 							sys.stdout.flush()

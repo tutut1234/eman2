@@ -31,8 +31,6 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA	2111-1307 USA
 #
 
-from builtins import range
-from builtins import object
 from EMAN2 import *
 import sys
 from eman2_gui.emboxerbase import *
@@ -72,7 +70,7 @@ class AutoBoxer(EMBoxerModule):
 		super(AutoBoxer,self).__init__(micrographs,options.boxsize)
 		self.box_list = MorphBoxList(self)
 		self.add_tool(MorphBoxingTool)
-		for i in range(len(self.file_names)):
+		for i in xrange(len(self.file_names)):
 			self.set_current_file_by_idx(i)
 			f = self.current_file()
 			if self.get_num_boxes(f) == 0:
@@ -82,8 +80,8 @@ class AutoBoxer(EMBoxerModule):
 				if options.xmax == -1: lx = int(hdr['nx']-options.boxsize)
 				if options.ymax == -1: ly = int(hdr['ny']-options.boxsize)
 				boxes = []
-				for y in range(fy,ly,options.ystep):
-					for x in range(fx,lx,options.xstep):
+				for y in xrange(fy,ly,options.ystep):
+					for x in xrange(fx,lx,options.xstep):
 						boxes.append([x,y,type])
 				self.add_boxes(boxes)
 	
@@ -300,7 +298,7 @@ class MorphBoxingTool(EMBoxingTool):
 		self.target().move_box(box_num, dx, dy)
 
 
-class MorphBoxingPanel(object):
+class MorphBoxingPanel:
 	
 	def __init__(self,target):
 		self.target = weakref.ref(target)
@@ -318,14 +316,14 @@ class MorphBoxingPanel(object):
 			self.clear=QtGui.QPushButton("Clear")
 			vbl.addWidget(self.auto_center_checkbox)
 			vbl.addWidget(self.clear)
-			self.clear.clicked[bool].connect(self.clear_clicked)
+			QtCore.QObject.connect(self.clear, QtCore.SIGNAL("clicked(bool)"), self.clear_clicked)
 		return self.widget
 	
 	def clear_clicked(self,val):
 		self.target().clear_all()
 
 
-class ErasingPanel(object): # copied for ideas for the morph panel
+class ErasingPanel: # copied for ideas for the morph panel
 
 	def __init__(self,target,erase_radius=128):
 		self.busy = True
@@ -363,8 +361,8 @@ class ErasingPanel(object): # copied for ideas for the morph panel
 
 			vbl.addLayout(hbl)
 			vbl.addWidget(self.unerase)
-			self.erase_rad_edit.sliderReleased.connect(self.new_erase_radius)
-			self.unerase.clicked[bool].connect(self.unerase_checked)
+			QtCore.QObject.connect(self.erase_rad_edit,QtCore.SIGNAL("sliderReleased"),self.new_erase_radius)
+			QtCore.QObject.connect(self.unerase,QtCore.SIGNAL("clicked(bool)"),self.unerase_checked)
 
 		return self.widget
 

@@ -35,8 +35,6 @@
 
 
 
-from __future__ import print_function
-from builtins import range
 from EMAN2 import *
 import numpy as np
 
@@ -54,7 +52,7 @@ from eman2_gui.valslider import ValSlider, ValBox
 
 	
 def run(cmd):
-	print(cmd)
+	print cmd
 	launch_childprocess(cmd)
 	
 def main():
@@ -98,8 +96,6 @@ def main():
 
 class EMTomoBoxer(QtGui.QMainWindow):
 	"""This class represents the EMTomoBoxer application instance.  """
-	keypress = QtCore.pyqtSignal(QtGui.QKeyEvent)
-	module_closed = QtCore.pyqtSignal()
 
 	def __init__(self,application,options,datafile=None):
 		QtGui.QWidget.__init__(self)
@@ -202,11 +198,11 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		self.gbl2.addWidget(self.wcoords, 0, 0, 1, 2)
 
 		# file menu
-		self.mfile_open.triggered[bool].connect(self.menu_file_open)
-		self.mfile_read_boxloc.triggered[bool].connect(self.menu_file_read_boxloc)
-		self.mfile_save_boxloc.triggered[bool].connect(self.menu_file_save_boxloc)
-		self.mfile_save_boxes_stack.triggered[bool].connect(self.save_boxes)
-		self.mfile_quit.triggered[bool].connect(self.menu_file_quit)
+		QtCore.QObject.connect(self.mfile_open,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_open  )
+		QtCore.QObject.connect(self.mfile_read_boxloc,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_read_boxloc  )
+		QtCore.QObject.connect(self.mfile_save_boxloc,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_save_boxloc  )
+		QtCore.QObject.connect(self.mfile_save_boxes_stack,QtCore.SIGNAL("triggered(bool)")  ,self.save_boxes)
+		QtCore.QObject.connect(self.mfile_quit,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_quit)
 
 		# window menu
 		#QtCore.QObject.connect(self.mwin_boxes,QtCore.SIGNAL("triggered(bool)")  ,self.menu_win_boxes  )
@@ -214,35 +210,35 @@ class EMTomoBoxer(QtGui.QMainWindow):
 #		QtCore.QObject.connect(self.mwin_average,QtCore.SIGNAL("triggered(bool)")  ,self.menu_win_average  )
 
 		# all other widgets
-		self.wdepth.valueChanged[int].connect(self.event_depth)
-		self.wnlayers.valueChanged[int].connect(self.event_nlayers)
-		self.wboxsize.valueChanged.connect(self.event_boxsize)
-		self.wmaxmean.clicked[bool].connect(self.event_projmode)
-		self.wscale.valueChanged.connect(self.event_scale)
-		self.wfilt.valueChanged.connect(self.event_filter)
-		self.wlocalbox.stateChanged[int].connect(self.event_localbox)
+		QtCore.QObject.connect(self.wdepth,QtCore.SIGNAL("valueChanged(int)"),self.event_depth)
+		QtCore.QObject.connect(self.wnlayers,QtCore.SIGNAL("valueChanged(int)"),self.event_nlayers)
+		QtCore.QObject.connect(self.wboxsize,QtCore.SIGNAL("valueChanged"),self.event_boxsize)
+		QtCore.QObject.connect(self.wmaxmean,QtCore.SIGNAL("clicked(bool)"),self.event_projmode)
+		QtCore.QObject.connect(self.wscale,QtCore.SIGNAL("valueChanged")  ,self.event_scale  )
+		QtCore.QObject.connect(self.wfilt,QtCore.SIGNAL("valueChanged")  ,self.event_filter  )
+		QtCore.QObject.connect(self.wlocalbox,QtCore.SIGNAL("stateChanged(int)")  ,self.event_localbox  )
 
-		self.xyview.mousemove.connect(self.xy_move)
-		self.xyview.mousedown.connect(self.xy_down)
-		self.xyview.mousedrag.connect(self.xy_drag)
-		self.xyview.mouseup.connect(self.xy_up)
-		self.xyview.mousewheel.connect(self.xy_wheel)
-		self.xyview.signal_set_scale.connect(self.xy_scale)
-		self.xyview.origin_update.connect(self.xy_origin)
+		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("mousemove"),self.xy_move)
+		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("mousedown"),self.xy_down)
+		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("mousedrag"),self.xy_drag)
+		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("mouseup"),self.xy_up  )
+		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("mousewheel"),self.xy_wheel  )
+		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("set_scale"),self.xy_scale)
+		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("origin_update"),self.xy_origin)
 
-		self.xzview.mousedown.connect(self.xz_down)
-		self.xzview.mousedrag.connect(self.xz_drag)
-		self.xzview.mouseup.connect(self.xz_up)
-		self.xzview.signal_set_scale.connect(self.xz_scale)
-		self.xzview.origin_update.connect(self.xz_origin)
+		QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("mousedown"),self.xz_down)
+		QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("mousedrag"),self.xz_drag)
+		QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("mouseup")  ,self.xz_up  )
+		QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("set_scale"),self.xz_scale)
+		QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("origin_update"),self.xz_origin)
 
-		self.zyview.mousedown.connect(self.zy_down)
-		self.zyview.mousedrag.connect(self.zy_drag)
-		self.zyview.mouseup.connect(self.zy_up)
-		self.zyview.signal_set_scale.connect(self.zy_scale)
-		self.zyview.origin_update.connect(self.zy_origin)
+		QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("mousedown"),self.zy_down)
+		QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("mousedrag"),self.zy_drag)
+		QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("mouseup")  ,self.zy_up  )
+		QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("set_scale"),self.zy_scale)
+		QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("origin_update"),self.zy_origin)
 		
-		self.xyview.keypress.connect(self.key_press)
+		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("keypress"),self.key_press)
 		self.datafilename=datafile
 		self.basename=base_name(datafile)
 		p0=datafile.find('__')
@@ -288,14 +284,14 @@ class EMTomoBoxer(QtGui.QMainWindow):
 #		self.averageviewer=EMAverageViewer(self)
 		#self.averageviewer.show()
 
-		self.boxesviewer.mx_image_selected.connect(self.img_selected)
+		QtCore.QObject.connect(self.boxesviewer,QtCore.SIGNAL("mx_image_selected"),self.img_selected)
 		
 		self.jsonfile=info_name(datafile)
 		
 		info=js_open_dict(self.jsonfile)
 		self.sets={}
 		self.boxsize={}
-		if "class_list" in info:
+		if info.has_key("class_list"):
 			clslst=info["class_list"]
 			for k in sorted(clslst.keys()):
 				if type(clslst[k])==dict:
@@ -313,7 +309,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		self.setcolors=[clr("blue"),clr("green"),clr("red"),clr("cyan"),clr("purple"),clr("orange"), clr("yellow"),clr("hotpink"),clr("gold")]
 		self.sets_visible={}
 		
-		if "boxes_3d" in info:
+		if info.has_key("boxes_3d"):
 			box=info["boxes_3d"]
 			for i,b in enumerate(box):
 				#### X-center,Y-center,Z-center,method,[score,[class #]]
@@ -322,7 +318,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 					bdf[j]=b[j]
 				
 				
-				if bdf[5] not in list(self.sets.keys()):
+				if bdf[5] not in self.sets.keys():
 					clsi=int(bdf[5])
 					self.sets[clsi]="particles_{:02d}".format(clsi)
 				
@@ -332,12 +328,12 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		info.close()
 		if len(self.sets)==0:
 			self.new_set("particles_00")
-		self.sets_visible[list(self.sets.keys())[0]]=0
+		self.sets_visible[self.sets.keys()[0]]=0
 		self.currentset=sorted(self.sets.keys())[0]
 		self.setspanel.update_sets()
 	
 		self.e = None
-		print(self.sets)
+		print self.sets
 		for i in range(len(self.boxes)):
 			self.update_box(i)
 		
@@ -505,7 +501,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 			try:
 				ret= int(self.boxsize[clsid])
 			except:
-				print("No box size saved for {}..".format(clsid))
+				print "No box size saved for {}..".format(clsid)
 				ret=32
 			return ret
 
@@ -594,10 +590,10 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		
 		fsp=os.path.join("particles3d",self.basename)+name
 		#fspprjs=os.path.join("particles",self.basename)+name.replace('.hdf','_prjs.hdf')
-		print("Saving 3D particles to {}".format(fsp))
+		print "Saving 3D particles to {}".format(fsp)
 		#for f in [fsp, fspprjs]:
 		if os.path.isfile(fsp):
-			print("{} exist. Overwritting...".format(fsp))
+			print "{} exist. Overwritting...".format(fsp)
 			os.remove(fsp)
 		
 		progress = QtGui.QProgressDialog("Saving", "Abort", 0, len(self.boxes),None)
@@ -615,7 +611,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 				boxsz=bs
 			else:
 				if boxsz!=bs:
-					print("Inconsistant box size in the particles to save.. Using {:d}..".format(boxsz))
+					print "Inconsistant box size in the particles to save.. Using {:d}..".format(boxsz)
 					bs=boxsz
 			
 			sz=[s/2 for s in self.datasize]
@@ -991,7 +987,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 			self.setspanel.update_sets()
 
 	def add_helix_box(self, xf, yf, zf, xi, yi, zi):
-		print(xf, yf, zf, xi, yi, zi)
+		print xf, yf, zf, xi, yi, zi
 		if options.yshort:
 			self.helixboxes.append([xf, zf, yf, xi, zi, yi])
 		else:
@@ -1326,7 +1322,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 	
 	def save_set(self):
 		
-		self.save_boxes(list(self.sets_visible.keys()))
+		self.save_boxes(self.sets_visible.keys())
 		return
 	
 	
@@ -1337,14 +1333,14 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		elif event.key() == 49:
 			self.wdepth.setValue(self.wdepth.value()-1)
 		else:
-			self.keypress.emit(event)
+			self.emit(QtCore.SIGNAL("keypress"), event)
 
 	def SaveJson(self):
 		
 		info=js_open_dict(self.jsonfile)
 		info["boxes_3d"]=self.boxes
 		clslst={}
-		for key in list(self.sets.keys()):
+		for key in self.sets.keys():
 			clslst[int(key)]={
 				"name":self.sets[key],
 				"boxsize":self.boxsize[key],
@@ -1353,7 +1349,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		info.close()
 	
 	def closeEvent(self,event):
-		print("Exiting")
+		print "Exiting"
 		self.SaveJson()
 		
 		self.boxviewer.close()
@@ -1363,7 +1359,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		self.xzview.close()
 		self.zyview.close()
 		
-		self.module_closed.emit() # this signal is important when e2ctf is being used by a program running its own event loop
+		self.emit(QtCore.SIGNAL("module_closed")) # this signal is important when e2ctf is being used by a program running its own event loop
 
 def parse_setname(name):
 	p0=name.find('::')
@@ -1412,7 +1408,7 @@ class EMBoxViewer(QtGui.QWidget):
 		self.wfilt = ValSlider(rng=(0,50),label="Filter:",value=0.0)
 		self.gbl.addWidget(self.wfilt,2,0,1,2)
 
-		self.wfilt.valueChanged.connect(self.event_filter)
+		QtCore.QObject.connect(self.wfilt,QtCore.SIGNAL("valueChanged")  ,self.event_filter  )
 
 		self.gbl.setRowStretch(2,1)
 		self.gbl.setRowStretch(0,5)
@@ -1529,12 +1525,12 @@ class EMTomoSetsPanel(QtGui.QWidget):
 
 		hbl.addLayout(vbl)
 
-		self.save_set_button.clicked[bool].connect(self.save_set)
-		self.new_set_button.clicked[bool].connect(self.new_set)
-		self.rename_set_button.clicked[bool].connect(self.rename_set)
-		self.delete_set_button.clicked[bool].connect(self.delete_set)
-		self.setlist.itemChanged[QtGui.QListWidgetItem].connect(self.set_list_item_changed)
-		self.setlist.currentRowChanged[int].connect(self.set_list_row_changed)
+		QtCore.QObject.connect(self.save_set_button, QtCore.SIGNAL("clicked(bool)"), self.save_set)
+		QtCore.QObject.connect(self.new_set_button, QtCore.SIGNAL("clicked(bool)"), self.new_set)
+		QtCore.QObject.connect(self.rename_set_button, QtCore.SIGNAL("clicked(bool)"), self.rename_set)
+		QtCore.QObject.connect(self.delete_set_button, QtCore.SIGNAL("clicked(bool)"), self.delete_set)
+		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("itemChanged(QListWidgetItem*)"),self.set_list_item_changed)
+		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("currentRowChanged(int)"),self.set_list_row_changed)
 
 
 	def sets_changed(self):
@@ -1575,7 +1571,7 @@ class EMTomoSetsPanel(QtGui.QWidget):
 		if not ok : return
 		name=str(name)
 		if name in self.target().sets :
-			print("Set name exists")
+			print "Set name exists"
 			return
 
 		self.target().new_set(name)
@@ -1591,7 +1587,7 @@ class EMTomoSetsPanel(QtGui.QWidget):
 		name=str(name)
 		
 		if name in self.target().sets :
-			print("Set name exists")
+			print "Set name exists"
 			return
 		
 		self.target().rename_set(sels[0], name)
@@ -1620,8 +1616,12 @@ class EMTomoSetsPanel(QtGui.QWidget):
 				if k==self.target().currentset:
 					self.setlist.setCurrentItem(item)
 					self.initialized=True
+			
+			
+
+
+		
 		return 
-
-
 if __name__ == '__main__':
 	main()
+	

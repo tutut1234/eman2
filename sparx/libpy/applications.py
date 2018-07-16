@@ -29,8 +29,6 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
 
-from builtins import range
-from builtins import object
 from global_def import *
 
 def ali2d(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr="-1", ts="2 1 0.5 0.25", \
@@ -96,10 +94,10 @@ def ali2d(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr="-1"
 	# nima = len(list_of_particles)
 
 	nima = EMUtil.get_image_count(stack)
-	list_of_particles = list(range(nima))
+	list_of_particles = range(nima)
 		
 	data = EMData.read_images(stack, list_of_particles)
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr('ID', list_of_particles[im])
 	try:
 		tt = data[0].get_attr("xform.align2d")
@@ -109,7 +107,7 @@ def ali2d(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr="-1"
 		not_set = True
 	if not_set:
 		from utilities import set_params2D
-		for index in range(len(data)):
+		for index in xrange(len(data)):
 			p=[0.0, 0.0, 0.0, 0, 1]
 			set_params2D(data[index],p,xform = "xform.align2d")
 			
@@ -246,7 +244,7 @@ def ali2d_data(data, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 		all_ali_params = []
 		all_ctf_params = []
 
-	for im in range(nima):
+	for im in xrange(nima):
 		#  Subtract averages outside of mask from all input data
 		st = Util.infomask(data[im], mask, False)
 		data[im] -= st[0]
@@ -287,23 +285,23 @@ def ali2d_data(data, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 		RING_LENGTH = 2**(int(log(2*pi*last_ring)/log(2))+1)
 		NRING = 2**(int(log(last_ring)/log(2))+1)
 
-	for N_step in range(len(xrng)):
+	for N_step in xrange(len(xrng)):
 
 		if CUDA:
 			R.setup(len(data), nx, nx, RING_LENGTH, NRING, last_ring, step[N_step], int(xrng[N_step]/step[N_step]+0.5), int(yrng[N_step]/step[N_step]+0.5), CTF)
-			for im in range(len(data)):	R.insert_image(data[im], im)
+			for im in xrange(len(data)):	R.insert_image(data[im], im)
 			if CTF:  R.filter_stack(all_ctf_params)
 
 		msg = "\nX range = %5.2f   Y range = %5.2f   Step = %5.2f\n"%(xrng[N_step], yrng[N_step], step[N_step])
 		print_msg(msg)
-		for Iter in range(max_iter):
+		for Iter in xrange(max_iter):
 			total_iter += 1
 			print_msg("Iteration #%4d\n"%(total_iter))
 			if( total_iter ==1 and template != None):
 				from utilities import get_im
 				tavg = get_im(template)
 				old_ali_params = []
-				for im in range(nima):  old_ali_params.extend([0.0,0.0,0.0,0])
+				for im in xrange(nima):  old_ali_params.extend([0.0,0.0,0.0,0])
 			else:
 				if CUDA:
 					ave1 = model_blank(nx, nx)
@@ -371,7 +369,7 @@ def ali2d_data(data, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 					old_ali_params = all_ali_params[:]
 				else:
 					old_ali_params = []
-					for im in range(nima):
+					for im in xrange(nima):
 						alphan, sxn, syn, mirror, scale = get_params2D(data[im])
 						old_ali_params.extend([alphan, sxn, syn, mirror])
 
@@ -381,7 +379,7 @@ def ali2d_data(data, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 				all_ali_params = R.ali2d_single_iter(tavg, all_ali_params, cs[0], cs[1], 1, delta)
 				sx_sum = all_ali_params[-2]
 				sy_sum = all_ali_params[-1]
-				for im in range(len(data)):  all_ali_params[im*4+3] = int(all_ali_params[im*4+3])
+				for im in xrange(len(data)):  all_ali_params[im*4+3] = int(all_ali_params[im*4+3])
 			else:
 				sx_sum, sy_sum, nope = ali2d_single_iter(data, numr, wr, cs, tavg, \
 												cnx, cny, xrng[N_step], yrng[N_step], step[N_step], \
@@ -392,7 +390,7 @@ def ali2d_data(data, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 			pixel_error = 0.0
 			mirror_consistent = 0
 			pixel_error_list = []
-			for im in range(nima):
+			for im in xrange(nima):
 				if CUDA:
 					alpha = all_ali_params[im*4]
 					sx = all_ali_params[im*4+1]
@@ -409,13 +407,13 @@ def ali2d_data(data, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 			if mirror_consistent != 0:
 				print_msg("Among the mirror consistent images, average pixel error is %0.4f, their distribution is:\n"%(float(pixel_error)/float(mirror_consistent)))
 				region, hist = hist_list(pixel_error_list, 20)	
-				for p in range(20):
+				for p in xrange(20):
 					print_msg("      %8.4f: %5d\n"%(region[p], hist[p]))
 			print_msg("\n\n\n")
 		if CUDA: R.finish()
 
 	if CUDA:
-		for im in range(nima):
+		for im in xrange(nima):
 			set_params2D(data[im], [all_ali_params[im*4], all_ali_params[im*4+1], all_ali_params[im*4+2], all_ali_params[im*4+3], 1.0])
 
 	if outdir:
@@ -485,7 +483,7 @@ def ali2d_MPI(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 		# nima = len(list_of_particles)
 		
 		nima = EMUtil.get_image_count(stack)
-		list_of_particles = list(range(nima))
+		list_of_particles = range(nima)
 	
 	else:
 		nima = 0
@@ -531,7 +529,7 @@ def ali2d_MPI(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 
 	if CUDA:
 		GPUID = get_input_from_string(GPUID)
-		GPUID = list(map(int, GPUID))
+		GPUID = map(int, GPUID)
 	
 	if myid == main_node:
 		print_msg("Input stack                 : %s\n"%(stack))
@@ -597,7 +595,7 @@ def ali2d_MPI(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 	if CACHE_DISABLE:
 		data = EMData.read_images(stack, list_of_particles)
 	else:
-		for i in range(number_of_proc):
+		for i in xrange(number_of_proc):
 			if myid == i:
 				data = EMData.read_images(stack, list_of_particles)
 			if ftp == "bdb": mpi_barrier(MPI_COMM_WORLD)
@@ -609,7 +607,7 @@ def ali2d_MPI(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 		all_ali_params = []
 		all_ctf_params = []
 
-	for im in range(len(data)):
+	for im in xrange(len(data)):
 		data[im].set_attr('ID', list_of_particles[im])
 		st = Util.infomask(data[im], mask, False)
 		data[im] -= st[0]
@@ -648,7 +646,7 @@ def ali2d_MPI(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 		
 	recvcount = []
 	disp = []
-	for i in range(number_of_proc):
+	for i in xrange(number_of_proc):
 		ib, ie = MPI_start_end(nima, number_of_proc, i)
 		recvcount.append(ie-ib)
 		if i == 0:
@@ -665,16 +663,16 @@ def ali2d_MPI(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 		RING_LENGTH = 2**(int(log(2*pi*last_ring)/log(2))+1)
 		NRING       = 2**(int(log(last_ring)/log(2))+1)
 
-	for N_step in range(len(xrng)):
+	for N_step in xrange(len(xrng)):
 
 		if CUDA:
 			R.setup(len(data), nx, nx, RING_LENGTH, NRING, last_ring, step[N_step], int(xrng[N_step]/step[N_step]+0.5), int(yrng[N_step]/step[N_step]+0.5), CTF)
-			for im in range(len(data)):	R.insert_image(data[im], im)
+			for im in xrange(len(data)):	R.insert_image(data[im], im)
 			if CTF:  R.filter_stack(all_ctf_params)
 
 		msg = "\nX range = %5.2f   Y range = %5.2f   Step = %5.2f\n"%(xrng[N_step], yrng[N_step], step[N_step])
 		if myid == main_node: print_msg(msg)
-		for Iter in range(max_iter):
+		for Iter in xrange(max_iter):
 			total_iter += 1
 			if CUDA:
 				ave1 = model_blank(nx, nx)
@@ -762,13 +760,13 @@ def ali2d_MPI(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 			if Fourvar:  del vav
 			bcast_EMData_to_all(tavg, myid, main_node)
 			cs = mpi_bcast(cs, 2, MPI_FLOAT, main_node, MPI_COMM_WORLD)
-			cs = list(map(float, cs))
+			cs = map(float, cs)
 			if total_iter != max_iter*len(xrng):
 				if CUDA:
 					old_ali_params = all_ali_params[:]
 				else:
 					old_ali_params = []
-					for im in range(len(data)):  
+					for im in xrange(len(data)):  
 						alpha, sx, sy, mirror, scale = get_params2D(data[im])
 						old_ali_params.extend([alpha, sx, sy, mirror])
 
@@ -778,7 +776,7 @@ def ali2d_MPI(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 					all_ali_params = R.ali2d_single_iter(tavg, all_ali_params, cs[0], cs[1], 1, delta)
 					sx_sum = all_ali_params[-2]
 					sy_sum = all_ali_params[-1]
-					for im in range(len(data)):  all_ali_params[im*4+3] = int(all_ali_params[im*4+3])
+					for im in xrange(len(data)):  all_ali_params[im*4+3] = int(all_ali_params[im*4+3])
 				else:
 					sx_sum, sy_sum, nope = ali2d_single_iter(data, numr, wr, cs, tavg, cnx, cny, \
 												xrng[N_step], yrng[N_step], step[N_step], \
@@ -796,21 +794,21 @@ def ali2d_MPI(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 				pixel_error       = 0.0
 				mirror_consistent = 0
 				pixel_error_list  = []
-				for im in range(len(data)):
-					if CUDA:
+			        for im in xrange(len(data)):
+			        	if CUDA:
 						alpha = all_ali_params[im*4]
 						sx = all_ali_params[im*4+1]
 						sy = all_ali_params[im*4+2]
 						mirror = all_ali_params[im*4+3]
 					else:
 						alpha, sx, sy, mirror, scale = get_params2D(data[im])
-						if old_ali_params[im*4+3] == mirror:
-							this_error = pixel_error_2D(old_ali_params[im*4:im*4+3], [alpha, sx, sy], last_ring)
-							pixel_error += this_error
-							pixel_error_list.append(this_error)
-							mirror_consistent += 1
-						else:
-							pixel_error_list.append(-1)
+			        	if old_ali_params[im*4+3] == mirror:
+		        			this_error = pixel_error_2D(old_ali_params[im*4:im*4+3], [alpha, sx, sy], last_ring)
+		        			pixel_error += this_error
+						pixel_error_list.append(this_error)
+						mirror_consistent += 1
+					else:
+						pixel_error_list.append(-1)
 				mirror_consistent = mpi_reduce(mirror_consistent, 1, MPI_INT, MPI_SUM, main_node, MPI_COMM_WORLD)
 				pixel_error       = mpi_reduce(pixel_error, 1, MPI_FLOAT, MPI_SUM, main_node, MPI_COMM_WORLD)
 				pixel_error_list  = mpi_gatherv(pixel_error_list, len(data), MPI_FLOAT, recvcount, disp, MPI_FLOAT, main_node, MPI_COMM_WORLD)
@@ -818,17 +816,17 @@ def ali2d_MPI(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 					print_msg("Mirror consistency rate = %8.4f%%\n"%(float(mirror_consistent)/nima*100))
 					if mirror_consistent!=0:
 						print_msg("Among the mirror-consistent images, average of pixel errors is %0.4f, and their distribution is:\n"%(float(pixel_error)/float(mirror_consistent)))
-						pixel_error_list = list(map(float, pixel_error_list))
-						for i in range(nima-1, -1, -1):
+						pixel_error_list = map(float, pixel_error_list)
+						for i in xrange(nima-1, -1, -1):
 							if pixel_error_list[i] < 0:  del pixel_error_list[i]
 						region, hist = hist_list(pixel_error_list, 20)	
-						for p in range(20):
+						for p in xrange(20):
 							print_msg("      %10.6f: %5d\n"%(region[p], hist[p]))
 					print_msg("\n\n\n")
 		if CUDA: R.finish()
 
 	if CUDA:
-		for im in range(len(data)):
+		for im in xrange(len(data)):
 			set_params2D(data[im], [all_ali_params[im*4], all_ali_params[im*4+1], all_ali_params[im*4+2], all_ali_params[im*4+3], 1.0])
 
 	if myid == main_node and outdir:  drop_image(tavg, os.path.join(outdir, "aqfinal.hdf"))
@@ -903,7 +901,7 @@ def ali2d_base(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr
 		else:
 			total_nima = 0
 		total_nima = bcast_number_to_all(total_nima)
-		list_of_particles = list(range(total_nima))
+		list_of_particles = range(total_nima)
 
 		image_start, image_end = MPI_start_end(total_nima, number_of_proc, myid)
 		list_of_particles = list_of_particles[image_start:image_end]
@@ -915,7 +913,7 @@ def ali2d_base(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr
 		total_nima = len(data)
 		total_nima = mpi_reduce(total_nima, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		total_nima = mpi_bcast(total_nima, 1, MPI_INT, main_node, MPI_COMM_WORLD)[0]
-		list_of_particles = list(range(total_nima))
+		list_of_particles = range(total_nima)
 		image_start, image_end = MPI_start_end(total_nima, number_of_proc, myid)
 		list_of_particles = list_of_particles[image_start:image_end]
 		nima = len(list_of_particles)
@@ -999,7 +997,7 @@ def ali2d_base(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr
 	else:
 		ctf_2_sum = None
 
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr('ID', list_of_particles[im])
 		set_params2D(data[im], [0.0, 0.0, 0.0, 0, 1.0], 'xform.align2d')
 		st = Util.infomask(data[im], mask, False)
@@ -1035,7 +1033,7 @@ def ali2d_base(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr
 		
 	recvcount = []
 	disp = []
-	for i in range(number_of_proc):
+	for i in xrange(number_of_proc):
 		ib, ie = MPI_start_end(total_nima, number_of_proc, i)
 		recvcount.append(ie-ib)
 		if i == 0:
@@ -1047,9 +1045,9 @@ def ali2d_base(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr
 	total_iter = 0
 	cs = [0.0]*2
 	delta = 0.0
-	for N_step in range(len(xrng)):
+	for N_step in xrange(len(xrng)):
 
-		for Iter in range(max_iter):
+		for Iter in xrange(max_iter):
 			total_iter += 1
 			ave1, ave2 = sum_oe(data, "a", CTF, EMData())  # pass empty object to prevent calculation of ctf^2
 			reduce_EMData_to_root(ave1, myid, main_node)
@@ -1134,10 +1132,10 @@ def ali2d_base(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr
 			if Fourvar:  del vav
 			bcast_EMData_to_all(tavg, myid, main_node)
 			cs = mpi_bcast(cs, 2, MPI_FLOAT, main_node, mpi_comm)
-			cs = list(map(float, cs))
+			cs = map(float, cs)
 			if total_iter != max_iter*len(xrng):
 				old_ali_params = []
-				for im in range(nima):  
+				for im in xrange(nima):  
 					alpha, sx, sy, mirror, scale = get_params2D(data[im])
 					old_ali_params.extend([alpha, sx, sy, mirror])
 
@@ -1159,7 +1157,7 @@ def ali2d_base(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr
 				pixel_error       = 0.0
 				mirror_consistent = 0
 				pixel_error_list  = [-1.0]*nima
-				for im in range(nima):
+				for im in xrange(nima):
 					alpha, sx, sy, mirror, scale = get_params2D(data[im])
 					if old_ali_params[im*4+3] == mirror:
 						this_error = pixel_error_2D(old_ali_params[im*4:im*4+3], [alpha, sx, sy], last_ring)
@@ -1174,11 +1172,11 @@ def ali2d_base(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr
 					log.add("Mirror consistency rate = %8.4f%%"%(float(mirror_consistent)/total_nima*100))
 					if mirror_consistent!=0:
 						log.add("Among the mirror-consistent images, average of pixel errors is %0.4f, and their distribution is:"%(float(pixel_error)/float(mirror_consistent)))
-						pixel_error_list = list(map(float, pixel_error_list))
-						for i in range(total_nima-1, -1, -1):
+						pixel_error_list = map(float, pixel_error_list)
+						for i in xrange(total_nima-1, -1, -1):
 							if pixel_error_list[i] < 0:  del pixel_error_list[i]
 						region, hist = hist_list(pixel_error_list, 20)
-						for p in range(20):
+						for p in xrange(20):
 							log.add("      %14.2f: %6d"%(region[p], hist[p]))
 					log.add("\n\n")
 
@@ -1197,7 +1195,7 @@ def ali2d_base(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr
 				recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 		else:           send_attr_dict(main_node, data, par_str, image_start, image_end)
 	params = []
-	for im in range(nima):  
+	for im in xrange(nima):  
 		alpha, sx, sy, mirror, scale = get_params2D(data[im])
 		params.append([alpha, sx, sy, mirror])
 	#params = wrap_mpi_gatherv(params, main_node, mpi_comm)
@@ -1880,20 +1878,20 @@ def local_ali2d(stack, outdir, maskfile = None, ou = -1, br = 1.75, center = 1, 
 		ctf2.append([0.0]*lctf)
 		ctf2.append([0.0]*lctf)
 		ctfb2 = [0.0]*lctf
-		for im in range(nima):
+		for im in xrange(nima):
 			ctf_params = data[im].get_attr( "ctf" )
 			ctm = ctf_2(nx, ctf_params)
 			k = im%2
-			for i in range(lctf):  ctf2[k][i] += ctm[i]
+			for i in xrange(lctf):  ctf2[k][i] += ctm[i]
 			if(data[im].get_attr("ctf_applied") == 0):
 				st = Util.infomask(data[im], mask, False)
 				data[im] -= st[0]
 				from filter import filt_ctf
 				data[im] = filt_ctf(data[im], ctf_params)
 				data[im].set_attr('ctf_applied', 1)
-		for i in range(lctf):
+		for i in xrange(lctf):
 			ctfb2[i] = 1.0/(ctf2[0][i] + ctf2[1][i] + 1.0/snr)
-			for k in range(2):
+			for k in xrange(2):
 				ctf2[k][i] = 1.0/(ctf2[k][i] + 1.0/snr)
 	#calculate averages
 	av1, av2 = add_oe_series(data)
@@ -1910,7 +1908,7 @@ def local_ali2d(stack, outdir, maskfile = None, ou = -1, br = 1.75, center = 1, 
 	print_msg(msg)
 	# do the alignment
 
-	for Iter in range(max_iter):
+	for Iter in xrange(max_iter):
 		again = False
 		fine_2D_refinement(data, br, ref_data[0], tavg)
 
@@ -1935,7 +1933,7 @@ def local_ali2d(stack, outdir, maskfile = None, ou = -1, br = 1.75, center = 1, 
 
 		if center:
 			#  apply centering parameters to shifts
-			for im in range(nima):
+			for im in xrange(nima):
 				alpha, sx, sy, mirror, scale    = get_params2D(data[im])
 				alphan, sxn, syn, scale = compose_transform2(alpha, sx, sy, 1.0, 0.0, -cs[0], -cs[1], 1.0)
 				set_params2D( data[im], [alphan, sxn, syn, mirror, scale])
@@ -1948,9 +1946,9 @@ def local_ali2d(stack, outdir, maskfile = None, ou = -1, br = 1.75, center = 1, 
 		drop_image(tavg, os.path.join(outdir, "aqf_%03d.hdf"%(Iter)))
 
 	if(CTF and data_had_ctf == 0):
-		for im in range(nima): data[im].set_attr('ctf_applied', 0)
+		for im in xrange(nima): data[im].set_attr('ctf_applied', 0)
 	from utilities import write_headers
-	write_headers(stack, data, list(range(nima)))
+	write_headers(stack, data, range(nima))
 	print_end_msg("local_ali2d")
 
 
@@ -2053,7 +2051,7 @@ def mref_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0, y
 		data_had_ctf = ima.get_attr("ctf_applied")
 		ctm = ctf_2(nx, ctf_params)
 		lctf = len(ctm)
-		ctf2 = [[[0.0]*lctf for k in range(2)] for j in range(numref)]
+		ctf2 = [[[0.0]*lctf for k in xrange(2)] for j in xrange(numref)]
 
 	# IMAGES ARE SQUARES! center is in SPIDER convention
 	cnx = nx/2+1
@@ -2070,7 +2068,7 @@ def mref_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0, y
 	nima = len(data)
 	# prepare the reference
 	ima.to_zero()
-	for j in range(numref):
+	for j in xrange(numref):
 		temp = EMData()
 		temp.read_image(refim, j)
 		#  eve, odd, numer of even, number of images.  After frc, totav
@@ -2087,7 +2085,7 @@ def mref_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0, y
 		ringref = []
 		#print "numref",numref
 		mashi = cnx-last_ring-2
-		for j in range(numref):
+		for j in xrange(numref):
 			refi[j][0].process_inplace("normalize.mask", {"mask":mask, "no_sigma":1})
 			cimage = Util.Polar2Dm(refi[j][0], cnx, cny, numr, mode)
 			Util.Frngs(cimage, numr)
@@ -2098,13 +2096,13 @@ def mref_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0, y
 			refi[j][1].to_zero()
 			refi[j][2] = 0
 			if CTF:
-				for i in range(lctf): 
+				for i in xrange(lctf): 
 					ctf2[j][0][i] = 0.0
 					ctf2[j][1][i] = 0.0
-		assign = [[] for i in range(numref)]
+		assign = [[] for i in xrange(numref)]
 		sx_sum = [0.0]*numref
 		sy_sum = [0.0]*numref
-		for im in range(nima):
+		for im in xrange(nima):
 			if CTF:
 				ctf_params = data[im].get_attr("ctf")
 				if data[im].get_attr("ctf_applied") == 0:
@@ -2145,13 +2143,13 @@ def mref_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0, y
 			Util.add_img(refi[iref][it], temp)
 			if CTF:
 				ctm = ctf_2(nx, ctf_params)
-				for i in range(lctf):  ctf2[iref][it][i] += ctm[i]
+				for i in xrange(lctf):  ctf2[iref][it][i] += ctm[i]
 			assign[iref].append(im)
 			refi[iref][2] += 1
 		del ringref
 		if again:
 			a1 = 0.0
-			for j in range(numref):
+			for j in xrange(numref):
 				msg = "   group #%3d   number of particles = %7d\n"%(j, refi[j][2])
 				print_msg(msg)
 				if refi[j][2] < 4:
@@ -2164,17 +2162,17 @@ def mref_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0, y
 					max_inter = 0  # switch off fine refi.
 					br = 1.75
 					#  the loop has to 
-					for INter in range(max_inter+1):
+					for INter in xrange(max_inter+1):
 						# Calculate averages at least ones, meaning even if no within group refinement was requested
 						if CTF:
-							for i in range(lctf):  ctm[i] = 1.0 / (ctf2[j][0][i] + 1.0/snr)
+							for i in xrange(lctf):  ctm[i] = 1.0 / (ctf2[j][0][i] + 1.0/snr)
 							from filter import filt_table
 							av1 = filt_table(refi[j][0], ctm)
-							for i in range(lctf):  ctm[i] = 1.0 / (ctf2[j][1][i] + 1.0/snr)
+							for i in xrange(lctf):  ctm[i] = 1.0 / (ctf2[j][1][i] + 1.0/snr)
 							av2 = filt_table(refi[j][1], ctm)
 							frsc = fsc(av1, av2, 1.0, os.path.join(outdir,"drm_%03d_%04d.txt"%(Iter, j)))
 							#Now the total average
-							for i in range(lctf):  ctm[i] = 1.0 / (ctf2[j][0][i] + ctf2[j][1][i] + 1.0/snr)
+							for i in xrange(lctf):  ctm[i] = 1.0 / (ctf2[j][0][i] + ctf2[j][1][i] + 1.0/snr)
 							refi[j][0] = filt_table(Util.addn_img(refi[j][0], refi[j][1]), ctm)
 						else:
 							frsc = fsc(refi[j][0], refi[j][1], 1.0, os.path.join(outdir,"drm_%03d_%04d.txt"%(Iter, j)))
@@ -2188,7 +2186,7 @@ def mref_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0, y
 							cs[0] = sx_sum[j]/len(assign[j])
 							cs[1] = sy_sum[j]/len(assign[j])
 							refi[j][0] = fshift(refi[j][0], -cs[0], -cs[1])
-						for i in range(len(assign[j])):
+						for i in xrange(len(assign[j])):
 							im = assign[j][i]
 							alpha, sx, sy, mirror, scale =  get_params2D(data[im])
 							alphan, sxn, syn, mirrorn = combine_params2(alpha, sx, sy, mirror, 0.0, -cs[0], -cs[1], 0)
@@ -2200,7 +2198,7 @@ def mref_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0, y
 							#  Calculate updated average
 							refi[j][0].to_zero()
 							refi[j][1].to_zero()
-							for i in range(len(assign[j])):
+							for i in xrange(len(assign[j])):
 								im = assign[j][i]
 								alpha, sx, sy, mirror, scale = get_params2D(data[im])
 								# apply current parameters and add to the average
@@ -2210,7 +2208,7 @@ def mref_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0, y
 
 				# write the current average
 				TMP = []
-				for i_tmp in range(len(assign[j])):  TMP.append(float(assign[j][i_tmp]))
+				for i_tmp in xrange(len(assign[j])):  TMP.append(float(assign[j][i_tmp]))
 				TMP.sort()
 				refi[j][0].set_attr_dict({'ave_n': refi[j][2], 'members': TMP })
 				del TMP
@@ -2226,12 +2224,12 @@ def mref_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0, y
 			else:	a0 = a1
 
 	newrefim = os.path.join(outdir,"multi_ref.hdf")
-	for j in range(numref):  refi[j][0].write_image(newrefim, j)
+	for j in xrange(numref):  refi[j][0].write_image(newrefim, j)
 	if CTF:
 		if data_had_ctf == 0:
-			for im in range(nima): data[im].set_attr('ctf_applied', 0)
+			for im in xrange(nima): data[im].set_attr('ctf_applied', 0)
 	from utilities import write_headers
-	write_headers(stack, data, list(range(nima)))
+	write_headers(stack, data, range(nima))
 	print_end_msg("mref_ali2d")
 
 
@@ -2341,12 +2339,12 @@ def mref_ali2d_MPI(stack, refim, outdir, maskfile = None, ir=1, ou=-1, rs=1, xrn
 	params = []
 	# prepare reference images on all nodes
 	ima.to_zero()
-	for j in range(numref):
+	for j in xrange(numref):
 		#  even, odd, numer of even, number of images.  After frc, totav
 		refi.append([get_im(refim,j), ima.copy(), 0])
 	#  for each node read its share of data
-	data = EMData.read_images(stack, list(range(image_start, image_end)))
-	for im in range(image_start, image_end):
+	data = EMData.read_images(stack, range(image_start, image_end))
+	for im in xrange(image_start, image_end):
 		data[im-image_start].set_attr('ID', im)
 		if CTF:
 			ctf_params = data[im-image_start].get_attr( "ctf" )
@@ -2367,7 +2365,7 @@ def mref_ali2d_MPI(stack, refim, outdir, maskfile = None, ir=1, ou=-1, rs=1, xrn
 	while Iter < max_iter and again:
 		ringref = []
 		mashi = cnx-last_ring-2
-		for j in range(numref):
+		for j in xrange(numref):
 			refi[j][0].process_inplace("normalize.mask", {"mask":mask, "no_sigma":1}) # normalize reference images to N(0,1)
 			cimage = Util.Polar2Dm(refi[j][0] , cnx, cny, numr, mode)
 			Util.Frngs(cimage, numr)
@@ -2377,10 +2375,10 @@ def mref_ali2d_MPI(stack, refim, outdir, maskfile = None, ir=1, ou=-1, rs=1, xrn
 			refi[j][0].to_zero()
 			refi[j][1].to_zero()
 			refi[j][2] = 0
-		if CTF: ctf2 = [[[0.0]*lctf for k in range(2)] for j in range(numref)]
-		assign = [[] for i in range(numref)]
+		if CTF: ctf2 = [[[0.0]*lctf for k in xrange(2)] for j in xrange(numref)]
+		assign = [[] for i in xrange(numref)]
 		# begin MPI section
-		for im in range(image_start, image_end):
+		for im in xrange(image_start, image_end):
 			alpha, sx, sy, mirror, scale = get_params2D(data[im-image_start])
 			#  Why inverse?  07/11/2015 PAP
 			alphai, sxi, syi, scalei = inverse_transform2(alpha, sx, sy)
@@ -2413,7 +2411,7 @@ def mref_ali2d_MPI(stack, refim, outdir, maskfile = None, ir=1, ou=-1, rs=1, xrn
 				#  I wonder whether params are still there....
 				ctf_params = data[im-image_start].get_attr("ctf")
 				ctm = ctf_2(nx, ctf_params)
-				for i in range(lctf):  ctf2[iref][it][i] += ctm[i]
+				for i in xrange(lctf):  ctf2[iref][it][i] += ctm[i]
 			#assign[im] = iref
 			refi[iref][2] += 1.0
 		del ringref
@@ -2423,19 +2421,19 @@ def mref_ali2d_MPI(stack, refim, outdir, maskfile = None, ir=1, ou=-1, rs=1, xrn
 			s = shape(ctf2)
 			ctf2  = mpi_reduce(ctf2, 2*lctf*numref, MPI_FLOAT, MPI_SUM, main_node, MPI_COMM_WORLD)
 			if myid == main_node: ctf2 = reshape(ctf2, s)
-		for j in range(numref):
+		for j in xrange(numref):
 			reduce_EMData_to_root(refi[j][0], myid, main_node)
 			reduce_EMData_to_root(refi[j][1], myid, main_node)
 			refi[j][2] = mpi_reduce(refi[j][2], 1, MPI_FLOAT, MPI_SUM, main_node, MPI_COMM_WORLD)
 			if(myid == main_node): refi[j][2] = int(refi[j][2][0])
 		# gather assignements
-		for j in range(numref):
+		for j in xrange(numref):
 			if myid == main_node:
-				for n in range(number_of_proc):
+				for n in xrange(number_of_proc):
 					if n != main_node:
 						ln =  mpi_recv(1, MPI_INT, n, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 						lis = mpi_recv(ln[0], MPI_INT, n, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
-						for l in range(ln[0]): assign[j].append(int(lis[l]))
+						for l in xrange(ln[0]): assign[j].append(int(lis[l]))
 			else:
 				mpi_send(len(assign[j]), 1, MPI_INT, main_node, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 				mpi_send(assign[j], len(assign[j]), MPI_INT, main_node, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
@@ -2445,7 +2443,7 @@ def mref_ali2d_MPI(stack, refim, outdir, maskfile = None, ir=1, ou=-1, rs=1, xrn
 			refim = os.path.join(outdir,"aqm%03d.hdf"%Iter)
 			a1 = 0.0
 			ave_fsc = []
-			for j in range(numref):
+			for j in xrange(numref):
 				if refi[j][2] < 4:
 					#ERROR("One of the references vanished","mref_ali2d_MPI",1)
 					#  if vanished, put a random image (only from main node!) there
@@ -2455,16 +2453,16 @@ def mref_ali2d_MPI(stack, refim, outdir, maskfile = None, ir=1, ou=-1, rs=1, xrn
 					#print 'ERROR', j
 				else:
 					if CTF:
-						for i in range(lctf):  ctm[i] = 1.0 / (ctf2[j][0][i] + 1.0/snr)
+						for i in xrange(lctf):  ctm[i] = 1.0 / (ctf2[j][0][i] + 1.0/snr)
 						from filter import filt_table
 						av1 = filt_table( refi[j][0], ctm)
-						for i in range(lctf):  ctm[i] = 1.0 / (ctf2[j][1][i] + 1.0/snr)
+						for i in xrange(lctf):  ctm[i] = 1.0 / (ctf2[j][1][i] + 1.0/snr)
 						av2 = filt_table( refi[j][1], ctm)
 						from statistics import fsc
 						#frsc = fsc_mask(av1, av2, mask, 1.0, os.path.join(outdir,"drm%03d%04d"%(Iter, j)))
 						frsc = fsc(av1, av2, 1.0, os.path.join(outdir,"drm%03d%04d.txt"%(Iter, j)))
 						#Now the total average
-						for i in range(lctf):  ctm[i] = 1.0 / (ctf2[j][0][i] + ctf2[j][1][i] + 1.0/snr)
+						for i in xrange(lctf):  ctm[i] = 1.0 / (ctf2[j][0][i] + ctf2[j][1][i] + 1.0/snr)
 						refi[j][0] = filt_table( Util.addn_img( refi[j][0], refi[j][1] ), ctm)
 					else:
 						#frsc = fsc_mask(refi[j][0], refi[j][1], mask, 1.0, os.path.join(outdir,"drm%03d%04d"%(Iter, j)))
@@ -2474,28 +2472,28 @@ def mref_ali2d_MPI(stack, refim, outdir, maskfile = None, ir=1, ou=-1, rs=1, xrn
 						Util.mul_scalar( refi[j][0], 1.0/float(refi[j][2]) )
 				        	
 					if ave_fsc == []:
-						for i in range(len(frsc[1])): ave_fsc.append(frsc[1][i])
+						for i in xrange(len(frsc[1])): ave_fsc.append(frsc[1][i])
 						c_fsc = 1
 					else:
-						for i in range(len(frsc[1])): ave_fsc[i] += frsc[1][i]
+						for i in xrange(len(frsc[1])): ave_fsc[i] += frsc[1][i]
 						c_fsc += 1
 					#print 'OK', j, len(frsc[1]), frsc[1][0:5], ave_fsc[0:5]			
 
 
 			#print 'sum', sum(ave_fsc)
 			if sum(ave_fsc) != 0:		
-				for i in range(len(ave_fsc)):
+				for i in xrange(len(ave_fsc)):
 					ave_fsc[i] /= float(c_fsc)
 					frsc[1][i]  = ave_fsc[i]
 			
-			for j in range(numref):
+			for j in xrange(numref):
 				ref_data[2]    = refi[j][0]
 				ref_data[3]    = frsc
 				refi[j][0], cs = user_func(ref_data)	
 
 				# write the current average
 				TMP = []
-				for i_tmp in range(len(assign[j])): TMP.append(float(assign[j][i_tmp]))
+				for i_tmp in xrange(len(assign[j])): TMP.append(float(assign[j][i_tmp]))
 				TMP.sort()
 				refi[j][0].set_attr_dict({'ave_n': refi[j][2],  'members': TMP })
 				del TMP
@@ -2507,7 +2505,7 @@ def mref_ali2d_MPI(stack, refim, outdir, maskfile = None, ir=1, ou=-1, rs=1, xrn
 			Iter += 1
 			msg = "ITERATION #%3d        criterion = %20.7e\n\n"%(Iter,a1)
 			print_msg(msg)
-			for j in range(numref):
+			for j in xrange(numref):
 				msg = "   group #%3d   number of particles = %7d\n"%(j, refi[j][2])
 				print_msg(msg)
 			
@@ -2518,7 +2516,7 @@ def mref_ali2d_MPI(stack, refim, outdir, maskfile = None, ir=1, ou=-1, rs=1, xrn
 		Iter  = bcast_number_to_all(Iter, main_node)
 		if CTF:  del  ctf2
 		if again:
-			for j in range(numref):
+			for j in xrange(numref):
 				bcast_EMData_to_all(refi[j][0], myid, main_node)
 
 	#  clean up
@@ -2526,7 +2524,7 @@ def mref_ali2d_MPI(stack, refim, outdir, maskfile = None, ir=1, ou=-1, rs=1, xrn
 	# write out headers  and STOP, under MPI writing has to be done sequentially
 	mpi_barrier(MPI_COMM_WORLD)
 	if CTF and data_had_ctf == 0:
-		for im in range(len(data)): data[im].set_attr('ctf_applied', 0)
+		for im in xrange(len(data)): data[im].set_attr('ctf_applied', 0)
 	par_str = ['xform.align2d', 'assign', 'ID']
 	if myid == main_node:
 		from utilities import file_type
@@ -2540,7 +2538,7 @@ def mref_ali2d_MPI(stack, refim, outdir, maskfile = None, ir=1, ou=-1, rs=1, xrn
 
 	if myid == main_node:
 		newrefim = os.path.join(outdir, "multi_ref.hdf")
-		for j in range(numref):
+		for j in xrange(numref):
 			refi[j][0].write_image(newrefim, j)
 		print_end_msg("mref_ali2d_MPI")
 
@@ -2611,7 +2609,7 @@ def ali2d_ra(stack, maskfile = None, ir = 1, ou = -1, rs = 1, maxit = 10, check_
 		#   Thus, is alignment, the reference is always computed from the second series, while the first is used for alignment 
 		parnames = ["Pixel_size", "defocus", "voltage", "Cs", "amp_contrast", "B_factor",  "ctf_applied"]
 		#                        0                1              2            3              4             5                6
-		for im in range(nima):
+		for im in xrange(nima):
 			if(im>0):
 				temp = EMData()
 				temp.read_image(stack, im)
@@ -2621,10 +2619,10 @@ def ali2d_ra(stack, maskfile = None, ir = 1, ou = -1, rs = 1, maxit = 10, check_
 			if(im == 0):
 				lctf = len(ctf)
 				ctf2 = [0.0]*lctf
-			for i in range(lctf):  ctf2[i] += ctf[i]
+			for i in xrange(lctf):  ctf2[i] += ctf[i]
 		del ctf
 		ref_data = []
-		for im in range(nima):
+		for im in xrange(nima):
 			temp = EMData()
 			temp.read_image(stack, im)
 			st = Util.infomask(temp, mask2D, False)
@@ -2666,7 +2664,7 @@ def ali2d_ra(stack, maskfile = None, ir = 1, ou = -1, rs = 1, maxit = 10, check_
 		del ctf2
 		kmn_ctf(data, ref_data, numr, wr, check_mirror, max_iter, rand_seed)
 	else:
-		for im in range(nima):
+		for im in xrange(nima):
 			if (im>0):
 				temp = EMData()
 				temp.read_image(stack, im)
@@ -2694,7 +2692,7 @@ def ali2d_ra(stack, maskfile = None, ir = 1, ou = -1, rs = 1, maxit = 10, check_
 	#  write out the alignment parameters to headers
 	from utilities import write_header, file_type
 	temp = EMData()
-	for im in range(nima):
+	for im in xrange(nima):
 		alpha_original   = data[im].get_attr('alpha_original')
 		alpha = data[im].get_attr('alpha')
 		sx    =  data[im].get_attr('sx')
@@ -2778,7 +2776,7 @@ def ali2d_rag(stack, maskfile = None, ir = 1, ou = -1, rs = 1, maxit = 10, check
 		#   Thus, is alignment, the reference is always computed from the second series, while the first is used for alignment 
 		parnames = ["Pixel_size", "defocus", "voltage", "Cs", "amp_contrast", "B_factor",  "ctf_applied"]
 		#                        0                1              2            3              4             5                6
-		for im in range(nima):
+		for im in xrange(nima):
 			if(im>0):
 				temp = EMData()
 				temp.read_image(stack, im)
@@ -2788,10 +2786,10 @@ def ali2d_rag(stack, maskfile = None, ir = 1, ou = -1, rs = 1, maxit = 10, check
 			if(im == 0):
 				lctf = len(ctf)
 				ctf2 = [0.0]*lctf
-			for i in range(lctf):  ctf2[i] += ctf[i]
+			for i in xrange(lctf):  ctf2[i] += ctf[i]
 		del ctf
 		ref_data = []
-		for im in range(nima):
+		for im in xrange(nima):
 			temp = EMData()
 			temp.read_image(stack, im)
 			st = Util.infomask(temp, mask2D, False)
@@ -2828,7 +2826,7 @@ def ali2d_rag(stack, maskfile = None, ir = 1, ou = -1, rs = 1, maxit = 10, check
 		del ctf2
 		kmn_ctf(data, ref_data, numr, wr, check_mirror, max_iter, rand_seed)
 	else:
-		for im in range(nima):
+		for im in xrange(nima):
 			if (im>0):
 				temp = EMData()
 				temp.read_image(stack, im)
@@ -2856,7 +2854,7 @@ def ali2d_rag(stack, maskfile = None, ir = 1, ou = -1, rs = 1, maxit = 10, check
 		DB = EMAN2DB()
 		DB = EMAN2DB.open_db(ipath)
 	temp = EMData()
-	for im in range(nima):
+	for im in xrange(nima):
 		alpha_original   = data[im].get_attr('alpha_original')
 		alpha = data[im].get_attr('alpha')
 		sx    =  data[im].get_attr('sx')
@@ -2932,7 +2930,7 @@ def ali2d_rac(stack, maskfile = None, ir = 1, ou = -1, rs = 1, nclass = 2, maxit
 	numr = Numrinit(first_ring, last_ring, rstep, mode)
 	# norm to criterion
 	norm_rsd = 0
-	for n in range(1, len(numr), 3): norm_rsd += numr[n]
+	for n in xrange(1, len(numr), 3): norm_rsd += numr[n]
 		
 	wr    = ringwe(numr ,mode)
 	lnumr = numr[len(numr)-1]
@@ -2954,7 +2952,7 @@ def ali2d_rac(stack, maskfile = None, ir = 1, ou = -1, rs = 1, nclass = 2, maxit
 	cnx = nx//2+1
 	cny = ny//2+1
 	
-	for im in range(nima):
+	for im in xrange(nima):
 		if(im>0):
 			temp = EMData()
 			temp.read_image(stack, im)
@@ -2989,20 +2987,20 @@ def ali2d_rac(stack, maskfile = None, ir = 1, ou = -1, rs = 1, nclass = 2, maxit
 	if(init == "Random"):
 		again = True
 		while(again):
-			for i in range (nima):
+			for i in xrange (nima):
 				assign[i] = randint(0,kc-1)
 				nclass[assign[i]] += 1
 			# make sure than no class is zero
 			again = False
-			for k in range(kc):
+			for k in xrange(kc):
 				if(nclass[k] == 0): again = True
 	elif(init == "Even"):
-		for i in range (nima):
+		for i in xrange (nima):
 			assign[i] = i%kc
 			nclass[assign[i]] += 1
 	elif(init == "Batch"):
 		kt = (nima+kc)//kc
-		for i in range (nima):
+		for i in xrange (nima):
 			assign[i] = i//kt
 			nclass[assign[i]] += 1
 
@@ -3018,27 +3016,27 @@ def ali2d_rac(stack, maskfile = None, ir = 1, ou = -1, rs = 1, nclass = 2, maxit
 		it += 1
 		# averages
 		tave = []
-		for k in range(kc):
+		for k in xrange(kc):
 			temp = kmnr(data, assign, nclass[k], k, numr, wr, check_mirror, max_internal, rand_seed+(it * 10))
 			temp /= nclass[k]
 			tave.append(temp)
 					
 		#  assign objects to averages, angles are irrelevant
-		for k in range(kc):  nclass[k] = 0
+		for k in xrange(kc):  nclass[k] = 0
 		again = False
 
 		# compute norm to distance
 		norm = []
-		for k in range(kc):
+		for k in xrange(kc):
 			retval = Util.Crosrng_ew(tave[k], tave[k], numr, wr, 0)
 			sq1    = Util.ener(tave[k], numr)
 			norm.append(2*sq1 / float(retval['qn']))
 			
 		Je_rsd = 0
-		for im in range (nima):
+		for im in xrange (nima):
 			dmin = 1.0e20
 			g    = -1
-			for k in range(kc):
+			for k in xrange(kc):
 				
 				if (check_mirror):
 					retvals = Util.Crosrng_ew(tave[k], data[im], numr, wr, 0)
@@ -3075,12 +3073,12 @@ def ali2d_rac(stack, maskfile = None, ir = 1, ou = -1, rs = 1, nclass = 2, maxit
 		rep = True
 		while(kc > 1 and rep):
 			rep = False
-			for k in range(kc):
+			for k in xrange(kc):
 				if(nclass[k] == 0):
 					del nclass[k]
 					del tave[k]
 					#  fix the assign list
-					for i in range(nima):
+					for i in xrange(nima):
 						if(assign[i] > k):   assign[i] -= 1
 						elif assign[i] == k: assign[i] = randint(0, kc - 2)
 					kc -= 1
@@ -3096,14 +3094,14 @@ def ali2d_rac(stack, maskfile = None, ir = 1, ou = -1, rs = 1, nclass = 2, maxit
 		print('> iteration %d      criterion %5.3e\n' % (it+1, Je_rsd))
 
 	print_msg('\n')
-	for k in range(kc): print_msg('Cls[%3d]: %d\n' % (k, nclass[k]))
+	for k in xrange(kc): print_msg('Cls[%3d]: %d\n' % (k, nclass[k]))
 	print_msg('\n')
 
 	print('time ite:', time.time() - t)
 	print('%30s %5d %10s'%("Numbers of objects in ",kc," classes:"))
 	print_list_format(nclass)
 	#align class averages and transfer parameters to individual images
-	for k in range(kc):
+	for k in xrange(kc):
 		tave[k].set_attr_dict({'alpha':1.0, 'mirror':0})
 	
 	kmn(tave, numr, wr, check_mirror, max_iter)
@@ -3112,7 +3110,7 @@ def ali2d_rac(stack, maskfile = None, ir = 1, ou = -1, rs = 1, nclass = 2, maxit
 
 	talpha = [0]*kc
 	tmir   = [0]*kc
-	for k in range(kc):
+	for k in xrange(kc):
 		talpha[k] = ang_n(tave[k].get_attr('alpha'), mode, lnumr)
 		tmir[k]   = tave[k].get_attr('mirror')
 
@@ -3126,7 +3124,7 @@ def ali2d_rac(stack, maskfile = None, ir = 1, ou = -1, rs = 1, nclass = 2, maxit
 		DB = EMAN2DB()
 		DB = EMAN2DB.open_db(ipath)
 	temp = EMData()
-	for im in range(nima):
+	for im in xrange(nima):
 				
 		#  First combine with angle of the average
 		alpha = ang_n(data[im].get_attr('alpha'), mode, lnumr)
@@ -3194,7 +3192,7 @@ def ali2d_ras(data2d, randomize = False, ir = 1, ou = -1, rs = 1, step = 1.0, ds
 	data = []
 	if not check_mirror: mirror=0
 	params = []
-	for im in range(nima):
+	for im in xrange(nima):
 		if randomize:
 			alpha, sx, sy, miri, scale = get_params2D(data2d[im])
 			#  Check this 07/11/2015 PAP
@@ -3218,7 +3216,7 @@ def ali2d_ras(data2d, randomize = False, ir = 1, ou = -1, rs = 1, step = 1.0, ds
 			ERROR("ali2d_ra","Particle radius given too large for particle shifts found in the header",1)
 			
 	total_iter = 0
-	for Iter in range(max_iter):
+	for Iter in xrange(max_iter):
 		total_iter += 1
 		tavg = ave_series(data2d)
 		if( FH > 0.0):
@@ -3231,7 +3229,7 @@ def ali2d_ras(data2d, randomize = False, ir = 1, ou = -1, rs = 1, step = 1.0, ds
 		cimage = Util.Polar2Dm(tavg, cnx, cny, numr, mode)
 		Util.Frngs(cimage, numr)
 		Util.Applyws(cimage, numr, wr)
-		for im in range(nima):
+		for im in xrange(nima):
 			# align current image to the reference 
 			if(check_mirror):
 				if delta == 0.0: retvals = Util.Crosrng_ms(cimage, data[im], numr, 0.0)
@@ -3276,7 +3274,7 @@ def ali2d_rotationaltop(outdir, stack, randomize = False, orient=True, ir = 4, o
 	tavg.write_image(os.path.join(outdir, "aqfinal.hdf"))
 	# write out headers
 	from utilities import write_headers
-	write_headers(stack, data2d, list(range(nima)))
+	write_headers(stack, data2d, range(nima))
 	
 
 def ali2d_rotational(data2d, randomize = False, orient=True, ir = 1, ou = -1, rs = 1, psi_max = 180.0, mode = "F", maxit = 10):
@@ -3307,45 +3305,45 @@ def ali2d_rotational(data2d, randomize = False, orient=True, ir = 1, ou = -1, rs
 	cny = int(ny/2) + 1
 	# resample images into polar coordinates
 	data = []
-	if randomize:  angle = [float(randint(1,maxrin)) for i in range(nima)]
+	if randomize:  angle = [float(randint(1,maxrin)) for i in xrange(nima)]
 	else:          angle = [0.0]*nima
-	for im in range(nima):
+	for im in xrange(nima):
 		#  Here we need inverse transformation shifts for resampling into polar
 		cimage = Util.Polar2Dm(data2d[im], cnx, cny, numr, mode)
 		Util.Frngs(cimage, numr)
 		data.append(cimage.copy())
 
 	change = True
-	for Iter in range(max_iter+1):
+	for Iter in xrange(max_iter+1):
 		if Iter == max_iter or not change:
 			tavg = model_blank(nx,ny)
 			#compute average
-			for im in range(nima):
+			for im in xrange(nima):
 				angle[im] = ang_n(angle[im], mode, numr[-1])
 				set_params2D(data2d[im], [angle[im], 0.0, 0.0, 0, 1.0])
 			tavg = ave_series(data2d)
 			if orient:
 				qet = -1.e23
 				mask = model_circle(ou,nx,ny)-model_circle(ir,nx,ny)
-				for i in range(360):
+				for i in xrange(360):
 					temp = rot_shift2D(tavg,i/2.0)
 					qt = mirror(temp,'y').cmp("dot", temp, {"negative":0, "mask":mask})
 					if(qt > qet):
 						qet = qt
 						mang = i/2.0
 				if( mang != 0.0 ):
-					for im in range(nima):
+					for im in xrange(nima):
 						angle[im] += mang
 						set_params2D(data2d[im], [angle[im], 0.0, 0.0, 0, 1.0])
 					tavg = ave_series(data2d)
 			return tavg
 		else:
 			cimage.to_zero()
-			for im in range(nima):  Util.update_fav(cimage, data[im], angle[im], 0, numr)
+			for im in xrange(nima):  Util.update_fav(cimage, data[im], angle[im], 0, numr)
 			Util.Applyws(cimage, numr, wr)
 			Util.mul_scalar(cimage, 1.0/float(nima))
 		change = False
-		for im in range(nima):
+		for im in xrange(nima):
 			# align current image to the reference 
 			#retvals = Util.Crosrng_e(cimage, data[im], numr, 0)
 			retvals = Util.Crosrng_sm_psi(cimage, data[im], numr, 0.0, 0, psi_max)
@@ -3438,11 +3436,11 @@ def ali2d_cross_res(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1
 		data_had_ctf = ima.get_attr( "ctf_applied" )
 		ctm = ctf_2(nx, ctf_params)
 		lctf = len(ctm)
-		ctf2 = [[[0.0]*lctf for j in range(2)] for i in range(NG)]
-		ctfb2 = [[0.0]*lctf for i in range(NG)]
+		ctf2 = [[[0.0]*lctf for j in xrange(2)] for i in xrange(NG)]
+		ctfb2 = [[0.0]*lctf for i in xrange(NG)]
 	del ima
 	all_data = EMData.read_images(stack)
-	for im in range(nima):
+	for im in xrange(nima):
 		all_data[im].set_attr('ID', im)
 		k = im%NG
 		if(CTF):
@@ -3450,7 +3448,7 @@ def ali2d_cross_res(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1
 			ctm = ctf_2(nx, ctf_params)
 
 			kl = (im//2)%NG  # not sure it will work for NG>2
-			for i in range(lctf):
+			for i in xrange(lctf):
 				ctf2[k][kl][i] += ctm[i]
 	
 			if(all_data[im].get_attr("ctf_applied") == 0):
@@ -3460,27 +3458,27 @@ def ali2d_cross_res(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1
 				all_data[im].set_attr('ctf_applied', 1)
 
 	#  create to lists of images in groups.
-	data = [[] for i in range(NG)]
-	for im in range(nima):
+	data = [[] for i in xrange(NG)]
+	for im in xrange(nima):
 		k = im%NG
 		data[k].append(all_data[im])
 
 	if(CTF):
 		ctf_tot = [0.0]*lctf
-		for i in range(lctf):
-			for k in range(NG):
+		for i in xrange(lctf):
+			for k in xrange(NG):
 				ctf_tot[i] += ctf2[k][0][i] + ctf2[k][1][i]
 			ctf_tot[i] = 1.0/(ctf_tot[i] + 1.0/snr)
-		for k in range(NG):
-			for i in range(lctf):
+		for k in xrange(NG):
+			for i in xrange(lctf):
 				ctfb2[k][i] = 1.0/(ctf2[k][0][i] + ctf2[k][1][i] + 1.0/snr)
-				for kl in range(2):
+				for kl in xrange(2):
 					ctf2[k][kl][i] = 1.0/(ctf2[k][kl][i] + 1.0/snr)
 	#precalculate rings
 	numr = Numrinit(first_ring, last_ring, rstep, mode)
 	wr = ringwe(numr, mode)
 	tavg = [None]*NG
-	for k in range(NG):
+	for k in xrange(NG):
 		av1, av2 = add_oe_series(data[k])
 		Util.add_img(av1, av2)
 		if(CTF):  tavg[k] = filt_table(av1, ctfb2[k])
@@ -3500,14 +3498,14 @@ def ali2d_cross_res(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1
 	ref_data = [mask, center, None, None]
 	cs=[[0.0,0.0]]*NG
 	total_iter = 0
-	for N_step in range(len(xrng)):
+	for N_step in xrange(len(xrng)):
 		msg = "\nX range = %5.2f   Y range = %5.2f   Step = %5.2f\n"%(xrng[N_step], yrng[N_step], step[N_step])
 		print_msg(msg)
-		for Iter in range(max_iter):
+		for Iter in xrange(max_iter):
 			total_iter += 1
 			frsc = []
 			ktavg = [None]*NG
-			for k in range(NG):
+			for k in xrange(NG):
 				sxsum, sysum, nope = ali2d_single_iter(data[k], numr, wr, cs[k], tavg[k], cnx, cny, xrng[N_step], yrng[N_step], step[N_step], mode=mode)
 				av1, av2 = add_oe_series(data[k])
 				if(CTF):
@@ -3531,7 +3529,7 @@ def ali2d_cross_res(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1
 			fscross = fsc_mask(favg2, tavg[1], ref_data[0], 1.0, os.path.join(outdir, "drcross_%03d"%(total_iter)))
 			del favg2
 			# Here one may want to apply rot-shift of the first average to all images in its group
-			for im in range(len(data[0])):
+			for im in xrange(len(data[0])):
 				ps = get_arb_params(data[0][im], params)
 				an,sxn,syn,mrn = combine_params2(ps[0], ps[1], ps[2], ps[3], alpha, sx, sy, mirror)
 				set_arb_params(data[0][im], [an,sxn,syn,mrn], params)
@@ -3543,8 +3541,8 @@ def ali2d_cross_res(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1
 				tavg[k] = (av1+av2)/len(data[k])
 			#  Here we have to change fsc values.  The reason is that we have crossresolution, so snr can be calculated directly,
 			#        while in user function the fit to fsc is done under assumption that is was calculated by splitting the dataset, so it has a factor of 2
-			for i in range(len(fscross[1])):   fscross[1][i] = fscross[1][i]/(2.0-fscross[1][i])
-			for k in range(NG):
+			for i in xrange(len(fscross[1])):   fscross[1][i] = fscross[1][i]/(2.0-fscross[1][i])
+			for k in xrange(NG):
 				#  Apply the same filtration to all averages
 				ref_data[2] = tavg[k]
 				ref_data[3] = fscross
@@ -3564,8 +3562,8 @@ def ali2d_cross_res(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1
 			else:	a0 = a1
 	# write out headers
 	if(CTF and data_had_ctf == 0):
-		for k in range(NG):
-			for im in range(len(data[k])):
+		for k in xrange(NG):
+			for im in xrange(len(data[k])):
 				data[k][im].set_attr('ctf_applied', 0)
 	from utilities import write_header, file_type
 	ext = file_type(stack)
@@ -3573,7 +3571,7 @@ def ali2d_cross_res(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1
 		from EMAN2db import EMAN2DB
 		DB = EMAN2DB()
 		DB = EMAN2DB.open_db(ipath)
-	for im in range(nima):
+	for im in xrange(nima):
 		k=im%NG
 		imm = im//NG
 		write_header(stack, data[k][imm], im)
@@ -4241,10 +4239,10 @@ def ali3d(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 	# 	if(active[im]):  list_of_particles.append(im)
 	# del active
 	nima = EMUtil.get_image_count(stack)
-	list_of_particles = list(range(nima))
+	list_of_particles = range(nima)
 		
 	data = EMData.read_images(stack, list_of_particles)
-	for im in range(len(data)):
+	for im in xrange(len(data)):
 		data[im].set_attr('ID', list_of_particles[im])
 		if CTF:
 			ctf_params = data[im].get_attr("ctf")
@@ -4259,8 +4257,8 @@ def ali3d(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 
 	cs = [0.0]*3
 	# do the projection matching
-	for N_step in range(lstp):
-		for Iter in range(max_iter):
+	for N_step in xrange(lstp):
+		for Iter in xrange(max_iter):
 			print_msg("\nITERATION #%3d\n"%(N_step*max_iter+Iter+1))
 
 			volft, kb = prep_vol(vol)
@@ -4270,10 +4268,10 @@ def ali3d(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 				# generate list of angles
 				from alignment import generate_list_of_reference_angles_for_search
 				list_of_reference_angles = \
-					generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in range(len(refrings))], sym=sym)			
+					generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in xrange(len(refrings))], sym=sym)			
 
 
-			for im in range(nima):
+			for im in xrange(nima):
 				if an[N_step] == -1:
 					peak, pixel_error = proj_ali_incore(data[im],refrings,numr,xrng[N_step],yrng[N_step],step[N_step], sym=sym)
 				else:
@@ -4290,18 +4288,18 @@ def ali3d(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 					print_msg("For symmetry group cn (n>1), we only center the volume in z-direction\n")
 				rotate_3D_shift(data, [-cs[0], -cs[1], -cs[2]])
 
-			if CTF:   vol1 = recons3d_4nn_ctf(data, list(range(0, nima, 2)), snr, 1, sym)
-			else:	   vol1 = recons3d_4nn(data, list(range(0, nima, 2)), sym, snr = snr)
-			if CTF:   vol2 = recons3d_4nn_ctf(data, list(range(1, nima, 2)), snr, 1, sym)
-			else:	   vol2 = recons3d_4nn(data, list(range(1, nima, 2)), sym, snr = snr)
+			if CTF:   vol1 = recons3d_4nn_ctf(data, range(0, nima, 2), snr, 1, sym)
+			else:	   vol1 = recons3d_4nn(data, range(0, nima, 2), sym, snr = snr)
+			if CTF:   vol2 = recons3d_4nn_ctf(data, range(1, nima, 2), snr, 1, sym)
+			else:	   vol2 = recons3d_4nn(data, range(1, nima, 2), sym, snr = snr)
 
 			fscc = fsc_mask(vol1, vol2, mask3D, 1.0, os.path.join(outdir, "resolution%04d"%(N_step*max_iter+Iter+1)))
 			del vol1
 			del vol2
 
 			# calculate new and improved 3D
-			if CTF:  vol = recons3d_4nn_ctf(data, list(range(nima)), snr, 1, sym)
-			else:	 vol = recons3d_4nn(data, list(range(nima)), sym, snr = snr)
+			if CTF:  vol = recons3d_4nn_ctf(data, range(nima), snr, 1, sym)
+			else:	 vol = recons3d_4nn(data, range(nima), sym, snr = snr)
 			# store the reference volume
 			drop_image(vol, os.path.join(outdir, "vol%04d.hdf"%(N_step*max_iter+Iter+1)))
 			ref_data[2] = vol
@@ -4462,7 +4460,7 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 		# nima = len(list_of_particles)
 			
 		nima = EMUtil.get_image_count(stack)
-		list_of_particles = list(range(nima))
+		list_of_particles = range(nima)
 		
 	else:
 		nima = 0
@@ -4482,7 +4480,7 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 
 	data = EMData.read_images(stack, list_of_particles)
 	if fourvar:  original_data = []
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr('ID', list_of_particles[im])
 		if fourvar: original_data.append(data[im].copy())
 		if CTF:
@@ -4505,7 +4503,7 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 	#  this is needed for gathering of pixel errors
 	disps = []
 	recvcount = []
-	for im in range(number_of_proc):
+	for im in xrange(number_of_proc):
 		if im == main_node :  disps.append(0)
 		else:                 disps.append(disps[im-1] + recvcount[im-1])
 		ib, ie = MPI_start_end(total_nima, number_of_proc, im)
@@ -4515,7 +4513,7 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 	cs = [0.0]*3
 	total_iter = 0
 	# do the projection matching
-	for N_step in range(lstp):
+	for N_step in xrange(lstp):
 		terminate = 0
 		Iter = -1
 		while Iter < max_iter-1 and terminate == 0:
@@ -4532,13 +4530,13 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 				# generate list of angles
 				from alignment import generate_list_of_reference_angles_for_search
 				list_of_reference_angles = \
-				generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in range(len(refrings))], sym=sym)			
+				generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in xrange(len(refrings))], sym=sym)			
 			else:  list_of_reference_angles = [[1.0,1.0]]
 			if myid == main_node:
 				print_msg("Time to prepare rings: %d\n" % (time()-start_time))
 				start_time = time()
 
-			for im in range(nima):
+			for im in xrange(nima):
 				if deltapsi[N_step] > 0.0:
 					from alignment import proj_ali_incore_delta
 					peak, pixer[im] = proj_ali_incore_delta(data[im],refrings,numr,xrng[N_step],yrng[N_step],step[N_step],startpsi[N_step],deltapsi[N_step],finfo)						
@@ -4564,19 +4562,19 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 			mpi_barrier(MPI_COMM_WORLD)
 			terminate = 0
 			if myid == main_node:
-				recvbuf = list(map(float, recvbuf))
+				recvbuf = map(float, recvbuf)
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if region[0] < 0.0:  region[0] = 0.0
 				msg = "      Histogram of pixel errors\n      ERROR       number of particles\n"
 				print_msg(msg)
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					msg = " %10.3f     %7d\n"%(region[lhx], histo[lhx])
 					print_msg(msg)
 				# Terminate if 95% within 1 pixel error
 				im = 0
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					if region[lhx] > 1.0: break
 					im += histo[lhx]
 				precn = 100*float(total_nima-im)/float(total_nima)
@@ -4625,7 +4623,7 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 
 			if fourvar:
 			#  Compute Fourier variance
-				for im in range(nima):
+				for im in xrange(nima):
 					original_data[im].set_attr( 'xform.projection', data[im].get_attr('xform.projection') )
 				varf = varf3d_MPI(original_data, ssnr_text_file = os.path.join(outdir, "ssnr%04d"%(total_iter)), mask2D = None, reference_structure = vol, ou = last_ring, rw = 1.0, npad = 1, CTF = CTF, sign = 1, sym =sym, myid = myid)
 				if myid == main_node:
@@ -4732,14 +4730,14 @@ def sali3d_base(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift = 0.
 		else:
 			total_nima = 0
 		total_nima = wrap_mpi_bcast(total_nima, main_node, mpi_comm)
-		list_of_particles = list(range(total_nima))
+		list_of_particles = range(total_nima)
 		image_start, image_end = MPI_start_end(total_nima, number_of_proc, myid)
 		# create a list of images for each node
 		list_of_particles = list_of_particles[image_start: image_end]
 		nima = len(list_of_particles)
 
 	else:
-		list_of_particles = list(range(len(stack)))
+		list_of_particles = range(len(stack))
 		nima = len(list_of_particles)
 		total_nima = len(list_of_particles)
 		total_nima = mpi_reduce(total_nima, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
@@ -4779,7 +4777,7 @@ def sali3d_base(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift = 0.
 	numr	= Numrinit(first_ring, last_ring, rstep, "F")
 
 	data = [None]*nima
-	for im in range(nima):
+	for im in xrange(nima):
 		if( type(stack) is bytes ):  data[im] = get_im(stack, list_of_particles[im])
 		else:                                   data[im] = stack[list_of_particles[im]]
 	mpi_barrier(mpi_comm)
@@ -4815,7 +4813,7 @@ def sali3d_base(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift = 0.
 	# do the projection matching,  it has a loop over iterations here, 
 	#  but it can only do one iteration as many settings are done in meridien.  Perturbations are a good example, there is one per each iteration.
 	if zoom: lstp = 1
-	for N_step in range(lstp):
+	for N_step in xrange(lstp):
 
 		terminate = 0
 		Iter = 0
@@ -4863,8 +4861,8 @@ def sali3d_base(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift = 0.
 					# generate list of angles
 					from alignment import generate_list_of_reference_angles_for_search
 					list_of_reference_angles = \
-					generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in range(len(refrings))], sym=sym)			
-					for im in range(nima):
+					generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in xrange(len(refrings))], sym=sym)			
+					for im in xrange(nima):
 						previousmax = data[im].get_attr_default("previousmax", -1.0e23)
 						if(previousmax == -1.0e23):
 							peak, pixer[im] = proj_ali_incore_local(data[im], refrings, list_of_reference_angles, numr, \
@@ -4873,7 +4871,7 @@ def sali3d_base(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift = 0.
 					del list_of_reference_angles
 				else:
 					#  Here it is supposed to be shake and bake for local SHC, but it would have to be signaled somehow
-					for im in range(nima):
+					for im in xrange(nima):
 						data[im].set_attr("previousmax", -1.0e23)
 				if myid == main_node:
 					log.add("Time to calculate first psi+shifts+previousmax: %10.1f\n" % (time()-start_time))
@@ -4890,9 +4888,9 @@ def sali3d_base(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift = 0.
 				# generate list of angles
 				from alignment import generate_list_of_reference_angles_for_search
 				list_of_reference_angles = \
-				generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in range(len(refrings))], sym=sym)			
+				generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in xrange(len(refrings))], sym=sym)			
 			else:  list_of_reference_angles = [[1.0,1.0]]
-			for im in range(nima):
+			for im in xrange(nima):
 				if Tracker["constants"]["pwsharpening"] :
 					#  High-pass filtration of data[im]
 					try:
@@ -4908,7 +4906,7 @@ def sali3d_base(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift = 0.
 					except:
 						ERROR("Problem with indexing ptcl_source_image.","meridien",1, myid)
 
-					tempdata = Util.window(pad(filt_table(data[im],[Tracker["bckgnoise"][0][i,indx] for i in range(nx)]), mx, mx,1,0.0), nx, nx)
+					tempdata = Util.window(pad(filt_table(data[im],[Tracker["bckgnoise"][0][i,indx] for i in xrange(nx)]), mx, mx,1,0.0), nx, nx)
 				else:  tempdata = data[im].copy()
 				if(nsoft == 0):
 					if(an[N_step] == -1):
@@ -4955,7 +4953,7 @@ def sali3d_base(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift = 0.
 				#total_checked_refs = sum(total_checked_refs)
 				if(nsoft < 2):  par_r[1] = total_nima - par_r[0]
 				log.add("=========== Number of better orientations found ==============")
-				for lhx in range(len(par_r)):
+				for lhx in xrange(len(par_r)):
 					msg = "            %5d     %7d"%(lhx, par_r[lhx])
 					log.add(msg)
 				log.add("_______________________________________________________")
@@ -4981,7 +4979,7 @@ def sali3d_base(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift = 0.
 				lhist = 20
 				region, histo = hist_list(all_pixer, lhist)
 				log.add("=========== Histogram of pixel errors ==============")
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					msg = "          %10.3f     %7d"%(region[lhx], histo[lhx])
 					log.add(msg)
 				log.add("____________________________________________________")
@@ -5014,7 +5012,7 @@ def sali3d_base(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift = 0.
 			if( terminate or (Iter == max_iter) ):
 				# gather parameters
 				params = []
-				for im in range(nima):
+				for im in xrange(nima):
 					t = get_params_proj(data[im])
 					params.append( [t[0], t[1], t[2], t[3], t[4]] )
 				params = wrap_mpi_gatherv(params, main_node, mpi_comm)
@@ -5691,7 +5689,7 @@ def slocal_ali3d_base(stack, templatevol, Tracker, mpi_comm = None, log= None, c
 				dummy = db_open_dict(stack, True)
 
 			nima = EMUtil.get_image_count(stack)
-			list_of_particles = list(range(nima))
+			list_of_particles = range(nima)
 			total_nima = len(list_of_particles)
 		else:
 			list_of_particles = None
@@ -5701,14 +5699,14 @@ def slocal_ali3d_base(stack, templatevol, Tracker, mpi_comm = None, log= None, c
 		list_of_particles = wrap_mpi_bcast(list_of_particles, main_node, mpi_comm)
 		if myid == main_node:
 			particle_ids = [0]*total_nima
-			for i in range(total_nima):  particle_ids[i] = list_of_particles[i]
+			for i in xrange(total_nima):  particle_ids[i] = list_of_particles[i]
 		image_start, image_end = MPI_start_end(total_nima, number_of_proc, myid)
 		# create a list of images for each node
 		list_of_particles = list_of_particles[image_start: image_end]
 		nima = len(list_of_particles)
 
 	else:
-		list_of_particles = list(range(len(stack)))
+		list_of_particles = range(len(stack))
 		nima = len(list_of_particles)
 		total_nima = len(list_of_particles)
 		total_nima = mpi_reduce(total_nima, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
@@ -5733,7 +5731,7 @@ def slocal_ali3d_base(stack, templatevol, Tracker, mpi_comm = None, log= None, c
 	mask2D  = model_circle(last_ring, nx, nx)
 
 	dataim = [None]*nima
-	for im in range(nima):
+	for im in xrange(nima):
 		if( type(stack) is bytes ):  dataim[im] = get_im(stack, list_of_particles[im])
 		else:                                   dataim[im] = stack[list_of_particles[im]]
 		dataim[im].set_attr('ID', list_of_particles[im])
@@ -5868,7 +5866,7 @@ def slocal_ali3d_base(stack, templatevol, Tracker, mpi_comm = None, log= None, c
 	data[3] = mask2D
 	cs = [0.0]*3
 
-	for iteration in range(maxit):
+	for iteration in xrange(maxit):
 		if myid == main_node:
 			start_time = time()
 			log.add("ITERATION #%3d\n"%(iteration+1))
@@ -5877,7 +5875,7 @@ def slocal_ali3d_base(stack, templatevol, Tracker, mpi_comm = None, log= None, c
 			finfo.write("\n")
 			finfo.flush()
 		pixer = [0.0]*nima
-		for ic in range(n_of_chunks):
+		for ic in xrange(n_of_chunks):
 			# In the very first step the volume has to be computed if it was not provided by the user
 			if( ((iteration > 0) and (ic > 0)) or vol == None):
 				if(center == -1 and sym[0] == 'c'):
@@ -5937,7 +5935,7 @@ def slocal_ali3d_base(stack, templatevol, Tracker, mpi_comm = None, log= None, c
 				finfo.write("Chunk "+str(ic)+"   Number of images in this chunk: "+str(image_end_in_chunk-image_start_in_chunk)+"\n")
 				finfo.write("First image in this chunk: "+str(image_start_in_chunk)+"   Last image in this chunk: "+str(image_end_in_chunk-1)+"\n")
 				finfo.flush()
-			for imn in range(image_start_in_chunk, image_end_in_chunk):
+			for imn in xrange(image_start_in_chunk, image_end_in_chunk):
 				if CTF:
 					ctf_params = dataim[imn].get_attr( "ctf" )
 					if ctf_params.defocus != previous_defocus:
@@ -6004,13 +6002,13 @@ def slocal_ali3d_base(stack, templatevol, Tracker, mpi_comm = None, log= None, c
 		mpi_barrier(mpi_comm)
 		terminate = 0
 		if(myid == main_node):
-			pixer = list(map(float, pixer))
+			pixer = map(float, pixer)
 			from statistics import hist_list
 			lhist = 20
 			region, histo = hist_list(pixer, lhist)
 			log.add(" ")
 			log.add("=========== Histogram of pixel errors ==============")
-			for lhx in range(lhist):
+			for lhx in xrange(lhist):
 				msg = "          %10.3f     %7d"%(region[lhx], histo[lhx])
 				log.add(msg)
 			log.add("____________________________________________________\n")
@@ -6018,7 +6016,7 @@ def slocal_ali3d_base(stack, templatevol, Tracker, mpi_comm = None, log= None, c
 
 			# Terminate if saturatecrit% within pixercutoff pixel error
 			im = 0
-			for lhx in range(lhist):
+			for lhx in xrange(lhist):
 				if(region[lhx] > pixercutoff): break
 				im += histo[lhx]
 			lhx = im/float(total_nima)
@@ -6567,7 +6565,7 @@ def ali3dpsi_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 		# nima = len(list_of_particles)
 		
 		nima = EMUtil.get_image_count(stack)
-		list_of_particles = list(range(nima))
+		list_of_particles = range(nima)
 	
 	else:
 		nima = 0
@@ -6587,7 +6585,7 @@ def ali3dpsi_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 
 	data = EMData.read_images(stack, list_of_particles)
 	if fourvar:  original_data = []
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr('ID', list_of_particles[im])
 		if fourvar: original_data.append(data[im].copy())
 		if CTF:
@@ -6610,7 +6608,7 @@ def ali3dpsi_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 	#  this is needed for gathering of pixel errors
 	disps = []
 	recvcount = []
-	for im in range(number_of_proc):
+	for im in xrange(number_of_proc):
 		if im == main_node :  disps.append(0)
 		else:                  disps.append(disps[im-1] + recvcount[im-1])
 		ib, ie = MPI_start_end(total_nima, number_of_proc, im)
@@ -6623,7 +6621,7 @@ def ali3dpsi_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 
 	total_iter = 0
 	# do the projection matching
-	for N_step in range(lstp):
+	for N_step in xrange(lstp):
 		terminate = 0
 		Iter = -1
 		while Iter < max_iter-1 and terminate == 0:
@@ -6635,7 +6633,7 @@ def ali3dpsi_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 
 			volft,kb = prep_vol(vol)
 
-			for im in range(nima):
+			for im in xrange(nima):
 				phi,tht,psi,s2x,s2y = get_params_proj(data[im])
 				refim = prgs( volft,kb,[phi,tht,0.0,0.0,0.0] )
 				from alignment import align2d
@@ -6674,15 +6672,15 @@ def ali3dpsi_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 			mpi_barrier(MPI_COMM_WORLD)
 			par_str = ['xform.projection', 'previousmax', 'ID']
 			if myid == main_node:
-				if(file_type(stack) == "bdb"):
-					from utilities import recv_attr_dict_bdb
-					recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
-				else:
-					from utilities import recv_attr_dict
-					recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
+	   			if(file_type(stack) == "bdb"):
+	        			from utilities import recv_attr_dict_bdb
+	        			recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
+	        		else:
+	        			from utilities import recv_attr_dict
+	        			recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 				print_msg("Time to write header information= %d\n"%(time()-start_time))
 				start_time = time()
-			else:	       send_attr_dict(main_node, data, par_str, image_start, image_end)
+	        	else:	       send_attr_dict(main_node, data, par_str, image_start, image_end)
 	if myid == main_node: print_end_msg("ali3dpsi_MPI")
 
 # =================== SHC
@@ -7246,7 +7244,7 @@ def ali3d_shcMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 		# nima = len(list_of_particles)
 		
 		nima = EMUtil.get_image_count(stack)
-		list_of_particles = list(range(nima))
+		list_of_particles = range(nima)
 	
 	else:
 		nima = 0
@@ -7266,7 +7264,7 @@ def ali3d_shcMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 
 	data = EMData.read_images(stack, list_of_particles)
 	if fourvar:  original_data = []
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr('ID', list_of_particles[im])
 		if( an[0] > -1 ):
 			#  These are local searches, set xform.anchor to the current projection direction
@@ -7292,7 +7290,7 @@ def ali3d_shcMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 	#  this is needed for gathering of pixel errors
 	disps = []
 	recvcount = []
-	for im in range(number_of_proc):
+	for im in xrange(number_of_proc):
 		if im == main_node :  disps.append(0)
 		else:                 disps.append(disps[im-1] + recvcount[im-1])
 		ib, ie = MPI_start_end(total_nima, number_of_proc, im)
@@ -7305,7 +7303,7 @@ def ali3d_shcMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 	final_volume = None
 	final_volume_filtered = None
 	# do the projection matching
-	for N_step in range(lstp):
+	for N_step in xrange(lstp):
 
 		terminate = 0
 		Iter = 0
@@ -7328,7 +7326,7 @@ def ali3d_shcMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 				# generate list of angles
 				from alignment import generate_list_of_reference_angles_for_search
 				list_of_reference_angles = \
-				generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in range(len(refrings))], sym=sym)			
+				generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in xrange(len(refrings))], sym=sym)			
 			else:  list_of_reference_angles = [[1.0,1.0]]
 			#=========================================================================
 
@@ -7359,7 +7357,7 @@ def ali3d_shcMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 
 			#=========================================================================
 			# alignment
-			iter_indexes = list(range(nima))
+			iter_indexes = range(nima)
 			shuffle(iter_indexes)
 			for im in iter_indexes:
 				from utilities import get_params_proj
@@ -7372,7 +7370,7 @@ def ali3d_shcMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 					n2 = refrings[iref].get_attr("n2")
 					n3 = refrings[iref].get_attr("n3")
 					to_be_deleted = []
-					for irr in range(len(refrings)):
+					for irr in xrange(len(refrings)):
 						nn1 = refrings[irr].get_attr("n1")
 						nn2 = refrings[irr].get_attr("n2")
 						nn3 = refrings[irr].get_attr("n3")
@@ -7397,19 +7395,19 @@ def ali3d_shcMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 			mpi_barrier(MPI_COMM_WORLD)
 			terminate = 0
 			if myid == main_node:
-				recvbuf = list(map(float, recvbuf))
+				recvbuf = map(float, recvbuf)
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if region[0] < 0.0:  region[0] = 0.0
 				msg = "      Histogram of pixel errors\n      ERROR       number of particles\n"
 				print_msg(msg)
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					msg = " %10.3f     %7d\n"%(region[lhx], histo[lhx])
 					print_msg(msg)
 				# Terminate if 95% within 0.1 pixel error
 				im = 0
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					if region[lhx] > 0.1: break
 					im += histo[lhx]
 				precn = 100*float(total_nima-im)/float(total_nima)
@@ -7487,7 +7485,7 @@ def ali3d_shcMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 				start_time = time()
 			if fourvar:
 			#  Compute Fourier variance
-				for im in range(nima):
+				for im in xrange(nima):
 					original_data[im].set_attr( 'xform.projection', data[im].get_attr('xform.projection') )
 				varf = varf3d_MPI(original_data, ssnr_text_file = os.path.join(outdir, "ssnr%04d"%(total_iter)), mask2D = None, reference_structure = vol, ou = last_ring, rw = 1.0, npad = 1, CTF = CTF, sign = 1, sym =sym, myid = myid)
 				if myid == main_node:
@@ -7552,7 +7550,7 @@ def mref_ali3d(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1, ir=
 	lstp = min( len(xrng), len(yrng), len(step), len(delta) )
 	if (an == "-1"):
 		an = []
-		for i in range(len(xrng)):   an.append(-1)
+		for i in xrange(len(xrng)):   an.append(-1)
 		from alignment	  import proj_ali_incore
 	else:
 		an = get_input_from_string(an)
@@ -7563,7 +7561,7 @@ def mref_ali3d(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1, ir=
 	last_ring   = int(ou)
 
 	numref = EMUtil.get_image_count(ref_vol)
-	for  iref in range(numref):
+	for  iref in xrange(numref):
 		volref     = EMData()
 		volref.read_image(ref_vol, iref)
 		volref.write_image(os.path.join(outdir, "volf0000.hdf"), iref)
@@ -7618,7 +7616,7 @@ def mref_ali3d(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1, ir=
 	# del active
 	
 	nima = EMUtil.get_image_count(stack)
-	list_of_particles = list(range(nima))
+	list_of_particles = range(nima)
 	
 	data = EMData.read_images(stack, list_of_particles)
 	nima = len(data)
@@ -7638,7 +7636,7 @@ def mref_ali3d(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1, ir=
 	tr_dummy = Transform({"type":"spider"})
 
 	Niter = int(lstp*maxit*(nassign+nrefine))
-	for Iter in range(Niter):
+	for Iter in xrange(Niter):
 		N_step = (Iter%(lstp*(nassign+nrefine)))/(nassign+nrefine)
 		if Iter%(nassign+nrefine) < nassign:
 			runtype = "ASSIGNMENT"
@@ -7661,7 +7659,7 @@ def mref_ali3d(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1, ir=
 		else:  list_of_reference_angles = [[1.0,1.0]]
 
 		cs = [0.0]*3
-		for iref in range(numref):
+		for iref in xrange(numref):
 			vol = get_im(os.path.join(outdir, "volf%04d.hdf"%( total_iter-1)), iref)
 			if(CTF):
 				previous_defocus = -1.0
@@ -7670,7 +7668,7 @@ def mref_ali3d(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1, ir=
 				if runtype=="REFINEMENT":
 					refrings = prepare_refrings(volft,kb,nx,delta[N_step],ref_a,sym,numr)
 
-			for im in range(nima):
+			for im in xrange(nima):
 				if(CTF):
 					ctf_params = data[im].get_attr("ctf")
 					if(ctf_params.defocus != previous_defocus):
@@ -7714,7 +7712,7 @@ def mref_ali3d(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1, ir=
 
 		if runtype=="REFINEMENT":
 			if(an[N_step] > 0):  del  list_of_reference_angles
-			for im in range(nima):
+			for im in xrange(nima):
 				data[im].set_attr('xform.projection', trans[im])
 
 			if center == -1:
@@ -7726,17 +7724,17 @@ def mref_ali3d(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1, ir=
 
 
 		fscc = [None]*numref
-		for iref in range(numref):
+		for iref in xrange(numref):
 			list_p = []
-			for im in range(nima):
+			for im in xrange(nima):
 				if(iref == data[im].get_attr('group')):
 					list_p.append(im)
 			print_msg("Group number : %i"%(iref) + ",  number of objects: %i\n"%(len(list_p)))
 			#  3D stuff
-			if(CTF): vodd = recons3d_4nn_ctf(data, [list_p[im] for im in range(0,len(list_p), 2)], snr, 1, sym)
-			else:    vodd = recons3d_4nn(data, [list_p[im] for im in range(1,len(list_p), 2)], sym, snr = snr)
-			if(CTF): veve = recons3d_4nn_ctf(data, [list_p[im] for im in range(0,len(list_p), 2)], snr, 1, sym)
-			else:    veve = recons3d_4nn(data,[list_p[im] for im in range(1,len(list_p), 2)], sym, snr = snr)
+			if(CTF): vodd = recons3d_4nn_ctf(data, [list_p[im] for im in xrange(0,len(list_p), 2)], snr, 1, sym)
+			else:    vodd = recons3d_4nn(data, [list_p[im] for im in xrange(1,len(list_p), 2)], sym, snr = snr)
+			if(CTF): veve = recons3d_4nn_ctf(data, [list_p[im] for im in xrange(0,len(list_p), 2)], snr, 1, sym)
+			else:    veve = recons3d_4nn(data,[list_p[im] for im in xrange(1,len(list_p), 2)], sym, snr = snr)
 
 			fscc[iref] = fsc_mask(vodd, veve, mask3D, 1.0, os.path.join(outdir, "resolution_%02d_%04d"%(iref, total_iter)))
 			
@@ -7835,7 +7833,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 	lstp = min( len(xrng), len(yrng), len(step), len(delta) )
 	if (an == "-1"):
 		an = []
-		for i in range(len(xrng)):   an.append(-1)
+		for i in xrange(len(xrng)):   an.append(-1)
 	else:
 		from  alignment	    import proj_ali_incore_local
 		an      = get_input_from_string(an)
@@ -7898,14 +7896,14 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 		else:
 			total_nima = 0
 		total_nima = wrap_mpi_bcast(total_nima, main_node, mpi_comm)
-		list_of_particles = list(range(total_nima))
+		list_of_particles = range(total_nima)
 		image_start, image_end = MPI_start_end(total_nima, number_of_proc, myid)
 		# create a list of images for each node
 		list_of_particles = list_of_particles[image_start: image_end]
 		nima = len(list_of_particles)
 
 	else:
-		list_of_particles = list(range(len(stack)))
+		list_of_particles = range(len(stack))
 		nima = len(list_of_particles)
 		total_nima = len(list_of_particles)
 		total_nima = mpi_reduce(total_nima, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
@@ -7939,7 +7937,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 	data = [None]*nima
 	#  Here the assumption is that input are always volumes.  It should be most likely be changed so optionally these are group assignments.
 	#  Initialize Particle ID and set group number to non-existant -1
-	for im in range(nima):
+	for im in xrange(nima):
 		if( type(stack) is bytes ):
 			data[im] = get_im(stack, list_of_particles[im])
 			data[im].set_attr_dict({'ID':list_of_particles[im], 'group':-1})
@@ -7964,7 +7962,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 
 	if myid == main_node:
 		refdata = [None]*7
-		for  iref in range(numref):
+		for  iref in xrange(numref):
 			vol = get_im(ref_vol, iref).write_image(os.path.join(outdir, "vol0000.hdf"), iref)
 		refdata[0] = numref
 		refdata[1] = outdir
@@ -7990,7 +7988,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 	#  this is needed for gathering of pixel errors
 	disps = []
 	recvcount = []
-	for im in range(number_of_proc):
+	for im in xrange(number_of_proc):
 		if( im == main_node ):  disps.append(0)
 		else:                   disps.append(disps[im-1] + recvcount[im-1])
 		ib, ie = MPI_start_end(total_nima, number_of_proc, im)
@@ -8008,7 +8006,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 		focus, kb = prep_vol(vol)
 
 	Niter = int(lstp*maxit*(nassign + nrefine) )
-	for Iter in range(Niter):
+	for Iter in xrange(Niter):
 		N_step = (Iter%(lstp*(nassign+nrefine)))/(nassign+nrefine)
 		if Iter%(nassign+nrefine) < nassign:
 			runtype = "ASSIGNMENT"
@@ -8020,10 +8018,10 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 			log.add("\n%s ITERATION #%3d,  inner iteration #%3d\nDelta = %4.1f, an = %5.2f, xrange = %5.2f, yrange = %5.2f, step = %5.2f"%(runtype, total_iter, Iter, delta[N_step], an[N_step], xrng[N_step],yrng[N_step],step[N_step]))
 			start_ime = time()
 	
-		peaks =  [ [ -1.0e23 for im in range(nima) ] for iref in range(numref) ]
+		peaks =  [ [ -1.0e23 for im in xrange(nima) ] for iref in xrange(numref) ]
 		if runtype=="REFINEMENT":
-			trans = [ [ tr_dummy for im in range(nima) ] for iref in range(numref) ]
-			pixer = [ [  0.0     for im in range(nima) ] for iref in range(numref) ]
+			trans = [ [ tr_dummy for im in xrange(nima) ] for iref in xrange(numref) ]
+			pixer = [ [  0.0     for im in xrange(nima) ] for iref in xrange(numref) ]
 			if(an[N_step] > 0):
 				from utilities    import even_angles
 				ref_angles = even_angles(delta[N_step], symmetry=sym, method = ref_a, phiEqpsi = "Zero")
@@ -8035,7 +8033,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 			else:  list_of_reference_angles = [[1.0,1.0]]
 
 		cs = [0.0]*3
-		for iref in range(numref):
+		for iref in xrange(numref):
 			if(myid == main_node):
 				volft = get_im(os.path.join(outdir, "volf%04d.hdf"%(total_iter-1)), iref)
 			else:
@@ -8062,7 +8060,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 
 
 			start_time = time()
-			for im in range(nima):
+			for im in xrange(nima):
 				if(CTF):
 					ctf = data[im].get_attr( "ctf" )
 					if runtype=="REFINEMENT":
@@ -8112,7 +8110,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 		from numpy import float32, empty, inner, abs
 		if( myid == 0 ):
 			dtot = empty( (numref, total_nima), dtype = float32)
-		for  iref in range(numref):
+		for  iref in xrange(numref):
 			recvbuf = mpi_gatherv(peaks[iref], nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			if( myid == 0 ): dtot[iref] = recvbuf
 		del recvbuf
@@ -8124,37 +8122,37 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 		refa = even_angles(60.0)
 		numrefang = len(refa)
 		refanorm = empty( (numrefang, 3), dtype = float32)
-		for i in range(numrefang):
+		for i in xrange(numrefang):
 			tmp = getvec(refa[i][0], refa[i][1])
-			for j in range(3):
+			for j in xrange(3):
 				refanorm[i][j] = tmp[j]
 		del  refa, tmp
 
 		transv = empty( (nima, 3), dtype = float32)
 		if runtype=="ASSIGNMENT":
-			for im in range(nima):
+			for im in xrange(nima):
 				trns = data[im].get_attr( "xform.projection" )
-				for j in range(3):
+				for j in xrange(3):
 					transv[im][j] = trns.at(2,j)
 		else:
 			# For REFINEMENT we have a problem, as the exact angle is known only after the next step of assigning projections.
 			# So, we will assume it is the one with max peak
-			for im in range(nima):
+			for im in xrange(nima):
 				qt = -1.0e23
 				it = -1
-				for iref in range(numref):
+				for iref in xrange(numref):
 					pt = peaks[iref][im]
 					if(pt > qt):
 						qt = pt
 						it = iref
-				for j in range(3):
+				for j in xrange(3):
 					transv[im][j] = trans[it][im].at(2,j)
 		#  We have all vectors, now create a list of assignments of images to references
 		refassign = [-1]*nima
-		for im in range(nima):
+		for im in xrange(nima):
 			refassign[im] = abs(inner(refanorm,transv[im])).argmax()
 		assigntorefa = mpi_gatherv(refassign, nima, MPI_INT, recvcount, disps, MPI_INT, main_node, MPI_COMM_WORLD)
-		assigntorefa = list(map(int, assigntorefa))
+		assigntorefa = map(int, assigntorefa)
 
 		del refassign, refanorm, transv
 
@@ -8205,22 +8203,22 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 
 		if myid == main_node:
 			SA = False
-			asi = [[] for iref in range(numref)]
+			asi = [[] for iref in xrange(numref)]
 			report_error = 0
-			for imrefa in range(numrefang):
+			for imrefa in xrange(numrefang):
 				from utilities import findall
 				N = findall(imrefa, assigntorefa)
 				current_nima = len(N)
 				if( current_nima >= numref and report_error == 0):
-					tasi = [[] for iref in range(numref)]
+					tasi = [[] for iref in xrange(numref)]
 					maxasi = current_nima//numref
 					nt = current_nima
 					kt = numref
-					K = list(range(numref))
+					K = range(numref)
 
 					d = empty( (numref, current_nima), dtype = float32)
-					for ima in range(current_nima):
-						for iref in range(numref):  d[iref][ima] = dtot[iref][N[ima]]
+					for ima in xrange(current_nima):
+						for iref in xrange(numref):  d[iref][ima] = dtot[iref][N[ima]]
 
 					while nt > 0 and kt > 0:
 						l = d.argmax()
@@ -8230,30 +8228,30 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 							J = [0.0]*numref
 							sJ = 0
 							Jc = [0.0]*numref
-							for iref in range(numref):
+							for iref in xrange(numref):
 								J[iref] = exp(d[iref][ima]/T)
 								sJ += J[iref]
-							for iref in range(numref):
+							for iref in xrange(numref):
 								J[iref] /= sJ
 							Jc[0] = J[0]
-							for iref in range(1, numref):
+							for iref in xrange(1, numref):
 								Jc[iref] = Jc[iref-1]+J[iref]
 							sss = random()
-							for group in range(numref):
+							for group in xrange(numref):
 								if( sss <= Jc[group]): break
 						tasi[group].append(N[ima])
 						N[ima] = -1
-						for iref in range(numref):  d[iref][ima] = -1.e10
+						for iref in xrange(numref):  d[iref][ima] = -1.e10
 						nt -= 1
 						masi = len(tasi[group])
 						if masi == maxasi:
-							for im in range(current_nima):  d[group][im] = -1.e10
+							for im in xrange(current_nima):  d[group][im] = -1.e10
 							kt -= 1
 					else:
-						for ima in range(current_nima):
+						for ima in xrange(current_nima):
 							if N[ima] > -1:
 								qm = -1.e10
-								for iref in range(numref):
+								for iref in xrange(numref):
 									qt = dtot[iref][N[ima]]
 									if( qt > qm ):
 										qm = qt
@@ -8262,7 +8260,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 
 					del d, N, K
 					if  SA:  del J, Jc
-					for iref in range(numref):
+					for iref in xrange(numref):
 						asi[iref] += tasi[iref]
 					del tasi
 				else:
@@ -8278,8 +8276,8 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 		if report_error == 1:  ERROR('Number of images within a group too small', "mref_ali3d_MPI", 1, myid)
 		if myid == main_node:
 			assignment = [0]*total_nima
-			for iref in range(numref):
-				for im in range(len(asi[iref])):
+			for iref in xrange(numref):
+				for im in xrange(len(asi[iref])):
 					assignment[asi[iref][im]] = iref
 			del asi
 		
@@ -8355,20 +8353,20 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 		'''
 
 		assignment = mpi_scatterv(assignment, recvcount, disps, MPI_INT, recvcount[myid], MPI_INT, main_node, MPI_COMM_WORLD)
-		assignment = list(map(int, assignment))
+		assignment = map(int, assignment)
 
 
 		#  compute number of particles that changed assignment and how many are in which group
 		nchng = 0
 		npergroup = [0]*numref
-		for im in range(nima):
+		for im in xrange(nima):
 			iref = data[im].get_attr('group')
 			npergroup[assignment[im]] += 1
 			if( iref != assignment[im]): nchng += 1
 			data[im].set_attr('group', assignment[im])
 		nchng = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup = list(map(int, npergroup))
+		npergroup = map(int, npergroup)
 		terminate = 0
 		if( myid == 0 ):
 			nchng = int(nchng[0])
@@ -8377,7 +8375,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 			log.add(msg)
 			msg = " Group       number of particles"
 			log.add(msg)
-			for iref in range(numref):
+			for iref in xrange(numref):
 				msg = " %5d       %7d"%(iref+1, npergroup[iref])
 				log.add(msg)
 			if(precn <= termprec):  terminate = 1
@@ -8385,7 +8383,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 		terminate = int(terminate[0])
 
 		if runtype=="REFINEMENT":
-			for im in range(nima):
+			for im in xrange(nima):
 				data[im].set_attr('xform.projection', trans[assignment[im]][im])
 				pixer[0][im] = pixer[assignment[im]][im]
 			pixer = pixer[0]
@@ -8402,14 +8400,14 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if(myid == main_node):
-				recvbuf = list(map(float, recvbuf))
+				recvbuf = map(float, recvbuf)
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if(region[0] < 0.0):  region[0] = 0.0
 				msg = "      Histogram of pixel errors\n      ERROR       number of particles"
 				log.add(msg)
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					msg = " %10.3f      %7d"%(region[lhx], histo[lhx])
 					log.add(msg)
 				del region, histo
@@ -8421,7 +8419,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 			sumvol = model_blank(nx, nx, nx)
 
 		start_time = time()
-		for iref in range(numref):
+		for iref in xrange(numref):
 			#  3D stuff
 			from time import localtime, strftime
 			if(CTF): volref, fscc[iref] = rec3D_MPI(data, snr, sym, model_circle(last_ring, nx, nx, nx), os.path.join(outdir, "resolution_%02d_%04d"%(iref, total_iter)), myid, main_node, index = iref, npad = npad, finfo=frec)
@@ -8460,15 +8458,15 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 				par_str = ['xform.projection', 'ID', 'group']
 			else:
 				par_str = ['group', 'ID' ]
-			if myid == main_node:
+	        	if myid == main_node:
 				from utilities import file_type
-				if(file_type(stack) == "bdb"):
-					from utilities import recv_attr_dict_bdb
-					recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
-				else:
-					from utilities import recv_attr_dict
-					recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
-			else:		send_attr_dict(main_node, data, par_str, image_start, image_end)
+	        		if(file_type(stack) == "bdb"):
+	        			from utilities import recv_attr_dict_bdb
+	        			recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
+	        		else:
+	        			from utilities import recv_attr_dict
+	        			recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
+	        	else:		send_attr_dict(main_node, data, par_str, image_start, image_end)
 			if(myid == 0):
 				log.add( "Time to write headers: %d\n" % (time()-start_time) );start_time = time()
 			mpi_barrier(MPI_COMM_WORLD)
@@ -8542,7 +8540,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 	lstp = min( len(xrng), len(yrng), len(step), len(delta) )
 	if an == "-1":
 		an = []
-		for i in range(len(xrng)):   an.append(-1)
+		for i in xrange(len(xrng)):   an.append(-1)
 	else:
 		from  alignment	    import proj_ali_incore_local
 		an      = get_input_from_string(an)
@@ -8598,7 +8596,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 
 	if myid == main_node:
 		nima =EMUtil.get_image_count( stack )
-		list_of_particles=list(range(nima))
+		list_of_particles=range(nima)
 	else:
 		nima = 0
 
@@ -8625,7 +8623,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 		log.add( "Time to read data: %d\n" % (time()-start_time) );start_time = time()
 	#  Initialize Particle ID and set group number to non-existant -1
 	assignment = [-1]*len(data)
-	for im in range(len(data)):
+	for im in xrange(len(data)):
 		data[im].set_attr_dict({'ID':list_of_particles[im], 'group':-1})
 
 	if fourvar:
@@ -8641,7 +8639,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 		varf = None
 
 	if myid == main_node:
-		for  iref in range(numref):
+		for  iref in xrange(numref):
 			get_im(ref_vol, iref).write_image(os.path.join(outdir, "volf0000.hdf"), iref)
 	mpi_barrier( MPI_COMM_WORLD )
 
@@ -8658,7 +8656,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 	#  this is needed for gathering of pixel errors
 	disps = []
 	recvcount = []
-	for im in range(number_of_proc):
+	for im in xrange(number_of_proc):
 		if im == main_node:  disps.append(0)
 		else:                  disps.append(disps[im-1] + recvcount[im-1])
 		ib, ie = MPI_start_end(total_nima, number_of_proc, im)
@@ -8668,7 +8666,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 	tr_dummy = Transform({"type":"spider"})
 
 	Niter = int(lstp*maxit*(nassign + nrefine) )
-	for Iter in range(Niter):
+	for Iter in xrange(Niter):
 		N_step = (Iter%(lstp*(nassign+nrefine)))/(nassign+nrefine)
 		if Iter%(nassign+nrefine) < nassign:
 			runtype = "ASSIGNMENT"
@@ -8695,7 +8693,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 			else:  list_of_reference_angles = [[1.0,1.0]]
  
 		cs = [0.0]*3
-		for iref in range(numref):
+		for iref in xrange(numref):
 			if myid==main_node:
 				volft = get_im(os.path.join(outdir, "volf%04d.hdf"%(total_iter-1)), iref)
 			else:
@@ -8720,7 +8718,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 					del volft, kb
 
 			start_time = time()
-			for im in range(nima):
+			for im in xrange(nima):
 				if CTF:
 					ctf = data[im].get_attr( "ctf" )
 					if runtype=="REFINEMENT":
@@ -8777,7 +8775,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 		#  compute number of particles that changed assignment and how man are in which group
 		nchng = 0
 		npergroup = [0]*numref
-		for im in range(nima):
+		for im in xrange(nima):
 			iref = data[im].get_attr('group')
 			npergroup[iref] += 1
 			if iref != assignment[im]:
@@ -8785,7 +8783,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 				nchng += 1
 		nchng = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup = list(map(int, npergroup))
+		npergroup = map(int, npergroup)
 		terminate  = 0
 		empty_group =0
 		if myid == main_node:
@@ -8795,7 +8793,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 			log.add(msg)
 			msg = " Group       number of particles"
 			log.add(msg)
-			for iref in range(numref):
+			for iref in xrange(numref):
 				msg = " %5d       %7d"%(iref+1, npergroup[iref])
 				log.add(msg)
 				if npergroup[iref]==0:
@@ -8810,7 +8808,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 		empty_group = int(empty_group[0])
 		if empty_group ==1: break # program stops whenever empty_group appears!
 		if runtype=="REFINEMENT":
-			for im in range(nima):
+			for im in xrange(nima):
 				data[im].set_attr('xform.projection', trans[im])
 
 
@@ -8827,26 +8825,26 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if myid == main_node:
-				recvbuf = list(map(float, recvbuf))
+				recvbuf = map(float, recvbuf)
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if region[0] < 0.0:  region[0] = 0.0
 				msg = "      Histogram of pixel errors\n      ERROR       number of particles"
 				log.add(msg)
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					msg = " %10.3f      %7d"%(region[lhx], histo[lhx])
 					log.add(msg)
 				del region, histo
 			del recvbuf
 
 
-			for im in range(nima):
+			for im in xrange(nima):
 				phi,theta,psi,tx,ty = get_params_proj(data[im])
 				trans[im] = [phi,theta,psi,tx,ty]
 			if myid == main_node:
 				all_trans = []
-				for klm in range(number_of_proc):
+				for klm in xrange(number_of_proc):
 					if(klm == main_node):  all_trans.extend(deepcopy(trans))
 					else:  all_trans.extend(wrap_mpi_recv(klm, MPI_COMM_WORLD))
 			else:  wrap_mpi_send(trans, main_node, MPI_COMM_WORLD)
@@ -8857,7 +8855,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 
 		if myid == main_node:
 			all_trans = []
-			for klm in range(number_of_proc):
+			for klm in xrange(number_of_proc):
 				if(klm == main_node):  all_trans.extend(deepcopy(assignment))
 				else:  all_trans.extend(wrap_mpi_recv(klm, MPI_COMM_WORLD))
 		else:  wrap_mpi_send(assignment, main_node, MPI_COMM_WORLD)
@@ -8872,7 +8870,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 			sumvol = model_blank(nx, nx, nx)
 
 		sart_time = time()
-		for iref in range(numref):
+		for iref in xrange(numref):
 			#  3D stuff
 			from time import localtime, strftime
 			if CTF: volref, fscc[iref] = rec3D_MPI(data, snr, sym, fscmask, os.path.join(outdir, "resolution_%02d_%04d.txt"%(iref, total_iter)), myid, main_node, index = iref, npad = npad, finfo=frec)
@@ -9011,7 +9009,7 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 	lstp = min( len(xrng), len(yrng), len(step), len(delta) )
 	if an == "-1":
 		an = []
-		for i in range(len(xrng)):   an.append(-1)
+		for i in xrange(len(xrng)):   an.append(-1)
 	else:
 		from  alignment	    import proj_ali_incore_local
 		an      = get_input_from_string(an)
@@ -9071,7 +9069,7 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 
 	if myid == main_node:
 		nima =EMUtil.get_image_count( stack )
-		list_of_particles=list(range(nima))
+		list_of_particles=range(nima)
 	else:
 		nima = 0
 
@@ -9103,7 +9101,7 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 		log.add( "Time to read data: %d\n" % (time()-start_time) );start_time = time()
 	#  Initialize Particle ID and set group number to non-existant -1
 	assignment = [-1]*len(data)
-	for im in range(len(data)):
+	for im in xrange(len(data)):
 		data[im].set_attr_dict({'ID':list_of_particles[im], 'group':-1})
 		if CTF:
 			ctf_params = data[im].get_attr("ctf")
@@ -9125,7 +9123,7 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 		varf = None
 
 	if myid == main_node:
-		for  iref in range(numref):
+		for  iref in xrange(numref):
 			get_im(ref_vol, iref).write_image(os.path.join(outdir, "volf0000.hdf"), iref)
 	mpi_barrier( MPI_COMM_WORLD )
 
@@ -9142,7 +9140,7 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 	#  this is needed for gathering of pixel errors
 	disps = []
 	recvcount = []
-	for im in range(number_of_proc):
+	for im in xrange(number_of_proc):
 		if im == main_node:  disps.append(0)
 		else:                  disps.append(disps[im-1] + recvcount[im-1])
 		ib, ie = MPI_start_end(total_nima, number_of_proc, im)
@@ -9152,7 +9150,7 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 	tr_dummy = Transform({"type":"spider"})
 
 	Niter = int(lstp*maxit*(nassign + nrefine) )
-	for Iter in range(Niter):
+	for Iter in xrange(Niter):
 		N_step = (Iter%(lstp*(nassign+nrefine)))/(nassign+nrefine)
 		if Iter%(nassign+nrefine) < nassign:
 			runtype = "ASSIGNMENT"
@@ -9195,7 +9193,7 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 			else:  list_of_reference_angles = [[1.0,1.0]]
  
 		cs = [0.0]*3
-		for iref in range(numref):
+		for iref in xrange(numref):
 			start_time = time()
 			if myid==main_node:
 				volft = get_im(os.path.join(outdir, "volf%04d.hdf"%(total_iter-1)), iref)
@@ -9226,7 +9224,7 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 					del volft, kb
 			"""
 
-			for im in range(nima):
+			for im in xrange(nima):
 				"""
 				if CTF:
 					ctf = data[im].get_attr( "ctf" )
@@ -9285,7 +9283,7 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 		#  compute number of particles that changed assignment and how man are in which group
 		nchng = 0
 		npergroup = [0]*numref
-		for im in range(nima):
+		for im in xrange(nima):
 			iref = data[im].get_attr('group')
 			npergroup[iref] += 1
 			if iref != assignment[im]:
@@ -9293,7 +9291,7 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 				nchng += 1
 		nchng = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup = list(map(int, npergroup))
+		npergroup = map(int, npergroup)
 		terminate  = 0
 		empty_group =0
 		if myid == main_node:
@@ -9303,7 +9301,7 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 			log.add(msg)
 			msg = " Group       number of particles"
 			log.add(msg)
-			for iref in range(numref):
+			for iref in xrange(numref):
 				msg = " %5d       %7d"%(iref+1, npergroup[iref])
 				log.add(msg)
 				if npergroup[iref]==0:
@@ -9318,7 +9316,7 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 		empty_group = int(empty_group[0])
 		if empty_group ==1: break # program stops whenever empty_group appears!
 		if runtype=="REFINEMENT":
-			for im in range(nima):
+			for im in xrange(nima):
 				data[im].set_attr('xform.projection', trans[im])
 
 
@@ -9335,26 +9333,26 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if myid == main_node:
-				recvbuf = list(map(float, recvbuf))
+				recvbuf = map(float, recvbuf)
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if region[0] < 0.0:  region[0] = 0.0
 				msg = "      Histogram of pixel errors\n      ERROR       number of particles"
 				log.add(msg)
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					msg = " %10.3f      %7d"%(region[lhx], histo[lhx])
 					log.add(msg)
 				del region, histo
 			del recvbuf
 
 
-			for im in range(nima):
+			for im in xrange(nima):
 				phi,theta,psi,tx,ty = get_params_proj(data[im])
 				trans[im] = [phi,theta,psi,tx,ty]
 			if myid == main_node:
 				all_trans = []
-				for klm in range(number_of_proc):
+				for klm in xrange(number_of_proc):
 					if(klm == main_node):  all_trans.extend(deepcopy(trans))
 					else:  all_trans.extend(wrap_mpi_recv(klm, MPI_COMM_WORLD))
 			else:  wrap_mpi_send(trans, main_node, MPI_COMM_WORLD)
@@ -9365,7 +9363,7 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 
 		if myid == main_node:
 			all_trans = []
-			for klm in range(number_of_proc):
+			for klm in xrange(number_of_proc):
 				if(klm == main_node):  all_trans.extend(deepcopy(assignment))
 				else:  all_trans.extend(wrap_mpi_recv(klm, MPI_COMM_WORLD))
 		else:  wrap_mpi_send(assignment, main_node, MPI_COMM_WORLD)
@@ -9380,7 +9378,7 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 			sumvol = model_blank(nx, nx, nx)
 
 		sart_time = time()
-		for iref in range(numref):
+		for iref in xrange(numref):
 			#  3D stuff
 			from time import localtime, strftime
 			if CTF: volref, fscc[iref] = rec3D_MPI(data, snr, syms[iref], fscmask, os.path.join(outdir, "resolution_%04d_%02d.txt"%(total_iter, iref)), myid, main_node, index = iref, npad = npad, finfo=frec)
@@ -9544,7 +9542,7 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 	if myid==main_node:
 		import user_functions
 		user_func = user_functions.factory[user_func_name]
-		for krf in range(numref):
+		for krf in xrange(numref):
 			vol = get_im(refvol, krf)
 			vol.write_image( os.path.join(outdir, "volf0000.hdf"), krf )
 			vol = None
@@ -9570,7 +9568,7 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 		# nima = len( list_of_particles )
 		
 		nima = EMUtil.get_image_count(stack)
-		list_of_particles = list(range(nima))
+		list_of_particles = range(nima)
 	
 		start_time = time()
 	else:
@@ -9600,7 +9598,7 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 
 	#  Initialize Particle ID and set group number to non-existant -1
 	assignment = [-1]*len(data)
-	for im in range(len(data)):
+	for im in xrange(len(data)):
 		data[im].set_attr('ID', list_of_particles[im])
 
 	if fourvar:
@@ -9630,7 +9628,7 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 	#  this is needed for gathering of pixel errors
 	disps = []
 	recvcount = []
-	for im in range(number_of_proc):
+	for im in xrange(number_of_proc):
 		if( im == main_node ):  disps.append(0)
 		else:                  disps.append(disps[im-1] + recvcount[im-1])
 		ib, ie = MPI_start_end(total_nima, number_of_proc, im)
@@ -9668,14 +9666,14 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 		peaks = [-1.0e23] * nima
 		if runtype=="REFINEMENT":  pixer = [0.0]*nima
 
-		for krf in range(numref):
+		for krf in xrange(numref):
 			vol = get_im(os.path.join(outdir, "volf%04d.hdf"%(iteration-1)), krf)
 			if CTF:
 				previous_defocus = -1
 			else:
 				volft,kb = prep_vol(vol)
 
-			for im in range(nima):
+			for im in xrange(nima):
 				img = data[im]
 				if CTF:
 					ctf = img.get_attr( "ctf" )
@@ -9740,7 +9738,7 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 		#  compute number of particles that changed assignments and how many are in which group
 		nchng = 0
 		npergroup = [0]*numref
-		for im in range(nima):
+		for im in xrange(nima):
 			iref = data[im].get_attr('group')
 			npergroup[iref] += 1
 			if( iref != assignment[im]):
@@ -9748,7 +9746,7 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 				nchng += 1
 		nchng = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup = list(map(int, npergroup))
+		npergroup = map(int, npergroup)
 		terminate = 0
 		if( myid == 0 ):
 			nchng = int(nchng[0])
@@ -9757,7 +9755,7 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 			print_msg(msg)
 			msg = " Group       number of particles\n"
 			print_msg(msg)
-			for iref in range(numref):
+			for iref in xrange(numref):
 				msg = " %5d       %7d\n"%(iref+1, npergroup[iref])
 				print_msg(msg)
 			if(precn <= termprec):  terminate = 1
@@ -9780,14 +9778,14 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if(myid == main_node):
-				recvbuf = list(map(float, recvbuf))
+				recvbuf = map(float, recvbuf)
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if(region[0] < 0.0):  region[0] = 0.0
 				msg = "      Histogram of pixel errors\n      ERROR       number of particles\n"
 				print_msg(msg)
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					msg = " %10.3f     %7d\n"%(region[lhx], histo[lhx])
 					print_msg(msg)
 				del region, histo
@@ -9797,7 +9795,7 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 		fscc = [None]*numref
 		if fourvar and runtype=="REFINEMENT":
 			sumvol = model_blank(nx, nx, nx)
-		for krf in range(numref):
+		for krf in xrange(numref):
 			if CTF:
 				vol, fscc[krf] = rec3D_MPI(data, snr, sym, fscmask, os.path.join(outdir, "resolution%02d_%04d"%(krf, iteration)), myid, main_node, index = krf)
 			else:
@@ -9841,15 +9839,15 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 		else:
 			par_str = ["group", "ID"]
 
-		if myid == main_node:
+	        if myid == main_node:
 			from utilities import file_type
-			if(file_type(stack) == "bdb"):
-				from utilities import recv_attr_dict_bdb
-				recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
-			else:
-				from utilities import recv_attr_dict
-				recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
-		else:		send_attr_dict(main_node, data, par_str, image_start, image_end)
+	        	if(file_type(stack) == "bdb"):
+	        		from utilities import recv_attr_dict_bdb
+	        		recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
+	        	else:
+	        		from utilities import recv_attr_dict
+	        		recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
+	        else:		send_attr_dict(main_node, data, par_str, image_start, image_end)
 		if myid == main_node:
 			print_msg("Time to write header information= %d\n"%(time()-start_time))
 			start_time = time()
@@ -9950,7 +9948,7 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 	if myid==main_node:
 		import user_functions
 		user_func = user_functions.factory[user_func_name]
-		for krf in range(numref):
+		for krf in xrange(numref):
 			vol = get_im(refvol, krf)
 			vol.write_image( os.path.join(outdir, "volf0000.hdf"), krf )
 			vol = None
@@ -9977,7 +9975,7 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 		# nima = len( list_of_particles )
 		
 		nima = EMUtil.get_image_count(stack)
-		list_of_particles = list(range(nima))
+		list_of_particles = range(nima)
 	
 		start_time = time()
 	else:
@@ -10007,7 +10005,7 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 
 	#  Initialize Particle ID and set group number to non-existant -1
 	assignment = [-1]*len(data)
-	for im in range(len(data)):
+	for im in xrange(len(data)):
 		data[im].set_attr('ID', list_of_particles[im])
 
 	if fourvar:
@@ -10037,7 +10035,7 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 	#  this is needed for gathering of pixel errors
 	disps = []
 	recvcount = []
-	for im in range(number_of_proc):
+	for im in xrange(number_of_proc):
 		if( im == main_node ):  disps.append(0)
 		else:                  disps.append(disps[im-1] + recvcount[im-1])
 		ib, ie = MPI_start_end(total_nima, number_of_proc, im)
@@ -10064,14 +10062,14 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 		peaks = [-1.0e23] * nima
 		if runtype=="REFINEMENT":  pixer = [0.0]*nima
 
-		for krf in range(numref):
+		for krf in xrange(numref):
 			vol = get_im(os.path.join(outdir, "volf%04d.hdf"%(iteration-1)), krf)
 			if CTF:
 				previous_defocus = -1
 			else:
 				volft,kb = prep_vol(vol)
 
-			for im in range(nima):
+			for im in xrange(nima):
 				img = data[im]
 				if CTF:
 					ctf = img.get_attr( "ctf" )
@@ -10135,7 +10133,7 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 		#  compute number of particles that changed assignments and how many are in which group
 		nchng = 0
 		npergroup = [0]*numref
-		for im in range(nima):
+		for im in xrange(nima):
 			iref = data[im].get_attr('group')
 			npergroup[iref] += 1
 			if( iref != assignment[im]):
@@ -10143,7 +10141,7 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 				nchng += 1
 		nchng = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup = list(map(int, npergroup))
+		npergroup = map(int, npergroup)
 		terminate = 0
 		if( myid == 0 ):
 			nchng = int(nchng[0])
@@ -10152,7 +10150,7 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 			print_msg(msg)
 			msg = " Group       number of particles\n"
 			print_msg(msg)
-			for iref in range(numref):
+			for iref in xrange(numref):
 				msg = " %5d       %7d\n"%(iref+1, npergroup[iref])
 				print_msg(msg)
 			if(precn <= termprec):  terminate = 1
@@ -10175,14 +10173,14 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if(myid == main_node):
-				recvbuf = list(map(float, recvbuf))
+				recvbuf = map(float, recvbuf)
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if(region[0] < 0.0):  region[0] = 0.0
 				msg = "      Histogram of pixel errors\n      ERROR       number of particles\n"
 				print_msg(msg)
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					msg = " %10.3f     %7d\n"%(region[lhx], histo[lhx])
 					print_msg(msg)
 				del region, histo
@@ -10192,7 +10190,7 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 		fscc = [None]*numref
 		if fourvar and runtype=="REFINEMENT":
 			sumvol = model_blank(nx, nx, nx)
-		for krf in range(numref):
+		for krf in xrange(numref):
 			if CTF:
 				vol, fscc[krf] = rec3D_MPI(data, snr, sym, fscmask, os.path.join(outdir, "resolution%02d_%04d"%(krf, iteration)), myid, main_node, index = krf, npad = npad)
 			else:
@@ -10237,15 +10235,15 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 		else:
 			par_str = ["group", "ID"]
 
-		if myid == main_node:
+	        if myid == main_node:
 			from utilities import file_type
-			if(file_type(stack) == "bdb"):
-				from utilities import recv_attr_dict_bdb
-				recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
-			else:
-				from utilities import recv_attr_dict
-				recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
-		else:		send_attr_dict(main_node, data, par_str, image_start, image_end)
+	        	if(file_type(stack) == "bdb"):
+	        		from utilities import recv_attr_dict_bdb
+	        		recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
+	        	else:
+	        		from utilities import recv_attr_dict
+	        		recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
+	        else:		send_attr_dict(main_node, data, par_str, image_start, image_end)
 		if myid == main_node:
 			print_msg("Time to write header information= %d\n"%(time()-start_time))
 			start_time = time()
@@ -10356,7 +10354,7 @@ def local_ali3d(stack, outdir, maskfile = None, ou = -1,  delta = 2, ts=0.25, ce
 	# del active
 	
 	nima = EMUtil.get_image_count(stack)
-	list_of_particles = list(range(nima))
+	list_of_particles = range(nima)
 	
 	dataim = EMData.read_images(stack, list_of_particles)
 	nima = len(dataim)
@@ -10393,9 +10391,9 @@ def local_ali3d(stack, outdir, maskfile = None, ou = -1,  delta = 2, ts=0.25, ce
 	data[3] = mask2D
 	cs = [0.0]*3
 
-	for iteration in range(maxit+1):
+	for iteration in xrange(maxit+1):
 		print_msg("ITERATION #%3d\n"%(iteration+1))
-		for ic in range(n_of_chunks):
+		for ic in xrange(n_of_chunks):
 			if(center == -1):
 				cs[0], cs[1], cs[2], dummy, dummy = estimate_3D_center(dataim)				
 				rotate_3D_shift(dataim, [-cs[0], -cs[1], -cs[2]])
@@ -10403,11 +10401,11 @@ def local_ali3d(stack, outdir, maskfile = None, ou = -1,  delta = 2, ts=0.25, ce
 				print_msg(msg)				
 			# compute updated 3D at the beginning of each chunk
 			#  3D stuff
-			if CTF: vol1 = recons3d_4nn_ctf(dataim, list(range(0, nima, 2)), snr, 1, sym)
-			else:	   vol1 = recons3d_4nn(dataim, list(range(0, nima, 2)), sym, snr = snr)
+			if CTF: vol1 = recons3d_4nn_ctf(dataim, range(0, nima, 2), snr, 1, sym)
+			else:	   vol1 = recons3d_4nn(dataim, range(0, nima, 2), sym, snr = snr)
 
-			if CTF: vol2 = recons3d_4nn_ctf(dataim, list(range(1, nima, 2)), snr, 1, sym)
-			else:	   vol2 = recons3d_4nn(dataim, list(range(1, nima, 2)), sym, snr = snr)
+			if CTF: vol2 = recons3d_4nn_ctf(dataim, range(1, nima, 2), snr, 1, sym)
+			else:	   vol2 = recons3d_4nn(dataim, range(1, nima, 2), sym, snr = snr)
 
 			# resolution
 			fscc = fsc_mask(vol1, vol2, mask3D, 1.0, os.path.join(outdir, "resolution%04d"%(iteration*n_of_chunks+ic+1)))
@@ -10415,8 +10413,8 @@ def local_ali3d(stack, outdir, maskfile = None, ou = -1,  delta = 2, ts=0.25, ce
 			del vol2
 
 			# calculate new and improved 3D
-			if CTF: vol = recons3d_4nn_ctf(dataim, list(range(nima)), snr, 1, sym)
-			else:	   vol = recons3d_4nn(dataim, list(range(nima)), sym, snr = snr)
+			if CTF: vol = recons3d_4nn_ctf(dataim, range(nima), snr, 1, sym)
+			else:	   vol = recons3d_4nn(dataim, range(nima), sym, snr = snr)
 
 			# store the reference volume
 			drop_image(vol, os.path.join(outdir, "vol%04d.hdf"%(iteration*n_of_chunks+ic+1)))
@@ -10444,7 +10442,7 @@ def local_ali3d(stack, outdir, maskfile = None, ou = -1,  delta = 2, ts=0.25, ce
 				outf.write("\n")
 				outf.flush()
 			if CTF:  previous_defocus = -1.0
-			for imn in range(image_start_in_chunk, image_end_in_chunk):
+			for imn in xrange(image_start_in_chunk, image_end_in_chunk):
 				if CTF:
 					ctf_params = dataim[imn].get_attr( "ctf" )
 					if ctf_params.defocus != previous_defocus:
@@ -10568,7 +10566,7 @@ def local_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cente
 		# nima = len(list_of_particles)
 			
 		nima = EMUtil.get_image_count(stack)
-		list_of_particles = list(range(nima))
+		list_of_particles = range(nima)
 			
 		ima     = EMData()
 		ima.read_image(stack, 0)
@@ -10633,7 +10631,7 @@ def local_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cente
 		finfo.flush()
 
 	dataim = EMData.read_images(stack, list_of_particles)
-	for im in range(len(dataim)):
+	for im in xrange(len(dataim)):
 		dataim[im].set_attr('ID', list_of_particles[im])
 	del list_of_particles
 
@@ -10663,7 +10661,7 @@ def local_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cente
 
 	disps = []
 	recvcount = []
-	for im in range(number_of_proc):
+	for im in xrange(number_of_proc):
 		if( im == main_node ):  disps.append(0)
 		else:                  disps.append(disps[im-1] + recvcount[im-1])
 		ib, ie = MPI_start_end(total_nima, number_of_proc, im)
@@ -10675,7 +10673,7 @@ def local_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cente
 	data[3] = mask2D
 	cs = [0.0]*3
 
-	for iteration in range(maxit+1):
+	for iteration in xrange(maxit+1):
 		if myid == main_node:
 			start_time = time()
 			print_msg("ITERATION #%3d\n"%(iteration+1))
@@ -10683,7 +10681,7 @@ def local_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cente
 			finfo.write("  iteration = "+str(iteration)+"   ")
 			finfo.write("\n")
 			finfo.flush()
-		for ic in range(n_of_chunks):
+		for ic in xrange(n_of_chunks):
 			if(center == -1 and sym[0] == 'c'):
 				if debug:
 					finfo.write("  begin centering \n")
@@ -10754,7 +10752,7 @@ def local_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cente
 				finfo.write("First image in this chunk: "+str(image_start_in_chunk)+"   Last image in this chunk: "+str(image_end_in_chunk-1)+"\n")
 				finfo.flush()
 			if CTF:  previous_defocus = -1.0
-			for imn in range(image_start_in_chunk, image_end_in_chunk):
+			for imn in xrange(image_start_in_chunk, image_end_in_chunk):
 				if CTF:
 					ctf_params = dataim[imn-image_start].get_attr( "ctf" )
 					if ctf_params.defocus != previous_defocus:
@@ -10830,19 +10828,19 @@ def local_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cente
 		mpi_barrier(MPI_COMM_WORLD)
 		terminate = 0
 		if(myid == main_node):
-			recvbuf = list(map(float, recvbuf))
+			recvbuf = map(float, recvbuf)
 			from statistics import hist_list
 			lhist = 20
 			region, histo = hist_list(recvbuf, lhist)
 			if(region[0] < 0.0):  region[0] = 0.0
 			msg = "      Histogram of pixel errors\n      ERROR       number of particles\n"
 			print_msg(msg)
-			for lhx in range(lhist):
+			for lhx in xrange(lhist):
 				msg = " %10.3f     %7d\n"%(region[lhx], histo[lhx])
 				print_msg(msg)
 			# Terminate if 95% within 1 pixel error
 			im = 0
-			for lhx in range(lhist):
+			for lhx in xrange(lhist):
 				if(region[lhx] > 1.0): break
 				im += histo[lhx]
 			if(im/float(total_nima) > 0.95):  terminate = 1
@@ -10928,7 +10926,7 @@ def local_ali3d_MPI_scipy_minimization(stack, outdir, maskfile, ou = -1,  delta 
 			dummy = db_open_dict(stack, True)
 			
 		nima = EMUtil.get_image_count(stack)
-		list_of_particles = list(range(nima))
+		list_of_particles = range(nima)
 			
 		ima     = EMData()
 		ima.read_image(stack, 0)
@@ -10993,7 +10991,7 @@ def local_ali3d_MPI_scipy_minimization(stack, outdir, maskfile, ou = -1,  delta 
 		finfo.flush()
 
 	dataim = EMData.read_images(stack, list_of_particles)
-	for im in range(len(dataim)):
+	for im in xrange(len(dataim)):
 		dataim[im].set_attr('ID', list_of_particles[im])
 		if CTF:
 			ctf_params = dataim[im].get_attr("ctf")
@@ -11029,7 +11027,7 @@ def local_ali3d_MPI_scipy_minimization(stack, outdir, maskfile, ou = -1,  delta 
 
 	disps = []
 	recvcount = []
-	for im in range(number_of_proc):
+	for im in xrange(number_of_proc):
 		if( im == main_node ):  disps.append(0)
 		else:                  disps.append(disps[im-1] + recvcount[im-1])
 		ib, ie = MPI_start_end(total_nima, number_of_proc, im)
@@ -11041,7 +11039,7 @@ def local_ali3d_MPI_scipy_minimization(stack, outdir, maskfile, ou = -1,  delta 
 	data[3] = mask2D
 	cs = [0.0]*3
 
-	for iteration in range(maxit+1):
+	for iteration in xrange(maxit+1):
 		if myid == main_node:
 			start_time = time()
 			print_msg("ITERATION #%3d\n"%(iteration+1))
@@ -11049,7 +11047,7 @@ def local_ali3d_MPI_scipy_minimization(stack, outdir, maskfile, ou = -1,  delta 
 			finfo.write("  iteration = "+str(iteration)+"   ")
 			finfo.write("\n")
 			finfo.flush()
-		for ic in range(n_of_chunks):
+		for ic in xrange(n_of_chunks):
 			if(center == -1 and sym[0] == 'c'):
 				if debug:
 					finfo.write("  begin centering \n")
@@ -11119,7 +11117,7 @@ def local_ali3d_MPI_scipy_minimization(stack, outdir, maskfile, ou = -1,  delta 
 				finfo.write("First image in this chunk: "+str(image_start_in_chunk)+"   Last image in this chunk: "+str(image_end_in_chunk-1)+"\n")
 				finfo.flush()
 
-			for imn in range(image_start_in_chunk, image_end_in_chunk):
+			for imn in xrange(image_start_in_chunk, image_end_in_chunk):
 				data[2] = fft(dataim[imn-image_start])
 				data[2].set_attr("is_complex",0)
 	
@@ -11208,19 +11206,19 @@ def local_ali3d_MPI_scipy_minimization(stack, outdir, maskfile, ou = -1,  delta 
 		mpi_barrier(MPI_COMM_WORLD)
 		terminate = 0
 		if(myid == main_node):
-			recvbuf = list(map(float, recvbuf))
+			recvbuf = map(float, recvbuf)
 			from statistics import hist_list
 			lhist = 20
 			region, histo = hist_list(recvbuf, lhist)
 			if(region[0] < 0.0):  region[0] = 0.0
 			msg = "      Histogram of pixel errors\n      ERROR       number of particles\n"
 			print_msg(msg)
-			for lhx in range(lhist):
+			for lhx in xrange(lhist):
 				msg = " %10.3f     %7d\n"%(region[lhx], histo[lhx])
 				print_msg(msg)
 			# Terminate if 95% within 1 pixel error
 			im = 0
-			for lhx in range(lhist):
+			for lhx in xrange(lhist):
 				if(region[lhx] > 1.0): break
 				im += histo[lhx]
 			if(im/float(total_nima) > 0.95):  terminate = 1
@@ -11327,7 +11325,7 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 			# del active
 		
 			nima = EMUtil.get_image_count(stack)
-			list_of_particles = list(range(nima))
+			list_of_particles = range(nima)
 	
 			total_nima = len(list_of_particles)
 		else:
@@ -11338,14 +11336,14 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 		list_of_particles = wrap_mpi_bcast(list_of_particles, main_node, mpi_comm)
 		if myid == main_node:
 			particle_ids = [0]*total_nima
-			for i in range(total_nima):  particle_ids[i] = list_of_particles[i]
+			for i in xrange(total_nima):  particle_ids[i] = list_of_particles[i]
 		image_start, image_end = MPI_start_end(total_nima, number_of_proc, myid)
 		# create a list of images for each node
 		list_of_particles = list_of_particles[image_start: image_end]
 		nima = len(list_of_particles)
 
 	else:
-		list_of_particles = list(range(len(stack)))
+		list_of_particles = range(len(stack))
 		nima = len(list_of_particles)
 		total_nima = len(list_of_particles)
 		total_nima = mpi_reduce(total_nima, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
@@ -11377,7 +11375,7 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 
 
 	dataim = [None]*nima
-	for im in range(nima):
+	for im in xrange(nima):
 		if( type(stack) is bytes ):  dataim[im] = get_im(stack, list_of_particles[im])
 		else:                                   dataim[im] = stack[list_of_particles[im]]
 		dataim[im].set_attr('ID', list_of_particles[im])
@@ -11515,7 +11513,7 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 	data[3] = mask2D
 	cs = [0.0]*3
 
-	for iteration in range(maxit):
+	for iteration in xrange(maxit):
 		if myid == main_node:
 			start_time = time()
 			log.add("ITERATION #%3d\n"%(iteration+1))
@@ -11524,7 +11522,7 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 			finfo.write("\n")
 			finfo.flush()
 		pixer = [0.0]*nima
-		for ic in range(n_of_chunks):
+		for ic in xrange(n_of_chunks):
 			# In the very first step the volume has to be computed if it was not provided by the user
 			if( ((iteration > 0) and (ic > 0)) or vol == None):
 				if(center == -1 and sym[0] == 'c'):
@@ -11582,7 +11580,7 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 				finfo.write("Chunk "+str(ic)+"   Number of images in this chunk: "+str(image_end_in_chunk-image_start_in_chunk)+"\n")
 				finfo.write("First image in this chunk: "+str(image_start_in_chunk)+"   Last image in this chunk: "+str(image_end_in_chunk-1)+"\n")
 				finfo.flush()
-			for imn in range(image_start_in_chunk, image_end_in_chunk):
+			for imn in xrange(image_start_in_chunk, image_end_in_chunk):
 				if CTF:
 					ctf_params = dataim[imn].get_attr( "ctf" )
 					if ctf_params.defocus != previous_defocus:
@@ -11647,13 +11645,13 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 		mpi_barrier(mpi_comm)
 		terminate = 0
 		if(myid == main_node):
-			pixer = list(map(float, pixer))
+			pixer = map(float, pixer)
 			from statistics import hist_list
 			lhist = 20
 			region, histo = hist_list(pixer, lhist)
 			log.add(" ")
 			log.add("=========== Histogram of pixel errors ==============")
-			for lhx in range(lhist):
+			for lhx in xrange(lhist):
 				msg = "          %10.3f     %7d"%(region[lhx], histo[lhx])
 				log.add(msg)
 			log.add("____________________________________________________\n")
@@ -11661,7 +11659,7 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 
 			# Terminate if saturatecrit% within pixercutoff pixel error
 			im = 0
-			for lhx in range(lhist):
+			for lhx in xrange(lhist):
 				if(region[lhx] > pixercutoff): break
 				im += histo[lhx]
 			lhx = im/float(total_nima)
@@ -11788,7 +11786,7 @@ def autowin(indir,outdir, noisedoc, noisemic, templatefile, deci, CC_method, p_s
 			img2               = Util.decimate(filt_tanl(img1, feq_deci, 0.04), int(deci), int(deci), 1)
 			img2               = fft(img2)
 			img1               = Util.decimate(fft(filt_tanl(filt_gaussh(fft(img1,sigma_win)), feq_deci, 0.04)), int(deci),int(deci), 1)
-		for j in range(i_tem):
+		for j in xrange(i_tem):
 			t.read_image(templatefile, j)
 			if(int(CC_method) == 2):	cc_map = flcc(t, img2)
 			else:
@@ -11798,7 +11796,7 @@ def autowin(indir,outdir, noisedoc, noisemic, templatefile, deci, CC_method, p_s
 			peaks.insert(0, cc_map.peak_ccf(p_size/2-1.0))
 		if(int(CC_method) == 2): del img2
 		peak = peaks[0]
-		for j in range(1,i_tem):#output results
+		for j in xrange(1,i_tem):#output results
 			peak1 = Util.merge_peaks(peak, peaks[j], hf_p)
 			del peak
 			peak  = peak1
@@ -11809,7 +11807,7 @@ def autowin(indir,outdir, noisedoc, noisemic, templatefile, deci, CC_method, p_s
 		out.write("#Coordinates: %s\n")
 		if N_wi == 0 :	ERROR("Number of particles is zero", "autowin", 0)
 		if(CC_method == 1):  img1 = fft(img1)
-		for k in range(N_wi):
+		for k in xrange(N_wi):
 			x       = peak[k*3+1] -p_size/2
 			y       = peak[k*3+2] -p_size/2
 			# print "x==",x, "y===",y, " ccf==",peak[k*3]
@@ -11899,7 +11897,7 @@ def autowin_MPI(indir,outdir, noisedoc, noisemic, templatefile, deci, CC_method,
 	reg     = Region(x_noi,y_noi, p_size, p_size)# Get the reference noise from the input mic and noise coordinates
 	e_n     = e.get_clip(reg)
 	
-	for i in range(image_start,image_end):
+	for i in xrange(image_start,image_end):
 		filename=mic_name_list[i] 
 		print('%-15s%-30s'%("micrographs # ",filename))
 		(f_nam, filextension) = os.path.splitext(filename)
@@ -11935,7 +11933,7 @@ def autowin_MPI(indir,outdir, noisedoc, noisemic, templatefile, deci, CC_method,
 			img2               = Util.decimate(filt_tanl(img1, feq_deci, 0.04), int(deci), int(deci), 1)
 			img2               = fft(img2)
 			img1               = Util.decimate(fft(filt_tanl(filt_gaussh(fft(img1,sigma_win)), feq_deci, 0.04)), int(deci),int(deci), 1)
-		for j in range(i_tem):
+		for j in xrange(i_tem):
 			t.read_image(templatefile, j)
 			if(int(CC_method) == 2):	cc_map = flcc(t, img2)
 			else:
@@ -11945,7 +11943,7 @@ def autowin_MPI(indir,outdir, noisedoc, noisemic, templatefile, deci, CC_method,
 			peaks.insert(0,cc_map.peak_ccf(p_size/2-1.0))
 		if(int(CC_method) == 2): del img2
 		peak = peaks[0]
-		for j in range(1,i_tem):#output results
+		for j in xrange(1,i_tem):#output results
 			peak1 = Util.merge_peaks(peak, peaks[j], hf_p)
 			del peak
 			peak  = peak1
@@ -11956,7 +11954,7 @@ def autowin_MPI(indir,outdir, noisedoc, noisemic, templatefile, deci, CC_method,
 		out.write("#Coordinates: %s\n")
 		if N_wi == 0 :	ERROR("Number of particles is zero","autowin.py",0,myid)
 		if(CC_method == 1):img1 = fft(img1)			
-		for k in range(N_wi):
+		for k in xrange(N_wi):
 			x       = peak[k*3+1] -p_size/2
 			y       = peak[k*3+2] -p_size/2
 			# print "x==",x, "y===",y, " ccf==",peak[k*3]
@@ -12053,12 +12051,12 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 	xrng        = get_input_from_string(xr)
 	y_restrict       = get_input_from_string(y_restrict)
 	ynumber	    = get_input_from_string(ynumber)
-	for i in range(len(ynumber)):
+	for i in xrange(len(ynumber)):
 		if ynumber[i] >= 0:
 			if(ynumber[i]%2==1): ynumber[i]=ynumber[i]+1
 	yrng =[]
 
-	for i in range(len(xrng)): yrng.append(dp/2)
+	for i in xrange(len(xrng)): yrng.append(dp/2)
 
 	stepx        = get_input_from_string(txs)
 	delta       = get_input_from_string(delta)
@@ -12149,7 +12147,7 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 		# nima = len(list_of_particles)
 		
 		nima = EMUtil.get_image_count(stack)
-		list_of_particles = list(range(nima))
+		list_of_particles = range(nima)
 		
 	else:
 		nima = 0
@@ -12175,7 +12173,7 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 	mask2D  = pad(model_blank(2*int(rmax), data_ny, 1, 1.0), data_nx, data_ny, 1, 0.0)
 	
 	#if fourvar:  original_data = []
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr('ID', list_of_particles[im])
 		sttt = Util.infomask(data[im], mask2D, False)
 		data[im] = data[im] - sttt[0]
@@ -12192,7 +12190,7 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 		finfo.write( '%d loaded  \n' % nima )
 		finfo.flush()
 
-	for i in range(len(xrng)): yrng[i]=dp/(2*pixel_size)
+	for i in xrange(len(xrng)): yrng[i]=dp/(2*pixel_size)
 	from math import sin, pi
 	if ( ou > ( nmax/2.0)*sin( initial_theta*pi/180) - dp/2.0/pixel_size -1.0 ):
 		ERROR('ou should be less than or equal to ----( nmax/2.0)*sin( initial_theta*pi/180) - dp/2.0/pixel_size -1.0 ', "ihrsr_MPI", 1,myid)
@@ -12206,13 +12204,13 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 	#  this is needed for gathering of pixel errors
 	disps = []
 	recvcount = []
-	for im in range(number_of_proc):
+	for im in xrange(number_of_proc):
 		if( im == main_node ):  disps.append(0)
 		else:                   disps.append(disps[im-1] + recvcount[im-1])
 		ib, ie = MPI_start_end(total_nima, number_of_proc, im)
 		recvcount.append( ie - ib )
 	
-	for ii in range(lstp):
+	for ii in xrange(lstp):
 		if stepx[ii] == 0.0:
 			if xrng[ii] != 0.0:
 				ERROR('xrange step size cannot be zero', "ihrsr_MPI", 1,myid)
@@ -12220,7 +12218,7 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 				stepx[ii] = 1.0 # this is to prevent division by zero in c++ code
 	total_iter = 0
 	# do the projection matching
-	for N_step in range(lstp):
+	for N_step in xrange(lstp):
 		terminate = 0
 		Iter = 0
 		while(Iter < max_iter and terminate == 0):
@@ -12255,7 +12253,7 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 			refrings1= []
 			refrings2= []
 			sn = int(symmetry_string[1:])
-			for i in range( len(refrings) ):
+			for i in xrange( len(refrings) ):
 				if( sn%2 ==0 and abs( refrings[i].get_attr('n3') ) <1.0e-6 ):
 					#  even point-group symmetry AND theta = 90. 
 					refrings1.append( refrings[i] )
@@ -12274,7 +12272,7 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 			dpp = float( dpp )
 			dpp_half = dpp/2.0
 
-			for im in range( nima ):
+			for im in xrange( nima ):
 				"""
 					Logic of searches:
 						refrings1 (even point-group symmetry AND theta = 90.), and refrings2 ( odd point-group symmetry AND any theta (including theta=90), OR even point-group symmetry AND theta <> 90.)
@@ -12429,7 +12427,7 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 					#print "  5  ",im, phinew, thetanew, psinew, sxnew, synew
 					#print k0,k1,k2,k3
 
-					for i in range( len(T) ):
+					for i in xrange( len(T) ):
 						ttt = tp*Transform({"type":"spider","phi":T[i][0],"theta":T[i][1],"psi":T[i][2]})
 						d1  = ttt.get_params("spider")
 
@@ -12524,21 +12522,21 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 			mpi_barrier(MPI_COMM_WORLD)
 			terminate = 0
 			if(myid == main_node):
-				recvbuf = list(map(float, recvbuf))
+				recvbuf = map(float, recvbuf)
 				from utilities import write_text_file
-				write_text_file([list(range(len(recvbuf))), recvbuf], os.path.join(outdir, "pixer_%04d_%04d.txt"%(N_step+1,Iter)) )
+				write_text_file([range(len(recvbuf)), recvbuf], os.path.join(outdir, "pixer_%04d_%04d.txt"%(N_step+1,Iter)) )
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if(region[0] < 0.0):  region[0] = 0.0
 				msg = "      Histogram of pixel errors\n      ERROR       number of particles\n"
 				print_msg(msg)
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					msg = " %10.2f     %7d\n"%(region[lhx], histo[lhx])
 					print_msg(msg)
 				# Terminate if 95% within 1 pixel error
 				im = 0
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					if(region[lhx] > 1.0): break
 					im += histo[lhx]
 				#if(im/float(total_nima) > 0.95):  terminate = 1
@@ -12550,10 +12548,10 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 			mpi_barrier(MPI_COMM_WORLD)
 			del modphi
 			if(myid == main_node):
-				recvbuf = list(map(float, recvbuf))
+				recvbuf = map(float, recvbuf)
 				phi_value_0 = []
 				phi_value_180 = []
-				for i in range ( len ( recvbuf ) ):
+				for i in xrange ( len ( recvbuf ) ):
 					if ( recvbuf[i] < 180.0):
 						phi_value_0.append( recvbuf[i] )
 					else:
@@ -12572,13 +12570,13 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 				region, histo = hist_list(phi_value_0, lhist)
 				msg = "\n      Distribution of phi\n      phi         number of particles\n"
 				print_msg(msg)
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					msg = " %10.2f     %7d\n"%(region[lhx], histo[lhx])
 					print_msg(msg)
 				del region, histo, phi_value_0
 				if ( len( phi_value_180) > 0):
 					region, histo = hist_list(phi_value_180, lhist)
-					for lhx in range(lhist):
+					for lhx in xrange(lhist):
 						msg = " %10.2f     %7d\n"%(region[lhx], histo[lhx])
 						print_msg(msg)
 					del region, histo, phi_value_180			
@@ -12595,28 +12593,28 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 			if myid == main_node:
 				
 				fexp = open(os.path.join(outdir, "parameters_%04d_%04d.txt"%(N_step+1,Iter)),"w")
-				for n in range(number_of_proc):
+				for n in xrange(number_of_proc):
 					if n!=main_node:
 						t = mpi_recv(recvcount[n] * m, MPI_FLOAT, n, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
-						for i in range(recvcount[n]):
-							for j in range(m):
+						for i in xrange(recvcount[n]):
+							for j in xrange(m):
 								fexp.write(" %15.5f  "%t[j+i*m])
 							fexp.write("\n")
 					else:
 						t = [0.0]*m
-						for i in range(recvcount[myid]):
+						for i in xrange(recvcount[myid]):
 							t = get_params_proj(data[i])
-							for j in range(m):
+							for j in xrange(m):
 								fexp.write(" %15.5f  "%t[j])
 							fexp.write("\n")
 				fexp.close()
 				del t
-			else:
+	        	else:
 				nvalue = [0.0]*m*recvcount[myid]
 				t = [0.0]*m
-				for i in range(recvcount[myid]):
+				for i in xrange(recvcount[myid]):
 					t = get_params_proj(data[i])
-					for j in range(m):
+					for j in xrange(m):
 						nvalue[j + i*m] = t[j]
 				mpi_send(nvalue, recvcount[myid] * m, MPI_FLOAT, main_node, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 				del nvalue
@@ -12655,13 +12653,13 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 
 				if myid == main_node:
 					lprms = []
-					for i in range(-ndp,ndp+1,1):
-						for j in range(-ndphi,ndphi+1,1):
+					for i in xrange(-ndp,ndp+1,1):
+						for j in xrange(-ndphi,ndphi+1,1):
 							lprms.append( dp   + i*dp_step)
 							lprms.append( dphi + j*dphi_step)
 					#print "lprms===",lprms
 					recvpara = []
-					for im in range(number_of_proc):
+					for im in xrange(number_of_proc):
 						helic_ib, helic_ie = MPI_start_end(nlprms, number_of_proc, im)
 						recvpara.append(helic_ib )
 						recvpara.append(helic_ie )
@@ -12672,22 +12670,22 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 				list_fvalues = [-1.0]*((para_end-para_start)*1)
 
 				if myid == main_node:
-					for n in range(number_of_proc):
+					for n in xrange(number_of_proc):
 						if n!=main_node: mpi_send(lprms[2*recvpara[2*n]:2*recvpara[2*n+1]], 2 * (recvpara[2*n+1]-recvpara[2*n]), MPI_FLOAT, n, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 						else:    list_dps = lprms[2*recvpara[2*0]:2*recvpara[2*0+1]]
 				else:
 					list_dps = mpi_recv((para_end-para_start) * 2, MPI_FLOAT, main_node, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 
-				list_dps = list(map(float, list_dps))
+				list_dps = map(float, list_dps)
 
 				local_pos = [0.0, 0.0, -1.0e20]
-				for i in range(para_end-para_start):
+				for i in xrange(para_end-para_start):
 					fvalue = helios7(vol, pixel_size, list_dps[i*2], list_dps[i*2+1], fract, rmax, rmin)
 					if(fvalue >= local_pos[2]):
 						local_pos = [list_dps[i*2], list_dps[i*2+1], fvalue ]
 				if myid == main_node:
 					list_return = [0.0]*(3*number_of_proc)
-					for n in range(number_of_proc):
+					for n in xrange(number_of_proc):
 						if n != main_node: list_return[3*n:3*n+3]                 = mpi_recv(3, MPI_FLOAT, n, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 						else:              list_return[3*main_node:3*main_node+3]  = local_pos[:]
 				else:
@@ -12695,7 +12693,7 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 
 				if myid == main_node:	
 					maxvalue = list_return[2]
-					for i in range(number_of_proc):
+					for i in xrange(number_of_proc):
 						if( list_return[i*3+2] >= maxvalue ):
 							maxvalue = list_return[i*3+2]
 							dp       = list_return[i*3+0]
@@ -12734,12 +12732,12 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 			# del varf
 	par_str = ["xform.projection"]
 	if myid == main_node:
-		if(file_type(stack) == "bdb"):
-			from utilities import recv_attr_dict_bdb
-			recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
-		else:
-			from utilities import recv_attr_dict
-			recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
+	   	if(file_type(stack) == "bdb"):
+	        	from utilities import recv_attr_dict_bdb
+	        	recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
+	        else:
+	        	from utilities import recv_attr_dict
+	        	recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 		print_msg("Time to write header information= %d\n"%(time()-start_time))
 		start_time = time()
 	else:	       send_attr_dict(main_node, data, par_str, image_start, image_end)
@@ -13629,7 +13627,7 @@ def copyfromtif_MPI(indir, outdir=None, input_extension="tif", film_or_CCD="f", 
 	e1             = EMData()
 	X19            = 2**16-1.0
 	#
-	for i in range(image_start,image_end):
+	for i in xrange(image_start,image_end):
 		filename               = mic_name_list[i]
 		(tifname, filextension)= os.path.splitext(filename)
 		print('%-30s%-30s'%("micrographs under proccessing : ",filename[len(indir)+1:]))
@@ -13721,7 +13719,7 @@ def cpy(ins_list, ous):
 				gl_index += 1
 			
 		else:
-			for im in range(nima):
+			for im in xrange(nima):
 				data.read_image(ins, im)
 				data.write_image(ous, gl_index)
 				gl_index += 1
@@ -13741,7 +13739,7 @@ def dele_flist(flist):
 		print(sh_com)
 		delist.append(sh_com)
 		strg=inf.readline()
-	for i in range(len(delist)):  os.system(delist[i])
+	for i in xrange(len(delist)):  os.system(delist[i])
 
 def defocus_calc(roodir, method, writetodoc="w", Pixel_size=1, voltage=120, Cs=1, amp_contrast=.1, round_off=100, dz_max=50000., frequency_low=30, frequency_high=5, polynomial_rank_baseline=5, polynomial_rank_envelope=5, prefix="roo", format="spider", skip_comment="#", micdir = "no", print_screen="no"):	
 	from morphology import defocus_get_slow, defocus_get_fast
@@ -13875,7 +13873,7 @@ def project3d(volume, stack = None, mask = None, delta = 5, method = "S", phiEqp
 		try:
 			ctfs = read_text_row(listctfs, "", "")
 		except:
-			ctfs = [None for ii in range(len(angles))]
+			ctfs = [None for ii in xrange(len(angles))]
 	else:
 		# assume this a list of len(angles)
 		ctfs = listctfs
@@ -13949,7 +13947,7 @@ def project3d(volume, stack = None, mask = None, delta = 5, method = "S", phiEqp
 	s2x=0
 	s2y=0
 	
-	for i in range(len(angles)):
+	for i in xrange(len(angles)):
 		if(len(angles[i]) == 3):
 			if realsp:
 				proj = project(volft, [angles[i][0], angles[i][1], angles[i][2], 0.0, 0.0], 10*nx)
@@ -14129,7 +14127,7 @@ def pw2sp_MPI(indir, outdir, w =256, xo =50, yo = 50, xd = 0, yd = 0, r = 0, pre
 	mask    -=  1
 	mask    *= -1
 	pw2_mask =  EMData() 	
-	for i in range(image_start,image_end):
+	for i in xrange(image_start,image_end):
 		filename=mic_name_list[i] 
 		print('%-15s%-30s'%("micrographs : ",filename))
 		(f_nam, filextension) = os.path.splitext(filename)
@@ -14163,7 +14161,7 @@ def ra_cef(indir, noise, outdir, prf, num):
 		if(filename[0:4] == "ptl_"):
 			infile  = os.path.join(indir, v)
 			outfile = os.path.join(outdir,prf+v)
-			for j in range(num):
+			for j in xrange(num):
 				e.read_image(infile, j)
 				ra=ramp(e)
 				e=ce_fit(ra, e_n, mask)
@@ -14417,7 +14415,7 @@ def ali_vol_M(vol, refv, ang_scale, shift_scale, mask=None, discrepancy = "ccc")
 		minval = None
 
 	params = get_params3D(e)
-	params = [params[i] for i in range(6)]
+	params = [params[i] for i in xrange(6)]
 	data = [e, ref, mask, minval, discrepancy]
 	
 	maxiter = 500
@@ -14654,7 +14652,7 @@ def transform2d(stack_data, stack_data_ali, shift = False, ignore_mirror = False
 
 	t = Transform({"type":"2D"})
 	nima = EMUtil.get_image_count(stack_data)
-	for im in range(nima):
+	for im in xrange(nima):
 		data = get_im(stack_data, im)
 		al2d = get_params2D(data)
 		if(shift):
@@ -14680,11 +14678,11 @@ def recons3d_n(prj_stack, pid_list, vol_stack, CTF=False, snr=1.0, sign=1, npad=
 	if(listfile):
 		from utilities import read_text_file
 		pid_list = read_text_file(listfile, 0)
-		pid_list = list(map(int, pid_list))
+		pid_list = map(int, pid_list)
 	elif(group > -1):
 		tmp_list = EMUtil.get_all_attributes(prj_stack, 'group')
 		pid_list = []
-		for i in range(len(tmp_list)):
+		for i in xrange(len(tmp_list)):
 			if(tmp_list[i] == group):  pid_list.append(i)
 		del tmp_list
 
@@ -14714,7 +14712,7 @@ def recons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF=False, snr=1.0, sign=1, n
 		elif(group > -1):
 			tmp_list = EMUtil.get_all_attributes(prj_stack, 'group')
 			pid_list = []
-			for i in range(len(tmp_list)):
+			for i in xrange(len(tmp_list)):
 				if(tmp_list[i] == group):  pid_list.append(i)
 			del tmp_list
 		nima = len(pid_list)
@@ -14727,9 +14725,9 @@ def recons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF=False, snr=1.0, sign=1, n
 		if myid != 0:
 			pid_list = [-1]*nima
 		pid_list = mpi_bcast(pid_list, nima, MPI_INT, 0, MPI_COMM_WORLD)
-		pid_list = list(map(int, pid_list))
+		pid_list = map(int, pid_list)
 	else:
-		if(not pid_list):  pid_list = list(range(nima))
+		if(not pid_list):  pid_list = range(nima)
 
 	if verbose==0:
 		finfo = None
@@ -14945,7 +14943,7 @@ def recons3d_n_trl_MPI_one_node(prjlist, CTF, snr, sign, npad, sym, group, niter
 		beltab = tabessel(ny, nnxo) # iterative process
 		nwe    = notzero(weight)
 		#Util.save_slices_on_disk(weight,"slices.hdf")
-		for i in range(niter):
+		for i in xrange(niter):
 			cvv = Util.mulreal(nwe, weight)
 			#cvv = Util.read_slice_and_multiply(nwe,weight)
 			cvv = fft(cvv)
@@ -14989,11 +14987,11 @@ def newsrecons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym
 		if(listfile):
 			from utilities import read_text_file
 			pid_list = read_text_file(listfile, 0)
-			pid_list = list(map(int, pid_list))
+			pid_list = map(int, pid_list)
 		elif(group > -1):
 			tmp_list = EMUtil.get_all_attributes(prj_stack, 'group')
 			pid_list = []
-			for i in range(len(tmp_list)):
+			for i in xrange(len(tmp_list)):
 				if(tmp_list[i] == group):  pid_list.append(i)
 			del tmp_list
 		nima = len(pid_list)
@@ -15005,9 +15003,9 @@ def newsrecons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym
 		if myid != 0:
 			pid_list = [-1]*nima
 		pid_list = mpi_bcast(pid_list, nima, MPI_INT, 0, MPI_COMM_WORLD)
-		pid_list = list(map(int, pid_list))
+		pid_list = map(int, pid_list)
 	else:
-		if(not pid_list):  pid_list = list(range(nima))
+		if(not pid_list):  pid_list = range(nima)
 
 	if verbose==0:
 		finfo = None
@@ -15039,7 +15037,7 @@ def newsrecons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym
 		pid = [-1]*nima
 	"""
 	pid_list = mpi_bcast(pid_list, nima, MPI_INT, 0, MPI_COMM_WORLD)
-	pid_list = list(map(int, pid_list))
+	pid_list = map(int, pid_list)
 	
 	image_start, image_end = MPI_start_end(nima, nproc, myid)
 	prjlist = EMData.read_images(prj_stack, pid_list[image_start:image_end])
@@ -15101,7 +15099,7 @@ def newsrecons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym
 
 	"""
 	m = [1.0]*600
-	for i in range(len(prjlist)):
+	for i in xrange(len(prjlist)):
 		prjlist[i] = fft(prjlist[i])
 		#prjlist[i] = fshift(prjlist[i],sxs,sys)
 		prjlist[i].set_attr("padffted",1)
@@ -15182,7 +15180,7 @@ def newrecons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym,
 	if(myid != 0):
 		pid = [-1]*nima
 	pid_list = mpi_bcast(pid_list, nima, MPI_INT, 0, MPI_COMM_WORLD)
-	pid_list = list(map(int, pid_list))
+	pid_list = map(int, pid_list)
 	
 	image_start, image_end = MPI_start_end(nima, nproc, myid)
 	prjlist = [EMData.read_images(prj_stack, pid_list[image_start:image_end])]
@@ -15190,14 +15188,14 @@ def newrecons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym,
 
 	if(myid == 0):
 		#pid_list = read_text_file("main000/chunk1.txt")
-		pid_list = list(range(320))
+		pid_list = range(320)
 		nima = len(pid_list)
 	else: nima = 0
 	nima = bcast_number_to_all(nima, source_node = 0)
 	if(myid != 0):
 		pid = [-1]*nima
 	pid_list = mpi_bcast(pid_list, nima, MPI_INT, 0, MPI_COMM_WORLD)
-	pid_list = list(map(int, pid_list))
+	pid_list = map(int, pid_list)
 	
 	image_start, image_end = MPI_start_end(nima, nproc, myid)
 	prjlist += [EMData.read_images(prj_stack, pid_list[image_start:image_end])]
@@ -15205,8 +15203,8 @@ def newrecons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym,
 	from fundamentals import fdecimate
 	from utilities import get_params_proj,set_params_proj
 	scale = 384./54.
-	for k in range(2):
-		for i in range(len(prjlist[k])):
+	for k in xrange(2):
+		for i in xrange(len(prjlist[k])):
 			prjlist[k][i] = fdecimate(prjlist[k][i],54,54)
 			ctf_params = prjlist[k][i].get_attr("ctf")
 			ctf_params.apix *= scale
@@ -15247,24 +15245,24 @@ def recons3d_f(prj_stack, vol_stack, fsc_file, mask=None, CTF=True, snr=1.0, sym
 	if(listfile):
 		from utilities import read_text_file
 		pid_list = read_text_file(listfile, 0)
-		pid_list = list(map(int, pid_list))
+		pid_list = map(int, pid_list)
 	elif(group > -1):
 			tmp_list = EMUtil.get_all_attributes(prj_stack, 'group')
 			pid_list = []
-			for i in range(len(tmp_list)):
+			for i in xrange(len(tmp_list)):
 				if(tmp_list[i] == group):  pid_list.append(i)
 			del tmp_list
 	else:
-		pid_list = list(range(nima))
+		pid_list = range(nima)
 	if CTF:
-		volodd = recons3d_4nn_ctf(prj_stack, [ pid_list[i] for i in range(0, len(pid_list), 2) ], snr, 1, sym, verbose, npad)
-		voleve = recons3d_4nn_ctf(prj_stack, [ pid_list[i] for i in range(1, len(pid_list), 2) ], snr, 1, sym, verbose, npad)
+		volodd = recons3d_4nn_ctf(prj_stack, [ pid_list[i] for i in xrange(0, len(pid_list), 2) ], snr, 1, sym, verbose, npad)
+		voleve = recons3d_4nn_ctf(prj_stack, [ pid_list[i] for i in xrange(1, len(pid_list), 2) ], snr, 1, sym, verbose, npad)
 		t = fsc_mask( volodd, voleve, mask, filename=fsc_file)
 		del volodd, voleve
 		volall = recons3d_4nn_ctf(prj_stack, pid_list,                                          snr, 1, sym, verbose, npad)
 	else:
-		volodd = recons3d_4nn(prj_stack, [ pid_list[i] for i in range(0, len(pid_list), 2) ], sym, npad, snr = snr)
-		voleve = recons3d_4nn(prj_stack, [ pid_list[i] for i in range(1, len(pid_list), 2) ], sym, npad, snr = snr)
+		volodd = recons3d_4nn(prj_stack, [ pid_list[i] for i in xrange(0, len(pid_list), 2) ], sym, npad, snr = snr)
+		voleve = recons3d_4nn(prj_stack, [ pid_list[i] for i in xrange(1, len(pid_list), 2) ], sym, npad, snr = snr)
 		t = fsc_mask( volodd, voleve, mask, filename=fsc_file)
 		del volodd, voleve
 		volall = recons3d_4nn(prj_stack, pid_list,                                          sym, npad, snr = snr)
@@ -15284,18 +15282,18 @@ def recons3d_f_MPI(prj_stack, vol_stack, fsc_file, mask, CTF=True, snr=1.0, sym=
 		if(listfile):
 			from utilities import read_text_file
 			pid_list = read_text_file(listfile, 0)
-			pid_list = list(map(int, pid_list))
+			pid_list = map(int, pid_list)
 			nima = len(pid_list)
 		elif(group > -1):
 			tmp_list = EMUtil.get_all_attributes(prj_stack, 'group')
 			pid_list = []
-			for i in range(len(tmp_list)):
+			for i in xrange(len(tmp_list)):
 				if(tmp_list[i] == group):  pid_list.append(i)
 			del tmp_list
 			nima = len(pid_list)
 		else:
 			nima = EMUtil.get_image_count(prj_stack)
-			pid_list = list(range(nima))
+			pid_list = range(nima)
 	else:
 		nima = 0
 
@@ -15304,7 +15302,7 @@ def recons3d_f_MPI(prj_stack, vol_stack, fsc_file, mask, CTF=True, snr=1.0, sym=
 	if myid != 0:
 		pid_list = [-1]*nima
 	pid_list = mpi_bcast(pid_list, nima, MPI_INT, 0, MPI_COMM_WORLD)
-	pid_list = list(map(int, pid_list))
+	pid_list = map(int, pid_list)
 
 	image_start, image_end = MPI_start_end(nima, nproc, myid)
 
@@ -15368,8 +15366,8 @@ def ssnr3d(stack, output_volume = None, ssnr_text_file = None, mask = None, refe
 		nima = EMUtil.get_image_count(stack)
 		if CTF:
 			snr = 1.0e20
-			vol = recons3d_4nn_ctf(stack, list(range(nima)), snr, sign, sym)
-		else:   vol = recons3d_4nn(stack, list(range(nima)), sym, snr = snr)
+			vol = recons3d_4nn_ctf(stack, range(nima), snr, sign, sym)
+		else:   vol = recons3d_4nn(stack, range(nima), sym, snr = snr)
 	else:
 		vol = get_im(reference_structure)
 
@@ -15383,7 +15381,7 @@ def ssnr3d(stack, output_volume = None, ssnr_text_file = None, mask = None, refe
 	del vol
 	prjlist = []
 	from utilities import get_params_proj
-	for i in range(nima):
+	for i in xrange(nima):
 		e = EMData()
 		e.read_image(stack, i, True)
 		e.set_attr('sign', 1)
@@ -15397,7 +15395,7 @@ def ssnr3d(stack, output_volume = None, ssnr_text_file = None, mask = None, refe
 	[ssnr2, vol_ssnr2] = recons3d_nn_SSNR(prjlist, mask2D, rw, npad, sign, sym, CTF, random_angles)
 	vol_ssnr2.write_image(output_volume, 1)
 	outf = open(ssnr_text_file, "w")
-	for i in range(len(ssnr2[0])):
+	for i in xrange(len(ssnr2[0])):
 		datstrings = []
 		datstrings.append("  %15f" % ssnr1[0][i])    # have to subtract 0.5 as in C code there is round.
 		datstrings.append("  %15e" % ssnr1[1][i])    # SSNR
@@ -15443,7 +15441,7 @@ def ssnr3d_MPI(stack, output_volume = None, ssnr_text_file = None, mask = None, 
 	else:
 		mask2D = None
 
-	prjlist = EMData.read_images(stack, list(range(image_start, image_end)))
+	prjlist = EMData.read_images(stack, range(image_start, image_end))
 	if random_angles > 0:
 		for prj in prjlist:
 			# horatio active_refactoring Jy51i1EwmLD4tWZ9_00000_1
@@ -15515,7 +15513,7 @@ def ssnr3d_MPI(stack, output_volume = None, ssnr_text_file = None, mask = None, 
 	if myid == 0:
 		vol_ssnr2.write_image( output_volume, 1)
 		outf = open(ssnr_text_file, "w")
-		for i in range(len(ssnr2[0])):
+		for i in xrange(len(ssnr2[0])):
 			datstrings = []
 			datstrings.append("  %15f" % ssnr1[0][i])    #  have to subtract 0.5 as in C code there is round.
 			datstrings.append("  %15e" % ssnr1[1][i])    # SSNR
@@ -15611,7 +15609,7 @@ def pca(input_stacks, subavg="", mask_radius=-1, nvec=3, incore=False, shuffle=F
 			bgn,end = MPI_start_end( files.nimg(), ncpu, myid )
 		else:
 			bgn,end = MPI_start_end( len(input_stacks), ncpu, myid )
-		for i in range(bgn,end):
+		for i in xrange(bgn,end):
 			if data_on_disk:
 				fname, imgid = files.get( i )
 				data = get_im( fname, imgid)
@@ -15679,7 +15677,7 @@ def prepare_2d_forPCA(data, mode = "a", output_stack = None, CTF = False):
 		ave       = EMData(nx2, ny2, 1, False)
 		ctf_2_sum = EMData(nx2, ny2, 1, False)
 
-		for i in range(n):
+		for i in xrange(n):
 			if inmem:
 				img = data[i].copy()
 			else:
@@ -15695,7 +15693,7 @@ def prepare_2d_forPCA(data, mode = "a", output_stack = None, CTF = False):
 			Util.add_img(ave, filt_ctf(img, ctf_params))
 			Util.add_img2(ctf_2_sum, ctf_img(nx2, ctf_params))
 		Util.div_filter(ave, ctf_2_sum)
-		for i in range(n):
+		for i in xrange(n):
 			if inmem:
 				img = data[i].copy()
 			else:
@@ -15716,7 +15714,7 @@ def prepare_2d_forPCA(data, mode = "a", output_stack = None, CTF = False):
 			else:                       img.write_image(output_stack, i)
 	else:
 		ave  = model_blank( nx, ny)
-		for i in range(n):
+		for i in xrange(n):
 			if inmem:
 				img = data[i].copy()
 			else:
@@ -15727,7 +15725,7 @@ def prepare_2d_forPCA(data, mode = "a", output_stack = None, CTF = False):
 			img -= st[0]
 			Util.add_img(ave, img)
 		ave /= n
-		for i in range(n):
+		for i in xrange(n):
 			if inmem:
 				img = data[i].copy()
 			else:
@@ -15774,7 +15772,7 @@ def varimax(input_stack, imglist, output_stack, maskfile, mask_radius, verbose )
 
 	sumeig /= len(vecs)
 	#print  sumeig
-	for iout in range(len(vecs)):
+	for iout in xrange(len(vecs)):
 		#info(vecs[iout])
 		vecs[iout].set_attr('eigval', sumeig)
 		vecs[iout].write_image( output_stack, iout)
@@ -15794,7 +15792,7 @@ def bootstrap_genbuf(prj_stack, buf_prefix, npad, verbose, CTF=False):
 	store = newfile_store(buf_prefix, npad, CTF)
 
 	nimage = EMUtil.get_image_count( prj_stack )
-	for i in range(nimage):
+	for i in xrange(nimage):
 		proj = EMData()
 		proj.read_image( prj_stack, i )
 		store.add_image( proj, proj.get_attr("xform.projection") )
@@ -15840,7 +15838,7 @@ def bootstrap_run(prj_stack, media, outdir, nvol, CTF, snr, sym, verbose, MPI=Fa
 
 	npad = 4
 	sign = 1
-	list_proj = list(range(nproj))
+	list_proj = range(nproj)
 	from reconstruction import bootstrap_nn
 	bootstrap_nn( prj_stack, myvolume_file, list_proj, mynvol, media, npad, sym, mystatus, CTF, snr, sign)
 	
@@ -15852,7 +15850,7 @@ def wrapper_params_2D_to_3D(stack):
 
 	nima = EMUtil.get_image_count(stack)
 	ima = EMData()
-	for im in range(nima):
+	for im in xrange(nima):
 		ima.read_image(stack, im, True)
 		p = get_params2D(ima)
 		p = params_2D_3D(p[0], p[1], p[2], int(p[3]))
@@ -15868,7 +15866,7 @@ def wrapper_params_3D_to_2D(stack):
 
 	nima = EMUtil.get_image_count(stack)
 	ima = EMData()
-	for im in range(nima):
+	for im in xrange(nima):
 		ima.read_image(stack, im, True)
 		from utilities import set_params_proj, get_params_proj
 		phi,theta,psi,s2x,s2y = get_params_proj( ima )
@@ -15910,11 +15908,11 @@ def cml_find_structure_main(stack, out_dir, ir, ou, delta, dpsi, lf, hf, rand_se
 	ibest    = -1
 	bestdisc = 1.0e20
 	MEM      = []
-	for itrial in range(trials):
+	for itrial in xrange(trials):
 		# if not angles given select randomly orientation for each projection
 		if not given:
 			j = 0
-			for n in range(len(Prj)):
+			for n in xrange(len(Prj)):
 				if first_zero and n == 0:
 					Ori[j]   = 0.0
 					Ori[j+1] = 0.0
@@ -15989,11 +15987,11 @@ def cml_find_structure_MPI2(stack, out_dir, ir, ou, delta, dpsi, lf, hf, rand_se
 	ibest    = -1
 	bestdisc = 1.0e20
 	MEM      = []
-	for itrial in range(trials):
+	for itrial in xrange(trials):
 		# if not angles given select randomly orientation for each projection
 		if not given:
 			j = 0
-			for n in range(len(Prj)):
+			for n in xrange(len(Prj)):
 				if first_zero and n == 0:
 					Ori[j]   = 0.0
 					Ori[j+1] = 0.0
@@ -16086,13 +16084,13 @@ def cml_find_structure_MPI(stack, out_dir, ir, ou, delta, dpsi, lf, hf, rand_see
 	disc_end  = [0.0] * trials
 	ite       = [0]   * trials
 	coll      = [0.0] * trials
-	for itrial in range(N_start, N_stop):
+	for itrial in xrange(N_start, N_stop):
 
 		# if not angles given select randomly orientation for each projection
 		if not given:
 			seed(lrnd[itrial])
 			j = 0
-			for n in range(len(Prj)):
+			for n in xrange(len(Prj)):
 				if first_zero and n == 0:
 					Ori[j]   = 0.0
 					Ori[j+1] = 0.0
@@ -16130,7 +16128,7 @@ def cml_find_structure_MPI(stack, out_dir, ir, ou, delta, dpsi, lf, hf, rand_see
 	if myid == main_node:
 		score = [0.0] * trials
 		print_msg('\n')
-		for i in range(trials):
+		for i in xrange(trials):
 			score[i] = disc_end[i] * (1 - coll[i])
 			print_msg('Trial  %03i\trnd %10i discrepnacy init: %10.7f\tnb ite: %i\tdiscrepancy end: %10.7f\tcollinearity: %f\tscore: %f\n' % (i, lrnd[i], disc_init[i], ite[i] + 1, disc_end[i], coll[i], score[i]))
 			
@@ -16189,7 +16187,7 @@ def header(stack, params, zero=False, one=False, set = 0.0, randomize=False, ran
 	if ext == "bdb":
 		from EMAN2db import db_open_dict
 		DB = db_open_dict(stack)
-	for i in range(nimage):
+	for i in xrange(nimage):
 		if fimport != None:
 			line = fimp.readline()
 			if len(line)==0 :
@@ -16580,7 +16578,7 @@ def header(stack, params, zero=False, one=False, set = 0.0, randomize=False, ran
 							t = DB.get_attr(i, p)
 							DB.set_attr(i, "xform.align3d", t)
 					elif ext == "hdf":
-						for i in range(nimage):
+						for i in xrange(nimage):
 							t = EMUtil.read_hdf_attribute(stack, p, i)
 							EMUtil.write_hdf_attribute(stack, "xform.align3d", t, i)
 					else:
@@ -16642,7 +16640,7 @@ def imgstat_ccc( stacks, rad ):
 			nz = imgtmp.get_zsize()
 			mask = model_circle( rad, nx, ny, nz )
 
-	for i in range(nimg):
+	for i in xrange(nimg):
 		img1 = get_im( stacks[0], i )
 
 		if nimg2==1:
@@ -16704,7 +16702,7 @@ def imgstat_inf( stacks, rad ):
 		else:			mask = model_circle( rad, nx, ny, nz )
 
 
-	for i in range(nimg):
+	for i in xrange(nimg):
 
 		img = get_im( stacks[0], i )
 
@@ -16740,7 +16738,7 @@ def normal_prj( prj_stack, outdir, refvol, weights, r, niter, snr, sym, verbose 
 		from morphology import ctf_2
 		ctf = ctf_2( nx, ctf )
 
-		for i in range( 1, len(ctf)-1 ):
+		for i in xrange( 1, len(ctf)-1 ):
 			prev = ctf[i-1]
 			curt = ctf[i]
 			next = ctf[i+1]
@@ -16776,7 +16774,7 @@ def normal_prj( prj_stack, outdir, refvol, weights, r, niter, snr, sym, verbose 
 			s = read_text_file(weights)
 			img_number     = EMUtil.get_image_count( prj_stack )
 			if(len(s) != img_number):  ERROR('Number of images does not agree with number of weights', "normal_prj", 1,myid)
-			for i in range(img_number):
+			for i in xrange(img_number):
 				img = get_im(prj_stack, i)
 				Util.mul_scalar(img, s[i])
 				img.write_image(outdir, i)
@@ -16804,7 +16802,7 @@ def normal_prj( prj_stack, outdir, refvol, weights, r, niter, snr, sym, verbose 
 	if(verbose == 1):  info=open( os.path.join(outdir, "progress%04d.txt" % myid), "w" )
 	else:              info = None
 
-	imgdata = EMData.read_images(prj_stack, list(range(img_node_start, img_node_end)))
+	imgdata = EMData.read_images(prj_stack, range(img_node_start, img_node_end))
 
 	if(verbose == 1):
 		info.write( ' all images loaded\n' )
@@ -16821,8 +16819,8 @@ def normal_prj( prj_stack, outdir, refvol, weights, r, niter, snr, sym, verbose 
 			else:     refvol, fscc = rec3D_MPI_noCTF( imgdata, sym, None, fsc_file, myid )
 			bcast_EMData_to_all( refvol, myid )
 		else:
-			if CTF:   refvol = recons3d_4nn_ctf( imgdata, list(range(len(imgdata))), snr, 1, sym)
-			else:	   refvol = recons3d_4nn( imgdata, list(range(len(imgdata))), sym, snr = snr)
+			if CTF:   refvol = recons3d_4nn_ctf( imgdata, range(len(imgdata)), snr, 1, sym)
+			else:	   refvol = recons3d_4nn( imgdata, range(len(imgdata)), sym, snr = snr)
 		if myid==0:
 			refvol.write_image( vol_file )
 		if(verbose == 1):
@@ -16831,11 +16829,11 @@ def normal_prj( prj_stack, outdir, refvol, weights, r, niter, snr, sym, verbose 
 
 
 	mask = model_circle( r, nx, ny )
-	for iter in range(niter) :
+	for iter in xrange(niter) :
 		refvol, kb = prep_vol( refvol )
 
 		scales = []
-		for i in range( len(imgdata) ) :
+		for i in xrange( len(imgdata) ) :
 			exp_prj = imgdata[i].copy()
 
 			phi,theta,psi,s2x,s2y = get_params_proj( exp_prj )
@@ -16868,12 +16866,12 @@ def normal_prj( prj_stack, outdir, refvol, weights, r, niter, snr, sym, verbose 
 				print('exception at myid, i:', myid, i)
 				a = 1.0
 
-			scales.append( a )
+		        scales.append( a )
 			if(verbose == 1):
 				info.write( "i, a, ccc:  %4d %10.5f  %10.5f\n" %(i, a, curtccc) )
 				info.flush()
 
-		sum_scale = sum( scales )
+ 	   	sum_scale = sum( scales )
 
 		if  MPI:
 			total_sum_scale = mpi_reduce( sum_scale, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD )
@@ -16884,13 +16882,13 @@ def normal_prj( prj_stack, outdir, refvol, weights, r, niter, snr, sym, verbose 
 
 		assert( len(imgdata)==len(scales) )
 
-		for i in range( len(imgdata) ):
+		for i in xrange( len(imgdata) ):
 			s = scales[i] / avg_scale
 			imgdata[i] *= s
 			pred[i] *= s
 
-			scale_file = os.path.join(outdir, "newscale%04d_%04d.txt" % (myid, iter))
-			drop_spider_doc( scale_file, pred )
+    		scale_file = os.path.join(outdir, "newscale%04d_%04d.txt" % (myid, iter))
+    		drop_spider_doc( scale_file, pred )
 
 		fsc_file = os.path.join(outdir, ( "fsc_%04d.dat" % iter ))
 		vol_file = os.path.join(outdir, ( "vol_%04d.hdf" % iter ))
@@ -16902,8 +16900,8 @@ def normal_prj( prj_stack, outdir, refvol, weights, r, niter, snr, sym, verbose 
 			else:     refvol, fscc = rec3D_MPI_noCTF( imgdata, sym, None, fsc_file, myid )
 			bcast_EMData_to_all( refvol, myid )
 		else:
-			if CTF:   refvol = recons3d_4nn_ctf( imgdata, list(range(len(imgdata))), snr, 1, sym)
-			else:	   refvol = recons3d_4nn( imgdata, list(range(len(imgdata))), sym, snr = snr)
+			if CTF:   refvol = recons3d_4nn_ctf( imgdata, range(len(imgdata)), snr, 1, sym)
+			else:	   refvol = recons3d_4nn( imgdata, range(len(imgdata)), sym, snr = snr)
 		if(verbose == 1):
 			info.write( 'reconstruction finished\n' )
 			info.flush()
@@ -16927,7 +16925,7 @@ def normal_prj( prj_stack, outdir, refvol, weights, r, niter, snr, sym, verbose 
 		if myid == 0:
 			ltot = 0
 			base = 0
-			for iq in range( nproc ):
+			for iq in xrange( nproc ):
 				if(iq == 0):
 					ltot = spill_out(ltot, base, pred, 1, foutput)
 				else:
@@ -17023,7 +17021,7 @@ def incvar(prefix, nfile, nprj, output, fl, fh, radccc, writelp, writestack):
 	all_var.write_image( output, 0 )
 """
 
-class file_set(object) :
+class file_set :
 
 	def __init__( self, files ):
 		nfile = len(files)
@@ -17031,7 +17029,7 @@ class file_set(object) :
 		self.fends = [None] * nfile
 
 		totimg = 0
-		for i in range(nfile):
+		for i in xrange(nfile):
 			totimg += EMUtil.get_image_count( self.files[i] )
 			self.fends[i] = totimg		
 
@@ -17106,7 +17104,7 @@ def defvar(files, outdir, fl, aa, radccc, frepa = "default", pca=False, pcamask=
 		nimg = EMUtil.get_image_count( f )
 		#print f," A  ",nimg
 		mf += 1
-		for i in range(nimg):
+		for i in xrange(nimg):
 			img = get_im( f, i )
 			if(fl > 0.0):
 				img = filt_tanl( img, fl, aa )
@@ -17138,7 +17136,7 @@ def defvar(files, outdir, fl, aa, radccc, frepa = "default", pca=False, pcamask=
 	var2 = model_blank(nx,ny,nz)
 	for f in files:
 		nimg = EMUtil.get_image_count( f )
-		for i in range(nimg):
+		for i in xrange(nimg):
 			img = get_im( f, i )
 			#img = circumference( img, radcir )
 			if(fl > 0.0): img = filt_tanl( img, fl, aa)
@@ -17171,7 +17169,7 @@ def defvar(files, outdir, fl, aa, radccc, frepa = "default", pca=False, pcamask=
 
 		eigs = pcaer.analyze()
 		eigfile = os.path.join(outdir, "eigvol.hdf")
-		for i in range( len(eigs) ):
+		for i in xrange( len(eigs) ):
 			eigs[i].write_image( eigfile, i )
 
 def var_mpi(files, outdir, fl, aa, radccc, frepa = "default", pca=False, pcamask=None, pcanvec=None):
@@ -17235,7 +17233,7 @@ def var_mpi(files, outdir, fl, aa, radccc, frepa = "default", pca=False, pcamask
 		if( myid == 0 ):  refstat = Util.infomask(img, pcamask, True)
 		else:             refstat = [0.0,0.0,0.0,0.0]
 		refstat = mpi_bcast(refstat, 4, MPI_FLOAT, 0, MPI_COMM_WORLD)
-		refstat = list(map(float, refstat))
+		refstat = map(float, refstat)
 
 	avgfile  = os.path.join(outdir, "avg.hdf")
 	varfile  = os.path.join(outdir, "var.hdf")
@@ -17264,10 +17262,10 @@ def var_mpi(files, outdir, fl, aa, radccc, frepa = "default", pca=False, pcamask
 	avg2 = model_blank(nx,ny,nz)
 
 	total_img = 0
-	for ifile in range(file_start, file_end):
+	for ifile in xrange(file_start, file_end):
 		nimg = EMUtil.get_image_count( files[ifile] )
 		#print myid," A  ",files[ifile],"   ",nimg
-		for i in range(nimg):
+		for i in xrange(nimg):
 			img = get_im( files[ifile], i )
 			#img = circumference( img, radcir )
 			if(fl > 0.0):
@@ -17301,10 +17299,10 @@ def var_mpi(files, outdir, fl, aa, radccc, frepa = "default", pca=False, pcamask
 
 	var1 = model_blank(nx,ny,nz)
 	var2 = model_blank(nx,ny,nz)
-	for ifile in range(file_start, file_end):
+	for ifile in xrange(file_start, file_end):
 		nimg = EMUtil.get_image_count( files[ifile] )
 		#print myid," V  ",files[ifile],"   ",nimg
-		for i in range(nimg):
+		for i in xrange(nimg):
 			img = get_im( files[ifile], i )
 			#img = circumference( img, radcir )
 			if(fl > 0.0): img = filt_tanl( img, fl, aa)
@@ -17345,7 +17343,7 @@ def var_mpi(files, outdir, fl, aa, radccc, frepa = "default", pca=False, pcamask
 
 		if myid==0:
 			eigfile = os.path.join(outdir, "eigvol.hdf")
-			for i in range( len(eigs) ):
+			for i in xrange( len(eigs) ):
 				eigs[i].write_image( eigfile, i )
 
 def factcoords_vol( vol_stacks, avgvol_stack, eigvol_stack, prefix, rad = -1, neigvol = -1, fl=0.0, aa=0.0, MPI=False):
@@ -17368,11 +17366,11 @@ def factcoords_vol( vol_stacks, avgvol_stack, eigvol_stack, prefix, rad = -1, ne
 		eigvols = EMData.read_images(eigvol_stack)
 		neigvol = len(eigvols)
 	else:
-		eigvols = EMData.read_images(eigvol_stack,list(range(neigvol)))
+		eigvols = EMData.read_images(eigvol_stack,range(neigvol))
 
 	from math import sqrt
 	eigvals = [0.0]*neigvol
-	for j in range(neigvol):
+	for j in xrange(neigvol):
 		eigvals[j] = sqrt( eigvols[j].get_attr_default('eigval',1.0) )
 		Util.mul_scalar(eigvols[j] , eigvals[j])
 	if( avgvol_stack != None):
@@ -17387,13 +17385,13 @@ def factcoords_vol( vol_stacks, avgvol_stack, eigvol_stack, prefix, rad = -1, ne
 	vol_bgn,vol_end = MPI_start_end( files.nimg(), ncpu, myid )
 
 	d = []
-	for i in range( vol_bgn, vol_end ):
+	for i in xrange( vol_bgn, vol_end ):
 		fname,imgid = files.get( i )
 		exp_vol = get_im( fname, imgid )
 		if(avgvol_stack != None):  
 			Util.sub_img(exp_vol, avgvol)
 
-		for j in range( neigvol ):
+		for j in xrange( neigvol ):
 			d.append( exp_vol.cmp( "ccc", eigvols[j], {"negative":0, "mask":m} )*eigvals[j] )
 
 	if  MPI:
@@ -17401,7 +17399,7 @@ def factcoords_vol( vol_stacks, avgvol_stack, eigvol_stack, prefix, rad = -1, ne
 		if myid == 0:
 			ltot = 0
 			base = 0
-			for iq in range( ncpu ):
+			for iq in xrange( ncpu ):
 				if(iq == 0):
 					ltot = spill_out(ltot, base, d, neigvol, foutput)
 				else:
@@ -17448,7 +17446,7 @@ def factcoords_prj( prj_stacks, avgvol_stack, eigvol_stack, prefix, rad, neigvol
 	eigvols = [None]*neigvol
 	eigvals = [0.0]*neigvol
 	from math import sqrt
-	for j in range(neigvol):
+	for j in xrange(neigvol):
 		eigvols[j] = get_im(eigvol_stack, j)
 		eigvals[j] = sqrt( eigvols[j].get_attr('eigval') )
 		eigvols[j], kb = prep_vol( eigvols[j] )
@@ -17460,7 +17458,7 @@ def factcoords_prj( prj_stacks, avgvol_stack, eigvol_stack, prefix, rad, neigvol
 	img_bgn, img_end = MPI_start_end( nprj, ncpu, myid )
 	#ltot = -1
 	d = []
-	for i in range( img_bgn, img_end ):
+	for i in xrange( img_bgn, img_end ):
 		fname,imgid = files.get(i)
 		#if(i%1000 == 0):  print  "  ",myid,"   ",i
 		exp_prj = get_im( fname, imgid )
@@ -17477,7 +17475,7 @@ def factcoords_prj( prj_stacks, avgvol_stack, eigvol_stack, prefix, rad, neigvol
 		#nrmd = diff.cmp( "dot", diff, {"negative":0, "mask":m} )  #CHANGED HERE
 		#diff.write_image("difference.hdf",ltot)
 
-		for j in range( neigvol ) :
+		for j in xrange( neigvol ) :
 
 			ref_eigprj = prgs( eigvols[j], kb, [phi, theta, psi, -s2x, -s2y] )
 			if  CTF:  ref_eigprj = filt_ctf( ref_eigprj, ctf )
@@ -17491,7 +17489,7 @@ def factcoords_prj( prj_stacks, avgvol_stack, eigvol_stack, prefix, rad, neigvol
 		if myid == 0:
 			ltot = 0
 			base = 0
-			for iq in range( ncpu ):
+			for iq in xrange( ncpu ):
 				if(iq == 0):
 					ltot = spill_out(ltot, base, d, neigvol, foutput)
 				else:
@@ -17510,8 +17508,8 @@ def factcoords_prj( prj_stacks, avgvol_stack, eigvol_stack, prefix, rad, neigvol
 
 def spill_out(ltot, base, d, neigvol, foutput):
 	loc = 0
-	for i in range(len(d)//neigvol):
-		for j in range( neigvol):
+	for i in xrange(len(d)//neigvol):
+		for j in xrange( neigvol):
 			foutput.write( "    %e" % d[loc] )
 			ltot += 1
 			loc  += 1
@@ -17532,7 +17530,7 @@ def refvol( vollist, fsclist, output, mask ):
 
 	fscs = [None]*nvol
 	vols = [None]*nvol
-	for i in range(nvol):
+	for i in xrange(nvol):
 		fscs[i] = read_fsc( fsclist[i] )
 		vols[i] = get_image( vollist[i] )
 		print('rawvol, resolution: ', vollist[i], fsclist[i])
@@ -17540,7 +17538,7 @@ def refvol( vollist, fsclist, output, mask ):
 	m    = get_image( mask )
 	volfs = filt_vols( vols, fscs, m )
 
-	for i in range(nvol):
+	for i in xrange(nvol):
 		volfs[i].write_image( output, i )
 
 # -- K-means main ---------------------------------------------------------------------------
@@ -17627,7 +17625,7 @@ def k_means_main(stack, out_dir, maskname, opt_method, K, rand_seed, maxit, tria
 				running_time(t_start)	
 			#print "assign_return===", assign_return[10:20], "cls_n return==", r_Cls['n'], "Ji==", r_Cls['Ji'], "ave size ==", r_Cls['ave'][0].get_xsize()
 			else:
-				for i in range( ncpu ):
+				for i in xrange( ncpu ):
 					if( je_return[i] <0 ):
 						print_msg('> Trials: %5d    resulted in empty clusters  \n' % (i) )
 					else:
@@ -17731,7 +17729,7 @@ def plot_projs_distrib(stack, outplot, wnx = 256):
 		N  = EMUtil.get_image_count(stack)
 		DB = db_open_dict(stack)
 		agls = []
-		for n in range(N):
+		for n in xrange(N):
 			im = EMData()
 			im.read_image(stack, n, True)
 			try:
@@ -17760,7 +17758,7 @@ def HAC_clustering(stack, dendoname, maskname, kind_link, kind_dist, flag_diss):
 	IM = EMData.read_images(stack)
 	ny = IM[0].get_ysize()
 	nz = IM[0].get_zsize()
-	for n in range(N):
+	for n in xrange(N):
 		# 3D object
 		if nz > 1:
 			phi, theta, psi, s3x, s3y, s3z, mirror, scale = get_params3D(IM[n])
@@ -17784,24 +17782,24 @@ def HAC_clustering(stack, dendoname, maskname, kind_link, kind_dist, flag_diss):
 	k     = N
 	Dendo = {}
 	doc   = open(dendoname + '.txt', 'w')
-	for val in range(0, 10000):
-		if flag_diss: th  = -(val / 1000.0)
-		else:         th  = val / 1000.0
-	
-		res = cl.getlevel(th)
+	for val in xrange(0, 10000):
+	    if flag_diss: th  = -(val / 1000.0)
+	    else:         th  = val / 1000.0
 
-		GP = []
-		for gp in res:
-			OBJ = []
-			for obj in gp:
-				OBJ.append(obj.get_attr('ID_hclus'))
+	    res = cl.getlevel(th)
+
+	    GP = []
+	    for gp in res:
+		OBJ = []
+		for obj in gp:
+		    OBJ.append(obj.get_attr('ID_hclus'))
 		GP.append(OBJ)
 
-		newk = len(GP)
-		if newk != k:
-			k = newk
-			doc.write('%7.3f %d\n' % (th, k))
-			Dendo[k] = deepcopy(GP)
+	    newk = len(GP)
+	    if newk != k:
+		k = newk
+		doc.write('%7.3f %d\n' % (th, k))
+		Dendo[k] = deepcopy(GP)
 	doc.close()
 
 	import pickle
@@ -17828,7 +17826,7 @@ def HAC_averages(stack, dendoname, avename, K):
 		print('Impossible to read dendogram structure.')
 		sys.exit()
 
-	list_k = list(Dendo.keys())
+	list_k = Dendo.keys()
 	if K not in list_k:
 		print('Dendogram does not contain the draw for K=%d' % K)
 		sys.exit()
@@ -17837,7 +17835,7 @@ def HAC_averages(stack, dendoname, avename, K):
 	nx = IM[0].get_xsize()
 	ny = IM[0].get_ysize()
 	nz = IM[0].get_zsize()
-	for n in range(N):
+	for n in xrange(N):
 		# 3D object
 		if nz > 1:
 			phi, theta, psi, s3x, s3y, s3z, mirror, scale = get_params3D(IM[n])
@@ -17851,7 +17849,7 @@ def HAC_averages(stack, dendoname, avename, K):
 	part = Dendo[K]
 	AVE  = []
 	ct   = 0
-	for k in range(K):
+	for k in xrange(K):
 		AVE.append(model_blank(nx, ny, nz))
 		nobj = len(part[k])
 		if nobj > 1:
@@ -17896,7 +17894,7 @@ def ave_ali(name_stack, name_out = None, ali = False, param_to_save_size = None,
 	# 	listID    = range(N)
 
 	# # horatio active_refactoring Jy51i1EwmLD4tWZ9_00002_2	
-	listID    = list(range(N))
+	listID    = range(N)
 
 	
 	ave, var = ave_var(name_stack, mode, listID)
@@ -17906,7 +17904,7 @@ def ave_ali(name_stack, name_out = None, ali = False, param_to_save_size = None,
 	
 	if set_as_member_id:
 		members = []
-		for i in range(nlistID):
+		for i in xrange(nlistID):
 			in_img = get_im(name_stack, listID[i])
 			members.append( int(in_img.get_attr(set_as_member_id)) )
 			
@@ -17996,7 +17994,7 @@ def Xwithin_group_refinement(data, maskfile, randomize, ir, ou, rs, xrng, yrng, 
 
 	lx = [0]*nima
 	ly = [0]*nima
-	for im in range(nima):
+	for im in xrange(nima):
 		alpha, sx, sy, mirrorn, dummy = get_params2D(data[im])
 		alphai, sxi, syi, dummy    = combine_params2(0.0, sx, sy, 0, -alpha, 0.,0.,0)
 		lx[im] = int(round(sxi,0))
@@ -18031,7 +18029,7 @@ def Xwithin_group_refinement(data, maskfile, randomize, ir, ou, rs, xrng, yrng, 
 		#     Overall, Yang's method works much better, so I am leaving it at that.  PAP 01/22/2015
 		for im in data:  im.set_attr('previousmax', -1.0e23)
 		tavg = ave_series(data)
-		for N_step in range(len(xrng)):
+		for N_step in xrange(len(xrng)):
 			nope = 0
 			Iter = 0
 			while(nope < len(data)//1 and Iter < max_iter ):
@@ -18087,14 +18085,14 @@ def Xwithin_group_refinement(data, maskfile, randomize, ir, ou, rs, xrng, yrng, 
 		stp = step[-1]
 		rings = prepref(data, model_circle(nx//2-1,nx,nx), cnx, cnx, numr, mode, xrng[0], xrng[0], stp)
 		print(" rings  ",len(rings))
-		for im in range(len(data)):
+		for im in xrange(len(data)):
 			rings[im][0][0].set_attr("sxi",0)
 			rings[im][0][0].set_attr("syi",0)
 			rings[im][0][0].set_attr("inx",nx)
 		tavg = ave_series(data)
-		for N_step in range(len(xrng)):
+		for N_step in xrange(len(xrng)):
 			print(" xrng ",xrng[N_step])
-			for Iter in range(max_iter):
+			for Iter in xrange(max_iter):
 				total_iter += 1
 				if( FH > 0.0):
 					fl = 0.1+(FH-0.1)*Iter/float(max_iter-1)
@@ -18120,7 +18118,7 @@ def Xwithin_group_refinement(data, maskfile, randomize, ir, ou, rs, xrng, yrng, 
 				sx_sum, sy_sum, nope = ali2d_single_iter(rings, numr, wr, cs, tavg, cnx, cny, \
 															xrng[N_step], yrng[N_step], step[N_step], \
 															mode=mode, CTF=False, delta=delta, random_method = method)
-				for im in range(len(data)):
+				for im in xrange(len(data)):
 					alpha, tx, ty, mir, scale = get_params2D(rings[im][0][0])
 					set_params2D(data[im],[alpha, tx, ty, mir, scale])
 				tavg = ave_series(data)
@@ -18128,8 +18126,8 @@ def Xwithin_group_refinement(data, maskfile, randomize, ir, ou, rs, xrng, yrng, 
 				#tavg.write_image('tata.hdf',total_iter-1)
 	else:
 		tavg = ave_series(data)
-		for N_step in range(len(xrng)):
-			for Iter in range(max_iter):
+		for N_step in xrange(len(xrng)):
+			for Iter in xrange(max_iter):
 				total_iter += 1
 				cs = Util.infomask(tavg, mask, False)
 				tavg -= cs[0]
@@ -18159,7 +18157,7 @@ def Xwithin_group_refinement(data, maskfile, randomize, ir, ou, rs, xrng, yrng, 
 					#	center_2D(tavg, center_method = 7, searching_range = cnx//2, self_defined_reference = mask)
 					if(asx != 0 or asy != 0):
 						#  Shift images by this additional amount
-						for im in range(nima):
+						for im in xrange(nima):
 							alpha, sx, sy, mir, scale = get_params2D(data[im])
 							if mir == 0:  sxn = sx-asx
 							else:  sxn = sx+asx
@@ -18183,7 +18181,7 @@ def Xwithin_group_refinement(data, maskfile, randomize, ir, ou, rs, xrng, yrng, 
 				#tavg.write_image('tata.hdf',total_iter-1)
 
 		#  Shift data back and adjust parameters
-		for im in range(nima):
+		for im in xrange(nima):
 			alpha, sx, sy, mir, scale = get_params2D(data[im])
 			alphai, sxn, syn, dummy  = combine_params2(0, sx, sy, 0, -alpha, 0,0, 0)
 			Util.cyclicshift(data[im] , {"dx":-lx[im],"dy":-ly[im]})
@@ -18244,7 +18242,7 @@ def within_group_refinement(data, maskfile, randomize, ir, ou, rs, xrng, yrng, s
 		#     Overall, Yang's method works much better, so I am leaving it at that.  PAP 01/22/2015
 		for im in data:  im.set_attr('previousmax', -1.0e23)
 		tavg = ave_series(data)
-		for N_step in range(len(xrng)):
+		for N_step in xrange(len(xrng)):
 			nope = 0
 			Iter = 0
 			while(nope < len(data)//1 and Iter < max_iter ):
@@ -18300,12 +18298,12 @@ def within_group_refinement(data, maskfile, randomize, ir, ou, rs, xrng, yrng, s
 		stp = step[-1]
 		rings = prepref(data, model_circle(nx//2-1,nx,nx), cnx, cnx, numr, mode, xrng[0], xrng[0], stp)
 		print(" rings  ",len(rings))
-		for im in range(len(data)):
+		for im in xrange(len(data)):
 			rings[im][0][0].set_attr("inx",nx)
 		tavg = ave_series(data)
-		for N_step in range(len(xrng)):
+		for N_step in xrange(len(xrng)):
 			print(" xrng ",xrng[N_step])
-			for Iter in range(max_iter):
+			for Iter in xrange(max_iter):
 				total_iter += 1
 				if( FH > 0.0):
 					fl = 0.1+(FH-0.1)*Iter/float(max_iter-1)
@@ -18331,7 +18329,7 @@ def within_group_refinement(data, maskfile, randomize, ir, ou, rs, xrng, yrng, s
 				sx_sum, sy_sum, nope = ali2d_single_iter(rings, numr, wr, cs, tavg, cnx, cny, \
 															xrng[N_step], yrng[N_step], step[N_step], \
 															mode=mode, CTF=False, delta=delta, random_method = method)
-				for im in range(len(data)):
+				for im in xrange(len(data)):
 					alpha, tx, ty, mirror, scale = get_params2D(rings[im][0][0])
 					set_params2D(data[im],[alpha, tx, ty, mirror, scale])
 				tavg = ave_series(data)
@@ -18349,11 +18347,11 @@ def within_group_refinement(data, maskfile, randomize, ir, ou, rs, xrng, yrng, s
 				cdata.append(fft(Util.muln_img(fft(im), ctt)))
 		else:
 			cdata = [None]*len(data)
-			for i in range(len(data)):
+			for i in xrange(len(data)):
 				cdata[i] = data[i]
 
-		for N_step in range(len(xrng)):
-			for Iter in range(max_iter):
+		for N_step in xrange(len(xrng)):
+			for Iter in xrange(max_iter):
 				total_iter += 1
 				tavg = ave_series(cdata)
 				if CTF: tavg = fft(Util.divn_img(fft(tavg), ctf2))
@@ -18374,7 +18372,7 @@ def within_group_refinement(data, maskfile, randomize, ir, ou, rs, xrng, yrng, s
 				"""
 				if total_iter == len(xrng)*max_iter:
 					if CTF:
-						for i in range(len(data)): data[i].set_attr("xform.align2d",cdata[i].get_attr("xform.align2d"))
+						for i in xrange(len(data)): data[i].set_attr("xform.align2d",cdata[i].get_attr("xform.align2d"))
 					return tavg
 				cs = [0,0]
 				#print  "  iteration  std   %03d   %7.2f    %7.2f  "%(total_iter,cs[0],cs[1])
@@ -18603,7 +18601,7 @@ def volalixshift_MPI(stack, ref_vol, outdir, search_rng, pixel_size, dp, dphi, f
 	list_of_particles = []
 	indcs = []
 	k = 0
-	for i in range(nfils):
+	for i in xrange(nfils):
 		list_of_particles += filaments[i]
 		k1 = k+len(filaments[i])
 		indcs.append([k,k1])
@@ -18615,7 +18613,7 @@ def volalixshift_MPI(stack, ref_vol, outdir, search_rng, pixel_size, dp, dphi, f
 	data_nx = data[0].get_xsize()
 	data_ny = data[0].get_xsize()
 	mask2D  = pad(model_blank(2*int(rmax), data_ny, 1, 1.0), data_nx, data_ny, 1, 0.0)
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr('ID', list_of_particles[im])
 		if CTF:
 			ctf_params = data[im].get_attr("ctf")
@@ -18647,37 +18645,37 @@ def volalixshift_MPI(stack, ref_vol, outdir, search_rng, pixel_size, dp, dphi, f
 		volft, kbx, kby, kbz = prep_vol( vol )
 		del vol
 
-		for ifil in range(nfils):
+		for ifil in xrange(nfils):
 			ctxsum = model_blank(data_nx, data_ny)
 			segsctx = []
 			start = indcs[ifil][0]
-			for im in range(start, indcs[ifil][1]):
+			for im in xrange(start, indcs[ifil][1]):
 				phi,tht,psi,s2x,s2y = get_params_proj(data[im])
 				refim = (prgs( volft, kbz, [phi, tht, psi, 0.0, s2y], kbx, kby ))*mask2D
 				ctx = ccf(data[im],refim)
 				Util.add_img(ctxsum, ctx)
 				ct1 = model_blank(data_nx, 1)
-				for ii in range(data_nx):
-					for jj in range(data_ny):
+				for ii in xrange(data_nx):
+					for jj in xrange(data_ny):
 						ct1[ii] += ctx[ii,jj]
 				ct1 = Util.window(ct1, nwx+2, 1)
 				segsctx.append(ct1)
 
 			# find overall peak
 			ct1 = model_blank(data_nx, 1)
-			for ii in range(data_nx):
-				for jj in range(data_ny):
+			for ii in xrange(data_nx):
+				for jj in xrange(data_ny):
 					ct1[ii] += ctxsum[ii,jj]
 			ct1 = Util.window(ct1, nwx+2, 1)
 			sump1 = peak_search(ct1)
 			peakval = sump1[0][0]/(indcs[ifil][1] - start)
 			sump1   = int(sump1[0][1])
 
-			for im in range(start, indcs[ifil][1]):
+			for im in xrange(start, indcs[ifil][1]):
 				phi,tht,psi,s2x,s2y = get_params_proj(data[im])
 				loc = sump1
 				cim = im - start
-				for k in range(max(1,sump1-nearby), min(nwx+1, sump1+nearby)):
+				for k in xrange(max(1,sump1-nearby), min(nwx+1, sump1+nearby)):
 					if( segsctx[cim].get_value_at(k) > segsctx[cim].get_value_at(k-1) and segsctx[cim].get_value_at(k) > segsctx[cim].get_value_at(k+1) and segsctx[cim].get_value_at(k) > peakval):
 						peakval = segsctx[cim].get_value_at(k)
 						loc = k
@@ -18835,7 +18833,7 @@ def diskali_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fun
 	list_of_particles = []
 	indcs = []
 	k = 0
-	for i in range(nfils):
+	for i in xrange(nfils):
 		list_of_particles += filaments[i]
 		k1 = k+len(filaments[i])
 		indcs.append([k,k1])
@@ -18848,19 +18846,19 @@ def diskali_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fun
 			cc = EMUtil.get_all_attributes(stack, 'ctf')
 			ctf2 = ctf_2(ref_nz, cc[0])
 			ncc = len(ctf2)
-			for i in range(1,len(cc)):
+			for i in xrange(1,len(cc)):
 				temp = ctf_2(ref_nz, cc[i])
-				for k in range(ncc): ctf2[k] += temp[k]
+				for k in xrange(ncc): ctf2[k] += temp[k]
 			del temp
 		from math import sqrt
 		rrc = model_blank(ref_nz, ref_nz, ref_nz)
 		rc = ref_nz//2
-		for i in range(ref_nz):
+		for i in xrange(ref_nz):
 			ic = (i-rc)**2
-			for j in range(ref_nz):
+			for j in xrange(ref_nz):
 				jc = (j-rc)**2
 				dc = sqrt(ic+jc)
-				for k in range(ref_nz):
+				for k in xrange(ref_nz):
 					if CTF:
 						rr = sqrt((k-rc)**2 + ic + jc)
 						rin = int(rr)
@@ -18875,7 +18873,7 @@ def diskali_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fun
 	data_nx = data[0].get_xsize()
 	data_ny = data[0].get_xsize()
 	mask2D  = pad(model_blank(2*int(rmax), data_ny, 1, 1.0), data_nx, data_ny, 1, 0.0)
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr('ID', list_of_particles[im])
 		if CTF:
 			ctf_params = data[im].get_attr("ctf")
@@ -18894,11 +18892,11 @@ def diskali_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fun
 	data_slices = []
 	start = time()
 	Torg = [None]*len(data)
-	for i in range(len(data)):  Torg[i] = data[i].get_attr("xform.projection")
+	for i in xrange(len(data)):  Torg[i] = data[i].get_attr("xform.projection")
 	msk = model_cylinder(rmax-1, ref_nx, ref_ny, ref_nz) - model_cylinder(rmax-2, ref_nx, ref_ny, ref_nz)
 	ms3 = model_cylinder(rmax, ref_nx, ref_ny, ref_nz)
-	for ivol in range(nfils):
-		fullvol0 = Util.window(recons3d_wbp(data, list_proj=list(range(indcs[ivol][0],indcs[ivol][1])), method = None, symmetry=sym, radius=rr), ref_nx, ref_ny, ref_nz, 0, 0, 0)
+	for ivol in xrange(nfils):
+		fullvol0 = Util.window(recons3d_wbp(data, list_proj=range(indcs[ivol][0],indcs[ivol][1]), method = None, symmetry=sym, radius=rr), ref_nx, ref_ny, ref_nz, 0, 0, 0)
 		fullvol0 = fullvol0.helicise(pixel_size, dp, dphi, fract, rmax, rmin)
 		fullvol0 = sym_vol(fullvol0, symmetry=sym)
 		stat = Util.infomask(fullvol0, msk, True)
@@ -18939,16 +18937,16 @@ def diskali_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fun
 	#sys.exit()
 
 	T_filament = [None]*nfils
-	for iter in range(1,maxit+1):
+	for iter in xrange(1,maxit+1):
 		if myid == main_node: print(" ITERATION:  ", iter)
 		refslices = cylindrical_trans(refvol, rminpolar, rmax, rise)
 
-		for ivol in range(nfils):
+		for ivol in xrange(nfils):
 			#if myid == main_node: print "  ALI  ",myid,ivol,Util.infomask(data_slices[ivol][0], None, True)
 			T_filament[ivol] = alihelical3(data_slices[ivol], refslices, zstep, dphi, rise, rminpolar, rmax, sym)
 
 		refvol = model_blank(winxy, winxy, rise3)
-		for ivol in range(nfils):
+		for ivol in xrange(nfils):
 			d = T_filament[ivol].get_params('spider')
 			#if myid == main_node: print  d["phi"], d["theta"], d["psi"], d["tz"]
 			#if myid == main_node:
@@ -18992,14 +18990,14 @@ def diskali_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fun
 	del refvol, data_slices
 
 	# update rotations of individual images
-	data = [EMData() for i in range(nima)]
+	data = [EMData() for i in xrange(nima)]
 	forg = []
 	helisym = Transform({"type":"spider","phi":dphi,"tz":dpp})
 	ihelisym = helisym.inverse()
 	from utilities import get_params_proj, set_params_proj
 	permitrange = rise/2.0
 	
-	for ivol in range(nfils):
+	for ivol in xrange(nfils):
 		#  This is for printout
 		d = T_filament[ivol].get_params('spider')
 		#print  d["phi"],d["theta"],d["psi"],d["tx"],d["ty"],d["tz"]
@@ -19008,7 +19006,7 @@ def diskali_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fun
 		#forg.append([d["phi"],d["theta"],d["psi"],d["tx"],d["ty"],d["tz"]])
 		#  Use inverse transformation to modify projection directions.
 		Tinv = T_filament[ivol].inverse()
-		for im in range(indcs[ivol][0],indcs[ivol][1]):
+		for im in xrange(indcs[ivol][0],indcs[ivol][1]):
 			#d = Torg[im].get_params('spider')
 			#print  d["phi"],d["theta"],d["psi"],d["tx"],d["ty"],d["tz"]
 			Torg[im] = Torg[im]*Tinv
@@ -19075,7 +19073,7 @@ def cylindrical_trans(vol, rmin, rmax, rise, apply_weights = False):
 	cnx = ref_nx2//2 + 1
 	cny = ref_ny2//2 + 1
 	cnz = rise//2
-	for i in range(rise):
+	for i in xrange(rise):
 		cimage = Util.Polar2Dm(Util.window(vol, ref_nx2, ref_ny2, 1, 0, 0, i-cnz), cnx, cny, numr, mode)
 		Util.Frngs(cimage, numr)
 		if apply_weights:  Util.Applyws(cimage, numr, wr_four)
@@ -19121,13 +19119,13 @@ def alihelical4(slices, refslices, zstep, dphi, rise, rmin, rmax, theta=0.0):
 	cyclic_slices = [None]*rise
 	local_slices  = [None]*rise
 	if( theta == 0.0 ):
-		for j in range(rise):  local_slices[j] = slices[j]
+		for j in xrange(rise):  local_slices[j] = slices[j]
 	else:
 		# inverse the order
-		for j in range(rise):  local_slices[j] = slices[rise-1 - j]
-	for j in range(rise):
+		for j in xrange(rise):  local_slices[j] = slices[rise-1 - j]
+	for j in xrange(rise):
 		iz = j * zstep
-		for k in range(rise):
+		for k in xrange(rise):
 			kiz = k + iz
 			if( kiz < rise ):
 				cyclic_slices[k] = local_slices[kiz]
@@ -19141,14 +19139,14 @@ def alihelical4(slices, refslices, zstep, dphi, rise, rmin, rmax, theta=0.0):
 
 		linesum = model_blank(maxrin)
 
-		for i in range(rise):
+		for i in xrange(rise):
 			if(theta == 0.0):  temp = Util.Crosrng_msg_s(refslices[i], cyclic_slices[i], numr)
 			else:              temp = Util.Crosrng_msg_m(refslices[i], cyclic_slices[i], numr)
 			linesum += temp
 
 		qn  = -1.0e20
 		tot = 0
-		for i in range(maxrin):
+		for i in xrange(maxrin):
 			if (linesum[i] >= qn):
 				qn  = linesum[i]
 				tot = i+1
@@ -19181,7 +19179,7 @@ def stack_disks(v, nx, ny, ref_nz, dphi, rise):
 	le = (ref_nz-refc-rsc)/rise
 	if((le+1)*rise+refc-rsc < ref_nz): le +=1
 	
-	for i in range(lb,le+1):
+	for i in xrange(lb,le+1):
 		#print i,refc + i*rise - rsc
 		heli.insert_clip(rot_shift3D(v, i*dphi),(0,0,refc + i*rise - rsc))
 
@@ -19196,11 +19194,11 @@ def imgstat_hfsc( stack, file_prefix, fil_attr='filament'):
 	filaments = ordersegments(infils, ptlcoords)
 	
 	
-	temp = chunks_distribution([[len(filaments[i]), i] for i in range(len(filaments))], 2)
+	temp = chunks_distribution([[len(filaments[i]), i] for i in xrange(len(filaments))], 2)
 	tempeven = temp[0:1][0]
 	tempodd = temp[1:2][0]
-	filaments_even = [filaments[tempeven[i][1]] for i in range(len(tempeven))]
-	filaments_odd = [filaments[tempodd[i][1]] for i in range(len(tempodd))]
+	filaments_even = [filaments[tempeven[i][1]] for i in xrange(len(tempeven))]
+	filaments_odd = [filaments[tempodd[i][1]] for i in xrange(len(tempodd))]
 	
 	nfileven = len(filaments_even)
 	nfilodd = len(filaments_odd)
@@ -19208,9 +19206,9 @@ def imgstat_hfsc( stack, file_prefix, fil_attr='filament'):
 	even_segs = []
 	odd_segs = []
 	
-	for ifil in range(nfileven):
+	for ifil in xrange(nfileven):
 		even_segs += filaments_even[ifil]
-	for ifil in range(nfilodd):
+	for ifil in xrange(nfilodd):
 		odd_segs += filaments_odd[ifil]
 	write_text_file(even_segs, file_prefix + '_even.txt')
 	write_text_file(odd_segs, file_prefix + '_odd.txt')	
@@ -19237,7 +19235,7 @@ def match_pixel_rise(dz,px, nz=-1, ndisk=-1, rele=0.1, stop=900000):
 		ndisk = (int(dnz/dz)-1)//2
 	
 	q=1.0
-	for i in range(0, stop):
+	for i in xrange(0, stop):
 		q  = 1.0 - 0.000001*i
 		q1 = 1.0 + 0.000001*i
 		error  = ndisk*((( int( (dz/q/px) ) - dz/q/px))**2)
@@ -19286,7 +19284,7 @@ def gendisks_MPI(stack, mask3d, ref_nx, pixel_size, dp, dphi, fract=0.67, rmax=7
 		# integer.
 		nsteps = 100000
 		stepsize = (float(maxerror)/nsteps)
-		for i in range(1, nsteps + 1):
+		for i in xrange(1, nsteps + 1):
 			err_thr = i * stepsize
 			q, error = match_pixel_rise(dp, pixel_size, ndisk=1, rele=err_thr)
 			if q > 0:
@@ -19315,10 +19313,10 @@ def gendisks_MPI(stack, mask3d, ref_nx, pixel_size, dp, dphi, fract=0.67, rmax=7
 		filaments = ordersegments(infils, ptlcoords)
 		total_nfils = len(filaments)
 		inidl = [0]*total_nfils
-		for i in range(total_nfils):  inidl[i] = len(filaments[i])
+		for i in xrange(total_nfils):  inidl[i] = len(filaments[i])
 		linidl = sum(inidl)
 		tfilaments = []
-		for i in range(total_nfils):  tfilaments += filaments[i]
+		for i in xrange(total_nfils):  tfilaments += filaments[i]
 		del filaments
 	else:
 		total_nfils = 0
@@ -19333,7 +19331,7 @@ def gendisks_MPI(stack, mask3d, ref_nx, pixel_size, dp, dphi, fract=0.67, rmax=7
 	tfilaments = bcast_list_to_all(tfilaments, myid, source_node = main_node)
 	filaments = []
 	iendi = 0
-	for i in range(total_nfils):
+	for i in xrange(total_nfils):
 		isti = iendi
 		iendi = isti+inidl[i]
 		filaments.append(tfilaments[isti:iendi])
@@ -19345,24 +19343,24 @@ def gendisks_MPI(stack, mask3d, ref_nx, pixel_size, dp, dphi, fract=0.67, rmax=7
 		ERROR('number of CPUs (%i) is larger than the number of filaments (%i), please reduce the number of CPUs used'%(nproc, total_nfils), "ehelix_MPI", 1,myid)
 
 	#  balanced load
-	chunks = chunks_distribution([[len(filaments[i]), i] for i in range(len(filaments))], nproc)
+	chunks = chunks_distribution([[len(filaments[i]), i] for i in xrange(len(filaments))], nproc)
 
 	# make a table associating filament name with processor id
 	if myid == main_node:
-		filatable = [[] for i in range(nproc)]
-		for mid in range(nproc):
+		filatable = [[] for i in xrange(nproc)]
+		for mid in xrange(nproc):
 			tmp = chunks[mid:mid+1][0]
-			tmpfilaments = [filaments[tmp[i][1]] for i in range(len(tmp))]
+			tmpfilaments = [filaments[tmp[i][1]] for i in xrange(len(tmp))]
 			nfil = len(tmpfilaments)
-			filatable[mid] = [[] for j in range(nfil)]
-			for i in range(nfil):
+			filatable[mid] = [[] for j in xrange(nfil)]
+			for i in xrange(nfil):
 				a = get_im(stack, tmpfilaments[i][0])
 				filname = a.get_attr('filament')
 				filatable[mid][i] = filname
 
 	#print filatable
 	temp = chunks[myid:myid+1][0]
-	filaments = [filaments[temp[i][1]] for i in range(len(temp))]
+	filaments = [filaments[temp[i][1]] for i in xrange(len(temp))]
 	nfils     = len(filaments)
 	#  Get the maximum number of filaments on any node
 	mfils = nfils
@@ -19375,7 +19373,7 @@ def gendisks_MPI(stack, mask3d, ref_nx, pixel_size, dp, dphi, fract=0.67, rmax=7
 	list_of_particles = []
 	indcs = []
 	k = 0
-	for i in range(nfils):
+	for i in xrange(nfils):
 		list_of_particles += filaments[i]
 		k1 = k+len(filaments[i])
 		indcs.append([k,k1])
@@ -19387,7 +19385,7 @@ def gendisks_MPI(stack, mask3d, ref_nx, pixel_size, dp, dphi, fract=0.67, rmax=7
 	data_ny = data[0].get_ysize()
 	data_nn = max(data_nx, data_ny)
 	mask2D  = pad(model_blank(2*int(rmax), data_nn, 1, 1.0), data_nn, data_nn, 1, 0.0)
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im] = pad(data[im], data_nn, data_nn, 1, 'circumference')
 		data[im].set_attr('ID', list_of_particles[im])
 		if CTF:
@@ -19407,13 +19405,13 @@ def gendisks_MPI(stack, mask3d, ref_nx, pixel_size, dp, dphi, fract=0.67, rmax=7
 
 	if myid == main_node:  outvol = 0
 	start_time = time()
-	for ivol in range(mfils):
+	for ivol in xrange(mfils):
 		if( ivol < nfils ):
 			#print myid, ivol, data[indcs[ivol][0]].get_attr('filament')
 			if CTF:
-				fullvol0 = recons3d_4nn_ctf(data, list_proj=list(range(indcs[ivol][0],indcs[ivol][1])), symmetry="c1", npad=2)
+				fullvol0 = recons3d_4nn_ctf(data, list_proj=range(indcs[ivol][0],indcs[ivol][1]), symmetry="c1", npad=2)
 			else:
-				fullvol0 = recons3d_4nn(data, list_proj=list(range(indcs[ivol][0],indcs[ivol][1])), symmetry="c1", npad=2, snr = snr)
+				fullvol0 = recons3d_4nn(data, list_proj=range(indcs[ivol][0],indcs[ivol][1]), symmetry="c1", npad=2, snr = snr)
 
 			fullvol0 = fullvol0.helicise(pixel_size, dp, dphi, fract, rmax, rmin)
 			fullvol0 = sym_vol(fullvol0, symmetry=sym)
@@ -19431,7 +19429,7 @@ def gendisks_MPI(stack, mask3d, ref_nx, pixel_size, dp, dphi, fract=0.67, rmax=7
 			gotfil = 0
 		#print "did volume ",myid,gotfil,ref_nx, ref_ny, rise
 		if(myid == main_node):
-			for i in range(nproc):
+			for i in xrange(nproc):
 				if(i != main_node):
 					didfil = mpi_recv(1, MPI_INT, i, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 					didfil = int(didfil[0])
@@ -19587,10 +19585,10 @@ def ehelix_MPI(stack, ref_vol, outdir, seg_ny, delta, phiwobble, psi_max, search
 		filaments = ordersegments(infils, ptlcoords)
 		total_nfils = len(filaments)
 		inidl = [0]*total_nfils
-		for i in range(total_nfils):  inidl[i] = len(filaments[i])
+		for i in xrange(total_nfils):  inidl[i] = len(filaments[i])
 		linidl = sum(inidl)
 		tfilaments = []
-		for i in range(total_nfils):  tfilaments += filaments[i]
+		for i in xrange(total_nfils):  tfilaments += filaments[i]
 		del filaments
 	else:
 		total_nfils = 0
@@ -19604,7 +19602,7 @@ def ehelix_MPI(stack, ref_vol, outdir, seg_ny, delta, phiwobble, psi_max, search
 	tfilaments = bcast_list_to_all(tfilaments, myid, source_node = main_node)
 	filaments = []
 	iendi = 0
-	for i in range(total_nfils):
+	for i in xrange(total_nfils):
 		isti = iendi
 		iendi = isti+inidl[i]
 		filaments.append(tfilaments[isti:iendi])
@@ -19616,8 +19614,8 @@ def ehelix_MPI(stack, ref_vol, outdir, seg_ny, delta, phiwobble, psi_max, search
 		ERROR('number of CPUs (%i) is larger than the number of filaments (%i), please reduce the number of CPUs used'%(nproc, total_nfils), "helicon_MPI", 1,myid)
 
 	#  balanced load
-	temp = chunks_distribution([[len(filaments[i]), i] for i in range(len(filaments))], nproc)[myid:myid+1][0]
-	filaments = [filaments[temp[i][1]] for i in range(len(temp))]
+	temp = chunks_distribution([[len(filaments[i]), i] for i in xrange(len(filaments))], nproc)[myid:myid+1][0]
+	filaments = [filaments[temp[i][1]] for i in xrange(len(temp))]
 	nfils     = len(filaments)
 
 	#filaments = [[0,1]]
@@ -19625,14 +19623,14 @@ def ehelix_MPI(stack, ref_vol, outdir, seg_ny, delta, phiwobble, psi_max, search
 	list_of_particles = []
 	indcs = []
 	k = 0
-	for i in range(nfils):
+	for i in xrange(nfils):
 		list_of_particles += filaments[i]
 		k1 = k+len(filaments[i])
 		indcs.append([k,k1])
 		k = k1
 		
 	if slowIO:
-		for iproc in range(number_of_proc):
+		for iproc in xrange(number_of_proc):
 			if myid ==iproc:
 				data = EMData.read_images(stack, list_of_particles)
 				print("Read %6d images on process  : %4d"%(len(list_of_particles),myid))
@@ -19658,7 +19656,7 @@ def ehelix_MPI(stack, ref_vol, outdir, seg_ny, delta, phiwobble, psi_max, search
 	segmask = pad(model_blank(2*int(rmax), seg_ny, 1, 1.0), data_nx, data_ny, 1, 0.0)
 	fdata = [None]*nima
 	resetatone = False
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr('ID', list_of_particles[im])
 		st = Util.infomask(data[im], segmask, False)
 		data[im] -= st[0]
@@ -19744,7 +19742,7 @@ def ehelix_MPI(stack, ref_vol, outdir, seg_ny, delta, phiwobble, psi_max, search
 		refproj = [None]*nphi
 		if( not Dsym):  rotproj = [None]*nphi
 		else:           rotproj = []
-		for iphi in range(nphi):
+		for iphi in xrange(nphi):
 			refproj[iphi] = prgs( volft, kbz, [delta*iphi, 90.0, 90.0, 0.0, 0.0])
 			st = Util.infomask(refproj[iphi] , segmask, True)
 			refproj[iphi] -= st[0]
@@ -19765,8 +19763,8 @@ def ehelix_MPI(stack, ref_vol, outdir, seg_ny, delta, phiwobble, psi_max, search
 		#astart_time = time()
 		if myid == main_node:  start_time = time()
 		terminate = 0
-		for ifil in range(nfils):
-			ldata = [data[im] for im in range(indcs[ifil][0],indcs[ifil][1])]
+		for ifil in xrange(nfils):
+			ldata = [data[im] for im in xrange(indcs[ifil][0],indcs[ifil][1])]
 			#for im in xrange(len(ldata)):  ldata[im].set_attr("bestang", 10000.0)
 			Util.constrained_helix_exhaustive(ldata, fdata[indcs[ifil][0]:indcs[ifil][1]], refproj, rotproj, [float(dp), float(dphi), rise, float(delta), ywobble, ystep], [int(nphi), symrestrict, int(phiwobble), int(rng), int(Dsym), int(nwx), int(nwy), int(nwxc), int(nwyc)], FindPsi, float(psi_max), crefim, numr, int(maxrin), mode, int(cnx), int(cny))
 			#from development import constrained_helix
@@ -19784,14 +19782,14 @@ def ehelix_MPI(stack, ref_vol, outdir, seg_ny, delta, phiwobble, psi_max, search
 					#	print_msg("tempch %d\n"%tempch)
 					terminate = 0
 			'''
-			for im in range(indcs[ifil][0], indcs[ifil][1]):
+			for im in xrange(indcs[ifil][0], indcs[ifil][1]):
 				temp = Util.get_transform_params(ldata[im-indcs[ifil][0]], "xform.projection", "spider")
 				set_params_proj(data[im],[temp["phi"],temp["theta"],temp["psi"],-temp["tx"],-temp["ty"]])
 				#if not(doExhaustive):
 				#	if Iter == 1 and resetatone:  data[im].set_attr('previousmax',-1.0e23)
 
 			if FindPsi:
-				for im in range(indcs[ifil][0], indcs[ifil][1]):
+				for im in xrange(indcs[ifil][0], indcs[ifil][1]):
 					fdata[im] = fft( segmask*rot_shift2D(data[im], ldata[im-indcs[ifil][0]].get_attr("bestang") ) )
 					#bestang = ldata[im-indcs[ifil][0]].get_attr("bestang")
 					#if( bestang < 10000.0): fdata[im] = fft( segmask*rot_shift2D(data[im], bestang ) )
@@ -19921,12 +19919,12 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 	xrng        = get_input_from_string(xr)
 	y_restrict  = get_input_from_string(y_restrict)
 	ynumber	    = get_input_from_string(ynumber)
-	for i in range(len(ynumber)):
+	for i in xrange(len(ynumber)):
 		if ynumber[i] > 0:
 			if(ynumber[i]%2==1): ynumber[i]=ynumber[i]+1
 	yrng = []
 
-	for i in range(len(xrng)): yrng.append(dp/2)
+	for i in xrange(len(xrng)): yrng.append(dp/2)
 
 	stepx       = get_input_from_string(txs)
 	delta       = get_input_from_string(delta)
@@ -19934,9 +19932,9 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 	an = get_input_from_string(an)
 
 	if len(an) == 1:
-		an = [an[0] for ii in range(lstp)]
+		an = [an[0] for ii in xrange(lstp)]
 	y_restrict = y_restrict[0:lstp]
-	for i in range(lstp):
+	for i in xrange(lstp):
 		if an[i] < 0 and y_restrict[i] < 0: 
 			ERROR('This is a local search, an and y_restrict should not both be -1', "localhelicon_MPI", 1,myid)
 		if y_restrict[i] < 0:   y_restrict[i] = (an[i]/dphi)*(dp/pixel_size)/2.0
@@ -20016,10 +20014,10 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 		filaments = ordersegments(infils, ptlcoords)
 		total_nfils = len(filaments)
 		inidl = [0]*total_nfils
-		for i in range(total_nfils):  inidl[i] = len(filaments[i])
+		for i in xrange(total_nfils):  inidl[i] = len(filaments[i])
 		linidl = sum(inidl)
 		tfilaments = []
-		for i in range(total_nfils):  tfilaments += filaments[i]
+		for i in xrange(total_nfils):  tfilaments += filaments[i]
 		del filaments
 	else:
 		total_nfils = 0
@@ -20034,7 +20032,7 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 	tfilaments = bcast_list_to_all(tfilaments, myid, source_node = main_node)
 	filaments = []
 	iendi = 0
-	for i in range(total_nfils):
+	for i in xrange(total_nfils):
 		isti = iendi
 		iendi = isti+inidl[i]
 		filaments.append(tfilaments[isti:iendi])
@@ -20046,20 +20044,20 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 		ERROR('number of CPUs (%i) is larger than the number of filaments (%i), please reduce the number of CPUs used'%(number_of_proc, total_nfils), "localhelicon_MPI", 1,myid)
 
 	#  balanced load
-	temp = chunks_distribution([[len(filaments[i]), i] for i in range(len(filaments))], number_of_proc)[myid:myid+1][0]
-	filaments = [filaments[temp[i][1]] for i in range(len(temp))]
+	temp = chunks_distribution([[len(filaments[i]), i] for i in xrange(len(filaments))], number_of_proc)[myid:myid+1][0]
+	filaments = [filaments[temp[i][1]] for i in xrange(len(temp))]
 	nfils     = len(filaments)
 	list_of_particles = []
 	indcs = []
 	k = 0
-	for i in range(nfils):
+	for i in xrange(nfils):
 		list_of_particles += filaments[i]
 		k1 = k+len(filaments[i])
 		indcs.append([k,k1])
 		k = k1
 
 	if slowIO:
-		for iproc in range(number_of_proc):
+		for iproc in xrange(number_of_proc):
 			if myid ==iproc:
 				data = EMData.read_images(stack, list_of_particles)
 				print("Read %6d images on process  : %4d"%(len(list_of_particles),myid))
@@ -20085,7 +20083,7 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 	psistep = 360./maxrin
 	print("psistep", psistep)
 	#if fourvar:  original_data = []
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr('ID', list_of_particles[im])
 		sttt = Util.infomask(data[im], segmask, False)
 		data[im] -= sttt[0]
@@ -20108,7 +20106,7 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 	          "alpha" : alpha, "K":K,"r":r,"v":v,"N":N}
 	kb = Util.KaiserBessel(alpha, K, r, v, N)
 	dataft = [None]*nima
-	for im in range(nima):
+	for im in xrange(nima):
 		dataft[im] = data[im].FourInterpol(N, N, 1,0)
 		dataft[im] = Processor.EMFourierFilter(dataft[im] ,params)
 
@@ -20116,15 +20114,15 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 		finfo.write( '%d loaded  \n' % nima )
 		finfo.flush()
 
-	for i in range(len(xrng)): yrng[i]=max(int(dp/(2*pixel_size)+0.5),1)
-	for i in range(len(xrng)): xrng[i]=max(int(xrng[i]),1)
+	for i in xrange(len(xrng)): yrng[i]=max(int(dp/(2*pixel_size)+0.5),1)
+	for i in xrange(len(xrng)): xrng[i]=max(int(xrng[i]),1)
 
 	if myid == main_node:
 		print_msg("Pixel size in Angstroms                   : %5.4f\n"%(pixel_size))
 		print_msg("Y search range (pix) initialized as       : %s\n\n"%(yrng))
 
 	#  set attribute updown for each filament, up will be 0, down will be 1
-	for ivol in range(nfils):
+	for ivol in xrange(nfils):
 		seg_start = indcs[ivol][0]
 		seg_end   = indcs[ivol][1]
 		filamentupdown(data[seg_start: seg_end], pixel_size, dp, dphi)
@@ -20137,7 +20135,7 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 	from time import time
 
 	total_iter = 0
-	for ii in range(lstp):
+	for ii in xrange(lstp):
 		if stepx[ii] == 0.0:
 			if xrng[ii] != 0.0:
 				ERROR('xrange step size cannot be zero', "localhelicon_MPI", 1,myid)
@@ -20149,7 +20147,7 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 	# do the projection matching
 	startl = time()
 	ooiter = 0
-	for N_step in range(lstp):
+	for N_step in xrange(lstp):
 		terminate = 0
 		Iter = 0
 		ant = cos(radians(an[N_step]))
@@ -20166,7 +20164,7 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 				ERROR('yrange step size cannot be lower than 0.1', "localhelicon_MPInew", 1,myid)
 			pixer  = [0.0]*nima
 
-			neworient = [[0.0, 0.0, 0.0, 0.0, 0.0, -2.0e23] for i in range(nima)]
+			neworient = [[0.0, 0.0, 0.0, 0.0, 0.0, -2.0e23] for i in xrange(nima)]
 			ooiter += 1
 			Iter += 1
 			if Iter%search_iter == 0:  total_iter += 1
@@ -20202,11 +20200,11 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 			dpp_half = dpp/2.0
 
 			Torg = []
-			for ivol in range(nfils):
+			for ivol in xrange(nfils):
 
 				seg_start = indcs[ivol][0]
 				seg_end   = indcs[ivol][1]
-				for im in range( seg_start, seg_end ):
+				for im in xrange( seg_start, seg_end ):
 					Torg.append(data[im].get_attr('xform.projection'))
 
 				#Fit predicted locations as new starting points
@@ -20230,12 +20228,12 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 
 				refrings = [None]
 
-				for ivol in range(nfils):
+				for ivol in xrange(nfils):
 
 					seg_start = indcs[ivol][0]
 					seg_end   = indcs[ivol][1]
 
-					for im in range( seg_start, seg_end ):
+					for im in xrange( seg_start, seg_end ):
 
 						#  Here I have to figure for local search whether given image has to be matched with this refproj dir
 						ID = data[im].get_attr("ID")
@@ -20294,7 +20292,7 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 			print("total time of calculating references", reftime)
 			print("total time of searching", searchtime)
 			
-			for im in range(nima):
+			for im in xrange(nima):
 				if(neworient[im][-1] > -1.0e23):
 					#from utilities import inverse_transform2
 					#t1, t2, t3, tp = inverse_transform2(neworient[im][3][1]+neworient[im][0])
@@ -20441,12 +20439,12 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 	xrng        = get_input_from_string(xr)
 	y_restrict  = get_input_from_string(y_restrict)
 	ynumber	    = get_input_from_string(ynumber)
-	for i in range(len(ynumber)):
+	for i in xrange(len(ynumber)):
 		if ynumber[i] > 0:
 			if(ynumber[i]%2==1): ynumber[i]=ynumber[i]+1
 	yrng = []
 
-	for i in range(len(xrng)): yrng.append(dp/2)
+	for i in xrange(len(xrng)): yrng.append(dp/2)
 
 	stepx       = get_input_from_string(txs)
 	delta       = get_input_from_string(delta)
@@ -20454,9 +20452,9 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 	an = get_input_from_string(an)
 
 	if len(an) == 1:
-		an = [an[0] for ii in range(lstp)]
+		an = [an[0] for ii in xrange(lstp)]
 	y_restrict = y_restrict[0:lstp]
-	for i in range(lstp):
+	for i in xrange(lstp):
 		if an[i] < 0 and y_restrict[i] < 0: 
 			ERROR('This is a local search, an and y_restrict should not both be -1', "localhelicon_MPI", 1,myid)
 		if y_restrict[i] < 0:   y_restrict[i] = (an[i]/dphi)*(dp/pixel_size)/2.0
@@ -20536,10 +20534,10 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 		filaments = ordersegments(infils, ptlcoords)
 		total_nfils = len(filaments)
 		inidl = [0]*total_nfils
-		for i in range(total_nfils):  inidl[i] = len(filaments[i])
+		for i in xrange(total_nfils):  inidl[i] = len(filaments[i])
 		linidl = sum(inidl)
 		tfilaments = []
-		for i in range(total_nfils):  tfilaments += filaments[i]
+		for i in xrange(total_nfils):  tfilaments += filaments[i]
 		del filaments
 	else:
 		total_nfils = 0
@@ -20554,7 +20552,7 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 	tfilaments = bcast_list_to_all(tfilaments, myid, source_node = main_node)
 	filaments = []
 	iendi = 0
-	for i in range(total_nfils):
+	for i in xrange(total_nfils):
 		isti = iendi
 		iendi = isti+inidl[i]
 		filaments.append(tfilaments[isti:iendi])
@@ -20566,19 +20564,19 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 		ERROR('number of CPUs (%i) is larger than the number of filaments (%i), please reduce the number of CPUs used'%(number_of_proc, total_nfils), "localhelicon_MPI", 1,myid)
 
 	#  balanced load
-	temp = chunks_distribution([[len(filaments[i]), i] for i in range(len(filaments))], number_of_proc)[myid:myid+1][0]
-	filaments = [filaments[temp[i][1]] for i in range(len(temp))]
+	temp = chunks_distribution([[len(filaments[i]), i] for i in xrange(len(filaments))], number_of_proc)[myid:myid+1][0]
+	filaments = [filaments[temp[i][1]] for i in xrange(len(temp))]
 	nfils     = len(filaments)
 	list_of_particles = []
 	indcs = []
 	k = 0
-	for i in range(nfils):
+	for i in xrange(nfils):
 		list_of_particles += filaments[i]
 		k1 = k+len(filaments[i])
 		indcs.append([k,k1])
 		k = k1
 	if slowIO:
-		for iproc in range(number_of_proc):
+		for iproc in xrange(number_of_proc):
 			if myid ==iproc:
 				data = EMData.read_images(stack, list_of_particles)
 				print("Read %6d images on process  : %4d"%(len(list_of_particles),myid))
@@ -20597,7 +20595,7 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 		last_ring = (max(seg_ny, 2*int(rmax)))//2 - 2
 
 	#if fourvar:  original_data = []
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr('ID', list_of_particles[im])
 		sttt = Util.infomask(data[im], segmask, False)
 		data[im] -= sttt[0]
@@ -20620,7 +20618,7 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 	          "alpha" : alpha, "K":K,"r":r,"v":v,"N":N}
 	kb = Util.KaiserBessel(alpha, K, r, v, N)
 	dataft = [None]*nima
-	for im in range(nima):
+	for im in xrange(nima):
 		dataft[im] = data[im].FourInterpol(N, N, 1,0)
 		dataft[im] = Processor.EMFourierFilter(dataft[im] ,params)
 
@@ -20628,15 +20626,15 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 		finfo.write( '%d loaded  \n' % nima )
 		finfo.flush()
 
-	for i in range(len(xrng)): yrng[i]=max(int(dp/(2*pixel_size)+0.5),1)
-	for i in range(len(xrng)): xrng[i]=max(int(xrng[i]),1)
+	for i in xrange(len(xrng)): yrng[i]=max(int(dp/(2*pixel_size)+0.5),1)
+	for i in xrange(len(xrng)): xrng[i]=max(int(xrng[i]),1)
 
 	if myid == main_node:
 		print_msg("Pixel size in Angstroms                   : %5.4f\n"%(pixel_size))
 		print_msg("Y search range (pix) initialized as       : %s\n\n"%(yrng))
 
 	#  set attribute updown for each filament, up will be 0, down will be 1
-	for ivol in range(nfils):
+	for ivol in xrange(nfils):
 		seg_start = indcs[ivol][0]
 		seg_end   = indcs[ivol][1]
 		filamentupdown(data[seg_start: seg_end], pixel_size, dp, dphi)
@@ -20649,7 +20647,7 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 	from time import time
 
 	total_iter = 0
-	for ii in range(lstp):
+	for ii in xrange(lstp):
 		if stepx[ii] == 0.0:
 			if xrng[ii] != 0.0:
 				ERROR('xrange step size cannot be zero', "localhelicon_MPIming", 1,myid)
@@ -20660,7 +20658,7 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 	psistep=0.5
 	# do the projection matching
 	ooiter = 0
-	for N_step in range(lstp):
+	for N_step in xrange(lstp):
 		terminate = 0
 		Iter = 0
 		ant = cos(radians(an[N_step]))
@@ -20680,7 +20678,7 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 
 			pixer  = [0.0]*nima
 
-			neworient = [[0.0, 0.0, 0.0, 0.0, 0.0, -2.0e23] for i in range(nima)]
+			neworient = [[0.0, 0.0, 0.0, 0.0, 0.0, -2.0e23] for i in xrange(nima)]
 
 			ooiter += 1
 			Iter += 1
@@ -20717,11 +20715,11 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 			dpp_half = dpp/2.0
 
 			Torg = []
-			for ivol in range(nfils):
+			for ivol in xrange(nfils):
 
 				seg_start = indcs[ivol][0]
 				seg_end   = indcs[ivol][1]
-				for im in range( seg_start, seg_end ):
+				for im in xrange( seg_start, seg_end ):
 					Torg.append(data[im].get_attr('xform.projection'))
 
 				#  Fit predicted locations as new starting points
@@ -20734,13 +20732,13 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 			print("finish generating list of reference angles.")
 			nopeak = 0
 			#  DO ORIENTATION SEARCHES
-			for ivol in range(nfils):
+			for ivol in xrange(nfils):
 				seg_start = indcs[ivol][0]
 				seg_end   = indcs[ivol][1]
 				ctx = [None]*(seg_end-seg_start)
 				txtol = [0.0]*(seg_end-seg_start)
 				tytol = [0.0]*(seg_end-seg_start)	
-				for im in range( seg_start, seg_end ):
+				for im in xrange( seg_start, seg_end ):
 					#print "for %dth segment"%im 
 					#  Here I have to figure for local search whether given image has to be matched with this refproj dir
 					ID = data[im].get_attr("ID")
@@ -20798,10 +20796,10 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 				rnx   = int(round(xrng[N_step]/stepx[N_step]))
 				rny   = int(round(yrng[N_step]/stepy))
 				neworientsnake=alignment3Dsnake(1, snakeknots, seg_end-seg_start, neworient[seg_start:seg_end], ctx, psistep, stepx[N_step], stepy, txtol, tytol, nc, rnx, rny, direction)
-				for im in range( seg_start, seg_end ):
+				for im in xrange( seg_start, seg_end ):
 					neworient[im][:3] = neworientsnake[im- seg_start]
 				#print "after refine: neworient", neworient[seg_start:seg_end]	
-			for im in range(nima):
+			for im in xrange(nima):
 				if(neworient[im][-1] > -1.0e23):
 					#print " neworient  ",im,neworient[im]
 					#from utilities import inverse_transform2
@@ -20950,12 +20948,12 @@ def localhelicon_MPInew_fullrefproj(stack, ref_vol, outdir, seg_ny, maskfile, ir
 	xrng        = get_input_from_string(xr)
 	y_restrict  = get_input_from_string(y_restrict)
 	ynumber	    = get_input_from_string(ynumber)
-	for i in range(len(ynumber)):
+	for i in xrange(len(ynumber)):
 		if ynumber[i] > 0:
 			if(ynumber[i]%2==1): ynumber[i]=ynumber[i]+1
 	yrng = []
 
-	for i in range(len(xrng)): yrng.append(dp/2)
+	for i in xrange(len(xrng)): yrng.append(dp/2)
 
 	stepx       = get_input_from_string(txs)
 	delta       = get_input_from_string(delta)
@@ -20964,9 +20962,9 @@ def localhelicon_MPInew_fullrefproj(stack, ref_vol, outdir, seg_ny, maskfile, ir
 
 	if len(an) == 1:
 		aan = an[0]
-		an = [aan for ii in range(lstp)]
+		an = [aan for ii in xrange(lstp)]
 	y_restrict = y_restrict[0:lstp]
-	for i in range(lstp):
+	for i in xrange(lstp):
 		if an[i] < 0 and y_restrict[i] < 0: 
 			ERROR('This is a local search, an and y_restrict should not both be -1', "localhelicon_MPI", 1,myid)
 		if y_restrict[i] < 0:   y_restrict[i] = (an[i]/dphi)*(dp/pixel_size)/2.0
@@ -21046,10 +21044,10 @@ def localhelicon_MPInew_fullrefproj(stack, ref_vol, outdir, seg_ny, maskfile, ir
 		filaments = ordersegments(infils, ptlcoords)
 		total_nfils = len(filaments)
 		inidl = [0]*total_nfils
-		for i in range(total_nfils):  inidl[i] = len(filaments[i])
+		for i in xrange(total_nfils):  inidl[i] = len(filaments[i])
 		linidl = sum(inidl)
 		tfilaments = []
-		for i in range(total_nfils):  tfilaments += filaments[i]
+		for i in xrange(total_nfils):  tfilaments += filaments[i]
 		del filaments
 	else:
 		total_nfils = 0
@@ -21064,7 +21062,7 @@ def localhelicon_MPInew_fullrefproj(stack, ref_vol, outdir, seg_ny, maskfile, ir
 	tfilaments = bcast_list_to_all(tfilaments, myid, source_node = main_node)
 	filaments = []
 	iendi = 0
-	for i in range(total_nfils):
+	for i in xrange(total_nfils):
 		isti = iendi
 		iendi = isti+inidl[i]
 		filaments.append(tfilaments[isti:iendi])
@@ -21076,20 +21074,20 @@ def localhelicon_MPInew_fullrefproj(stack, ref_vol, outdir, seg_ny, maskfile, ir
 		ERROR('number of CPUs (%i) is larger than the number of filaments (%i), please reduce the number of CPUs used'%(number_of_proc, total_nfils), "localhelicon_MPI", 1,myid)
 
 	#  balanced load
-	temp = chunks_distribution([[len(filaments[i]), i] for i in range(len(filaments))], number_of_proc)[myid:myid+1][0]
-	filaments = [filaments[temp[i][1]] for i in range(len(temp))]
+	temp = chunks_distribution([[len(filaments[i]), i] for i in xrange(len(filaments))], number_of_proc)[myid:myid+1][0]
+	filaments = [filaments[temp[i][1]] for i in xrange(len(temp))]
 	nfils     = len(filaments)
 	list_of_particles = []
 	indcs = []
 	k = 0
-	for i in range(nfils):
+	for i in xrange(nfils):
 		list_of_particles += filaments[i]
 		k1 = k+len(filaments[i])
 		indcs.append([k,k1])
 		k = k1
 
 	if slowIO:
-		for iproc in range(number_of_proc):
+		for iproc in xrange(number_of_proc):
 			if myid ==iproc:
 				data = EMData.read_images(stack, list_of_particles)
 				print("Read %6d images on process  : %4d"%(len(list_of_particles),myid))
@@ -21108,7 +21106,7 @@ def localhelicon_MPInew_fullrefproj(stack, ref_vol, outdir, seg_ny, maskfile, ir
 		last_ring = (max(seg_ny, 2*int(rmax)))//2 - 2
 
 	#if fourvar:  original_data = []
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr('ID', list_of_particles[im])
 		sttt = Util.infomask(data[im], segmask, False)
 		data[im] -= sttt[0]
@@ -21124,15 +21122,15 @@ def localhelicon_MPInew_fullrefproj(stack, ref_vol, outdir, seg_ny, maskfile, ir
 		finfo.write( '%d loaded  \n' % nima )
 		finfo.flush()
 
-	for i in range(len(xrng)): yrng[i]=max(int(dp/(2*pixel_size)+0.5),1)
-	for i in range(len(xrng)): xrng[i]=max(int(xrng[i]),1)
+	for i in xrange(len(xrng)): yrng[i]=max(int(dp/(2*pixel_size)+0.5),1)
+	for i in xrange(len(xrng)): xrng[i]=max(int(xrng[i]),1)
 
 	if myid == main_node:
 		print_msg("Pixel size in Angstroms                   : %5.4f\n"%(pixel_size))
 		print_msg("Y search range (pix) initialized as       : %s\n\n"%(yrng))
 
 	#  set attribute updown for each filament, up will be 0, down will be 1
-	for ivol in range(nfils):
+	for ivol in xrange(nfils):
 		seg_start = indcs[ivol][0]
 		seg_end   = indcs[ivol][1]
 		filamentupdown(data[seg_start: seg_end], pixel_size, dp, dphi)
@@ -21145,7 +21143,7 @@ def localhelicon_MPInew_fullrefproj(stack, ref_vol, outdir, seg_ny, maskfile, ir
 	from time import time
 
 	total_iter = 0
-	for ii in range(lstp):
+	for ii in xrange(lstp):
 		if stepx[ii] == 0.0:
 			if xrng[ii] != 0.0:
 				ERROR('xrange step size cannot be zero', "localhelicon_MPI", 1,myid)
@@ -21156,7 +21154,7 @@ def localhelicon_MPInew_fullrefproj(stack, ref_vol, outdir, seg_ny, maskfile, ir
 	psistep=0.5
 	# do the projection matching
 	ooiter = 0
-	for N_step in range(lstp):
+	for N_step in xrange(lstp):
 		terminate = 0
 		Iter = 0
 		while(Iter < totmax_iter and terminate == 0):
@@ -21196,12 +21194,12 @@ def localhelicon_MPInew_fullrefproj(stack, ref_vol, outdir, seg_ny, maskfile, ir
 			dpp = float( dpp )
 			dpp_half = dpp/2.0
 
-			for ivol in range(nfils):
+			for ivol in xrange(nfils):
 
 				seg_start = indcs[ivol][0]
 				seg_end   = indcs[ivol][1]
 				Torg = []
-				for im in range( seg_start, seg_end ):
+				for im in xrange( seg_start, seg_end ):
 					Torg.append(data[im].get_attr('xform.projection'))
 
 				#  Fit predicted locations as new starting points
@@ -21209,7 +21207,7 @@ def localhelicon_MPInew_fullrefproj(stack, ref_vol, outdir, seg_ny, maskfile, ir
 				#if (seg_end - seg_start) > 1:
 				#	setfilori_SP(data[seg_start: seg_end], pixel_size, dp, dphi)
 
-				for im in range( seg_start, seg_end ):
+				for im in xrange( seg_start, seg_end ):
 
 					peak, phihi, theta, psi, sxi, syi = \
 						proj_ali_helicon_90_local_direct(data[im], refrings, xrng[N_step], yrng[N_step], \
@@ -21357,12 +21355,12 @@ def localhelicon_MPI(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr, y
 	xrng        = get_input_from_string(xr)
 	y_restrict  = get_input_from_string(y_restrict)
 	ynumber	    = get_input_from_string(ynumber)
-	for i in range(len(ynumber)):
+	for i in xrange(len(ynumber)):
 		if ynumber[i] > 0:
 			if(ynumber[i]%2==1): ynumber[i]=ynumber[i]+1
 	yrng =[]
 
-	for i in range(len(xrng)): yrng.append(dp/2)
+	for i in xrange(len(xrng)): yrng.append(dp/2)
 
 	stepx        = get_input_from_string(txs)
 	delta       = get_input_from_string(delta)
@@ -21371,9 +21369,9 @@ def localhelicon_MPI(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr, y
 	
 	if len(an) == 1:
 		aan = an[0]
-		an = [aan for ii in range(lstp)]
+		an = [aan for ii in xrange(lstp)]
 	y_restrict = y_restrict[0:lstp]
-	for i in range(lstp):
+	for i in xrange(lstp):
 		if an[i] < 0 and y_restrict[i] < 0: 
 			ERROR('This is a local search, an and y_restrict should not both be -1', "localhelicon_MPI", 1,myid)
 		if y_restrict[i] < 0:  y_restrict[i] = (an[i]/dphi)*(dp/pixel_size)/2.0
@@ -21453,10 +21451,10 @@ def localhelicon_MPI(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr, y
 		filaments = ordersegments(infils, ptlcoords)
 		total_nfils = len(filaments)
 		inidl = [0]*total_nfils
-		for i in range(total_nfils):  inidl[i] = len(filaments[i])
+		for i in xrange(total_nfils):  inidl[i] = len(filaments[i])
 		linidl = sum(inidl)
 		tfilaments = []
-		for i in range(total_nfils):  tfilaments += filaments[i]
+		for i in xrange(total_nfils):  tfilaments += filaments[i]
 		del filaments
 	else:
 		total_nfils = 0
@@ -21471,7 +21469,7 @@ def localhelicon_MPI(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr, y
 	tfilaments = bcast_list_to_all(tfilaments, myid, source_node = main_node)
 	filaments = []
 	iendi = 0
-	for i in range(total_nfils):
+	for i in xrange(total_nfils):
 		isti = iendi
 		iendi = isti+inidl[i]
 		filaments.append(tfilaments[isti:iendi])
@@ -21483,19 +21481,19 @@ def localhelicon_MPI(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr, y
 		ERROR('number of CPUs (%i) is larger than the number of filaments (%i), please reduce the number of CPUs used'%(number_of_proc, total_nfils), "localhelicon_MPI", 1,myid)
 
 	#  balanced load
-	temp = chunks_distribution([[len(filaments[i]), i] for i in range(len(filaments))], number_of_proc)[myid:myid+1][0]
-	filaments = [filaments[temp[i][1]] for i in range(len(temp))]
+	temp = chunks_distribution([[len(filaments[i]), i] for i in xrange(len(filaments))], number_of_proc)[myid:myid+1][0]
+	filaments = [filaments[temp[i][1]] for i in xrange(len(temp))]
 	nfils     = len(filaments)
 	list_of_particles = []
 	indcs = []
 	k = 0
-	for i in range(nfils):
+	for i in xrange(nfils):
 		list_of_particles += filaments[i]
 		k1 = k+len(filaments[i])
 		indcs.append([k,k1])
 		k = k1
 	if slowIO:
-		for iproc in range(number_of_proc):
+		for iproc in xrange(number_of_proc):
 			if myid ==iproc:
 				data = EMData.read_images(stack, list_of_particles)
 				print("Read %6d images on process  : %4d"%(len(list_of_particles),myid))
@@ -21516,7 +21514,7 @@ def localhelicon_MPI(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr, y
 	numr	= Numrinit(first_ring, last_ring, rstep, "F")
 
 	#if fourvar:  original_data = []
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr('ID', list_of_particles[im])
 		sttt = Util.infomask(data[im], segmask, False)
 		data[im] -= sttt[0]
@@ -21532,14 +21530,14 @@ def localhelicon_MPI(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr, y
 		finfo.write( '%d loaded  \n' % nima )
 		finfo.flush()
 
-	for i in range(len(xrng)): yrng[i]=dp/(2*pixel_size)
+	for i in xrange(len(xrng)): yrng[i]=dp/(2*pixel_size)
 
 	if myid == main_node:
 		print_msg("Pixel size in Angstroms                   : %5.4f\n"%(pixel_size))
 		print_msg("Y search range (pix) initialized as       : %s\n\n"%(yrng))
 
 	#  set attribute updown for each filament, up will be 0, down will be 1
-	for ivol in range(nfils):
+	for ivol in xrange(nfils):
 		seg_start = indcs[ivol][0]
 		seg_end   = indcs[ivol][1]
 		filamentupdown(data[seg_start: seg_end], pixel_size, dp, dphi)
@@ -21552,7 +21550,7 @@ def localhelicon_MPI(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr, y
 	from time import time
 
 	total_iter = 0
-	for ii in range(lstp):
+	for ii in xrange(lstp):
 		if stepx[ii] == 0.0:
 			if xrng[ii] != 0.0:
 				ERROR('xrange step size cannot be zero', "localhelicon_MPI", 1,myid)
@@ -21560,7 +21558,7 @@ def localhelicon_MPI(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr, y
 				stepx[ii] = 1.0 # this is to prevent division by zero in c++ code
 	# do the projection matching
 	ooiter = 0
-	for N_step in range(lstp):
+	for N_step in xrange(lstp):
 		terminate = 0
 		Iter = 0
 		while(Iter < totmax_iter and terminate == 0):
@@ -21596,19 +21594,19 @@ def localhelicon_MPI(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr, y
 			dpp = float( dpp )
 			dpp_half = dpp/2.0
 
-			for ivol in range(nfils):
+			for ivol in xrange(nfils):
 
 				seg_start = indcs[ivol][0]
 				seg_end   = indcs[ivol][1]
 				Torg = []
-				for im in range( seg_start, seg_end ):
+				for im in xrange( seg_start, seg_end ):
 					Torg.append(data[im].get_attr('xform.projection'))
 
 				#  Fit predicted locations as new starting points					
 				if (seg_end - seg_start) > 1:
 					setfilori_SP(data[seg_start: seg_end], pixel_size, dp, dphi)
 
-				for im in range( seg_start, seg_end ):
+				for im in xrange( seg_start, seg_end ):
 
 					peak, phihi, theta, psi, sxi, syi = \
 						proj_ali_helicon_90_local(data[im], refrings, numr, xrng[N_step], yrng[N_step], stepx[N_step], ynumber[N_step], \
@@ -21696,18 +21694,18 @@ def filamentupdown(fildata, pixel_size, dp, dphi):
 	phig   = [0.0]*ns # given phi
 	s2y    = [0.0]*ns
 	coords = []*ns
-	for i in range(ns):
+	for i in xrange(ns):
 		phig[i], theta, psi, s2x, s2y[i] = get_params_proj(fildata[i])
 		coords.append(fildata[i].get_attr('ptcl_source_coord'))
 		#print i,phig[i], theta, psi, s2x, s2y[i]
 	terr = [0.0]*2 # total error between predicted angles and given angles
 	##serr = [0.0]*2  # shift error not needed, blocked with ##
-	for i in range(1, ns):
+	for i in xrange(1, ns):
 		dist = get_dist(coords[0], coords[i])
 		qd = round((s2y[0] + dist)/rise)
 		##yn   = s2y[0] + dist - rise*qd
 		kl = -1
-		for sgn in range(-1,2,2):
+		for sgn in xrange(-1,2,2):
 			phin   = (phig[0] + sgn*dphi*qd)%360.0
 			err    = (phin - phig[i])%360.0
 			##srr = abs(s2y[i]-yn)
@@ -21721,7 +21719,7 @@ def filamentupdown(fildata, pixel_size, dp, dphi):
 	if(terr[0] > terr[1]):  updown = 0
 	else:                   updown = 1
 	#print "updown=%d"%updown	
-	for i in range(ns):  fildata[i].set_attr("updown",updown)
+	for i in xrange(ns):  fildata[i].set_attr("updown",updown)
 	return
 """
 def setfilori_MA(fildata, pixel_size, dp, dphi):
@@ -21861,11 +21859,11 @@ def setfilori_SP(fildata, pixel_size, dp, dphi):
 	yg 		= [0.0]*ns # given y
 	xg 		= [0.0]*ns # given x
 	thetag	= [0.0]*ns # given theta
-	gxyz    = [[0.0 for i in range(3)]for k in range(ns) ]
+	gxyz    = [[0.0 for i in xrange(3)]for k in xrange(ns) ]
 
 	dist = [0.0]*ns
 	coords0 = fildata[0].get_attr('ptcl_source_coord')
-	for i in range(ns):
+	for i in xrange(ns):
 		coordsi = fildata[i].get_attr('ptcl_source_coord')
 		dist[i] = get_dist(coords0, coordsi)
 		phig[i], thetag[i], psig[i] , xg[i], yg[i] = get_params_proj(fildata[i])
@@ -21882,7 +21880,7 @@ def setfilori_SP(fildata, pixel_size, dp, dphi):
 	phi = [0.0]*ns
 	bys = [0.0]*ns
 	bang = [0.0]*ns
-	cxyz = [[0.0 for i in range(3)]for k in range(ns) ]
+	cxyz = [[0.0 for i in xrange(3)]for k in xrange(ns) ]
 
 	i= 0
 	s2y[i] = 0.0
@@ -21899,14 +21897,14 @@ def setfilori_SP(fildata, pixel_size, dp, dphi):
 
 		qd = round((s2y[0] + dist[i])/rise)
 
-		for i in range(1, ns):
+		for i in xrange(1, ns):
 			qd     = round((s2y[0] + dist[i])/rise)
 			s2y[i] = s2y[0] + dist[i] - rise*qd
 			phi[i] = (phi[0] + sgn*dphi*qd)%360.0
 		phidiff = angle_diff(phi, phig)
 		#print  phidiff
 
-		for i in range(ns):
+		for i in xrange(ns):
 			phi[i] = phi[i]+phidiff
 			temp = radians(phi[i])
 			cxyz [i][0] = cos(temp)
@@ -21914,13 +21912,13 @@ def setfilori_SP(fildata, pixel_size, dp, dphi):
 			cxyz [i][2] = s2y[i]
 
 		qdst = 0.0
-		for i in range(ns):
-			for k in range(3):
+		for i in xrange(ns):
+			for k in xrange(3):
 				qdst += (gxyz[i][k]-cxyz[i][k])**2
 		#print qdst,toto
 		if(qdst<toto):
 			toto = qdst
-			for i in range(ns):
+			for i in xrange(ns):
 				bys[i]   = cxyz[i][2]
 				bang[i]  = phi[i]%360.0
 				
@@ -21929,8 +21927,8 @@ def setfilori_SP(fildata, pixel_size, dp, dphi):
 
 
 	#print  " phidiff,shift", bang,bshift
-	for i in range(ns): phi[i] = (phi[i]+phidiff)%360.0
-	for i in range(ns):
+	for i in xrange(ns): phi[i] = (phi[i]+phidiff)%360.0
+	for i in xrange(ns):
 		set_params_proj(fildata[i], [bang[i], thetag[i], psig[i] , xg[i], bys[i]])
 		#print    "    %3d  %7.1f    %9.3f"%(i,bang[i]-phig[i],bys[i]-yg[i])
 	#print yer, per
@@ -21983,11 +21981,11 @@ def prepare_refffts( volft, kb, nx,ny,nz, segmask, delta,  \
 
 	nr = int(2*psimax/psistep)+1
 
-	for i in range(num_ref):
-		refrings.append([EMData(nx,ny,1,False) for j in range(nr)])
+	for i in xrange(num_ref):
+		refrings.append([EMData(nx,ny,1,False) for j in xrange(nr)])
 
 	if kbx is None:
-		for i in range(ref_start, ref_end):
+		for i in xrange(ref_start, ref_end):
 			prjref = prgs(volft, kb, [ref_angles[i][0], ref_angles[i][1], ref_angles[i][2], 0.0, 0.0])
 			Util.mul_img(prjref, segmask )
 			refrings[i] = preparerefsgrid(prjref, psimax, psistep)
@@ -21996,14 +21994,14 @@ def prepare_refffts( volft, kb, nx,ny,nz, segmask, delta,  \
 		sys.exit()
 	if MPI:
 		from utilities import bcast_EMData_to_all
-		for i in range(num_ref):
-			for j in range(ncpu):
+		for i in xrange(num_ref):
+			for j in xrange(ncpu):
 				ref_start, ref_end = MPI_start_end(num_ref, ncpu, j)
 				if i >= ref_start and i < ref_end: rootid = j
-			for j in range(nr):
+			for j in xrange(nr):
 				bcast_EMData_to_all(refrings[i][j], myid, rootid)
 
-	for i in range(num_ref):
+	for i in xrange(num_ref):
 		q0  = radians(ref_angles[i][0])
 		q1  = radians(ref_angles[i][1])
 		sq1 = sin(q1)
@@ -22193,13 +22191,13 @@ def symsearch_MPI(ref_vol, outdir, maskfile, dp, ndp, dp_step, dphi, ndphi, dphi
 	start_time = time()
 	if myid == main_node:
 		lprms = []
-		for i in range(-ndp,ndp+1,1):
-			for j in range(-ndphi,ndphi+1,1):
+		for i in xrange(-ndp,ndp+1,1):
+			for j in xrange(-ndphi,ndphi+1,1):
 				lprms.append( dp   + i*dp_step)
 				lprms.append( dphi + j*dphi_step)
 		#print "lprms===",lprms
 		recvpara = []
-		for im in range(number_of_proc):
+		for im in xrange(number_of_proc):
 			helic_ib, helic_ie = MPI_start_end(nlprms, number_of_proc, im)
 			recvpara.append(helic_ib )
 			recvpara.append(helic_ie )
@@ -22210,22 +22208,22 @@ def symsearch_MPI(ref_vol, outdir, maskfile, dp, ndp, dp_step, dphi, ndphi, dphi
 	list_fvalues = [-1.0]*((para_end-para_start)*1)
 
 	if myid == main_node:
-		for n in range(number_of_proc):
+		for n in xrange(number_of_proc):
 			if n!=main_node: mpi_send(lprms[2*recvpara[2*n]:2*recvpara[2*n+1]], 2 * (recvpara[2*n+1]-recvpara[2*n]), MPI_FLOAT, n, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 			else:            list_dps = lprms[2*recvpara[2*0]:2*recvpara[2*0+1]]
 	else:
 		list_dps = mpi_recv((para_end-para_start) * 2, MPI_FLOAT, main_node, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 
-	list_dps = list(map(float, list_dps))
+	list_dps = map(float, list_dps)
 
 	local_pos = [0.0, 0.0, -1.0e20]
-	for i in range(para_end-para_start):
+	for i in xrange(para_end-para_start):
 		fvalue = helios7(vol, pixel_size, list_dps[i*2], list_dps[i*2+1], fract, rmax, rmin)
 		if(fvalue >= local_pos[2]):
 			local_pos = [list_dps[i*2], list_dps[i*2+1], fvalue ]
 	if myid == main_node:
 		list_return = [0.0]*(3*number_of_proc)
-		for n in range(number_of_proc):
+		for n in xrange(number_of_proc):
 			if n != main_node: list_return[3*n:3*n+3]                 = mpi_recv(3, MPI_FLOAT, n, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 			else:              list_return[3*main_node:3*main_node+3]  = local_pos[:]
 	else:
@@ -22233,7 +22231,7 @@ def symsearch_MPI(ref_vol, outdir, maskfile, dp, ndp, dp_step, dphi, ndphi, dphi
 
 	if myid == main_node:	
 		maxvalue = list_return[2]
-		for i in range(number_of_proc):
+		for i in xrange(number_of_proc):
 			if( list_return[i*3+2] >= maxvalue ):
 				maxvalue = list_return[i*3+2]
 				dp       = list_return[i*3+0]
@@ -22352,14 +22350,14 @@ def sali3d_base_old(stack, ref_vol = None, Tracker = None, mpi_comm = None, log 
 		else:
 			total_nima = 0
 		total_nima = wrap_mpi_bcast(total_nima, main_node, mpi_comm)
-		list_of_particles = list(range(total_nima))
+		list_of_particles = range(total_nima)
 		image_start, image_end = MPI_start_end(total_nima, number_of_proc, myid)
 		# create a list of images for each node
 		list_of_particles = list_of_particles[image_start: image_end]
 		nima = len(list_of_particles)
 
 	else:
-		list_of_particles = list(range(len(stack)))
+		list_of_particles = range(len(stack))
 		nima = len(list_of_particles)
 		total_nima = len(list_of_particles)
 		total_nima = mpi_reduce(total_nima, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
@@ -22389,7 +22387,7 @@ def sali3d_base_old(stack, ref_vol = None, Tracker = None, mpi_comm = None, log 
 	numr	= Numrinit(first_ring, last_ring, rstep, "F")
 
 	data = [None]*nima
-	for im in range(nima):
+	for im in xrange(nima):
 		if( type(stack) is bytes ):  data[im] = get_im(stack, list_of_particles[im])
 		else:                                   data[im] = stack[list_of_particles[im]]
 	mpi_barrier(mpi_comm)
@@ -22427,7 +22425,7 @@ def sali3d_base_old(stack, ref_vol = None, Tracker = None, mpi_comm = None, log 
 	total_iter = 0
 	# do the projection matching
 	if zoom: lstp = 1
-	for N_step in range(lstp):
+	for N_step in xrange(lstp):
 
 		terminate = 0
 		Iter = 0
@@ -22464,8 +22462,8 @@ def sali3d_base_old(stack, ref_vol = None, Tracker = None, mpi_comm = None, log 
 					# generate list of angles
 					from alignment import generate_list_of_reference_angles_for_search
 					list_of_reference_angles = \
-					generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in range(len(refrings))], sym=sym)			
-					for im in range(nima):
+					generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in xrange(len(refrings))], sym=sym)			
+					for im in xrange(nima):
 						previousmax = data[im].get_attr_default("previousmax", -1.0e23)
 						if(previousmax == -1.0e23):
 							peak, pixer[im] = proj_ali_incore_local(data[im], refrings, list_of_reference_angles, numr, \
@@ -22474,7 +22472,7 @@ def sali3d_base_old(stack, ref_vol = None, Tracker = None, mpi_comm = None, log 
 					del list_of_reference_angles
 				else:
 					#  Here it is supposed to be shake and bake for local SHC, but it would have to be signaled somehow
-					for im in range(nima):
+					for im in xrange(nima):
 						data[im].set_attr("previousmax", -1.0e23)
 				if myid == main_node:
 					log.add("Time to calculate first psi+shifts+previousmax: %10.1f\n" % (time()-start_time))
@@ -22491,9 +22489,9 @@ def sali3d_base_old(stack, ref_vol = None, Tracker = None, mpi_comm = None, log 
 				# generate list of angles
 				from alignment import generate_list_of_reference_angles_for_search
 				list_of_reference_angles = \
-				generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in range(len(refrings))], sym=sym)			
+				generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in xrange(len(refrings))], sym=sym)			
 			else:  list_of_reference_angles = [[1.0,1.0]]
-			for im in range(nima):
+			for im in xrange(nima):
 				if(nsoft == 0):
 					if(an[N_step] == -1):
 						#  In zoom option each projection goes through shift zoom alignment
@@ -22534,7 +22532,7 @@ def sali3d_base_old(stack, ref_vol = None, Tracker = None, mpi_comm = None, log 
 				#total_checked_refs = sum(total_checked_refs)
 				if(nsoft < 2):  par_r[1] = total_nima - par_r[0]
 				log.add("=========== Number of better orientations found ==============")
-				for lhx in range(len(par_r)):
+				for lhx in xrange(len(par_r)):
 					msg = "            %5d     %7d"%(lhx, par_r[lhx])
 					log.add(msg)
 				log.add("_______________________________________________________")
@@ -22560,7 +22558,7 @@ def sali3d_base_old(stack, ref_vol = None, Tracker = None, mpi_comm = None, log 
 				lhist = 20
 				region, histo = hist_list(all_pixer, lhist)
 				log.add("=========== Histogram of pixel errors ==============")
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					msg = "          %10.3f     %7d"%(region[lhx], histo[lhx])
 					log.add(msg)
 				log.add("____________________________________________________")
@@ -22591,7 +22589,7 @@ def sali3d_base_old(stack, ref_vol = None, Tracker = None, mpi_comm = None, log 
 			if( terminate or (Iter == max_iter) ):
 				# gather parameters
 				params = []
-				for im in range(nima):
+				for im in xrange(nima):
 					t = get_params_proj(data[im])
 					params.append( [t[0], t[1], t[2], t[3], t[4]] )
 				params = wrap_mpi_gatherv(params, main_node, mpi_comm)
@@ -22797,7 +22795,7 @@ def slocal_ali3d_base_old(stack, templatevol, Tracker, mpi_comm = None, log= Non
 				dummy = db_open_dict(stack, True)
 
 			nima = EMUtil.get_image_count(stack)
-			list_of_particles = list(range(nima))
+			list_of_particles = range(nima)
 			total_nima = len(list_of_particles)
 		else:
 			list_of_particles = None
@@ -22807,14 +22805,14 @@ def slocal_ali3d_base_old(stack, templatevol, Tracker, mpi_comm = None, log= Non
 		list_of_particles = wrap_mpi_bcast(list_of_particles, main_node, mpi_comm)
 		if myid == main_node:
 			particle_ids = [0]*total_nima
-			for i in range(total_nima):  particle_ids[i] = list_of_particles[i]
+			for i in xrange(total_nima):  particle_ids[i] = list_of_particles[i]
 		image_start, image_end = MPI_start_end(total_nima, number_of_proc, myid)
 		# create a list of images for each node
 		list_of_particles = list_of_particles[image_start: image_end]
 		nima = len(list_of_particles)
 
 	else:
-		list_of_particles = list(range(len(stack)))
+		list_of_particles = range(len(stack))
 		nima = len(list_of_particles)
 		total_nima = len(list_of_particles)
 		total_nima = mpi_reduce(total_nima, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
@@ -22839,7 +22837,7 @@ def slocal_ali3d_base_old(stack, templatevol, Tracker, mpi_comm = None, log= Non
 	mask2D  = model_circle(last_ring, nx, nx)
 
 	dataim = [None]*nima
-	for im in range(nima):
+	for im in xrange(nima):
 		if( type(stack) is bytes ):  dataim[im] = get_im(stack, list_of_particles[im])
 		else:                                   dataim[im] = stack[list_of_particles[im]]
 		dataim[im].set_attr('ID', list_of_particles[im])
@@ -22974,7 +22972,7 @@ def slocal_ali3d_base_old(stack, templatevol, Tracker, mpi_comm = None, log= Non
 	data[3] = mask2D
 	cs = [0.0]*3
 
-	for iteration in range(maxit):
+	for iteration in xrange(maxit):
 		if myid == main_node:
 			start_time = time()
 			log.add("ITERATION #%3d\n"%(iteration+1))
@@ -22983,7 +22981,7 @@ def slocal_ali3d_base_old(stack, templatevol, Tracker, mpi_comm = None, log= Non
 			finfo.write("\n")
 			finfo.flush()
 		pixer = [0.0]*nima
-		for ic in range(n_of_chunks):
+		for ic in xrange(n_of_chunks):
 			# In the very first step the volume has to be computed if it was not provided by the user
 			if( ((iteration > 0) and (ic > 0)) or vol == None):
 				if(center == -1 and sym[0] == 'c'):
@@ -23044,7 +23042,7 @@ def slocal_ali3d_base_old(stack, templatevol, Tracker, mpi_comm = None, log= Non
 				finfo.write("Chunk "+str(ic)+"   Number of images in this chunk: "+str(image_end_in_chunk-image_start_in_chunk)+"\n")
 				finfo.write("First image in this chunk: "+str(image_start_in_chunk)+"   Last image in this chunk: "+str(image_end_in_chunk-1)+"\n")
 				finfo.flush()
-			for imn in range(image_start_in_chunk, image_end_in_chunk):
+			for imn in xrange(image_start_in_chunk, image_end_in_chunk):
 				if CTF:
 					ctf_params = dataim[imn].get_attr( "ctf" )
 					if ctf_params.defocus != previous_defocus:
@@ -23109,13 +23107,13 @@ def slocal_ali3d_base_old(stack, templatevol, Tracker, mpi_comm = None, log= Non
 		mpi_barrier(mpi_comm)
 		terminate = 0
 		if(myid == main_node):
-			pixer = list(map(float, pixer))
+			pixer = map(float, pixer)
 			from statistics import hist_list
 			lhist = 20
 			region, histo = hist_list(pixer, lhist)
 			log.add(" ")
 			log.add("=========== Histogram of pixel errors ==============")
-			for lhx in range(lhist):
+			for lhx in xrange(lhist):
 				msg = "          %10.3f     %7d"%(region[lhx], histo[lhx])
 				log.add(msg)
 			log.add("____________________________________________________\n")
@@ -23123,7 +23121,7 @@ def slocal_ali3d_base_old(stack, templatevol, Tracker, mpi_comm = None, log= Non
 
 			# Terminate if saturatecrit% within pixercutoff pixel error
 			im = 0
-			for lhx in range(lhist):
+			for lhx in xrange(lhist):
 				if(region[lhx] > pixercutoff): break
 				im += histo[lhx]
 			lhx = im/float(total_nima)
@@ -23288,7 +23286,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 	lstp = min( len(xrng), len(yrng), len(step), len(delta) )
 	if an == "-1":
 		an = []
-		for i in range(len(xrng)):   an.append(-1)
+		for i in xrange(len(xrng)):   an.append(-1)
 	else:
 		from  alignment	    import proj_ali_incore_local
 		an      = get_input_from_string(an)
@@ -23359,7 +23357,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 		log.add( "Time to read data: %d\n" % (time()-start_time) );start_time = time()
 	#  Initialize Particle ID and set group number to non-existant -1
 	assignment = [-1]*len(data)
-	for im in range(len(data)):
+	for im in xrange(len(data)):
 		data[im].set_attr_dict({'group':-1})
 	'''
 	if fourvar:
@@ -23382,7 +23380,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 	#Tracker["lowpass"] = lowpass
 	
 	res = 0.5
-	for i in range(len(Tracker["global_fsc"][0])-1,0,-1):
+	for i in xrange(len(Tracker["global_fsc"][0])-1,0,-1):
 		if Tracker["global_fsc"][1][i]>0.5:
 			res = fsc_in[0][i]
 			break
@@ -23390,10 +23388,10 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 	Tracker["lowpass"] = min(0.45, res-0.05)
 	Tracker["falloff"] = 0.1
 	highres = []
-	for  iref in range(numref): highres.append(int(res*Tracker["nxinit"]+.5))	
+	for  iref in xrange(numref): highres.append(int(res*Tracker["nxinit"]+.5))	
 	if myid ==main_node:
 	
-		for  iref in range(numref):
+		for  iref in xrange(numref):
 			ref_list[iref].write_image(os.path.join(outdir, "vol0000.hdf"), iref)
 			#set_filter_parameters_from_adjusted_fsc(Tracker["constants"]["total_stack"],Tracker["number_of_ref_class"][iref],Tracker)
 			log.add("%d reference low pass filter is %f  %f  %d"%(iref, Tracker["lowpass"],Tracker["falloff"],Tracker["number_of_ref_class"][iref]))
@@ -23416,7 +23414,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 			if(Tracker["constants"]["PWadjustment"]):
 				rt = read_text_file(Tracker["PW_dict"][Tracker["constants"]["nxinit"]])
 				ro = rops_table(ref_list[iref])
-				for i in range(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["constants"]["upscale"]
+				for i in xrange(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["constants"]["upscale"]
 				ref_list[iref] = filt_table(ref_list[iref],ro)
 				
 			if (Tracker["constants"]["low_pass_filter"]==-1.):  ref_list[iref] = filt_tanl(ref_list[iref], Tracker["lowpass"], Tracker["falloff"])                                       # low pass from resolution 
@@ -23439,7 +23437,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 	#  this is needed for gathering of pixel errors
 	disps = []
 	recvcount = []
-	for im in range(number_of_proc):
+	for im in xrange(number_of_proc):
 		if im == main_node:  disps.append(0)
 		else:                  disps.append(disps[im-1] + recvcount[im-1])
 		ib, ie = MPI_start_end(total_nima, number_of_proc, im)
@@ -23459,7 +23457,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 
 
 	Niter = int(lstp*maxit*(nassign + nrefine) )
-	for Iter in range(Niter):
+	for Iter in xrange(Niter):
 		N_step = (Iter%(lstp*(nassign+nrefine)))/(nassign+nrefine)
 		if Iter%(nassign+nrefine) < nassign:
 			runtype = "ASSIGNMENT"
@@ -23487,9 +23485,9 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 		cs = [0.0]*3
 		from fundamentals import fft
 		if( not focus ):
-			for im in range(nima):  data[im] = fft(data[im])
+			for im in xrange(nima):  data[im] = fft(data[im])
 
-		for iref in range(numref):
+		for iref in xrange(numref):
 			if myid==main_node: volft = get_im(os.path.join(outdir, "volf%04d.hdf"%(total_iter-1)), iref)
 			else:				volft=model_blank(nx,nx,nx)
 			bcast_EMData_to_all(volft, myid, main_node)
@@ -23511,7 +23509,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 					del volft, kb
 
 			start_time = time()
-			for im in range(nima):
+			for im in xrange(nima):
 				if CTF:
 					ctf = data[im].get_attr( "ctf" )
 					if runtype=="REFINEMENT":
@@ -23607,7 +23605,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 		#  compute number of particles that changed assignment and how many are in which group
 		nchng = 0
 		npergroup = [0]*numref
-		for im in range(nima):
+		for im in xrange(nima):
 			iref = data[im].get_attr('group')
 			npergroup[iref] += 1
 			if iref != assignment[im]:
@@ -23615,7 +23613,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 				nchng += 1
 		nchng            = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup        = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup        = list(map(int, npergroup))
+		npergroup        = map(int, npergroup)
 		terminate        = 0
 		empty_group      = 0
 		empty_group_list = []
@@ -23627,7 +23625,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 			log.add(msg)
 			msg = " Group       number of particles"
 			log.add(msg)
-			for iref in range(numref):
+			for iref in xrange(numref):
 				msg = " %5d       %7d"%(iref+1, npergroup[iref])
 				log.add(msg)
 				if npergroup[iref]==0:
@@ -23647,7 +23645,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 		empty_group = int(empty_group[0])
 		if empty_group ==1: break # program stops whenever empty_group appears!
 		if runtype=="REFINEMENT":
-			for im in range(nima):  data[im].set_attr('xform.projection', trans[im])
+			for im in xrange(nima):  data[im].set_attr('xform.projection', trans[im])
 			if center == -1:
 				cs[0], cs[1], cs[2], dummy, dummy = estimate_3D_center_MPI(data, total_nima, myid, number_of_proc, main_node)				
 				if myid == main_node:
@@ -23661,14 +23659,14 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if myid == main_node:
-				recvbuf = list(map(float, recvbuf))
+				recvbuf = map(float, recvbuf)
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if region[0] < 0.0:  region[0] = 0.0
 				msg = "      Histogram of pixel errors\n      ERROR       number of particles"
 				log.add(msg)
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					msg = " %10.3f      %7d"%(region[lhx], histo[lhx])
 					log.add(msg)
 				del region, histo
@@ -23686,13 +23684,13 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 		#Tracker["lowpass"] = lowpass
 
 		if( not focus ):
-			for im in range(nima):  data[im] = fft(data[im])
+			for im in xrange(nima):  data[im] = fft(data[im])
 
 		highres = []
 		lowpass_tmp =[]
 		tmpref =[]
 		from statistics import fsc
-		for iref in range(numref):
+		for iref in xrange(numref):
 			#  3D stuff
 			from time import localtime, strftime
 			if Tracker["constants"]["3d-interpolation"]==" ":
@@ -23720,7 +23718,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 				volref.write_image(os.path.join(outdir, "vol%04d.hdf"%( total_iter)), iref)
 				if fourvar and runtype=="REFINEMENT": sumvol += volref
 				res = 0.5
-				for ifreq in range(len(fscc[iref][0])-1,0,-1):
+				for ifreq in xrange(len(fscc[iref][0])-1,0,-1):
 					if fscc[iref][1][ifreq] > 0.5 : # always use .5 as cutoff
 						res = fscc[iref][0][ifreq]
 						break
@@ -23741,7 +23739,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 		Tracker["lowpass"]=min(lowpass_tmp)
 		if myid ==main_node:
 				log.add(" the adopted low pass filter is %f    %f   "%(Tracker["lowpass"], Tracker["falloff"]))
-		for iref in range(numref):
+		for iref in xrange(numref):
 			if myid == main_node:
 				log.add("%d highres                   %f"%(iref, highres[iref]))
 				if Tracker["mask3D"]:
@@ -23754,7 +23752,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 				
 					rt = read_text_file(Tracker["PW_dict"][Tracker["constants"]["nxinit"]])
 					ro = rops_table(tmpref[iref])
-					for i in range(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["constants"]["upscale"]
+					for i in xrange(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["constants"]["upscale"]
 					tmpref[iref] =filt_table(tmpref[iref],ro)
 
 				if (Tracker["constants"]["low_pass_filter"]==-1.):  tmpref[iref] = filt_tanl(tmpref[iref], Tracker["lowpass"], Tracker["falloff"])                                       # low pass from resolution 
@@ -23837,7 +23835,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 	if myid ==main_node:
 		nc = 0
 		write_text_file(group_list, os.path.join(outdir,"list2.txt"))
-		for igrp in range(len(res_groups)):
+		for igrp in xrange(len(res_groups)):
 			if len(res_groups[igrp])>0:
 				write_text_file(res_groups[igrp], os.path.join(outdir,"Class%d.txt"%nc))
 				nc +=1
@@ -23967,7 +23965,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 	lstp = min( len(xrng), len(yrng), len(step), len(delta) )
 	if (an == "-1"):
 		an = []
-		for i in range(len(xrng)):   an.append(-1)
+		for i in xrange(len(xrng)):   an.append(-1)
 	else:
 		from  alignment	    import proj_ali_incore_local
 		an      = get_input_from_string(an)
@@ -24047,31 +24045,31 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 	start_time = time()
 	#  Here the assumption is that input are always volumes.  It should be most likely be changed so optionally these are group assignments.
 	#  Initialize Particle ID and set group number to non-existant -1
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr_dict({'group':-1})
 	if(myid == 0):
 		log.add( "Time to read data: %d" % (time()-start_time) );start_time = time()
 
 	if myid == main_node:
 		refdata = [None]*7
-		for  iref in range(numref):
+		for  iref in xrange(numref):
 			ref_list[iref].write_image(os.path.join(outdir, "vol0000.hdf"), iref)
 		#refdata[0] = 
 		#user_func(refdata)
 	refdata        =[None]*4
 	res = 0.5
-	for i in range(len(Tracker["global_fsc"][0])-1,0,-1):
+	for i in xrange(len(Tracker["global_fsc"][0])-1,0,-1):
 		if Tracker["global_fsc"][1][i] > 0.5:
 				res=fsc_in[0][i]
 				break
 	highres = []
-	for  iref in range(numref): highres.append(int(res*Tracker["nxinit"] + 0.5))
+	for  iref in xrange(numref): highres.append(int(res*Tracker["nxinit"] + 0.5))
 	Tracker["lowpass"] = min(0.45, res-0.05)
 	Tracker["lowpass"] = max(0.11,res)
 	Tracker["falloff"] = 0.1
 	##-----------------------------------------------
 	if myid == main_node:  ### 3-D mask, low pass filter, and power spectrum adjustment
-		for iref in range(numref):
+		for iref in xrange(numref):
 		
 			#set_filter_parameters_from_adjusted_fsc(Tracker["constants"]["total_stack"],Tracker["number_of_ref_class"][iref],Tracker)
 			log.add("%d  low pass filter   %f %f  %d"%(iref,Tracker["lowpass"],Tracker["falloff"],Tracker["number_of_ref_class"][iref]))
@@ -24094,7 +24092,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 			if(Tracker["constants"]["PWadjustment"] != ''):
 				rt = read_text_file(Tracker["PW_dict"][Tracker["constants"]["nxinit"]])
 				ro = rops_table(ref_list[iref])
-				for i in range(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["constants"]["upscale"]
+				for i in xrange(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["constants"]["upscale"]
 				ref_list[iref] =filt_table(ref_list[iref],ro)
 				
 			if (Tracker["constants"]["low_pass_filter"]==-1.):  ref_list[iref] = filt_tanl(ref_list[iref], Tracker["lowpass"], Tracker["falloff"])                                       # low pass from resolution 
@@ -24116,7 +24114,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 	#  this is needed for gathering of pixel errors
 	disps = []
 	recvcount = []
-	for im in range(number_of_proc):
+	for im in xrange(number_of_proc):
 		if( im == main_node ):  disps.append(0)
 		else:                   disps.append(disps[im-1] + recvcount[im-1])
 		ib, ie = MPI_start_end(total_nima, number_of_proc, im)
@@ -24135,7 +24133,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 		focus = prep_vol(focus, 1, 1)
 
 	Niter = int(lstp*maxit*(nassign + nrefine) )
-	for Iter in range(Niter):
+	for Iter in xrange(Niter):
 		N_step = (Iter%(lstp*(nassign+nrefine)))/(nassign+nrefine)
 		if Iter%(nassign+nrefine) < nassign:
 			runtype = "ASSIGNMENT"
@@ -24147,10 +24145,10 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 			log.add("\n%s ITERATION #%3d,  inner iteration #%3d\nDelta = %4.1f, an = %5.2f, xrange = %5.2f, yrange = %5.2f, step = %5.2f  \
 			"%(runtype, total_iter, Iter, delta[N_step], an[N_step], xrng[N_step],yrng[N_step],step[N_step]))
 			start_ime = time()
-		peaks =  [ [ -1.0e23 for im in range(nima) ] for iref in range(numref) ]
+		peaks =  [ [ -1.0e23 for im in xrange(nima) ] for iref in xrange(numref) ]
 		if runtype=="REFINEMENT":
-			trans = [ [ tr_dummy for im in range(nima) ] for iref in range(numref) ]
-			pixer = [ [  0.0     for im in range(nima) ] for iref in range(numref) ]
+			trans = [ [ tr_dummy for im in xrange(nima) ] for iref in xrange(numref) ]
+			pixer = [ [  0.0     for im in xrange(nima) ] for iref in xrange(numref) ]
 			if(an[N_step] > 0):
 				from utilities    import even_angles
 				ref_angles = even_angles(delta[N_step], symmetry=sym, method = ref_a, phiEqpsi = "Zero")
@@ -24163,9 +24161,9 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 		cs = [0.0]*3
 		from fundamentals import fft
 		if( not focus ):
-			for im in range(nima):  data[im] = fft(data[im])
+			for im in xrange(nima):  data[im] = fft(data[im])
 
-		for iref in range(numref):
+		for iref in xrange(numref):
 			if(myid == main_node):	volft = get_im(os.path.join(outdir, "volf%04d.hdf"%(total_iter-1)), iref)
 			else: 					volft =  model_blank(nx, nx, nx)
 			bcast_EMData_to_all(volft, myid, main_node)
@@ -24184,7 +24182,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 					if(myid == 0): log.add( "Initial time to prepare rings: %d" % (time()-start_time) );start_time = time()
 					del volft, kb
 			start_time = time()
-			for im in range(nima):
+			for im in xrange(nima):
 				if(CTF):
 					ctf = data[im].get_attr("ctf")
 					if runtype=="REFINEMENT":
@@ -24271,7 +24269,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 		from numpy import float32, empty, inner, abs
 		if( myid == 0 ):
 			dtot = empty( (numref, total_nima), dtype = float32)
-		for  iref in range(numref):
+		for  iref in xrange(numref):
 			recvbuf = mpi_gatherv(peaks[iref], nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			if( myid == 0 ): dtot[iref] = recvbuf
 		del recvbuf
@@ -24282,36 +24280,36 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 		elif Tracker["constants"]["protein_shape"]=="f"  :refa = even_angles(40.0, theta1=65, theta2=115) # filament proteins
 		numrefang = len(refa)
 		refanorm = empty( (numrefang, 3), dtype = float32)
-		for i in range(numrefang):
+		for i in xrange(numrefang):
 			tmp = getvec(refa[i][0], refa[i][1])
-			for j in range(3):
+			for j in xrange(3):
 				refanorm[i][j] = tmp[j]
 		del  refa, tmp
 		transv = empty( (nima, 3), dtype = float32)
 		if runtype=="ASSIGNMENT":
-			for im in range(nima):
+			for im in xrange(nima):
 				trns = data[im].get_attr("xform.projection")
-				for j in range(3):
+				for j in xrange(3):
 					transv[im][j] = trns.at(2,j)
 		else:
 			# For REFINEMENT we have a problem, as the exact angle is known only after the next step of assigning projections.
 			# So, we will assume it is the one with max peak
-			for im in range(nima):
+			for im in xrange(nima):
 				qt = -1.0e23
 				it = -1
-				for iref in range(numref):
+				for iref in xrange(numref):
 					pt = peaks[iref][im]
 					if(pt > qt):
 						qt = pt
 						it = iref
-				for j in range(3):
+				for j in xrange(3):
 					transv[im][j] = trans[it][im].at(2,j)
 		#  We have all vectors, now create a list of assignments of images to references
 		refassign = [-1]*nima
-		for im in range(nima):
+		for im in xrange(nima):
 			refassign[im] = abs(inner(refanorm,transv[im])).argmax()
 		assigntorefa = mpi_gatherv(refassign, nima, MPI_INT, recvcount, disps, MPI_INT, main_node, MPI_COMM_WORLD)
-		assigntorefa = list(map(int, assigntorefa))
+		assigntorefa = map(int, assigntorefa)
 		del refassign, refanorm, transv
 		"""
 		#  Trying to use ISAC code for EQ-Kmeans  PAP 03/21/2015
@@ -24357,22 +24355,22 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 		"""
 		if myid == main_node:
 			SA = False
-			asi = [[] for iref in range(numref)]
+			asi = [[] for iref in xrange(numref)]
 			report_error = 0
-			for imrefa in range(numrefang):
+			for imrefa in xrange(numrefang):
 				from utilities import findall
 				N = findall(imrefa, assigntorefa)
 				current_nima = len(N)
 				if( current_nima >= numref and report_error == 0):
-					tasi = [[] for iref in range(numref)]
+					tasi = [[] for iref in xrange(numref)]
 					maxasi = current_nima//numref
 					nt = current_nima
 					kt = numref
-					K = list(range(numref))
+					K = range(numref)
 
 					d = empty( (numref, current_nima), dtype = float32)
-					for ima in range(current_nima):
-						for iref in range(numref):  d[iref][ima] = dtot[iref][N[ima]]
+					for ima in xrange(current_nima):
+						for iref in xrange(numref):  d[iref][ima] = dtot[iref][N[ima]]
 
 					while nt > 0 and kt > 0:
 						l = d.argmax()
@@ -24382,30 +24380,30 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 							J = [0.0]*numref
 							sJ = 0
 							Jc = [0.0]*numref
-							for iref in range(numref):
+							for iref in xrange(numref):
 								J[iref] = exp(d[iref][ima]/T)
 								sJ += J[iref]
-							for iref in range(numref):
+							for iref in xrange(numref):
 								J[iref] /= sJ
 							Jc[0] = J[0]
-							for iref in range(1, numref):
+							for iref in xrange(1, numref):
 								Jc[iref] = Jc[iref-1]+J[iref]
 							sss = random()
-							for group in range(numref):
+							for group in xrange(numref):
 								if( sss <= Jc[group]): break
 						tasi[group].append(N[ima])
 						N[ima] = -1
-						for iref in range(numref):  d[iref][ima] = -1.e10
+						for iref in xrange(numref):  d[iref][ima] = -1.e10
 						nt -= 1
 						masi = len(tasi[group])
 						if masi == maxasi:
-							for im in range(current_nima):  d[group][im] = -1.e10
+							for im in xrange(current_nima):  d[group][im] = -1.e10
 							kt -= 1
 					else:
-						for ima in range(current_nima):
+						for ima in xrange(current_nima):
 							if N[ima] > -1:
 								qm = -1.e10
-								for iref in range(numref):
+								for iref in xrange(numref):
 									qt = dtot[iref][N[ima]]
 									if( qt > qm ):
 										qm = qt
@@ -24413,7 +24411,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 								tasi[group].append(N[ima])
 					del d, N, K
 					if  SA:  del J, Jc
-					for iref in range(numref):
+					for iref in xrange(numref):
 						asi[iref] += tasi[iref]
 					del tasi
 				else:
@@ -24427,8 +24425,8 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 		if report_error == 1:  ERROR('Number of images within a group too small', "mref_ali3d_MPI", 1, myid)
 		if myid == main_node:
 			assignment = [0]*total_nima
-			for iref in range(numref):
-				for im in range(len(asi[iref])):
+			for iref in xrange(numref):
+				for im in xrange(len(asi[iref])):
 					assignment[asi[iref][im]] = iref
 			del asi
 		
@@ -24503,18 +24501,18 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 			assignment = []
 		'''
 		assignment = mpi_scatterv(assignment, recvcount, disps, MPI_INT, recvcount[myid], MPI_INT, main_node, MPI_COMM_WORLD)
-		assignment = list(map(int, assignment))
+		assignment = map(int, assignment)
 		#  compute number of particles that changed assignment and how many are in which group
 		nchng = 0
 		npergroup = [0]*numref
-		for im in range(nima):
+		for im in xrange(nima):
 			iref = data[im].get_attr('group')
 			npergroup[assignment[im]] += 1
 			if( iref != assignment[im]): nchng += 1
 			data[im].set_attr('group', assignment[im])
 		nchng = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup = list(map(int, npergroup))
+		npergroup = map(int, npergroup)
 		terminate = 0
 		if( myid == 0 ):
 			ngroup=[]
@@ -24524,7 +24522,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 			log.add(msg)
 			msg = " Group       number of particles"
 			log.add(msg)
-			for iref in range(numref):
+			for iref in xrange(numref):
 				msg = " %5d       %7d"%(iref+1, npergroup[iref])
 				log.add(msg)
 				ngroup.append(int(npergroup[iref]))
@@ -24536,7 +24534,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 		ngroup = wrap_mpi_bcast(ngroup,main_node)
 
 		if runtype=="REFINEMENT":
-			for im in range(nima):
+			for im in xrange(nima):
 				data[im].set_attr('xform.projection', trans[assignment[im]][im])
 				pixer[0][im] = pixer[assignment[im]][im]
 			pixer = pixer[0]
@@ -24552,14 +24550,14 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if(myid == main_node):
-				recvbuf = list(map(float, recvbuf))
+				recvbuf = map(float, recvbuf)
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if(region[0] < 0.0):  region[0] = 0.0
 				msg = "      Histogram of pixel errors\n      ERROR       number of particles"
 				log.add(msg)
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					msg = " %10.3f      %7d"%(region[lhx], histo[lhx])
 					log.add(msg)
 				del region, histo
@@ -24570,11 +24568,11 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 		start_time = time()
 
 		if( not focus ):
-			for im in range(nima):  data[im] = fft(data[im])
+			for im in xrange(nima):  data[im] = fft(data[im])
 		highres = []
 		lowpass_tmp = []
 		tmpref =[]
-		for iref in range(numref):
+		for iref in xrange(numref):
 			#  3D stuff
 			from time import localtime, strftime
 			if Tracker["constants"]["3d-interpolation"]=="trl":
@@ -24607,7 +24605,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 			#set_filter_parameters_from_adjusted_fsc(Tracker["constants"]["total_stack"],ngroup[iref],Tracker)
 			if myid ==main_node:
 				res = 0.5
-				for ifreq in range(len(fscc[iref][0])-1,0,-1):
+				for ifreq in xrange(len(fscc[iref][0])-1,0,-1):
 					if fscc[iref][1][ifreq] > 0.5 : # always use .5 as cutoff
 						res = fscc[iref][0][ifreq]
 						break
@@ -24630,7 +24628,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 		Tracker["lowpass"] = min(lowpass_tmp)
 		if myid ==main_node:
 			log.add(" the adopted  low pass filter is %f    %f   "%(Tracker["lowpass"], Tracker["falloff"]))
-		for iref in range(numref):
+		for iref in xrange(numref):
 			
 			if myid ==main_node:
 				volref =tmpref[iref]
@@ -24645,7 +24643,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 				
 					rt = read_text_file(Tracker["PW_dict"][Tracker["constants"]["nxinit"]])
 					ro = rops_table(volref)
-					for i in range(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["constants"]["upscale"]
+					for i in xrange(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["constants"]["upscale"]
 					volref =filt_table(volref,ro)
 							
 				if (Tracker["constants"]["low_pass_filter"]==-1.):  volref = filt_tanl(volref, Tracker["lowpass"], Tracker["falloff"])                                       # low pass from resolution 
@@ -24847,7 +24845,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 	lstp = min( len(xrng), len(yrng), len(step), len(delta) )
 	if (an == "-1"):
 		an = []
-		for i in range(len(xrng)):   an.append(-1)
+		for i in xrange(len(xrng)):   an.append(-1)
 	else:
 		from  alignment	    import proj_ali_incore_local
 		an      = get_input_from_string(an)
@@ -24927,31 +24925,31 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 	start_time = time()
 	#  Here the assumption is that input are always volumes.  It should be most likely be changed so optionally these are group assignments.
 	#  Initialize Particle ID and set group number to non-existant -1
-	for im in range(nima):
+	for im in xrange(nima):
 		data[im].set_attr_dict({'group':-1})
 	if(myid == 0):
 		log.add( "Time to read data: %d" % (time()-start_time) );start_time = time()
 
 	if myid == main_node:
 		refdata = [None]*7
-		for  iref in range(numref):
+		for  iref in xrange(numref):
 			ref_list[iref].write_image(os.path.join(outdir, "vol0000.hdf"), iref)
 		#refdata[0] = 
 		#user_func(refdata)
 	refdata        =[None]*4
 	res = 0.5
-	for i in range(len(Tracker["global_fsc"][0])-1,0,-1):
+	for i in xrange(len(Tracker["global_fsc"][0])-1,0,-1):
 		if Tracker["global_fsc"][1][i] > 0.5:
 				res=fsc_in[0][i]
 				break
 	highres = []
-	for  iref in range(numref): highres.append(int(res*Tracker["nxinit"] + 0.5))
+	for  iref in xrange(numref): highres.append(int(res*Tracker["nxinit"] + 0.5))
 	Tracker["lowpass"] = min(0.45, res-0.05)
 	Tracker["lowpass"] = max(0.11, res)
 	Tracker["falloff"] = 0.1
 	##-----------------------------------------------
 	if myid == main_node:  ### 3-D mask, low pass filter, and power spectrum adjustment
-		for iref in range(numref):
+		for iref in xrange(numref):
 		
 			#set_filter_parameters_from_adjusted_fsc(Tracker["constants"]["total_stack"],Tracker["number_of_ref_class"][iref],Tracker)
 			log.add("%d  low pass filter   %f %f  %d"%(iref,Tracker["lowpass"],Tracker["falloff"],Tracker["number_of_ref_class"][iref]))
@@ -24966,7 +24964,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 			if(Tracker["constants"]["PWadjustment"] !=""):
 				rt = read_text_file(Tracker["PW_dict"][Tracker["constants"]["nxinit"]])
 				ro = rops_table(ref_list[iref])
-				for i in range(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["constants"]["upscale"]
+				for i in xrange(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["constants"]["upscale"]
 				ref_list[iref] =filt_table(ref_list[iref],ro)
 				
 			if (Tracker["constants"]["low_pass_filter"]==-1.):  ref_list[iref] = filt_tanl(ref_list[iref], Tracker["lowpass"], Tracker["falloff"])                                       # low pass from resolution 
@@ -24988,7 +24986,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 	#  this is needed for gathering of pixel errors
 	disps = []
 	recvcount = []
-	for im in range(number_of_proc):
+	for im in xrange(number_of_proc):
 		if( im == main_node ):  disps.append(0)
 		else:                   disps.append(disps[im-1] + recvcount[im-1])
 		ib, ie = MPI_start_end(total_nima, number_of_proc, im)
@@ -25007,7 +25005,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 		focus = prep_vol(focus, 1, 1)
 
 	Niter = int(lstp*maxit*(nassign + nrefine) )
-	for Iter in range(Niter):
+	for Iter in xrange(Niter):
 		N_step = (Iter%(lstp*(nassign+nrefine)))/(nassign+nrefine)
 		if Iter%(nassign+nrefine) < nassign:
 			runtype = "ASSIGNMENT"
@@ -25019,10 +25017,10 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 			log.add("\n%s ITERATION #%3d,  inner iteration #%3d\nDelta = %4.1f, an = %5.2f, xrange = %5.2f, yrange = %5.2f, step = %5.2f  \
 			"%(runtype, total_iter, Iter, delta[N_step], an[N_step], xrng[N_step],yrng[N_step],step[N_step]))
 			start_ime = time()
-		peaks =  [ [ -1.0e23 for im in range(nima) ] for iref in range(numref) ]
+		peaks =  [ [ -1.0e23 for im in xrange(nima) ] for iref in xrange(numref) ]
 		if runtype=="REFINEMENT":
-			trans = [ [ tr_dummy for im in range(nima) ] for iref in range(numref) ]
-			pixer = [ [  0.0     for im in range(nima) ] for iref in range(numref) ]
+			trans = [ [ tr_dummy for im in xrange(nima) ] for iref in xrange(numref) ]
+			pixer = [ [  0.0     for im in xrange(nima) ] for iref in xrange(numref) ]
 			if(an[N_step] > 0):
 				from utilities    import even_angles
 				ref_angles = even_angles(delta[N_step], symmetry=sym, method = ref_a, phiEqpsi = "Zero")
@@ -25035,9 +25033,9 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 		cs = [0.0]*3
 		from fundamentals import fft
 		if( not focus ):
-			for im in range(nima):  data[im] = fft(data[im])
+			for im in xrange(nima):  data[im] = fft(data[im])
 
-		for iref in range(numref):
+		for iref in xrange(numref):
 			if(myid == main_node):	volft = get_im(os.path.join(outdir, "volf%04d.hdf"%(total_iter-1)), iref)
 			else: 					volft =  model_blank(nx, nx, nx)
 			bcast_EMData_to_all(volft, myid, main_node)
@@ -25056,7 +25054,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 					if(myid == 0): log.add( "Initial time to prepare rings: %d" % (time()-start_time) );start_time = time()
 					del volft, kb
 			start_time = time()
-			for im in range(nima):
+			for im in xrange(nima):
 				if(CTF):
 					ctf = data[im].get_attr("ctf")
 					if runtype=="REFINEMENT":
@@ -25151,7 +25149,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 		from numpy import float32, empty, inner, abs
 		if( myid == 0 ):
 			dtot = empty( (numref, total_nima), dtype = float32)
-		for  iref in range(numref):
+		for  iref in xrange(numref):
 			recvbuf = mpi_gatherv(peaks[iref], nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			if( myid == 0 ): dtot[iref] = recvbuf
 		del recvbuf
@@ -25161,36 +25159,36 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 		refa = even_angles(60.0)
 		numrefang = len(refa)
 		refanorm = empty( (numrefang, 3), dtype = float32)
-		for i in range(numrefang):
+		for i in xrange(numrefang):
 			tmp = getvec(refa[i][0], refa[i][1])
-			for j in range(3):
+			for j in xrange(3):
 				refanorm[i][j] = tmp[j]
 		del  refa, tmp
 		transv = empty( (nima, 3), dtype = float32)
 		if runtype=="ASSIGNMENT":
-			for im in range(nima):
+			for im in xrange(nima):
 				trns = data[im].get_attr("xform.projection")
-				for j in range(3):
+				for j in xrange(3):
 					transv[im][j] = trns.at(2,j)
 		else:
 			# For REFINEMENT we have a problem, as the exact angle is known only after the next step of assigning projections.
 			# So, we will assume it is the one with max peak
-			for im in range(nima):
+			for im in xrange(nima):
 				qt = -1.0e23
 				it = -1
-				for iref in range(numref):
+				for iref in xrange(numref):
 					pt = peaks[iref][im]
 					if(pt > qt):
 						qt = pt
 						it = iref
-				for j in range(3):
+				for j in xrange(3):
 					transv[im][j] = trans[it][im].at(2,j)
 		#  We have all vectors, now create a list of assignments of images to references
 		refassign = [-1]*nima
-		for im in range(nima):
+		for im in xrange(nima):
 			refassign[im] = abs(inner(refanorm,transv[im])).argmax()
 		assigntorefa = mpi_gatherv(refassign, nima, MPI_INT, recvcount, disps, MPI_INT, main_node, MPI_COMM_WORLD)
-		assigntorefa = list(map(int, assigntorefa))
+		assigntorefa = map(int, assigntorefa)
 		del refassign, refanorm, transv
 		"""
 		#  Trying to use ISAC code for EQ-Kmeans  PAP 03/21/2015
@@ -25236,22 +25234,22 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 		"""
 		if myid == main_node:
 			SA = False
-			asi = [[] for iref in range(numref)]
+			asi = [[] for iref in xrange(numref)]
 			report_error = 0
-			for imrefa in range(numrefang):
+			for imrefa in xrange(numrefang):
 				from utilities import findall
 				N = findall(imrefa, assigntorefa)
 				current_nima = len(N)
 				if( current_nima >= numref and report_error == 0):
-					tasi = [[] for iref in range(numref)]
+					tasi = [[] for iref in xrange(numref)]
 					maxasi = current_nima//numref
 					nt = current_nima
 					kt = numref
-					K = list(range(numref))
+					K = range(numref)
 
 					d = empty( (numref, current_nima), dtype = float32)
-					for ima in range(current_nima):
-						for iref in range(numref):  d[iref][ima] = dtot[iref][N[ima]]
+					for ima in xrange(current_nima):
+						for iref in xrange(numref):  d[iref][ima] = dtot[iref][N[ima]]
 
 					while nt > 0 and kt > 0:
 						l = d.argmax()
@@ -25261,30 +25259,30 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 							J = [0.0]*numref
 							sJ = 0
 							Jc = [0.0]*numref
-							for iref in range(numref):
+							for iref in xrange(numref):
 								J[iref] = exp(d[iref][ima]/T)
 								sJ += J[iref]
-							for iref in range(numref):
+							for iref in xrange(numref):
 								J[iref] /= sJ
 							Jc[0] = J[0]
-							for iref in range(1, numref):
+							for iref in xrange(1, numref):
 								Jc[iref] = Jc[iref-1]+J[iref]
 							sss = random()
-							for group in range(numref):
+							for group in xrange(numref):
 								if( sss <= Jc[group]): break
 						tasi[group].append(N[ima])
 						N[ima] = -1
-						for iref in range(numref):  d[iref][ima] = -1.e10
+						for iref in xrange(numref):  d[iref][ima] = -1.e10
 						nt -= 1
 						masi = len(tasi[group])
 						if masi == maxasi:
-							for im in range(current_nima):  d[group][im] = -1.e10
+							for im in xrange(current_nima):  d[group][im] = -1.e10
 							kt -= 1
 					else:
-						for ima in range(current_nima):
+						for ima in xrange(current_nima):
 							if N[ima] > -1:
 								qm = -1.e10
-								for iref in range(numref):
+								for iref in xrange(numref):
 									qt = dtot[iref][N[ima]]
 									if( qt > qm ):
 										qm = qt
@@ -25292,7 +25290,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 								tasi[group].append(N[ima])
 					del d, N, K
 					if  SA:  del J, Jc
-					for iref in range(numref):
+					for iref in xrange(numref):
 						asi[iref] += tasi[iref]
 					del tasi
 				else:
@@ -25306,8 +25304,8 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 		if report_error == 1:  ERROR('Number of images within a group too small', "mref_ali3d_MPI", 1, myid)
 		if myid == main_node:
 			assignment = [0]*total_nima
-			for iref in range(numref):
-				for im in range(len(asi[iref])):
+			for iref in xrange(numref):
+				for im in xrange(len(asi[iref])):
 					assignment[asi[iref][im]] = iref
 			del asi
 		
@@ -25382,18 +25380,18 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 			assignment = []
 		'''
 		assignment = mpi_scatterv(assignment, recvcount, disps, MPI_INT, recvcount[myid], MPI_INT, main_node, MPI_COMM_WORLD)
-		assignment = list(map(int, assignment))
+		assignment = map(int, assignment)
 		#  compute number of particles that changed assignment and how many are in which group
 		nchng = 0
 		npergroup = [0]*numref
-		for im in range(nima):
+		for im in xrange(nima):
 			iref = data[im].get_attr('group')
 			npergroup[assignment[im]] += 1
 			if( iref != assignment[im]): nchng += 1
 			data[im].set_attr('group', assignment[im])
 		nchng = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup = list(map(int, npergroup))
+		npergroup = map(int, npergroup)
 		terminate = 0
 		if( myid == 0 ):
 			ngroup=[]
@@ -25403,7 +25401,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 			log.add(msg)
 			msg = " Group       number of particles"
 			log.add(msg)
-			for iref in range(numref):
+			for iref in xrange(numref):
 				msg = " %5d       %7d"%(iref+1, npergroup[iref])
 				log.add(msg)
 				ngroup.append(int(npergroup[iref]))
@@ -25415,7 +25413,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 		ngroup = wrap_mpi_bcast(ngroup,main_node)
 
 		if runtype=="REFINEMENT":
-			for im in range(nima):
+			for im in xrange(nima):
 				data[im].set_attr('xform.projection', trans[assignment[im]][im])
 				pixer[0][im] = pixer[assignment[im]][im]
 			pixer = pixer[0]
@@ -25431,14 +25429,14 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if(myid == main_node):
-				recvbuf = list(map(float, recvbuf))
+				recvbuf = map(float, recvbuf)
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if(region[0] < 0.0):  region[0] = 0.0
 				msg = "      Histogram of pixel errors\n      ERROR       number of particles"
 				log.add(msg)
-				for lhx in range(lhist):
+				for lhx in xrange(lhist):
 					msg = " %10.3f      %7d"%(region[lhx], histo[lhx])
 					log.add(msg)
 				del region, histo
@@ -25449,11 +25447,11 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 		start_time = time()
 
 		if( not focus ):
-			for im in range(nima):  data[im] = fft(data[im])
+			for im in xrange(nima):  data[im] = fft(data[im])
 		highres     = []
 		lowpass_tmp = []
 		tmpref      = []
-		for iref in range(numref):
+		for iref in xrange(numref):
 			#  3D stuff
 			from time import localtime, strftime
 			if(CTF): volref, fscc[iref] = rec3D_two_chunks_MPI(data, snr, sym, mask3D,\
@@ -25468,7 +25466,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 			#set_filter_parameters_from_adjusted_fsc(Tracker["constants"]["total_stack"],ngroup[iref],Tracker)
 			if myid ==main_node:
 				res = 0.5
-				for ifreq in range(len(fscc[iref][0])-1,0,-1):
+				for ifreq in xrange(len(fscc[iref][0])-1,0,-1):
 					if fscc[iref][1][ifreq] > 0.5 : # always use .5 as cutoff
 						res = fscc[iref][0][ifreq]
 						break
@@ -25491,10 +25489,10 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 		Tracker["lowpass"] = min(lowpass_tmp)
 		if myid ==main_node:
 			log.add(" the adopted  low pass filter is %f    %f   "%(Tracker["lowpass"], Tracker["falloff"]))
-		for iref in range(numref):
+		for iref in xrange(numref):
 			if myid ==main_node:
 				volref = model_blank(nx,nx,nx)
-				for j in range(-m, m+1):
+				for j in xrange(-m, m+1):
 					#if iref +j <0: k = numref+iref+j
 					#else: k = (iref+j)%numref
 					
@@ -25511,7 +25509,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 				
 					rt = read_text_file(Tracker["PW_dict"][Tracker["constants"]["nxinit"]])
 					ro = rops_table(volref)
-					for i in range(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["constants"]["upscale"]
+					for i in xrange(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["constants"]["upscale"]
 					volref =filt_table(volref,ro)
 							
 				if (Tracker["constants"]["low_pass_filter"]== -1.):  volref = filt_tanl(volref, Tracker["lowpass"], Tracker["falloff"])                                       # low pass from resolution 

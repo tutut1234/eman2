@@ -32,13 +32,11 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
 from eman2_gui.emapplication import EMApp, get_application
 from eman2_gui.emimage3dsym import EM3DSymModel,EMSymInspector
 import os,sys
 from EMAN2 import *
 from PyQt4 import QtGui,QtCore
-from PyQt4.QtCore import QString
 from eman2_gui.emimagemx import EMImageMXWidget
 from eman2_gui.emglobjects import EM3DGLWidget
 
@@ -117,7 +115,7 @@ class EMCmpExplorer(EM3DSymModel):
 		self.shrink=shrink
 		# Deal with particles
 		n=min(EMUtil.get_image_count(self.particle_file),800)
-		self.ptcl_data=[i for i in EMData.read_images(self.particle_file,list(range(n))) if i!=None]
+		self.ptcl_data=[i for i in EMData.read_images(self.particle_file,range(n)) if i!=None]
 		if self.shrink>1 :
 			for i in self.ptcl_data : i.process_inplace("math.meanshrink",{"n":self.shrink})
 		for i in self.ptcl_data : i.process_inplace("normalize.edgemean",{})
@@ -125,8 +123,8 @@ class EMCmpExplorer(EM3DSymModel):
 		if self.ptcl_display==None : 
 			self.ptcl_display = EMImageMXWidget()
 			self.ptcl_display.set_mouse_mode("App")
-			self.ptcl_display.mx_image_selected.connect(self.ptcl_selected)
-			self.ptcl_display.module_closed.connect(self.on_mx_display_closed)
+			QtCore.QObject.connect(self.ptcl_display,QtCore.SIGNAL("mx_image_selected"),self.ptcl_selected)		
+			QtCore.QObject.connect(self.ptcl_display,QtCore.SIGNAL("module_closed"),self.on_mx_display_closed)
 		self.ptcl_display.set_data(self.ptcl_data)
 
 		# deal with projections
@@ -156,7 +154,7 @@ class EMCmpExplorer(EM3DSymModel):
 		resize_necessary = False
 		if self.mx_display == None:
 			self.mx_display = EMImageMXWidget()
-			self.mx_display.module_closed.connect(self.on_mx_display_closed)
+			QtCore.QObject.connect(self.mx_display,QtCore.SIGNAL("module_closed"),self.on_mx_display_closed)
 			resize_necessary = True
 
 		#if self.frc_display == None:
@@ -355,8 +353,8 @@ class EMSimmxXplorInspector(EMSymInspector):
 		self.tabwidget.insertTab(0,self.cmp_tab,"Cmp")
 		self.tabwidget.setCurrentIndex(0)
 		
-		self.cmp_combo.currentIndexChanged[QString].connect(self.cmp_changed)
-		self.cmp_realignb.clicked[bool].connect(self.cmp_realign)
+		self.connect(self.cmp_combo, QtCore.SIGNAL("currentIndexChanged(QString)"), self.cmp_changed)
+		self.connect(self.cmp_realignb, QtCore.SIGNAL("clicked(bool)"), self.cmp_realign)
 #		self.connect(self.cmp_shrink, QtCore.SIGNAL("valueChanged(int)"), self.ali_changed)
 
 		

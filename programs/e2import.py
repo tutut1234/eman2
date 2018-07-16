@@ -31,7 +31,6 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 #
 
-from builtins import range
 import os, shutil, glob
 from EMAN2 import *
 from EMAN2star import StarFile
@@ -68,7 +67,7 @@ def main():
 	parser.add_argument("--gainrefs",help="Specify a comma separated list of gain refereence stacks/images to import. Files will be placed in movierefs_raw. See --importation for additional options.",default="", guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=True)", row=5, col=0, rowspan=1, colspan=2, mode='movies')
 
 	#parser.add_argument("--import_rawtilts",action="store_true",help="Import tilt images",default=False, guitype='boolbox', row=4, col=2, rowspan=1, colspan=1, mode='rawtilts[True]')
-	parser.add_argument("--apix",help="Specify the apix of the tiltseries you are importing. If -1 (default), the apix in the header will not be changed.",type=float,default=-1,guitype='floatbox', row=5, col=1, rowspan=1, colspan=1,mode='tiltseries[-1]')
+	parser.add_argument("--apix",help="Specify the apix of the tiltseries you are importing.",type=float,default=-1,guitype='floatbox', row=5, col=1, rowspan=1, colspan=1,mode='tiltseries[-1]')
 
 	parser.add_argument("--import_tiltseries",action="store_true",help="Import tiltseries",default=False, guitype='boolbox', row=5, col=2, rowspan=1, colspan=1, mode='tiltseries[True]')
 	parser.add_argument("--import_tomos",action="store_true",help="Import tomograms for segmentation and/or subtomogram averaging",default=False, guitype='boolbox', row=4, col=2, rowspan=1, colspan=1, mode='tomos[True]')
@@ -133,7 +132,7 @@ def main():
 
 		imgnum=0
 		lastdf=-1.0
-		for i in range(n):
+		for i in xrange(n):
 			img=EMData(args[0],i)
 			ctf=img["ctf"]
 			img.del_attr("ctf")
@@ -254,7 +253,7 @@ def main():
 			for filename in starfs:
 				print(("Importing from {}.star".format(base_name(filename,nodir=True))))
 				sf = StarFile(filename)
-				hdr = list(sf.keys())
+				hdr = sf.keys()
 				if len(hdr) < 3:
 					print(("Could not parse {}".format(filename)))
 					continue
@@ -398,37 +397,32 @@ with the same name, you should specify only the .hed files (no renaming is neces
 
 	# Import tilt series
 	if options.import_tiltseries:
-		# try:
-		# 	db=js_open_dict("info/project.json")
-		# 	if options.apix == -1: 
-		# 		options.apix = db["global.apix"]
-		# 		print("Using global apix: {}".format(db["global.apix"]))
-		# except: pass
 
 		stdir = os.path.join(".","tiltseries")
-		if not os.access(stdir, os.R_OK) : os.mkdir("tiltseries")
+		if not os.access(stdir, os.R_OK):
+			os.mkdir("tiltseries")
 
 		for filename in args:
 			newname=os.path.join(stdir,os.path.basename(filename))
 			if options.importation == "move":
 				os.rename(filename,newname)
 			if options.importation == "copy":
-				if os.path.isfile(newname): os.remove(newname)
 				tpos=filename.rfind('.')
 				if tpos>0: newname=os.path.join(stdir,os.path.basename(filename[:tpos]+'.hdf'))
 				else: newname=os.path.join(stdir,os.path.basename(filename))
 				cmd="e2proc2d.py {} {} ".format(filename, newname)
 				if options.invert: cmd+=" --mult -1 --process normalize "
-				if options.apix != -1: cmd += " --apix {} ".format(options.apix)
+				if options.apix: cmd += " --apix {} ".format(options.apix)
 				#if options.tomoseg_auto:
 				#	cmd+=" --process filter.lowpass.gauss:cutoff_abs=.25 --process filter.highpass.gauss:cutoff_pixels=5 --process threshold.clampminmax.nsigma:nsigma=3 "
 				#cmd+=options.preprocess
 				run(cmd)
 				print("Done.")
-			if options.importation == "link": os.symlink(filename,newname)
+			if options.importation == "link":
+				os.symlink(filename,newname)
 			if (options.importation == "link" or options.importation == "move") and options.apix != -1:
 				run("e2proc3d.py {} {} --apix {} --threed2twod".format(newname, newname, options.apix))
-	
+
 	# Import tomograms
 	if options.import_tomos:
 		tomosdir = os.path.join(".","tomograms")

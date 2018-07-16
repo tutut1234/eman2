@@ -187,7 +187,6 @@ namespace EMAN
 			TypeDict d;
 			d.put("transform", EMObject::TRANSFORM);
 			d.put("mode", EMObject::INT);
-			d.put("returnfft", EMObject::INT);
 			return d;
 		}
 		

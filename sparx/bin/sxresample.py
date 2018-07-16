@@ -32,7 +32,6 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
 import global_def
 from   global_def import *
 
@@ -52,7 +51,7 @@ def resample_insert( bufprefix, fftvols, wgtvols, mults, CTF, npad, info=None):
 
 	overall_start = time()
 
-	for iblock in range(nblock):
+	for iblock in xrange(nblock):
 		if iblock==nblock - 1:
 			pbeg = iblock*blocksize
 			pend = nprj
@@ -68,7 +67,7 @@ def resample_insert( bufprefix, fftvols, wgtvols, mults, CTF, npad, info=None):
 			info.flush()
 
 		start_time = time()
-		for ivol in range(nvol):
+		for ivol in xrange(nvol):
 			ostore.add_tovol( fftvols[ivol], wgtvols[ivol], mults[ivol], pbeg, pend )
 		if not(info is None):
 			t = time()
@@ -83,7 +82,7 @@ def resample_finish( rectors, fftvols, wgtvols, volfile, niter, nprj, info=None 
 	from time import time
 	overall_start = time()
 	nvol = len(fftvols)
-	for ivol in range(nvol):
+	for ivol in xrange(nvol):
 		start_time = time()
 		iwrite = nvol*niter + ivol
 
@@ -105,7 +104,7 @@ def resample_prepare( prjfile, nvol, snr, CTF, npad ):
 	fftvols = [None]*nvol
 	wgtvols = [None]*nvol
 	rectors = [None]*nvol
-	for i in range(nvol):
+	for i in xrange(nvol):
 		fftvols[i] = EMData()
 		wgtvols[i] = EMData()
 		if CTF:
@@ -158,9 +157,9 @@ def resample( prjfile, outdir, bufprefix, nbufvol, nvol, seedbase,\
 	refnormal = zeros((nrefa,3),'float32')
 
 	tetref = [0.0]*nrefa
-	for i in range(nrefa):
-		tr = getvec( refa[i][0], refa[i][1] )
-		for j in range(3):  refnormal[i][j] = tr[j]
+	for i in xrange(nrefa):
+	        tr = getvec( refa[i][0], refa[i][1] )
+	        for j in xrange(3):  refnormal[i][j] = tr[j]
 		tetref[i] = refa[i][1]
 	del refa
 	vct = array([0.0]*(3*nprj),'float32')
@@ -168,14 +167,14 @@ def resample( prjfile, outdir, bufprefix, nbufvol, nvol, seedbase,\
 		print(" will read ",myid)
 		tr = EMUtil.get_all_attributes(prjfile,'xform.projection')
 		tetprj = [0.0]*nprj
-		for i in range(nprj):
+	        for i in xrange(nprj):
 			temp = tr[i].get_params("spider")
 			tetprj[i] = temp["theta"]
 			if(tetprj[i] > 90.0): tetprj[i]  = 180.0 - tetprj[i] 
-			vct[3*i+0] = tr[i].at(2,0)
-			vct[3*i+1] = tr[i].at(2,1)
-			vct[3*i+2] = tr[i].at(2,2)
-		del tr
+	        	vct[3*i+0] = tr[i].at(2,0)
+	        	vct[3*i+1] = tr[i].at(2,1)
+	        	vct[3*i+2] = tr[i].at(2,2)
+	        del tr
 	else:
 		tetprj = [0.0]*nprj
 	#print "  READ ",myid
@@ -187,21 +186,21 @@ def resample( prjfile, outdir, bufprefix, nbufvol, nvol, seedbase,\
 		tetprj = bcast_list_to_all(tetprj, myid, 0)
 	#print  "  reshape  ",myid
 	vct = reshape(vct,(nprj,3))
-	assignments = [[] for i in range(nrefa)]
+	assignments = [[] for i in xrange(nrefa)]
 	dspn = 1.25*delta
-	for k in range(nprj):
-		best_s = -1.0
-		best_i = -1
-		for i in range( nrefa ):
+	for k in xrange(nprj):
+	        best_s = -1.0
+	        best_i = -1
+	        for i in xrange( nrefa ):
 			if(abs(tetprj[k] - tetref[i]) <= dspn):
 				s = abs(refnormal[i][0]*vct[k][0] + refnormal[i][1]*vct[k][1] + refnormal[i][2]*vct[k][2])
 				if s > best_s:
 					best_s = s
 					best_i = i
-			assignments[best_i].append(k)
+	        assignments[best_i].append(k)
 	am = len(assignments[0])
 	mufur = 1.0/am
-	for i in range(1,len(assignments)):
+	for i in xrange(1,len(assignments)):
 		ti = len(assignments[i])
 		am = min(am, ti)
 		if(ti>0):  mufur += 1.0/ti
@@ -228,7 +227,7 @@ def resample( prjfile, outdir, bufprefix, nbufvol, nvol, seedbase,\
 	volfile = os.path.join(outdir, "bsvol%04d.hdf" % myid)
 	from random import randint
 	niter = nvol/ncpu/nbufvol
-	for kiter in range(niter):
+	for kiter in xrange(niter):
 		if(verbose == 1):
 			finfo.write( "Iteration %d: \n" % kiter )
 			finfo.flush()
@@ -236,15 +235,15 @@ def resample( prjfile, outdir, bufprefix, nbufvol, nvol, seedbase,\
 		iter_start = time()
 		#  the following has to be converted to resample  mults=1 means take given projection., mults=0 means omit
 
-		mults = [ [0]*nprj for i in range(nbufvol) ]
-		for i in range(nbufvol):
-			for l in range(nrefa):
+		mults = [ [0]*nprj for i in xrange(nbufvol) ]
+		for i in xrange(nbufvol):
+			for l in xrange(nrefa):
 				mass = assignments[l][:]
 				shuffle(mass)
 				mass = mass[:keep]
 				mass.sort()
 				#print  l, "  *  ",mass
-				for k in range(keep):
+				for k in xrange(keep):
 					mults[i][mass[k]] = 1
 			'''
 			lout = []
@@ -299,8 +298,8 @@ def main():
 
 	if options.MPI:
 		from mpi import mpi_barrier, mpi_comm_rank, mpi_comm_size, mpi_comm_split, MPI_COMM_WORLD
-		from mpi import mpi_init
-		sys.argv = mpi_init( len(sys.argv), sys.argv )
+                from mpi import mpi_init
+                sys.argv = mpi_init( len(sys.argv), sys.argv )
 		myid = mpi_comm_rank( MPI_COMM_WORLD )
 		ncpu = mpi_comm_size( MPI_COMM_WORLD )
 	else:

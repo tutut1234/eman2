@@ -29,7 +29,6 @@ from __future__ import print_function
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 
-from builtins import range
 from EMAN2 import *
 import sys
 
@@ -116,7 +115,7 @@ def main():
 			print("Line of coordinates to add",line)
 			tomograms[tomogram].append(line)
 			
-		for tomogram in list(tomograms.keys()):
+		for tomogram in tomograms.keys():
 			#coordsfile = options.path + '/' + options.input.replace('.hdf','_coords.txt')
 			coordsfile = options.path + '/' + tomogram.split('.')[0] + '_coords.txt'
 

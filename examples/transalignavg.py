@@ -37,7 +37,6 @@ from __future__ import print_function
 # together, and optionally iterate. Translational alignment only.
 # transalignavg.py <infile> <dot threshold> <iterations> <background> <gamma>
 
-from builtins import range
 from EMAN2 import *
 import sys
 from math import *

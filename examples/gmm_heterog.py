@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
 # Muyuan Chen 2015-08
-from builtins import range
-from builtins import object
 from EMAN2 import *
 import numpy as np
 import random

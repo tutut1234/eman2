@@ -31,7 +31,6 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 #
 #
-from builtins import range
 from EMAN2 import *
 from math import *
 import os
@@ -146,7 +145,7 @@ gold-standard refinement."""
 	nref=int(classmx["maximum"])+1
 	nptcl=classmx["ny"]
 
-	for iref in range(nref):
+	for iref in xrange(nref):
 		if options.verbose==1 : print("Class ",iref)
 		outname="{}/class_{:04d}.hdf".format(options.path,iref)
 		ref=EMData("{path}/projections.hdf".format(path=options.path),iref)
@@ -154,7 +153,7 @@ gold-standard refinement."""
 		ref.write_image(outname,0)
 
 		allptcl=[]		
-		for iptcl in range(nptcl):
+		for iptcl in xrange(nptcl):
 			if classmx[0,iptcl]!=iref : continue		# only proceed if the particle is in this class
 
 			ptcl=EMData(options.input,iptcl)

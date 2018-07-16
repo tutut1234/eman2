@@ -32,7 +32,6 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
 import global_def
 from   global_def import *
 
@@ -47,7 +46,7 @@ def genbuf( prjfile, bufprefix, beg, end, CTF, npad, verbose = 0 ):
 	else:              finfo = None
 	start_time = time()
 	istore = newfile_store( bufprefix, npad, CTF )
-	for i in range( beg, end ):
+	for i in xrange( beg, end ):
 		prj = get_im( prjfile, i )
 		istore.add_image( prj, prj.get_attr("xform.projection") )
 		if( not(finfo is None) and ((i%100==99 or i==end-1))):

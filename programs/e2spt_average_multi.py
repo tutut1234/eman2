@@ -2,14 +2,11 @@
 from __future__ import print_function
 # average selected subset of particles
 
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
 from EMAN2 import *
 import time
 import os
 import threading
-import queue
+import Queue
 from sys import argv,exit
 
 def rotfncompete(jsd,avgs,fsp,fspn,a,sym,refs,shrinkrefs,maxtilt,wedgesigma,shrink,maxres,simthr2,verbose):
@@ -36,7 +33,7 @@ def rotfncompete(jsd,avgs,fsp,fspn,a,sym,refs,shrinkrefs,maxtilt,wedgesigma,shri
 	nsym=xf.get_nsym(sym)
 	best=(1.0e50,None,None)
 	for r,ref in enumerate(shrinkrefs):
-		for i in range(nsym):
+		for i in xrange(nsym):
 			c=bs.process("xform",{"transform":xf.get_sym(sym,i)})
 			d=c.align("translational",ref)
 			score=d.cmp("fsc.tomo.auto",ref,{"sigmaimgval":wedgesigma,"sigmawithval":0.5})
@@ -128,18 +125,18 @@ If --sym is specified, each possible symmetric orientation is tested starting wi
 
 	logid=E2init(sys.argv, options.ppid)
 
-	jsd=queue.Queue(0)
+	jsd=Queue.Queue(0)
 
-	avgs=[Averagers.get("mean.tomo",{"thresh_sigma":options.wedgesigma}) for i in range(n)]
+	avgs=[Averagers.get("mean.tomo",{"thresh_sigma":options.wedgesigma}) for i in xrange(n)]
 
 	# filter the list of particles to include 
-	keys=list(angs.keys())
+	keys=angs.keys()
 	if options.listfile!=None :
 		keys=[i for i in keys if eval(i)[1] in plist]
-		if options.verbose : print("{}/{} particles based on list file".format(len(keys),len(list(angs.keys()))))
+		if options.verbose : print("{}/{} particles based on list file".format(len(keys),len(angs.keys())))
 	
 	keys=[k for k in keys if angs[k]["score"]<=options.simthr and inrange(options.minalt,angs[k]["xform.align3d"].get_params("eman")["alt"],options.maxalt)]
-	if options.verbose : print("{}/{} particles after filters".format(len(keys),len(list(angs.keys()))))
+	if options.verbose : print("{}/{} particles after filters".format(len(keys),len(angs.keys())))
 																		 
 
 	if options.shrinkcompare>1 :

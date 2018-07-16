@@ -32,13 +32,11 @@ from __future__ import print_function
 #
 #
 
-from future import standard_library
-standard_library.install_aliases()
 import os
 import global_def
 from   global_def import *
 from   optparse import OptionParser
-import sys, configparser
+import sys, ConfigParser
 
 def main():
 	progname = os.path.basename(sys.argv[0])

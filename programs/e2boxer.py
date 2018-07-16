@@ -32,20 +32,16 @@ from __future__ import print_function
 #
 #
 
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
-from builtins import object
 from EMAN2 import *
 from EMAN2jsondb import *
 import numpy as np
 import threading
-import queue
+import Queue
 import os,sys
 
 apix=0
 
-class nothing(object):
+class nothing:
 	def __init__(self,x=None,y=None,z=None,q=None):
 		return
 
@@ -80,7 +76,7 @@ def load_micrograph(filename):
 		img=EMData(filename,0)		# single image
 	else :
 		img=EMData(filename,0)		# movie stack (we assume)
-		for i in range(1,n):
+		for i in xrange(1,n):
 			im=EMData(filename,i)
 			img.add(im)
 		img.mult(1.0/n)
@@ -127,7 +123,7 @@ def main():
 
 	(options, args) = parser.parse_args()
 	
-	if "CUDA_VISIBLE_DEVICES" in os.environ:
+	if os.environ.has_key("CUDA_VISIBLE_DEVICES"):
 		print("CUDA_VISIBLE_DEVICES is already set as environment variable. This will overwrite the device option...")
 	else:
 		if options.device=="gpu":
@@ -434,7 +430,7 @@ class boxerByRef(QtCore.QObject):
 		maxav=Averagers.get("minmax",{"max":1,"owner":owner})
 		
 		# Iterate over in-plane rotation for each ref
-		jsd=queue.Queue(0)
+		jsd=Queue.Queue(0)
 		thrds=[threading.Thread(target=boxerByRef.ccftask,args=(jsd,ref,downsample,gs,microf,ri)) for ri,ref in enumerate(goodrefs)]
 
 		n=-1
@@ -534,7 +530,7 @@ class boxerByRef(QtCore.QObject):
 		mref=ref.process("mask.soft",{"outer_radius":ref["nx"]/2-4,"width":3})
 		mref.process_inplace("normalize.unitlen")
 		
-		for ang in range(0,360,10):
+		for ang in xrange(0,360,10):
 			dsref=mref.process("xform",{"transform":Transform({"type":"2d","alpha":ang})})
 			# don't downsample until after rotation
 			dsref.process_inplace("math.fft.resample",{"n":downsample})
@@ -585,7 +581,7 @@ class boxerLocal(QtCore.QObject):
 		r=goodrefs[0].process("math.fft.resample",{"n":downsample})
 		r.align("rotate_translate",r)
 		
-		jsd=queue.Queue(0)
+		jsd=Queue.Queue(0)
 		thrds=[threading.Thread(target=boxerLocal.ccftask,args=(jsd,ref,downsample,microdown,ri)) for ri,ref in enumerate(goodrefs)]
 
 		n=-1
@@ -691,8 +687,8 @@ class boxerLocal(QtCore.QObject):
 		ptclmap["ortid"]=ri
 		
 		# loop over the image with enough oversampling that we should be able to find all of the particles
-		for x in range(0,microdown["nx"]-nxdown,nxdown//2):
-			for y in range(0,microdown["ny"]-nxdown,nxdown//2):
+		for x in xrange(0,microdown["nx"]-nxdown,nxdown//2):
+			for y in xrange(0,microdown["ny"]-nxdown,nxdown//2):
 				ptcl=microdown.get_clip(Region(x,y,nxdown,nxdown))
 				# initial alignment
 				ali=mref.align("rotate_translate",ptcl)
@@ -726,7 +722,7 @@ class boxerConvNet(QtCore.QObject):
 		boxerConvNet.bt_train=QtGui.QPushButton("Train")
 		boxerConvNet.bt_train.setToolTip("Train the network using references")
 		gridlay.addWidget(boxerConvNet.bt_train)
-		boxerConvNet.bt_train.clicked[bool].connect(boxerConvNet.do_training)
+		QtCore.QObject.connect(boxerConvNet.bt_train,QtCore.SIGNAL("clicked(bool)"),boxerConvNet.do_training)
 		#boxerConvNet.ck_train=QtGui.QCheckBox("Train from scratch")
 		#gridlay.addWidget(boxerConvNet.ck_train)
 		
@@ -787,7 +783,7 @@ class boxerConvNet(QtCore.QObject):
 		else:
 			data, label=boxerConvNet.load_ptcls(bgrefs, goodrefs, sz, True)
 			nnet0=StackedConvNet_tf(kernels, sz, batchsize, meanout=False)
-			nnet0.do_training(data, label, session, shuffle=True, learnrate=1e-4, niter=20)
+			nnet0.do_training(data, label, session, shuffle=True, learnrate=1e-4, niter=10)
 			nnet0.write_output_train('trainout_pickptcl.hdf', session)
 			nnet0.save_network("nnet_pickptcls.hdf", session)
 			
@@ -796,7 +792,7 @@ class boxerConvNet(QtCore.QObject):
 		else:
 			data, label=boxerConvNet.load_ptcls(badrefs, goodrefs, sz, False)
 			nnet1=StackedConvNet_tf(kernels, sz, batchsize, meanout=True)
-			nnet1.do_training(data, label, session, shuffle=True, learnrate=1e-4, niter=20)
+			nnet1.do_training(data, label, session, shuffle=True, learnrate=1e-4, niter=10)
 			nnet1.write_output_train('trainout_classify.hdf', session)
 			nnet1.save_network("nnet_classify.hdf", session)
 		
@@ -834,7 +830,7 @@ class boxerConvNet(QtCore.QObject):
 					data.append(ar.flatten())
 					lbs.append(label)
 					
-		rndid=list(range(len(data)))
+		rndid=range(len(data))
 		np.random.shuffle(rndid)
 		data=[data[i] for i in rndid]
 		lbs=[lbs[i] for i in rndid]
@@ -962,13 +958,13 @@ class boxerConvNet(QtCore.QObject):
 		
 		thr1=0.2
 		thr2=-5.
-		if "threshold1" in params:
+		if params.has_key("threshold1"):
 			thr1=params["threshold1"]
 		else:
 			try: thr1=boxerConvNet.threshold.getValue()
 			except: pass
 		
-		if "threshold2" in params:
+		if params.has_key("threshold2"):
 			thr2=params["threshold2"]
 		else:
 			try: thr2=boxerConvNet.threshold2.getValue()
@@ -1083,7 +1079,7 @@ class boxerConvNet(QtCore.QObject):
 			return
 		
 		#### now start autoboxing...
-		jsd=queue.Queue(0)
+		jsd=Queue.Queue(0)
 		NTHREADS=max(nthreads+1,2)
 		thrds=[threading.Thread(target=autobox_worker,args=(jsd,job)) for job in jobs]
 		thrtolaunch=0
@@ -1203,19 +1199,19 @@ class GUIBoxer(QtGui.QWidget):
 		#self.wplot=EMPlot2DWidget()
 		#self.wplot.setWindowTitle("e2evalimage - Plot")
 
-		self.wimage.mousedown.connect(self.imgmousedown)
-		self.wimage.mousedrag.connect(self.imgmousedrag)
-		self.wimage.mouseup.connect(self.imgmouseup)
-		self.wparticles.mx_image_selected.connect(self.ptclmousedown)
-		self.wparticles.mx_mousedrag.connect(self.ptclmousedrag)
-		self.wparticles.mx_mouseup.connect(self.ptclmouseup)
+		self.wimage.connect(self.wimage,QtCore.SIGNAL("mousedown"),self.imgmousedown)
+		self.wimage.connect(self.wimage,QtCore.SIGNAL("mousedrag"),self.imgmousedrag)
+		self.wimage.connect(self.wimage,QtCore.SIGNAL("mouseup")  ,self.imgmouseup)
+		self.wparticles.connect(self.wparticles,QtCore.SIGNAL("mx_image_selected"),self.ptclmousedown)
+		self.wparticles.connect(self.wparticles,QtCore.SIGNAL("mx_mousedrag"),self.ptclmousedrag)
+		self.wparticles.connect(self.wparticles,QtCore.SIGNAL("mx_mouseup")  ,self.ptclmouseup)
 #		self.wrefs.connect(self.wparticles,QtCore.SIGNAL("mx_image_selected"),self.refmousedown)
 #		self.wrefs.connect(self.wparticles,QtCore.SIGNAL("mx_mousedrag"),self.ptclmousedrag)
-		self.wrefs.mx_mouseup.connect(self.refmouseup)
+		self.wrefs.connect(self.wrefs,QtCore.SIGNAL("mx_mouseup")  ,self.refmouseup)
 #		self.wbadrefs.connect(self.wparticles,QtCore.SIGNAL("mx_image_selected"),self.badrefmousedown)
 #		self.wbadrefs.connect(self.wparticles,QtCore.SIGNAL("mx_mousedrag"),self.badrefmousedrag)
-		self.wbadrefs.mx_mouseup.connect(self.badrefmouseup)
-		self.wbgrefs.mx_mouseup.connect(self.bgrefmouseup)
+		self.wbadrefs.connect(self.wbadrefs,QtCore.SIGNAL("mx_mouseup")  ,self.badrefmouseup)
+		self.wbgrefs.connect(self.wbgrefs,QtCore.SIGNAL("mx_mouseup")  ,self.bgrefmouseup)
 
 		# This object is itself a widget we need to set up
 		self.gbl = QtGui.QGridLayout(self)
@@ -1234,7 +1230,8 @@ class GUIBoxer(QtGui.QWidget):
 			self.setlist.addItem(i)
 		self.gbl.addWidget(self.setlist,0,0,12,2)
 
-		self.setlist.currentRowChanged[int].connect(self.newSet)
+		self.setlist.connect(self.setlist,QtCore.SIGNAL("currentRowChanged(int)"),self.newSet)
+		self.setlist.connect(self.setlist,QtCore.SIGNAL("keypress"),self.listKey)
 		
 		# Mouse Modes
 		self.mmode="manual"
@@ -1275,24 +1272,24 @@ class GUIBoxer(QtGui.QWidget):
 		self.bmbgref.setCheckable(True)
 		self.hbl0.addWidget(self.bmbgref)
 
-		self.bmmanual.clicked[bool].connect(self.setMouseManual)
-		self.bmdel.clicked[bool].connect(self.setMouseDel)
-		self.bmgref.clicked[bool].connect(self.setMouseGoodRef)
-		self.bmbref.clicked[bool].connect(self.setMouseBadRef)
-		self.bmbgref.clicked[bool].connect(self.setMouseBgRef)
+		QtCore.QObject.connect(self.bmmanual,QtCore.SIGNAL("clicked(bool)"),self.setMouseManual)
+		QtCore.QObject.connect(self.bmdel,QtCore.SIGNAL("clicked(bool)"),self.setMouseDel)
+		QtCore.QObject.connect(self.bmgref,QtCore.SIGNAL("clicked(bool)"),self.setMouseGoodRef)
+		QtCore.QObject.connect(self.bmbref,QtCore.SIGNAL("clicked(bool)"),self.setMouseBadRef)
+		QtCore.QObject.connect(self.bmbgref,QtCore.SIGNAL("clicked(bool)"),self.setMouseBgRef)
 
 		self.bfilter=QtGui.QPushButton("Filter Disp.")
 		self.bfilter.setToolTip("Filter micrograph (display only)")
 		self.bfilter.setCheckable(True)
 		self.gbl.addWidget(self.bfilter,0,4,1,1)
-		self.bfilter.clicked[bool].connect(self.filterToggle)
+		QtCore.QObject.connect(self.bfilter,QtCore.SIGNAL("clicked(bool)"),self.filterToggle)
 
 		self.binvert=QtGui.QPushButton("Invert")
 		self.binvert.setToolTip("Invert Micrograph (also output)")
 		self.binvert.setCheckable(True)
 		self.binvert.setChecked(invert_on_read)		# in truly bad form, this is a global
 		self.gbl.addWidget(self.binvert,1,4,1,1)
-		self.binvert.clicked[bool].connect(self.invertToggle)
+		QtCore.QObject.connect(self.binvert,QtCore.SIGNAL("clicked(bool)"),self.invertToggle)
 
 		# Global parameters
 		self.boxparm=QtGui.QGroupBox("Parameters",self)
@@ -1344,9 +1341,9 @@ class GUIBoxer(QtGui.QWidget):
 		self.rtclear.setToolTip("Clear all current good and bad refs")
 		self.hbl1.addWidget(self.rtclear)
 
-		self.rtload3d.clicked[bool].connect(self.reftoolLoad3D)
-		self.rtload2d.clicked[bool].connect(self.reftoolLoad2D)
-		self.rtclear.clicked[bool].connect(self.reftoolClear)
+		QtCore.QObject.connect(self.rtload3d,QtCore.SIGNAL("clicked(bool)"),self.reftoolLoad3D)
+		QtCore.QObject.connect(self.rtload2d,QtCore.SIGNAL("clicked(bool)"),self.reftoolLoad2D)
+		QtCore.QObject.connect(self.rtclear,QtCore.SIGNAL("clicked(bool)"),self.reftoolClear)
 		
 		
 		# Autoboxing Tabs
@@ -1367,15 +1364,15 @@ class GUIBoxer(QtGui.QWidget):
 		self.bbclear=QtGui.QPushButton("Clear Boxes")
 		self.bbclear.setToolTip("Clear all boxes in current micrograph")
 		self.gbl.addWidget(self.bbclear,13,2)
-		self.bbclear.clicked[bool].connect(self.boxClear)
+		QtCore.QObject.connect(self.bbclear,QtCore.SIGNAL("clicked(bool)"),self.boxClear)
 
 		self.bautoboxa = QtGui.QPushButton("Autobox All")
 		self.gbl.addWidget(self.bautoboxa,13,3)
-		self.bautoboxa.clicked[bool].connect(self.doAutoBoxAll)
+		QtCore.QObject.connect(self.bautoboxa,QtCore.SIGNAL("clicked(bool)"),self.doAutoBoxAll)
 		
 		self.bautobox = QtGui.QPushButton("Autobox")
 		self.gbl.addWidget(self.bautobox,13,4)
-		self.bautobox.clicked[bool].connect(self.doAutoBox)
+		QtCore.QObject.connect(self.bautobox,QtCore.SIGNAL("clicked(bool)"),self.doAutoBox)
 
 		self.setWindowTitle("e2boxer21 - Control Panel")
 
@@ -1845,6 +1842,22 @@ class GUIBoxer(QtGui.QWidget):
 			self.wparticles.set_data(self.particles)
 			self.__updateCount()
 
+	def listKey(self,event):
+		pass
+
+		#if event.key()>=Qt.Key_0 and event.key()<=Qt.Key_9 :
+			#q=int(event.key())-Qt.Key_0
+			#self.squality.setValue(q)
+		#elif event.key() == Qt.Key_Left:
+			#self.sdefocus.setValue(self.sdefocus.getValue()-0.03)
+		#elif event.key() == Qt.Key_Right:
+			#self.sdefocus.setValue(self.sdefocus.getValue()+0.03)
+		#elif event.key()==Qt.Key_I :
+			#self.doImport()
+		#elif event.key()==Qt.Key_U :
+			#self.unImport()
+
+		
 	def doAutoBox(self,b):
 		"""Autobox button pressed, find the right algorithm and call it"""
 		

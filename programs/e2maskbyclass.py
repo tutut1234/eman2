@@ -29,14 +29,11 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 #
 
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
 from EMAN2 import *
 import time
 import os
 import threading
-import queue
+import Queue
 from sys import argv,exit
 
 def maskfile(jsd,n,fsp,classes,masks,clsmap,options):
@@ -44,7 +41,7 @@ def maskfile(jsd,n,fsp,classes,masks,clsmap,options):
 	fspout=fsp.rsplit(".",1)[0].split("__")[0]+"__ctf_flip_masked.hdf"
 	fspbout=fsp.rsplit(".",1)[0].split("__")[0]+"__ctf_flip_bispec.hdf"
 
-	for i in range(len(clsmap)):
+	for i in xrange(len(clsmap)):
 		ptcl=EMData(fsp,i)
 		# if the particle isn't in any classes we put the unmasked image in the output file
 		if clsmap[i]!=-1 :
@@ -130,12 +127,12 @@ once complete, bispectra can be recomputed based on the masked particles, or the
 				print("ERROR: This program is meant to be used with full resolution phase flipped particles (__ctf_flip_fullres). ",fsp," does not appear to be this type of file. You can override this behavior with --nofullresok")
 
 	if options.verbose:
-		print(sum([i.count(-1) for i in list(ptcls.values())])," missing particles in classes. They will be unmasked")
+		print(sum([i.count(-1) for i in ptcls.values()])," missing particles in classes. They will be unmasked")
 
 # 	import pprint
 # 	pprint.pprint(ptcls)
 
-	jsd=queue.Queue(0)
+	jsd=Queue.Queue(0)
 
 	n=-1
 	thrds=[(jsd,i,k,classes,masks,ptcls[k],options) for i,k in enumerate(ptcls)]
@@ -216,12 +213,12 @@ def maskparmgui(classes):
 
 			self.vbl.addLayout(self.hbl)
 
-			self.cmode.valueChanged.connect(self.newParm)
-			self.slpres.valueChanged.connect(self.newParm)
-			self.snmax.valueChanged.connect(self.newParm)
-			self.sshells.valueChanged.connect(self.newParm)
-			self.ssigma.valueChanged.connect(self.newParm)
-			self.bok.clicked[bool].connect(self.close)
+			QtCore.QObject.connect(self.cmode, QtCore.SIGNAL("valueChanged"), self.newParm)
+			QtCore.QObject.connect(self.slpres, QtCore.SIGNAL("valueChanged"), self.newParm)
+			QtCore.QObject.connect(self.snmax, QtCore.SIGNAL("valueChanged"), self.newParm)
+			QtCore.QObject.connect(self.sshells, QtCore.SIGNAL("valueChanged"), self.newParm)
+			QtCore.QObject.connect(self.ssigma, QtCore.SIGNAL("valueChanged"), self.newParm)
+			QtCore.QObject.connect(self.bok,QtCore.SIGNAL("clicked(bool)"),self.close)
 	
 			self.newParm()
 

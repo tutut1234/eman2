@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from __future__ import print_function
-from __future__ import absolute_import
 #
 # Author: John Flanagan Dec 1st 2011 (jfflanag@bcm.edu)
 # Copyright (c) 2000-2011 Baylor College of Medicine
@@ -39,7 +38,7 @@ import os
 import re
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import Qt
-from .embrowser import EMBrowserWidget, EMFileItemModel, EMDirEntry, nonone, safe_int,safe_float
+from embrowser import EMBrowserWidget, EMFileItemModel, EMDirEntry, nonone, safe_int,safe_float
 
 
 class EMRefine2dTable(EMBrowserWidget):
@@ -1255,3 +1254,6 @@ class EMTomoDataEntry(EMDirEntry):
 	def fillDetails(self):
 		# Maybe add code to cache results.....
 		super(EMTomoDataEntry, self).fillDetails()
+
+
+

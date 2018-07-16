@@ -34,7 +34,6 @@
 #
 
 from __future__ import print_function
-from builtins import range
 from EMAN2 import *
 from EMAN2jsondb import JSTask,jsonclasses
 from EMAN2_utils import *
@@ -557,7 +556,7 @@ def main():
 			resumeDict = js_open_dict( options.resume )
 	
 			#print "Resume dict is", resumeDict
-			for key in list(resumeDict.keys()):
+			for key in resumeDict.keys():
 				#print "\n\nKKKKKKey is", key
 		
 				keyint = int ( key.split('_')[-1] )
@@ -599,7 +598,7 @@ def main():
 		if options.inputaliparams:
 			try:
 				inputalidict = js_open_dict( options.inputaliparams )
-				numdigits = len( list(inputalidict.keys())[0].split('_')[-1] )	#keys are of the form 'subtomo_XXX'; we determine how many XXX the keys have
+				numdigits = len( inputalidict.keys()[0].split('_')[-1] )	#keys are of the form 'subtomo_XXX'; we determine how many XXX the keys have
 			except:
 				print("ERROR: Something is wrong with the json file provided". options.inputaliparams)
 				sys.exit(1)
@@ -789,7 +788,7 @@ def main():
 	ptclnumsdict = {}			#Each class might have a different list of particle numbers. 
 								#We store them in a master dictionary, read only once.
 	if ncls == 1: 
-		ptclnumsdict.update({ 0 : list(range(nptcl)) })		#If there's only one class, all indexes from 0 to nptcl will be in it
+		ptclnumsdict.update({ 0 : range(nptcl) })		#If there's only one class, all indexes from 0 to nptcl will be in it
 	elif ncls > 1:
 		classmx = EMData.read_images( options.classmx )
 		if options.verbose:
@@ -1049,13 +1048,13 @@ def main():
 				
 						tomoID = "subtomo_" + str(ptclnum).zfill( len(str( len(ptclnums) )) )
 				
-						if tomoID not in list(resumeDict.keys()):
+						if tomoID not in resumeDict.keys():
 							print("ERROR: This key is not in the file provided for --resume", tomoID)
 							sys.exit() 
 				
 		
-						if len(list(resumeDict.keys())) > 0:
-							keys = list(resumeDict.keys())
+						if len(resumeDict.keys()) > 0:
+							keys = resumeDict.keys()
 					
 							for key in keys:
 								if type(resumeDict[key]) is not list:					 
@@ -1103,7 +1102,7 @@ def main():
 				#results=get_results(etc,tids,options.verbose,jsA, nptcl ,1)
 				#def get_results(etc,tids,verbose,nptcls,ref=''):
 			
-				results = [_f for _f in get_results(etc,tids,options.verbose, nptcl ) if _f]
+				results = filter( None, get_results(etc,tids,options.verbose, nptcl ) )
 			
 				#results = get_results(etc,tids,options.verbose, nptcl )
 			
@@ -1433,7 +1432,7 @@ def main():
 			#classScoresList.reverse()
 			maxY = max(classScoresList) + 1
 	
-			plotX = list(range( len(classScoresList)))
+			plotX = range( len(classScoresList) )
 			maxX = max(plotX) + 1
 	
 			plotName = 'spt_cccs_' + str( it ).zfill( len( str( options.iter ) )) + klassid + '.png'
@@ -1560,7 +1559,7 @@ def main():
 
 		maxY = max(scores) + 1
 	
-		plotX = list(range( len(scores)))
+		plotX = range( len(scores) )
 		maxX = max(plotX) + 1
 
 		plotName = 'spt_meanccc' + klassid + '.png'
@@ -2651,7 +2650,7 @@ def get_results(etc,tids,verbose,nptcls,refmethod=''):
 				
 				
 				if r[1]['final']:
-					results[ptcl] = [ [_f for _f in r[1]['final'] if _f] , ptcl, [_f for _f in r[1]['coarse'] if _f] ]					# this will be a list of (qual,Transform)
+					results[ptcl] = [ filter(None,r[1]['final']) , ptcl, filter(None,r[1]['coarse']) ]					# this will be a list of (qual,Transform)
 					
 				#print "ptcl and type are", ptcl, type(ptcl)
 				#print "results[ptcl] are", results[ptcl]
@@ -2676,7 +2675,7 @@ def get_results(etc,tids,verbose,nptcls,refmethod=''):
 	
 		if len(tidsleft)==0: break
 		
-	return [_f for _f in results if _f]
+	return filter(None,results)
 
 
 def wedgestats(volume,angle, wedgei, wedgef, options):

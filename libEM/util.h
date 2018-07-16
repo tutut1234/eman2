@@ -63,6 +63,8 @@ using std::string;
 #include "exception.h"
 
 #include <boost/multi_array.hpp>
+#include <boost/tuple/tuple.hpp>
+//#include <boost/math/special_functions/fpclassify.hpp>
 #include "vec3.h"
 
 using std::string;

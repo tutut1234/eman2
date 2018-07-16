@@ -30,7 +30,6 @@ Author: Jesus Galaz-Montoya - 2017, Last update: 12/Sep/2017
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 '''
 from __future__ import print_function
-from builtins import range
 import matplotlib
 matplotlib.use('Agg',warn=False)
 
@@ -212,7 +211,7 @@ def main():
 					xaxis = [ float(line.replace('\n','').split()[0]) for line in lines ]
 					xaxes.update({k:xaxis})
 					if not options.datay:
-						yaxis = list(range(len(xaxis)))
+						yaxis = range(len(xaxis))
 						yaxes.update({k:yaxis})
 
 						if options.normalize:
@@ -236,7 +235,7 @@ def main():
 						yaxis = normalize(yaxis)
 	
 					if not options.datax:
-						xaxis = list(range(len(yaxis)))
+						xaxis = range(len(yaxis))
 						xaxes.update({k:xaxis})
 
 						datadict.update({k:[xaxis,yaxis]})
@@ -258,7 +257,7 @@ def main():
 def fixlines(inlines):
 	n=len(inlines)
 	newlines=[]
-	for i in range(0,n):
+	for i in xrange(0,n):
 		inlines[i] = inlines[i].replace(", ",' ')	
 		inlines[i] = inlines[i].replace(",",' ')
 		inlines[i] = inlines[i].replace("x",'')
@@ -346,11 +345,11 @@ def plotdata( options, data ):
 	if not options.individualplots:
 		N = len(data)
 		HSV_tuples = [(x*1.0/N, 0.5, 0.5) for x in range(N)]
-		RGB_tuples = [colorsys.hsv_to_rgb(*x) for x in HSV_tuples]
+		RGB_tuples = map(lambda x: colorsys.hsv_to_rgb(*x), HSV_tuples)
 
 		#import string
 		#markers=string.printable
-		markers = list(matplotlib.markers.MarkerStyle.markers.keys())
+		markers = matplotlib.markers.MarkerStyle.markers.keys()
 		marker=''
 
 		

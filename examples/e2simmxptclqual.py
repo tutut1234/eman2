@@ -31,7 +31,6 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 #
 #
-from builtins import range
 import os
 import time
 from EMAN2 import *
@@ -76,7 +75,7 @@ def main():
 # read in projection Euler angles
 	if options.refs:
 		ORTs=[]
-		for i in range(nx):	
+		for i in xrange(nx):	
 			# this reads the header, gets the orientation, and reads it out EMAN style
 			ort=EMData(options.refs,i,True)["xform.projection"]
 			o=ort.get_rotation("eman")
@@ -97,7 +96,7 @@ def main():
 		except: bvecs[N]=im
 
 	# normalize all vector sums
-	for im in list(bvecs.values()): 
+	for im in bvecs.values(): 
 		im.process_inplace("normalize.unitlen")
 
 	# Make an output image of vectors
@@ -123,7 +122,7 @@ def main():
 	out=open("simqual.txt","w")
 	t=time.time()
 	outn=0
-	for y in range(ny):
+	for y in xrange(ny):
 		if time.time()-t>.2 :
 			print(" %d\t %d\r"%(y,outn), end=' ')
 			sys.stdout.flush()
@@ -132,7 +131,7 @@ def main():
 		im=EMData(args[0],0,False,Region(0,y,nx,1))
 		N=im.calc_min_index()
 		best=-10.0,-10.0,-1
-		for r in range(nx):
+		for r in xrange(nx):
 			try:
 				c=-im.cmp("ccc",bvecs[r])
 				if c>best[0]: best=[c,im[r]-im["minimum"],r]

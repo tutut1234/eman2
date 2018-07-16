@@ -32,7 +32,6 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
 from EMAN2 import *
 from testlib import *
 import os
@@ -141,7 +140,7 @@ class TestTypeConverter(unittest.TestCase):
         fnum = TestUtil.get_debug_float(0)
         TestUtil.to_emobject({"float": fnum})
 
-        lnum = int(num)
+        lnum = long(num)
         TestUtil.to_emobject({"long": lnum})
 
         fl = get_list("float")
@@ -302,7 +301,7 @@ class TestTypeConverter(unittest.TestCase):
     def test_numpy2em(self):
         """test numpy2em .................................... """
         n = 100
-        l = list(range(2*n*n))
+        l = range(2*n*n)
         a = numpy.reshape(numpy.array(l, numpy.float32), (2*n, n))
 
         self.assertEqual(a.shape, (2*n, n))

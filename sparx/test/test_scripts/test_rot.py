@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 from __future__ import print_function
-from builtins import range
 from sparx import *
 from EMAN2 import *
 e=test_image()
@@ -12,7 +11,7 @@ sy = -3.7
 
 #sx=0
 #sy=0
-for i in range(36):
+for i in xrange(36):
 	img   = e.copy()
 	alpha = i*10
 	out1  = rot_shift2D(img,alpha,sx,sy,"linear",scale)

@@ -1,21 +1,17 @@
 #!/usr/bin/env python
 # Muyuan Chen 2018-04
 
-from __future__ import print_function
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
 from EMAN2 import *
 import numpy as np
 import scipy.spatial.distance as scidist
-import queue
+import Queue
 import threading
 
 def main():
 	
 	usage="A simple template matching script. run [prog] <tomogram> <reference> to extract particles from tomogram. Results will be saved in the corresponding info files and can be visualized via spt_boxer"
 	parser = EMArgumentParser(usage=usage,version=EMANVERSION)
-	parser.add_pos_argument(name="tomograms",help="Specify tomograms containing reference-like particles to be exctracted.", default="", guitype='filebox', browser="EMTomoBoxesTable(withmodal=True,multiselect=True)", row=0, col=0,rowspan=1, colspan=2, mode="boxing")
+	parser.add_pos_argument(name="tomograms",help="Specify tomograms containing reference-like particles to be exctracted.", default="", guitype='filebox', browser="EMTomoTable(withmodal=True,multiselect=True)", row=0, col=0,rowspan=1, colspan=2, mode="boxing")
 	
 	parser.add_argument("--reference",help="Specify a 3D reference volume.", default="", guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=False)", row=1, col=0,rowspan=1, colspan=2, mode="boxing")
 
@@ -59,7 +55,7 @@ def main():
 		hdr=m.get_attr_dict()
 		ccc=img.copy()*0-65535
 
-		jsd=queue.Queue(0)
+		jsd=Queue.Queue(0)
 		thrds=[threading.Thread(target=do_match,args=(jsd, m,o, img)) for o in oris]
 		thrtolaunch=0
 		tsleep=threading.active_count()
@@ -109,9 +105,9 @@ def main():
 		print("Found {} particles".format(len(pts)))
 		js=js_open_dict(info_name(imgname))
 		n=min(options.nptcl, len(pts))
-		if "class_list" in js:
+		if js.has_key("class_list"):
 			clst=js['class_list']
-			try: kid=max([int(k) for k in list(clst.keys())])+1
+			try: kid=max([int(k) for k in clst.keys()])+1
 			except: kid=0 # In case someone manually edited the info file. Unlikely.
 		else:
 			clst={}
@@ -122,7 +118,7 @@ def main():
 		else:
 			clst[str(kid)]={"boxsize":sz*4, "name":base_name(tmpname)}
 		js["class_list"]=clst
-		if "boxes_3d" in js:
+		if js.has_key("boxes_3d"):
 			bxs=js["boxes_3d"]
 		else:
 			bxs=[]
@@ -140,10 +136,10 @@ def do_match(jsd, m, o, img):
 	jsd.put(cf)
 
 def run(cmd):
-	print(cmd)
+	print cmd
 	launch_childprocess(cmd)
 	
 	
 if __name__ == '__main__':
 	main()
-
+	

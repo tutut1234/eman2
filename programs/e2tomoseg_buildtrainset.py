@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
 # Muyuan Chen 2015-03
-from builtins import range
 from EMAN2 import *
 import numpy as np
 import random
@@ -144,7 +143,7 @@ def main():
 		n=len(imgs)
 		
 		#n=EMUtil.get_image_count(options.trainset_output)
-		idx=list(range(int((ngood/2)*(1-options.validset))))+list(range((ngood/2), int(n/2*(1-options.validset))))
+		idx=range(int((ngood/2)*(1-options.validset)))+range((ngood/2), int(n/2*(1-options.validset)))
 		random.shuffle(idx)
 		for i in idx:
 			imgs[i*2]["valid_set"]=0
@@ -152,7 +151,7 @@ def main():
 			imgs[i*2+1]["valid_set"]=0
 			imgs[i*2+1].write_image(options.trainset_output,-1)
 			
-		idx=list(range(int((ngood/2)*(1-options.validset)), ngood/2))+list(range( int(n/2*(1-options.validset)), n/2))
+		idx=range(int((ngood/2)*(1-options.validset)), ngood/2)+range( int(n/2*(1-options.validset)), n/2)
 		random.shuffle(idx)
 		for i in idx:
 			imgs[i*2]["valid_set"]=1

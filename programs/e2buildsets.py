@@ -31,7 +31,6 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 #
 #
-from builtins import range
 import os, re
 from EMAN2 import *
 import traceback
@@ -201,7 +200,7 @@ def main():
 		totbad+=len(bad)
 
 		for t in groups:
-			for i in range(nimg):
+			for i in xrange(nimg):
 				if i not in bad : lsx[t].write(-1,i,"particles/{}{}.hdf".format(f,t))
 
 	print("Done - {} particles included".format(totptcl), end=' ')

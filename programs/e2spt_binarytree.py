@@ -30,7 +30,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 
 from __future__ import print_function
-from builtins import range
 from EMAN2 import *
 from EMAN2_utils import *
 import os
@@ -339,7 +338,7 @@ def main():
 		print("ERROR : at least 2 particles required in input stack")
 		sys.exit(1)
 	
-	ptclnums=list(range(nptcl))
+	ptclnums=range(nptcl)
 	nptclForRef = len(ptclnums)
 	
 	nseed=2**int(floor(log(len(ptclnums),2)))	# we stick with powers of 2 for this to make the tree easier to collapse

@@ -30,7 +30,6 @@ Author: Steven Ludkte - 2016, Last update: May/2017 (Jesus)
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 '''
 from __future__ import print_function
-from builtins import range
 from EMAN2 import *
 from sys import argv,stdout,exit
 
@@ -119,7 +118,7 @@ def main():
 			n = options.subset
 
 		fillp = fill.copy()
-		for i in range(n):
+		for i in xrange(n):
 			im=EMData(options.input,i)
 			
 			if options.fillwithnoise:

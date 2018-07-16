@@ -58,7 +58,7 @@ class TestDisplay(EMImage2DWidget):
 		self.set_data(self.datatodisp[0])
 	
 		timer = QtCore.QTimer(self)
-		timer.timeout.connect(self.mytimeout)
+		self.connect(timer,QtCore.SIGNAL("timeout()"),self.mytimeout)
 		timer.start(1000)
 
 	def mytimeout(self):

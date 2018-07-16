@@ -2,7 +2,6 @@
 from __future__ import print_function
 # Muyuan Chen 2017-02
 
-from builtins import range
 import numpy as np
 from EMAN2 import *
 import sklearn.manifold as manifold

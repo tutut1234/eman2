@@ -32,10 +32,6 @@ from __future__ import print_function
 #
 #
 
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
-from builtins import object
 from EMAN2 import *
 from EMAN2db import db_open_dict, db_list_dicts
 from math import *
@@ -43,7 +39,7 @@ import time
 import os
 import sys
 import re
-from pickle import dumps,loads,dump,load
+from cPickle import dumps,loads,dump,load
 from zlib import compress,decompress
 from subprocess import Popen,PIPE
 import traceback
@@ -100,7 +96,7 @@ def run_daemon(options,args):
 
 	# ok, we got here, so we should be running in a parentless daemon now
     
-class daemon(object):
+class daemon:
 	
 	def __init__(self,options,args):
 		
@@ -114,7 +110,7 @@ class daemon(object):
 			except: continue
 			
 		# This is a magic string for basic security
-		self.magic="".join([random.choice(string.letters) for i in range(20)])
+		self.magic="".join([random.choice(string.letters) for i in xrange(20)])
 		
 		# This file should be readable by the user only, and contains
 		# "magic" string for security, port number, and PID
@@ -185,7 +181,7 @@ def recv_file(stdin,path):
 def send_bdb(stdout,path):
 	"Sends a BDB to stdout as a set of compressed pickled key/value pairs, terminated by a None key"
 	db=db_open_dict(path)
-	keys=list(db.keys())
+	keys=db.keys()
 	for k in keys:
 		write_obj(stdout,k)
 		write_obj(stdout,db[k])
@@ -336,7 +332,7 @@ def scp_client():
 			recv_bdb(stdin,path)
 			continue
 		
-class scp_proxy(object):
+class scp_proxy:
 	def __init__(self,userhost,verbose=0):
 		"""Opens a connection to the remote host and establishes the remote client. userhost should be of the form "user@host"""
 		self.verbose=verbose
@@ -386,7 +382,7 @@ class scp_proxy(object):
 		self.stdin.write("listrecurse\n%s\n%s\n"%(path,basepath))
 		r=int(self.stdout.readline().strip())
 		ret=[]
-		for i in range(r):
+		for i in xrange(r):
 			ret.append(self.stdout.readline().strip())
 			
 		return ret

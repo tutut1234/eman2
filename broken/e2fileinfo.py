@@ -32,7 +32,6 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
 from EMAN2 import *
 import sys
 import re
@@ -139,7 +138,7 @@ def fileinfo_op(filename,info,outfile):
 
 	idx = getidx(info[0])
 
-	for i in range(0,n):
+	for i in xrange(0,n):
 		d=EMData()
 		d.read_image(filename,i)
 	
@@ -219,7 +218,7 @@ def fileinfo_remove(filename, info,outfile):
 
 	total_removed = 0
 
-	for i in range(0,n):
+	for i in xrange(0,n):
 		d=EMData()
 		d.read_image(filename,i,True)
 	
@@ -300,7 +299,7 @@ def fileinfo_output(filename, infotype):
 	t=EMUtil.get_imagetype_name(EMUtil.get_image_type(filename))
 	
 	idx = getidx(infotype)
-	for i in range(0,n):
+	for i in xrange(0,n):
 		d=EMData()
 		d.read_image(filename,i,True)
 	

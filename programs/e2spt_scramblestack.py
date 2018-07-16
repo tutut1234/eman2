@@ -28,7 +28,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307 USA
 from __future__ import print_function
-from builtins import range
 from EMAN2_utils import *
 from sys import argv
 import os
@@ -55,7 +54,7 @@ def main():
 	logger = E2init(sys.argv, options.ppid)
 
 	n = EMUtil.get_image_count(options.input)
-	indexes = list(range(n))
+	indexes = list(xrange(n))
 	
 	if not options.output:
 		options.output = options.input.replace('.hdf','_scrambled.hdf')

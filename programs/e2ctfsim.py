@@ -35,7 +35,6 @@ from __future__ import print_function
 # e2ctf.py  09/04/2014 Steven Ludtke
 # This is a program for determining CTF parameters and (optionally) phase flipping images
 
-from builtins import range
 from EMAN2 import *
 from EMAN2db import db_open_dict, db_close_dict, db_check_dict, db_list_dicts
 from optparse import OptionParser
@@ -88,7 +87,6 @@ except:
 
 class MyListWidget(QtGui.QListWidget):
 	"""Exactly like a normal list widget but intercepts a few keyboard events"""
-	keypress = QtCore.pyqtSignal(QtGui.QKeyEvent)
 
 	def keyPressEvent(self,event):
 
@@ -96,13 +94,11 @@ class MyListWidget(QtGui.QListWidget):
 			QtGui.QListWidget.keyPressEvent(self,event)
 			return
 
-		self.keypress.emit(event)
+		self.emit(QtCore.SIGNAL("keypress"),event)
 #		event.key()==Qt.Key_I
 
 
 class GUIctfsim(QtGui.QWidget):
-	module_closed = QtCore.pyqtSignal()
-
 	def __init__(self,application,apix=1.0,voltage=300.0,cs=4.1,ac=10.0,samples=256,apply=None):
 		"""CTF simulation dialog
 		"""
@@ -147,10 +143,11 @@ class GUIctfsim(QtGui.QWidget):
 		self.guiplot=EMPlot2DWidget(application=self.app())
 #		self.guirealim=EMImage2DWidget(application=self.app())	# This will show the original particle images
 
-		self.guiim.mousedown.connect(self.imgmousedown)
-		self.guiim.mousedrag.connect(self.imgmousedrag)
-		self.guiim.mouseup.connect(self.imgmouseup)
-		self.guiplot.mousedown.connect(self.plotmousedown)
+#		self.guirealim.connect(self.guirealim,QtCore.SIGNAL("keypress"),self.realimgkey)
+		self.guiim.connect(self.guiim,QtCore.SIGNAL("mousedown"),self.imgmousedown)
+		self.guiim.connect(self.guiim,QtCore.SIGNAL("mousedrag"),self.imgmousedrag)
+		self.guiim.connect(self.guiim,QtCore.SIGNAL("mouseup")  ,self.imgmouseup)
+		self.guiplot.connect(self.guiplot,QtCore.SIGNAL("mousedown"),self.plotmousedown)
 
 		self.guiim.mmode="app"
 
@@ -226,21 +223,21 @@ class GUIctfsim(QtGui.QWidget):
 
 		self.on_new_but()
 
-		self.sdefocus.valueChanged.connect(self.newCTF)
-		self.sbfactor.valueChanged.connect(self.newCTF)
-		self.sdfdiff.valueChanged.connect(self.newCTF)
-		self.sdfang.valueChanged.connect(self.newCTF)
-		self.sapix.valueChanged.connect(self.newCTF)
-		self.sampcont.valueChanged.connect(self.newCTFac)
-		self.sphase.valueChanged.connect(self.newCTFpha)
-		self.svoltage.valueChanged.connect(self.newCTF)
-		self.scs.valueChanged.connect(self.newCTF)
-		self.ssamples.valueChanged.connect(self.newCTF)
-		self.setlist.currentRowChanged[int].connect(self.newSet)
-		self.setlist.keypress.connect(self.listkey)
-		self.splotmode.currentIndexChanged[int].connect(self.newPlotMode)
+		QtCore.QObject.connect(self.sdefocus, QtCore.SIGNAL("valueChanged"), self.newCTF)
+		QtCore.QObject.connect(self.sbfactor, QtCore.SIGNAL("valueChanged"), self.newCTF)
+		QtCore.QObject.connect(self.sdfdiff, QtCore.SIGNAL("valueChanged"), self.newCTF)
+		QtCore.QObject.connect(self.sdfang, QtCore.SIGNAL("valueChanged"), self.newCTF)
+		QtCore.QObject.connect(self.sapix, QtCore.SIGNAL("valueChanged"), self.newCTF)
+		QtCore.QObject.connect(self.sampcont, QtCore.SIGNAL("valueChanged"), self.newCTFac)
+		QtCore.QObject.connect(self.sphase, QtCore.SIGNAL("valueChanged"), self.newCTFpha)
+		QtCore.QObject.connect(self.svoltage, QtCore.SIGNAL("valueChanged"), self.newCTF)
+		QtCore.QObject.connect(self.scs, QtCore.SIGNAL("valueChanged"), self.newCTF)
+		QtCore.QObject.connect(self.ssamples, QtCore.SIGNAL("valueChanged"), self.newCTF)
+		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("currentRowChanged(int)"),self.newSet)
+		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("keypress"),self.listkey)
+		QtCore.QObject.connect(self.splotmode,QtCore.SIGNAL("currentIndexChanged(int)"),self.newPlotMode)
 
-		self.newbut.clicked[bool].connect(self.on_new_but)
+		QtCore.QObject.connect(self.newbut,QtCore.SIGNAL("clicked(bool)"),self.on_new_but)
 
 
 		self.resize(720,380) # figured these values out by printing the width and height in resize event
@@ -312,7 +309,7 @@ class GUIctfsim(QtGui.QWidget):
 
 		event.accept()
 		self.app().close_specific(self)
-		self.module_closed.emit() # this signal is important when e2ctf is being used by a program running its own event loop
+		self.emit(QtCore.SIGNAL("module_closed")) # this signal is important when e2ctf is being used by a program running its own event loop
 
 	def update_data(self):
 		"""This will make sure the various widgets properly show the current data sets"""
@@ -324,7 +321,7 @@ class GUIctfsim(QtGui.QWidget):
 	def update_plot(self):
 		if self.guiplot == None: return # it's closed/not visible
 
-		for d in range(len(self.data)):
+		for d in xrange(len(self.data)):
 			ctf=self.data[d][1]
 			ds=1.0/(ctf.apix*2.0*ctf.samples)
 			s=arange(0,ds*ctf.samples,ds)
@@ -462,6 +459,23 @@ class GUIctfsim(QtGui.QWidget):
 			self.img.set_complex(1)
 			self.guiim.set_data(self.img)
 		self.update_plot()
+
+
+	def realimgkey(self,event):
+		"""Keypress in the image display window"""
+
+		if event.key()==Qt.Key_I:			# if user presses I in this window we invert the stack on disk
+			fsp=self.data[self.curset][0]
+			n=EMUtil.get_image_count(fsp)
+			print("Inverting images in %s"%fsp)
+			for i in xrange(n):
+				img=EMData(fsp,i)
+				img.mult(-1.0)
+				img.write_image(fsp,i)
+
+			#self.ptcldata=EMData.read_images(fsp,range(0,20))
+			#self.guirealim.set_data(self.ptcldata)
+
 
 	def imgmousedown(self,event) :
 		m=self.guiim.scr_to_img((event.x(),event.y()))

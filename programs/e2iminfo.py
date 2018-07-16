@@ -32,7 +32,6 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
 import pprint
 from EMAN2 import *
 from EMAN2db import db_open_dict
@@ -137,7 +136,7 @@ def main():
 			else : print("%s\t %d images in BDB format\t%d x %d x %d"%(imagefile,len(dct),d["nx"],d["ny"],d["nz"]))
 
 		if options.all or options.check:
-			imgn = list(range(nimg))
+			imgn = xrange(nimg)
 		elif options.number >= 0:
 			imgn = [options.number]
 		elif options.header or options.stat or options.euler:
@@ -183,7 +182,7 @@ def main():
 			if options.header :
 #				d=EMData(imagefile,i, True) #Jesus
 				print("")
-				keys=list(d.get_attr_dict().keys())
+				keys=d.get_attr_dict().keys()
 				keys.sort()
 				for k in keys:
 					print("\t%s: %s"%(k,str(d[k])))

@@ -31,7 +31,6 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 #
 
-from builtins import range
 from EMAN2 import *
 from math import *
 import os
@@ -100,7 +99,7 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 			except: pass
 			loute=LSXFile(ename,False)
 			louto=LSXFile(oname,False)
-			for i in range(len(lin)):
+			for i in xrange(len(lin)):
 				imt=lin.read(i)
 				if i%2: louto.write(-1,imt[0],imt[1],imt[2])
 				else: loute.write(-1,imt[0],imt[1],imt[2])
@@ -112,7 +111,7 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 
 		for f in args:
 			lst=LSXFile(f,True)
-			for i in range(len(lst)):
+			for i in xrange(len(lst)):
 				out.write("{}\n".format(lst[i][0]))
 
 	if options.dereforig:
@@ -120,7 +119,7 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 
 		for f in args:
 			n=EMUtil.get_image_count(f)
-			for i in range(n):
+			for i in xrange(n):
 				im=EMData(f,i,True)
 				newlst.write(-1,im["data_n"],im["data_source"])
 
@@ -175,13 +174,13 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 				
 				
 
-				indxsinclude = list(range(n)) #by default, assume all particles in input file will be part of output lsx; otherwise, modify indexes to include according to options
+				indxsinclude = xrange(n) #by default, assume all particles in input file will be part of output lsx; otherwise, modify indexes to include according to options
 
 				if options.range:
 					indxsinclude = eval("range({})".format(options.range))
 		
 				elif options.exclude:
-					indxs=set(range(n))
+					indxs=set(xrange(n))
 					indxsexclude = set(options.exclude.split(','))
 					indxsinclude = [int(j) for j in indxs-indxsexclude]
 
@@ -250,7 +249,7 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 				print("{} -> {}".format(a[1],b+"__"+options.retype+".hdf"))
 
 			# loop over the images in the lst file
-			for i in range(len(lst)):
+			for i in xrange(len(lst)):
 				im=lst.read(i)
 				outname="particles/{}__{}.hdf".format(base_name(im[1]),options.retype)
 				lst.write(i,im[0],outname,im[2])
@@ -276,7 +275,7 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 			lst=LSXFile(f,True)
 			ntot+=len(lst)
 
-			for i in range(len(lst)):
+			for i in xrange(len(lst)):
 				im=lst.read(i)
 				lsto.write(-1,im[0],im[1],im[2])
 
@@ -294,7 +293,7 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 			lst=LSXFile(f,True)
 			ntot+=len(lst)
 
-			for i in range(len(lst)):
+			for i in xrange(len(lst)):
 				im=lst.read(i)
 				ptcls.append((im[1],im[0],im[2]))
 				pfiles.add(im[1])

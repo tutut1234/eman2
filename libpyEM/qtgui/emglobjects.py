@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from __future__ import print_function
-from __future__ import absolute_import
 
 # Author:  David Woolford 10/26/2007 (woolford@bcm.edu)
 # Copyright (c) 2000-2006 Baylor College of Medicine
@@ -32,18 +31,16 @@ from __future__ import absolute_import
 #
 #
 
-from builtins import range
-from builtins import object
 from EMAN2 import *
 from OpenGL import GL, GLU, GLUT
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from PyQt4.QtCore import Qt
-from .emapplication import EMGLWidget, get_application
+from emapplication import EMGLWidget, get_application
 from libpyGLUtils2 import GLUtil
 from math import *
-from .valslider import ValSlider
+from valslider import ValSlider
 import numpy
 import weakref
 
@@ -56,7 +53,7 @@ def init_glut():
 		GLUT.glutInit("")
 		glut_inited = True
 
-class EMBasicOpenGLObjects(object):
+class EMBasicOpenGLObjects:
 	"""
 	This class is supposed to encapsulate basic and common objects
 	used by various other OpenGL classes in EMAN2 pyqt interfaces.
@@ -66,7 +63,7 @@ class EMBasicOpenGLObjects(object):
 	
 	It's implemented as a singleton
 	"""
-	class __impl(object):
+	class __impl:
 		""" Implementation of the singleton interface """
 
 		def __init__(self):
@@ -158,7 +155,7 @@ def viewport_width():
 	return view.viewport_width()
 
 
-class EMGLProjectionViewMatrices(object):
+class EMGLProjectionViewMatrices:
 	"""
 	stores a static single instance of the inverse of the projection matrix, which
 	is calculates using numpy/scipy. Other classes interface with this by calling
@@ -215,14 +212,14 @@ class EMGLProjectionViewMatrices(object):
 		return self.view_matrix[2] - self.view_matrix[0]
 
 
-class EMGLProjViewMatrices(object):
+class EMGLProjViewMatrices:
 	"""
 	Controls a static single instance of OpenGL projection and view(port) matrices
 	Also stores a static single instance of the inverse of the projection matrix, which
 	is calculates using numpy/scipy. Other classes interface with this by calling
 	set_update when the viewport or projection matrix has changed (i.e., a resize event)
 	"""
-	class __impl(object):
+	class __impl:
 		""" Implementation of the singleton interface """
 
 		def __init__(self):
@@ -294,7 +291,7 @@ class EMGLProjViewMatrices(object):
 		""" Delegate access to implementation """
 		return setattr(self.__instance, attr, value)
 
-class EMViewportDepthTools2(object):
+class EMViewportDepthTools2:
 	"""
 	This class provides important tools for EMAN2 floating widgets -
 	these are either qt widgets that get mapped as textures to
@@ -662,7 +659,7 @@ class EMViewportDepthTools2(object):
 
 		return (xcoord, height-ycoord)
 
-class EMViewportDepthTools(object):
+class EMViewportDepthTools:
 	"""
 	This class provides important tools for EMAN2 floating widgets -
 	these are either qt widgets that get mapped as textures to
@@ -1025,7 +1022,7 @@ class EMViewportDepthTools(object):
 
 		return (xcoord + width*0.5, 0.5*height-ycoord)
 
-class EMOpenGLFlagsAndTools(object):
+class EMOpenGLFlagsAndTools:
 	"""
 	This is a singleton class that encapsulates OpenGL flags and tools -
 	flags that are important to the functioning of EMAN2 user interfaces.
@@ -1039,7 +1036,7 @@ class EMOpenGLFlagsAndTools(object):
 	
 	All OpenGL-related Texture flags and generic operations should end up in this class.
 	"""
-	class __impl(object):
+	class __impl:
 		""" Implementation of the singleton interface """
 
 		def __init__(self):
@@ -1150,7 +1147,7 @@ class EMOpenGLFlagsAndTools(object):
 		return setattr(self.__instance, attr, value)
 
 
-class Camera2(object):
+class Camera2:
 	"""\brief A camera object encapsulates 6 degrees of freedom, and a scale factor
 	
 	The camera object stores x,y,z coordinates and a single transform object.
@@ -1164,10 +1161,6 @@ class Camera2(object):
 	Then call 'position' in your main OpenGL draw function before drawing anything.
 	
 	"""
-	scale_delta = QtCore.pyqtSignal(float)
-	apply_rotation = QtCore.pyqtSignal(float)
-	apply_translation = QtCore.pyqtSignal(float)
-
 	def __init__(self,parent):
 		self.emit_events = False
 		# The magnification factor influences how the scale (zoom) is altered when a zoom event is received.
@@ -1270,7 +1263,7 @@ class Camera2(object):
 		
 	def scale_event(self,delta):
 		self.scale_delta(delta)
-		if self.emit_events:self.parent().scale_delta.emit(delta)
+		if self.emit_events:self.parent().emit(QtCore.SIGNAL("scale_delta"),delta)
 		
 	def scale_delta(self,delta):
 		if delta > 0:
@@ -1355,7 +1348,7 @@ class Camera2(object):
 			quaternion["type"] = "spin"
 			t3d.set_params(quaternion)
 			if self.emit_events: 
-				self.parent().apply_rotation.emit(t3d)
+				self.parent().emit(QtCore.SIGNAL("apply_rotation"),t3d)
 			
 			self.t3d_stack[-1] = t3d*self.t3d_stack[-1]
 		else :
@@ -1470,7 +1463,7 @@ class Camera2(object):
 			
 		if self.emit_events: 
 			#print "emitting applyt translation"
-			self.parent().apply_translation.emit(v)
+			self.parent().emit(QtCore.SIGNAL("apply_translation"),v)
 	
 	def motion_translateLA(self,prev_x,prev_y,event):
 		if (self.basicmapping == False):
@@ -1515,7 +1508,7 @@ class Camera2(object):
 			
 		if self.emit_events: 
 			#print "emitting applyt translation"
-			self.parent().apply_translation.emit(v)
+			self.parent().emit(QtCore.SIGNAL("apply_translation"),v)
 	
 	def explicit_translate(self,x,y,z):
 		
@@ -1523,7 +1516,7 @@ class Camera2(object):
 		self.cam_y += y
 		self.cam_z += z
 		
-		if self.emit_events: self.parent().apply_translation.emit((x,y,z))
+		if self.emit_events: self.parent().emit(QtCore.SIGNAL("apply_translation"),(x,y,z))
 			
 	def apply_translation(self,v):
 		self.cam_x += v[0]
@@ -1532,7 +1525,7 @@ class Camera2(object):
 		
 		
 
-class Camera(object):
+class Camera:
 	"""\brief A camera object encapsulates 6 degrees of freedom, and a scale factor
 	
 	The camera object stores x,y,z coordinates and a single transform object.
@@ -1680,7 +1673,7 @@ class Camera(object):
 		
 		return cam
 
-class EMBrightContrastScreen(object):
+class EMBrightContrastScreen:
 	def __init__(self):
 		# this class draws a brightness/contrast screen on the zplane,
 		# on a square polygon from [0,0] to [1,1]
@@ -2025,7 +2018,6 @@ def get_default_gl_colors():
 	return colors
 
 class EM3DModel(QtCore.QObject):
-	inspector_shown = QtCore.pyqtSignal()
 	FTGL = "ftgl"
 	GLUT = "glut"
 	def __init__(self, gl_widget):
@@ -2220,7 +2212,7 @@ class EM3DModel(QtCore.QObject):
 	def show(self): self.gl_widget().show()
 	def show_inspector(self,force=0): #Copied from EMGLWidget
 		if self.disable_inspector: return
-		self.inspector_shown.emit() # debug only
+		self.emit(QtCore.SIGNAL("inspector_shown")) # debug only
 		app = get_application()
 		if app == None:
 			print("can't show an inspector with having an associated application")

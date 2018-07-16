@@ -42,7 +42,7 @@ def main():
 	
 	logger = E2init(sys.argv)
 	
-	hdr = list(starf.keys())
+	hdr = starf.keys()
 	
 	# resolve correct micrograph dictionary key
 	

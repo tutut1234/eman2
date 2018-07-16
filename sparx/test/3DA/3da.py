@@ -32,7 +32,6 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
 from EMAN2  import *
 from sparx  import *
 
@@ -63,7 +62,7 @@ sy=0
 
 ast = 720/nangles
 apsi=-ast
-for i in range(nangles):
+for i in xrange(nangles):
 	apsi += ast
 	angles[i][2] = apsi
 	print(angles[i])
@@ -127,7 +126,7 @@ exit()
 # b=EMData().read_images("proj.hdf")
 #stack = "proj.hdf"
 m = model_circle(30,75,75,75)
-list_proj=list(range(len(angles)))
+list_proj=range(len(angles))
 
 #v = recons3d_4nn(stack, list_proj, "c1")
 #print ccc(v,vol,m)

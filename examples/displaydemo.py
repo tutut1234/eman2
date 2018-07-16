@@ -35,7 +35,6 @@ from __future__ import print_function
 # displaydemo.py  09/18/2009  Steven Ludtke
 
 
-from builtins import object
 from EMAN2 import *
 from math import *
 from PyQt4 import QtCore
@@ -52,15 +51,15 @@ def main():
 
 	em_app.execute()
 
-class TestControl(object):
+class TestControl():
 	def __init__(self,app):
 		# the single image display widget
 		self.im2d = EMImage2DWidget(application=app)
 	
 		# get some signals from the window.
-		self.im2d.mousedown.connect(self.down)
-		self.im2d.mousedrag.connect(self.drag)
-		self.im2d.mouseup.connect(self.up)
+		QtCore.QObject.connect(self.im2d,QtCore.SIGNAL("mousedown"),self.down)
+		QtCore.QObject.connect(self.im2d,QtCore.SIGNAL("mousedrag"),self.drag)
+		QtCore.QObject.connect(self.im2d,QtCore.SIGNAL("mouseup"),self.up)
 	
 		#self explanatory
 		a=test_image(size=(512,512))

@@ -31,12 +31,10 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
 from EMAN2 import *
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import Qt
 from eman2_gui.pmicons import *
-from PyQt4.QtGui import QTreeWidgetItem
 import os, json, re, glob, signal
 import subprocess
 from eman2_gui.empmwidgets import *
@@ -151,7 +149,7 @@ class EMProjectManager(QtGui.QMainWindow):
 		exit = QtGui.QAction('Exit', self)
 		exit.setShortcut('Ctrl+Q')
 		exit.setStatusTip('Exit application')
-		exit.triggered.connect(self.close)
+		self.connect(exit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
 		filemenu.addAction(exit)
 
 		# Project
@@ -159,12 +157,12 @@ class EMProjectManager(QtGui.QMainWindow):
 		openproject = QtGui.QAction('Open Project', self)
 		openproject.setShortcut('Ctrl+O')
 		openproject.setStatusTip('Open Project')
-		openproject.triggered.connect(self._on_openproject)
+		self.connect(openproject, QtCore.SIGNAL('triggered()'), self._on_openproject)
 		projectmenu.addAction(openproject)
 		editproject = QtGui.QAction('Edit Project', self)
 		editproject.setShortcut('Ctrl+E')
 		editproject.setStatusTip('Edit Project')
-		editproject.triggered.connect(self._on_editproject)
+		self.connect(editproject, QtCore.SIGNAL('triggered()'), self._on_editproject)
 		projectmenu.addAction(editproject)
 		# Options
 		#optionsmenu = menubar.addMenu('&Options')
@@ -176,7 +174,7 @@ class EMProjectManager(QtGui.QMainWindow):
 		filebrowser.setStatusTip('File Browser')
 		utilsmenu.addAction(filebrowser)
 		utilsmenu.addSeparator()
-		filebrowser.triggered.connect(self._on_browse)
+		self.connect(filebrowser, QtCore.SIGNAL('triggered()'), self._on_browse)
 		self.dumpterminal = QtGui.QAction('Dump Terminal', self)
 		self.dumpterminal.setCheckable(True)
 		self.dumpterminal.setChecked(False)
@@ -211,7 +209,7 @@ class EMProjectManager(QtGui.QMainWindow):
 		box.addWidget(self.modeCB)
 		widget.setLayout(box)
 
-		self.modeCB.activated[int].connect(self._onModeChange)
+		self.connect(self.modeCB, QtCore.SIGNAL("activated(int)"), self._onModeChange)
 
 		return widget
 
@@ -227,8 +225,8 @@ class EMProjectManager(QtGui.QMainWindow):
 
 	def _on_openproject(self):
 		self.openbrowser = EMBrowserWidget(withmodal=True,multiselect=False)
-		self.openbrowser.ok.connect(self._onopen_ok)
-		self.openbrowser.cancel.connect(self._onopen_cancel)
+		QtCore.QObject.connect(self.openbrowser, QtCore.SIGNAL("ok"),self._onopen_ok)
+		QtCore.QObject.connect(self.openbrowser, QtCore.SIGNAL("cancel"),self._onopen_cancel)
 		self.openbrowser.show()
 		self.activateWindow()
 
@@ -336,10 +334,10 @@ class EMProjectManager(QtGui.QMainWindow):
 		tbox.setAlignment(QtCore.Qt.AlignTop)
 		toolwidget.setLayout(tbox)
 
-		self.browsebutton.clicked.connect(self._on_browse)
-		self.helpbutton.stateChanged[bool].connect(self._on_helpbutton)
-		self.logbutton.stateChanged[bool].connect(self._on_logbutton)
-		self.taskmanagerbutton.stateChanged[bool].connect(self._on_taskmgrbutton)
+		QtCore.QObject.connect(self.browsebutton,QtCore.SIGNAL("clicked()"),self._on_browse)
+		QtCore.QObject.connect(self.helpbutton,QtCore.SIGNAL("stateChanged(bool)"),self._on_helpbutton)
+		QtCore.QObject.connect(self.logbutton,QtCore.SIGNAL("stateChanged(bool)"),self._on_logbutton)
+		QtCore.QObject.connect(self.taskmanagerbutton,QtCore.SIGNAL("stateChanged(bool)"),self._on_taskmgrbutton)
 
 		return toolwidget
 
@@ -447,9 +445,9 @@ class EMProjectManager(QtGui.QMainWindow):
 		#tbox.setContentsMargins(0,0,0,0)
 		#tbox.setAlignment(QtCore.Qt.AlignTop)
 
-		self.wikibutton.clicked.connect(self._on_wikibutton)
-		self.wizardbutton.clicked.connect(self._on_wizardbutton)
-		self.expertbutton.stateChanged[bool].connect(self._on_expertmodechanged)
+		QtCore.QObject.connect(self.wikibutton,QtCore.SIGNAL("clicked()"),self._on_wikibutton)
+		QtCore.QObject.connect(self.wizardbutton,QtCore.SIGNAL("clicked()"),self._on_wizardbutton)
+		QtCore.QObject.connect(self.expertbutton,QtCore.SIGNAL("stateChanged(bool)"),self._on_expertmodechanged)
 
 	#return programtoolwidget
 
@@ -498,8 +496,8 @@ class EMProjectManager(QtGui.QMainWindow):
 		hbox.setContentsMargins(4,4,4,4)
 		cmdwidget.setLayout(hbox)
 
-		self.cancelbutton.clicked.connect(self._on_cmd_cancel)
-		self.launchbutton.clicked.connect(self._on_cmd_launch)
+		QtCore.QObject.connect(self.cancelbutton,QtCore.SIGNAL("clicked()"),self._on_cmd_cancel)
+		QtCore.QObject.connect(self.launchbutton,QtCore.SIGNAL("clicked()"),self._on_cmd_launch)
 
 		return cmdwidget
 
@@ -656,7 +654,7 @@ class EMProjectManager(QtGui.QMainWindow):
 			self._add_children(toplevel, qtreewidget)
 			QTree.addTopLevelItem(qtreewidget)
 
-		QTree.itemClicked[QTreeWidgetItem, int].connect(self._tree_widget_click)
+		QtCore.QObject.connect(QTree, QtCore.SIGNAL("itemClicked(QTreeWidgetItem*,int)"), self._tree_widget_click)
 
 		return QTree
 
@@ -1086,7 +1084,7 @@ class TheHelp(QtGui.QWidget):
 		self.helptopics.append(["symmetries", dump_symmetries_list()])
 
 
-		self.helpcb.activated[int].connect(self._helpchange)
+		self.connect(self.helpcb, QtCore.SIGNAL("activated(int)"), self._helpchange)
 
 		tbwidget.setLayout(grid)
 		return tbwidget
@@ -1097,13 +1095,13 @@ class TheHelp(QtGui.QWidget):
 		helpdict =  self.helptopics[idx][1]
 		helpdoc = "<B><H3>Listed below is a list of EMAN2 <I>%s</I></H3></B><BR>"%self.helptopics[idx][0]
 
-		keys = list(helpdict.keys())
+		keys = helpdict.keys()
 		keys.sort()
 		for key in keys:
 			helpdoc += "<B>%s</B>"%(key)
 			eman2item = helpdict[key]
 			helpdoc += "<UL><LI><I>Description:</I> %s</LI>"%eman2item[0]
-			for param in range((len(eman2item)-1)/3):
+			for param in xrange((len(eman2item)-1)/3):
 				helpdoc += "<LI><I>Parameter:</I> &nbsp;<B>%s(</B><SPAN style='color:red;'>%s</SPAN><B>)</B>, %s</LI>"%(eman2item[param*3 +1],eman2item[param*3 +2],eman2item[param*3 +3])
 			helpdoc += "</UL>"
 
@@ -1157,8 +1155,8 @@ class NoteBook(QtGui.QWidget):
 		self.checkEMAN2LogFile()
 		self.writeNotes() # save changes from checkEMAN2LogFile()
 
-		self.savepb.clicked.connect(self._on_save)
-		self.closepb.clicked.connect(self._on_close)
+		self.connect(self.savepb, QtCore.SIGNAL('clicked()'), self._on_save)
+		self.connect(self.closepb, QtCore.SIGNAL('clicked()'), self._on_close)
 
 	def getToolBar(self):
 		""" Return the toolbar widget """
@@ -1207,12 +1205,12 @@ class NoteBook(QtGui.QWidget):
 			self._load_fontsizes()
 
 		# Connect signals
-		self.fontfamily.activated[int].connect(self._fontfamilychange)
-		self.fontsizecb.activated[int].connect(self._fontchange)
-		self.boldbutton.stateChanged[bool].connect(self._fontchange)
-		self.italicbutton.stateChanged[bool].connect(self._fontchange)
-		self.underlinebutton.stateChanged[bool].connect(self._fontchange)
-		self.fontcolor.newcolor[QColor].connect(self._fontchange)
+		self.connect(self.fontfamily, QtCore.SIGNAL("activated(int)"), self._fontfamilychange)
+		self.connect(self.fontsizecb, QtCore.SIGNAL("activated(int)"), self._fontchange)
+		self.connect(self.boldbutton, QtCore.SIGNAL("stateChanged(bool)"), self._fontchange)
+		self.connect(self.italicbutton, QtCore.SIGNAL("stateChanged(bool)"), self._fontchange)
+		self.connect(self.underlinebutton, QtCore.SIGNAL("stateChanged(bool)"), self._fontchange)
+		self.connect(self.fontcolor, QtCore.SIGNAL("newcolor(QColor)"), self._fontchange)
 
 		return tbwidget
 
@@ -1392,14 +1390,14 @@ class TaskManager(QtGui.QWidget):
 		self.resize(400, 200)
 
 
-		self.closepb.clicked.connect(self._on_close)
-		self.killpb.clicked.connect(self._on_kill)
+		self.connect(self.closepb, QtCore.SIGNAL('clicked()'), self._on_close)
+		self.connect(self.killpb, QtCore.SIGNAL('clicked()'), self._on_kill)
 		self.tasks=None
 		self.update_tasks()
 
 		# A timer for updates
 		self.timer = QtCore.QTimer(self);
-		self.timer.timeout.connect(self.update_tasks)
+		QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.update_tasks)
 		self.timer.start(2000)
 
 	def check_task(self,fin,ptsk):
@@ -1518,7 +1516,7 @@ class TaskManager(QtGui.QWidget):
 		#self.list_widget.clear()
 		listitems = self.getListItems()
 		for t in self.tasks:
-			if t[1] in list(listitems.keys()):
+			if t[1] in listitems.keys():
 				listitems[t[1]].setText("%s  %s (%s)  %s"%(t[2][5:16],t[3][:4],t[1],t[4]))
 				del(listitems[t[1]])
 				continue
@@ -1528,12 +1526,12 @@ class TaskManager(QtGui.QWidget):
 			listwigetitem.setProgramName(t[4])
 			self.list_widget.addItem(listwigetitem)
 		# Remove items that have stopped running
-		for item in list(listitems.values()):
+		for item in listitems.values():
 			self.list_widget.takeItem(self.list_widget.row(item))
 
 	def getListItems(self):
 		itemdict = {}
-		for i in range(self.list_widget.count()):
+		for i in xrange(self.list_widget.count()):
 			itemdict[self.list_widget.item(i).getPID()] = self.list_widget.item(i)
 		return itemdict
 
@@ -1545,55 +1543,29 @@ class TaskManager(QtGui.QWidget):
 		self.close()
 
 	def _on_kill(self):
-		killsig=signal.SIGTERM
-		modifiers = QtGui.QApplication.keyboardModifiers()
-		if modifiers == QtCore.Qt.ShiftModifier:
-			print("Shift held. Will force kill processes")
-			killsig=signal.SIGKILL
-
 		selitems = self.list_widget.selectedItems()
 		self.update_tasks()
 		for item in selitems:
-			curpid=item.getPID()
-			curppid=item.getPPID()
-			print("Killing process PID: {}, PPID: {}".format(curpid, curppid))
 			if os.name == 'posix': # Kill by this method will only work for unix/linux type OS
-				
-				if curppid<0:
-					#### this is a parent process. kill itself then all its children
-					os.kill(curpid,killsig)
-					self._recursivekill(curpid)
-				else:
-					#### this is a child process. kill all its siblings then parent
-					for task in self.tasks:
-						if curppid == task[5]: 
-							#### processes share the same parent
-							print("killing self process", task[1])
-							os.kill(task[1], killsig)
-							self._recursivekill(task[1], killsig)
-					## now parent
+				# The PID Mafia occurs below: # Kill all children and siblings
+				for task in self.tasks:
+					if item.getPPID() == task[5]:
+						print("killing self process", task[1])
+						os.kill(task[1],signal.SIGTERM)
+						self._recursivekill(task[1])
+				# kill parent (top level item)
+				if item.getPPID() > 0:
 					print("KIlling parent")
-					os.kill(curppid,killsig)
-					
-				## The PID Mafia occurs below: # Kill all children and siblings
-				#for task in self.tasks:
-					#if item.getPPID() == task[5]:
-						#print("killing self process", task[1])
-						#os.kill(task[1],signal.SIGTERM)
-						#self._recursivekill(task[1])
-				## kill parent (top level item)
-				#if item.getPPID() > 0:
-					#print("KIlling parent")
-					#os.kill(item.getPPID(),signal.SIGTERM)
+					os.kill(item.getPPID(),signal.SIGTERM)
 			else:
 				# Windows kill
 				pass
 
-	def _recursivekill(self, pid, sig=signal.SIGTERM):
+	def _recursivekill(self, pid):
 		for task in self.tasks:
 			if pid == task[5]:
 				print("Killing child process", task[1])
-				os.kill(task[1],sig)
+				os.kill(task[1],signal.SIGTERM)
 				self._recursivekill(task[1])
 
 	def hideEvent(self, event):
@@ -1663,7 +1635,7 @@ class PMProgramWidget(QtGui.QTabWidget):
 
 		self.previoustab = 0
 
-		self.currentChanged[int].connect(self._on_tabchange)
+		QtCore.QObject.connect(self, QtCore.SIGNAL("currentChanged(int)"), self._on_tabchange)
 
 	def updateWidget(self):
 		""" Delegate to guiwidget """
@@ -1748,7 +1720,7 @@ class PMGUIWidget(QtGui.QScrollArea):
 				widget = PMFSCTableWidget(option['name'], self.getDefault(option), self.getSharingMode(option), postional=self.getPositional(option), initdefault=self.getDefault(option, nodb=True))
 
 			# Setup each widget
-			widget.pmmessage[QString].connect(self._on_message)
+			self.connect(widget,QtCore.SIGNAL("pmmessage(QString)"),self._on_message)
 			widget.setToolTip(option['help'])
 			self.widgethash[option['name']] = widget
 			self.widgetlist.append(widget)
@@ -1806,7 +1778,7 @@ class PMGUIWidget(QtGui.QScrollArea):
 			choices = eval(option['choicelist'])
 			# If it is a dict, get the keys
 			if type(choices) == type({}):
-				choices = list(choices.keys())
+				choices = choices.keys()
 		return choices
 
 	def getPositional(self, option):
@@ -1878,7 +1850,7 @@ class PMGUIWidget(QtGui.QScrollArea):
 
 		posargs = []
 		# now do the widgets which are not listed in the above list
-		for name,widget in list(widgethash.items()):
+		for name,widget in widgethash.iteritems():
 			if isinstance(widget, PMHeaderWidget):
 				continue
 			if isinstance(widget, PMBoolWidget):
@@ -1930,7 +1902,7 @@ class PMGUIWidget(QtGui.QScrollArea):
 		""" Check for any error messages """
 		errormsg = ""
 		self.errorstate = False
-		for widget in list(self.widgethash.values()):
+		for widget in self.widgethash.values():
 			if widget.getErrorMessage():
 				self.errorstate = True
 				errormsg += (widget.getErrorMessage()+"<br>")
@@ -2009,8 +1981,6 @@ class PMQTreeWidgetItem(QtGui.QTreeWidgetItem):
 
 class PMToolButton(QtGui.QToolButton):
 	""" Create a toogle button """
-	stateChanged = QtCore.pyqtSignal(bool)
-
 	def __init__(self):
 		QtGui.QToolButton.__init__(self)
 		self.setMinimumWidth(30)
@@ -2018,7 +1988,7 @@ class PMToolButton(QtGui.QToolButton):
 
 	def setDown(self, state, quiet=False):
 		QtGui.QToolButton.setDown(self, state)
-		if not quiet: self.stateChanged.emit(state)
+		if not quiet: self.emit(QtCore.SIGNAL("stateChanged(bool)"), state)
 
 	def mousePressEvent(self, event):
 		self.setDown(not self.isDown())
@@ -2088,8 +2058,8 @@ class ProjectDialog(QtGui.QDialog):
 		sgrid.addWidget(cancel_pb,1,1)
 		self.setLayout(sgrid)
 
-		done_pb.clicked.connect(self._on_done)
-		cancel_pb.clicked.connect(self._on_cancel)
+		self.connect(done_pb, QtCore.SIGNAL('clicked()'), self._on_done)
+		self.connect(cancel_pb, QtCore.SIGNAL('clicked()'), self._on_cancel)
 
 		# Set values
 		self.fillFields()

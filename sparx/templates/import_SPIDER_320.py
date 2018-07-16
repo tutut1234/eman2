@@ -3,7 +3,6 @@ from __future__ import print_function
 
 # it is likely that the above line would have to be changed depending on python location
 
-from builtins import range
 from EMAN2 import *
 from sparx import *
 
@@ -29,7 +28,7 @@ total_high_proj = 0
 proj_out = "bdb:/home/ryan/HOSPITALIS320"
 
 
-for ii in range(1) :
+for ii in xrange(1) :
 
 	proj_in = prj_home + "ssspdbox320dcs2.dat"
 
@@ -41,7 +40,7 @@ for ii in range(1) :
 
 	prev_defocus = 0.
 
-	for iq in range(nimage):
+	for iq in xrange(nimage):
 		defocus = atof( split( i_ctfs.readline() )[2] )
 		if defocus != prev_defocus:
 			print("Defocus is ", defocus)

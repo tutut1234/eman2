@@ -34,6 +34,7 @@
 
 // Boost Includes ==============================================================
 #include <boost/python.hpp>
+#include <boost/cstdint.hpp>
 
 // Includes ====================================================================
 #include "marchingcubes.h"
@@ -41,6 +42,7 @@
 
 // Using =======================================================================
 using namespace boost::python;
+//using namespace EMAN;
 
 // Declarations ================================================================
 namespace  {

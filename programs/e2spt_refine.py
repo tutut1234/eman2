@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # Muyuan Chen 2017-03
-from __future__ import print_function
-from builtins import range
 from EMAN2 import *
 import numpy as np
-from EMAN2_utils import *
 
 def main():
 	
@@ -15,7 +12,7 @@ def main():
 
 	parser.add_header(name="orblock1", help='Just a visual separation', title="Options", row=2, col=1, rowspan=1, colspan=1, mode="model")
 
-	parser.add_argument("--mask", type=str,help="Mask file to be applied to initial model", default="", guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=False)", row=3, col=0,rowspan=1, colspan=3, mode="model")
+	parser.add_argument("--mask", type=str,help="Mask file to be applied to initial model", default=None, guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=False)", row=3, col=0,rowspan=1, colspan=3, mode="model")
 
 	parser.add_argument("--niter", type=int,help="Number of iterations", default=5, guitype='intbox',row=4, col=0,rowspan=1, colspan=1, mode="model")
 	parser.add_argument("--sym", type=str,help="symmetry", default="c1", guitype='strbox',row=4, col=1,rowspan=1, colspan=1, mode="model")
@@ -30,7 +27,7 @@ def main():
 
 	parser.add_argument("--setsf", type=str,help="structure factor", default=None, guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=False)", row=7, col=0,rowspan=1, colspan=3, mode="model")
 
-	parser.add_argument("--pkeep", type=float,help="fraction of particles to keep", default=0.8, guitype='floatbox',row=8, col=0,rowspan=1, colspan=1, mode="model")
+	parser.add_argument("--pkeep", type=float,help="fraction of particles to keep", default=1., guitype='floatbox',row=8, col=0,rowspan=1, colspan=1, mode="model")
 
 	parser.add_argument("--tkeep", type=float,help="fraction of tilt to keep. only used when tltrefine is specified. default is 0.5", default=0.5, guitype='floatbox',row=8, col=1,rowspan=1, colspan=1, mode="model")
 
@@ -41,7 +38,7 @@ def main():
 
 	parser.add_argument("--threads", type=int,help="threads", default=12, guitype='intbox',row=9, col=2,rowspan=1, colspan=1, mode="model")
 
-	parser.add_argument("--path", type=str,help="Specify name of refinement folder. Default is spt_XX.", default=None)#, guitype='strbox', row=10, col=0,rowspan=1, colspan=3, mode="model")
+	parser.add_argument("--path", type=str,help="path", default=None)
 
 	parser.add_argument("--ppid", type=int, help="Set the PID of the parent process, used for cross platform PPID",default=-2)
 
@@ -51,8 +48,24 @@ def main():
 
 	ref=options.reference
 
-	if options.path==None: options.path = make_path("spt") 
-
+	if options.path==None:
+		for i in range(100):
+			pname="spt_{:02d}".format(i)
+			if not os.path.isdir(pname):
+				os.mkdir(pname)
+				options.path=pname
+				break
+		else:
+			print "something is wrong..."
+			exit()
+	else:
+		try: 
+			os.mkdir(options.path)
+		except:
+			pass
+		
+	print options.path
+	
 	options.input_ptcls=ptcls
 	options.input_ref=ref
 	options.cmd=' '.join(sys.argv)
@@ -65,7 +78,7 @@ def main():
 	if options.goldcontinue==False:
 		er=EMData(ref,0)
 		if abs(1-ep["apix_x"]/er["apix_x"])>0.01:
-			print("apix mismatch {:.2f} vs {:.2f}".format(ep["apix_x"], er["apix_x"]))
+			print "apix mismatch {:.2f} vs {:.2f}".format(ep["apix_x"], er["apix_x"])
 			rs=er["apix_x"]/ep["apix_x"]
 			if rs>1.:
 				run("e2proc3d.py {} {}/model_input.hdf --clip {} --scale {} --process mask.soft:outer_radius=-1".format(ref, options.path, ep["nx"], rs))
@@ -95,7 +108,7 @@ def main():
 		
 		js=js_open_dict(os.path.join(options.path, "particle_parms_{:02d}.json".format(itr)))
 		score=[]
-		for k in list(js.keys()):
+		for k in js.keys():
 			score.append(float(js[k]["score"]))
 		
 		s=""
@@ -162,11 +175,12 @@ def main():
 	E2end(logid)
 	
 def run(cmd):
-	print(cmd)
+	print cmd
 	ret=launch_childprocess(cmd)
+	print ret
 	return ret
 	
 	
 if __name__ == '__main__':
 	main()
-
+	

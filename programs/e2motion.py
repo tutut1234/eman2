@@ -31,9 +31,6 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307 USA
 #
 
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
 import sys
 import os
 import weakref
@@ -47,7 +44,7 @@ from eman2_gui.emapplication import get_application, EMApp
 from eman2_gui.emimage2d import EMImage2DWidget
 from eman2_gui.emimagemx import EMImageMXWidget
 from eman2_gui.valslider import *
-import queue
+import Queue
 from eman2_gui import embrowser
 
 def main():
@@ -98,7 +95,7 @@ def main():
 	parms=js_open_dict("{}/0_a2d_parms.json".format(options.path))
 	
 	if options.iter not in parms :
-		try: options.iter=max([int(i) for i in list(parms.keys())])
+		try: options.iter=max([int(i) for i in parms.keys()])
 		except: options.iter=0
 		print("Iteration: ",options.iter)
 
@@ -414,23 +411,23 @@ class EMMotion(QtGui.QMainWindow):
 
 		#self.hbl1.addStretch(5)
 
-		self.wbdrawali.clicked[bool].connect(self.aliDrawMode)
-		self.wbautoali.clicked[bool].connect(self.aliAutoPress)
-		self.wbresetali.clicked[bool].connect(self.aliResetPress)
-		self.wbaligo.clicked[bool].connect(self.aliGoPress)
-		self.wbrecalcref.clicked[bool].connect(self.aliRecalcRefPress)
-		self.wbrrecalcref.clicked[bool].connect(self.aliRRecalcRefPress)
-		self.wbdrawroi.clicked[bool].connect(self.roiDrawMode)
-		self.wbautoroi.clicked[bool].connect(self.roiAutoPress)
-		self.wbresetroi.clicked[bool].connect(self.roiResetPress)
-		self.wbroigo.clicked[bool].connect(self.roiGoPress)
-		self.wbcompute.clicked[bool].connect(self.doCompute)
-		self.wbshowptcl.clicked[bool].connect(self.showParticles)
-		self.wvbiter.valueChanged.connect(self.newIter)
-		self.wvsnum.valueChanged.connect(self.newThresh)
-		self.wbdoavg.clicked[bool].connect(self.avgPress)
+		QtCore.QObject.connect(self.wbdrawali,QtCore.SIGNAL("clicked(bool)"),self.aliDrawMode)
+		QtCore.QObject.connect(self.wbautoali,QtCore.SIGNAL("clicked(bool)"),self.aliAutoPress)
+		QtCore.QObject.connect(self.wbresetali,QtCore.SIGNAL("clicked(bool)"),self.aliResetPress)
+		QtCore.QObject.connect(self.wbaligo,QtCore.SIGNAL("clicked(bool)"),self.aliGoPress)
+		QtCore.QObject.connect(self.wbrecalcref,QtCore.SIGNAL("clicked(bool)"),self.aliRecalcRefPress)
+		QtCore.QObject.connect(self.wbrrecalcref,QtCore.SIGNAL("clicked(bool)"),self.aliRRecalcRefPress)
+		QtCore.QObject.connect(self.wbdrawroi,QtCore.SIGNAL("clicked(bool)"),self.roiDrawMode)
+		QtCore.QObject.connect(self.wbautoroi,QtCore.SIGNAL("clicked(bool)"),self.roiAutoPress)
+		QtCore.QObject.connect(self.wbresetroi,QtCore.SIGNAL("clicked(bool)"),self.roiResetPress)
+		QtCore.QObject.connect(self.wbroigo,QtCore.SIGNAL("clicked(bool)"),self.roiGoPress)
+		QtCore.QObject.connect(self.wbcompute,QtCore.SIGNAL("clicked(bool)"),self.doCompute)
+		QtCore.QObject.connect(self.wbshowptcl,QtCore.SIGNAL("clicked(bool)"),self.showParticles)
+		QtCore.QObject.connect(self.wvbiter,QtCore.SIGNAL("valueChanged"),self.newIter)
+		QtCore.QObject.connect(self.wvsnum,QtCore.SIGNAL("valueChanged"),self.newThresh)
+		QtCore.QObject.connect(self.wbdoavg,QtCore.SIGNAL("clicked(bool)"),self.avgPress)
 
-		self.mfileopen.triggered[bool].connect(self.menuFileOpen)
+		QtCore.QObject.connect(self.mfileopen,QtCore.SIGNAL("triggered(bool)")  ,self.menuFileOpen  )
 
 
 		# set up draw mode
@@ -468,7 +465,7 @@ class EMMotion(QtGui.QMainWindow):
 		
 		try: 
 			dct=js_open_dict("{}/particle_parms_{:02d}.json".format(self.path,itr))
-			self.particles=[(j["score"],j["xform.align2d"],eval(i)[0],int(eval(i)[1])) for i,j in list(dct.items())]
+			self.particles=[(j["score"],j["xform.align2d"],eval(i)[0],int(eval(i)[1])) for i,j in dct.items()]
 			self.particles.sort()
 			if len(self.particles)==0 : raise Exception
 		except:
@@ -530,8 +527,8 @@ class EMMotion(QtGui.QMainWindow):
 			return
 
 		self.dialog = embrowser.EMBrowserWidget(withmodal=True,multiselect=False)
-		self.dialog.ok.connect(self.gotPath)
-		self.dialog.cancel.connect(self.gotPath)
+		QtCore.QObject.connect(self.dialog,QtCore.SIGNAL("ok"),self.gotPath)
+		QtCore.QObject.connect(self.dialog,QtCore.SIGNAL("cancel"),self.gotPath)
 		self.dialog.show()
 	
 	def gotPath(self):
@@ -790,7 +787,7 @@ class EMMotion(QtGui.QMainWindow):
 		
 		nthr=int(self.wvbcores.getValue())		# number of threads to use for faster alignments
 		
-		jsd=queue.Queue(0)
+		jsd=Queue.Queue(0)
 		self.particles_ali=[]
 		thrs=[]
 		# launch nthr threads to do the alignments
@@ -819,7 +816,7 @@ class EMMotion(QtGui.QMainWindow):
 		
 		nthr=int(self.wvbcores.getValue())		# number of threads to use for faster alignments
 
-		jsd=queue.Queue(0)
+		jsd=Queue.Queue(0)
 		n2use=self.wvsnum.getValue()
 		thrs=[]
 		# launch nthr threads to do the alignments
@@ -925,7 +922,7 @@ class EMMotion(QtGui.QMainWindow):
 		
 		# Find a class number in the current iteration
 		clnums=[i.split("_")[-1][:2] for i in os.listdir(self.path) if "classes_{:02d}".format(self.iter) in i]
-		for i in range(len(clnums)):
+		for i in xrange(len(clnums)):
 			try: clnums[i]=int(clnums[i])
 			except: clnums[i]=0
 		clnums.append(0)
@@ -984,15 +981,15 @@ class EMMotion(QtGui.QMainWindow):
 			c["class_ptcl_src"]=toclass[0][2]
 
 		# put the class with the most particles first
-		m=max([(i["ptcl_repr"],i) for i in classes])
+		m=max(map(lambda i:(i["ptcl_repr"],i),classes))
 		classes.remove(m[1])
 		classes.insert(0,m[1])
 
 		# now start from this one for the sort
-		for c in range(1,len(classes)-1):
+		for c in xrange(1,len(classes)-1):
 			self.wpbprogress.setValue(87+12*c/len(classes))
 			b=classes[c-1].cmp("frc",classes[c])
-			for c2 in range(c+1,len(classes)):
+			for c2 in xrange(c+1,len(classes)):
 				ccc=classes[c-1].cmp("frc",classes[c2])
 				if ccc<b :
 					b=ccc
@@ -1031,7 +1028,7 @@ class EMMotion(QtGui.QMainWindow):
 		self.classes=[]
 		clssz=len(tosort)/nclasses		# particles per class
 		
-		for cl in range(nclasses):
+		for cl in xrange(nclasses):
 			avgr=Averagers.get("mean")
 			for i in tosort[cl*clssz:(cl+1)*clssz]: avgr.add_image(i[1])
 			self.classes.append(avgr.finish())

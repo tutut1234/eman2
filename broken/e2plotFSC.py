@@ -75,7 +75,7 @@ def main():
 			print("Rubbish!!!, no FSC curves found!!!")
 			return
 		db = db_open_dict(db_name,ro=True)
-		keys = list(db.keys())
+		keys = db.keys()
 	
 		# Load desired FSC curves
 		res = []

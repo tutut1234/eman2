@@ -31,7 +31,6 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 #
 #
-from builtins import range
 import os, re
 from EMAN2 import *
 import traceback
@@ -125,7 +124,7 @@ e2classextract.py --orientcls refine_03/cls_result_04 --orientedparticles sets/a
 
 		nref=int(classmx[0]["maximum"])+1
 
-		if options.orientclassn==None : rng=list(range(nref))
+		if options.orientclassn==None : rng=xrange(nref)
 		else : rng=[int(i) for i in options.orientclassn.split(",")]
 
 		# now we loop over the classes
@@ -136,7 +135,7 @@ e2classextract.py --orientcls refine_03/cls_result_04 --orientedparticles sets/a
 				outname="classptcl_{:04d}.hdf".format(i)
 #				else : outname="classptcl_{:04d}_{}.hdf".format(i,("even","odd")[eo])
 				
-				for j in range(nptcl[eo]):
+				for j in xrange(nptcl[eo]):
 					if classmx[eo][0,j]!=i : continue		# only proceed if the particle is in this class
 					if options.verbose: print("{}\t{}\t{}".format(i,("even","odd")[eo],j))
 
@@ -164,7 +163,7 @@ e2classextract.py --orientcls refine_03/cls_result_04 --orientedparticles sets/a
 
 	if options.refinemulti:
 		# possible that the first few images may not exist. We look for the first good one:
-		for i in range(ncls):
+		for i in xrange(ncls):
 			try :
 				hdr=EMData(args[0],i,True)
 				inset=hdr["class_ptcl_src"]		# theoretically this could be different for different class-averages, but in practice no program does that
@@ -184,7 +183,7 @@ e2classextract.py --orientcls refine_03/cls_result_04 --orientedparticles sets/a
 		if not options.noderef and inset[-4:]==".lst" : inset=LSXFile(inset)
 
 		outlst={}
-		for c in range(ncls):
+		for c in xrange(ncls):
 			try : h=EMData(args[0],c,True)
 			except:
 				if options.verbose>0 : print("Bad class-average: ",c)
@@ -231,7 +230,7 @@ e2classextract.py --orientcls refine_03/cls_result_04 --orientedparticles sets/a
 		if options.sort :
 			for k in outlst:
 				ptcls=[]
-				for i in range(outlst[k].n):
+				for i in xrange(outlst[k].n):
 					nextf,extf,com=outlst[k].read(i)
 					ptcls.append((extf,nextf))
 				ptcls.sort()
@@ -313,7 +312,7 @@ e2classextract.py --orientcls refine_03/cls_result_04 --orientedparticles sets/a
 
 		if options.sort :
 			ptcls=[]
-			for i in range(outlst.n):
+			for i in xrange(outlst.n):
 				nextf,extf,com=outlst.read(i)
 				ptcls.append((extf,nextf))
 			ptcls.sort()

@@ -32,15 +32,13 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
 from EMAN2 import *
 from EMAN2db import db_open_dict, db_check_dict
 from OpenGL import GL,GLU,GLUT
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from PyQt4 import QtGui,QtCore
-from PyQt4.QtCore import Qt, QString
-from PyQt4.QtGui import QListWidgetItem
+from PyQt4.QtCore import Qt
 from eman2_gui.emanimationutil import OrientationListAnimation,Animator
 from eman2_gui.emapplication import EMApp, get_application, error
 from eman2_gui.emglobjects import EM3DModel
@@ -114,7 +112,6 @@ def sadd(d,a,b):
 	return d+"/"+a+b
 
 class EMEulerExplorer(EM3DSymModel,Animator):
-	point_selected = QtCore.pyqtSignal()
 
 	def mousePressEvent(self,event):
 		if self.events_mode == "inspect":
@@ -130,7 +127,7 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 				self.updateGL() # there needs to be a clear or something  in order for the picking to work. This is  bit of hack but our rendering function doesn't take long anyhow
 				hit = self.get_hit(event)
 				if hit == self.current_hit:
-					self.point_selected.emit(self.current_hit, event)
+					self.emit(QtCore.SIGNAL("point_selected"),self.current_hit,event)
 			else:
 				#EM3DSymModel.mouseReleaseEvent(self,event)
 				EM3DModel.mouseReleaseEvent(self, event) #behavior in EM3DSymModel is not what we want (needed in sibling classes?)
@@ -166,7 +163,7 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 #		print vv
 #
 		# the problem with this approach is that depth testing is not part of picking
-		sb = [0 for i in range(0,512)]
+		sb = [0 for i in xrange(0,512)]
 		glSelectBuffer(512)
 		glRenderMode(GL_SELECT)
 		glInitNames()
@@ -251,7 +248,6 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 		self.class_idx = None # This is the idx of the current class being studied in the interface
 
 		self.previous_len = -1 # To keep track of the number of class averages that were previously viewable. This helps to make sure we can switch to the same class average in the context of a different refinement iteration
-		module_closed = QtCore.pyqtSignal()
 		self.mirror_eulers = False
 		if sparse_mode:
 			self.mirror_eulers = True # If True the drawn Eulers are are also rendered on the opposite side of the sphere - see EM3DSymModel.make_sym_dl_lis
@@ -267,20 +263,20 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 
 		# this object will have
 		if self.au_data != None:
-			combo_entries = list(self.au_data.keys())
+			combo_entries = self.au_data.keys()
 			combo_entries.sort()
 			combo_entries.reverse()
 
 			if len(combo_entries) > 0:
 				au = combo_entries[0]
 				cls = self.au_data[au][0][0]
-				self.on_au_selected(au, cls)
+				self.au_selected(au,cls)
 				self.mirror_eulers = True
 
 		self.init_lock = False
 		self.force_update=True # Force a display udpdate in EMImage3DSymModule
 
-		self.point_selected.connect(self.au_point_selected)
+		QtCore.QObject.connect(self, QtCore.SIGNAL("point_selected"), self.au_point_selected)
 
 	def __del__(self):
 		EM3DSymModel.__del__(self) # this is here for documentation purposes - beware that the del function is important
@@ -358,7 +354,7 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 			print("Nothing in ",dir)
 			return {}
 
-		for i in range(1,maxnum+1):
+		for i in xrange(1,maxnum+1):
 			exte="_{:02d}_even.hdf".format(i)
 			exto="_{:02d}_odd.hdf".format(i)
 			data[dir].append([sadd(dir,s1,exte),sadd(dir,s2,exte),sadd(dir,s3,exte),sadd(dir,s4,exte),sadd(dir,s5,exte)])
@@ -373,11 +369,11 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 				self.inspector=EMAsymmetricUnitInspector(self,True,True)
 			else:
 				self.inspector=EMAsymmetricUnitInspector(self)
-			self.inspector.au_selected.connect(self.on_au_selected)
+			QtCore.QObject.connect(self.inspector,QtCore.SIGNAL("au_selected"),self.au_selected)
 		return self.inspector
 
 
-	def on_au_selected(self, refine_dir, cls):
+	def au_selected(self,refine_dir,cls):
 		self.refine_dir = refine_dir
 		get_application().setOverrideCursor(Qt.BusyCursor)
 		data = []
@@ -480,13 +476,13 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 			first = True
 			self.proj_class_viewer = EMImageMXWidget(data=None,application=get_application())
 #			self.proj_class_viewer = EMImage2DWidget(image=None,application=get_application())
-			self.proj_class_viewer.module_closed.connect(self.on_mx_view_closed)
+			QtCore.QObject.connect(self.proj_class_viewer,QtCore.SIGNAL("module_closed"),self.on_mx_view_closed)
 #			self.proj_class_viewer.set_mouse_mode("App" )
-			self.proj_class_viewer.mx_image_selected.connect(self.on_mx_image_selected)
+			QtCore.QObject.connect(self.proj_class_viewer,QtCore.SIGNAL("mx_image_selected"), self.mx_image_selected)
 			get_application().show_specific(self.proj_class_viewer)
 
 			self.proj_class_single = EMImage2DWidget(image=None,application=get_application())
-			self.proj_class_single.module_closed.connect(self.on_mx_view_closed)
+			QtCore.QObject.connect(self.proj_class_single,QtCore.SIGNAL("module_closed"),self.on_mx_view_closed)
 #			QtCore.QObject.connect(self.proj_class_single,QtCore.SIGNAL("mx_image_selected"), self.mx_image_selected)
 			get_application().show_specific(self.proj_class_single)
 
@@ -521,7 +517,7 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 		self.proj_class_viewer.updateGL()
 		self.proj_class_single.updateGL()
 		if self.particle_viewer != None:
-			self.on_mx_image_selected(None, None)
+			self.mx_image_selected(None,None)
 		if first: self.proj_class_viewer.optimally_resize()
 
 		if i != self.special_euler:
@@ -575,7 +571,7 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 
 			self.alignment_time_animation(transforms)
 
-	def on_mx_image_selected(self, event, lc):
+	def mx_image_selected(self,event,lc):
 #		self.arc_anim_points = None
 		get_application().setOverrideCursor(Qt.BusyCursor)
 		if lc != None: self.sel = lc[0]
@@ -614,8 +610,8 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 				first = True
 				self.particle_viewer = EMImageMXWidget(data=None,application=get_application())
 				self.particle_viewer.set_mouse_mode("App" )
-				self.particle_viewer.module_closed.connect(self.on_particle_mx_view_closed)
-				self.particle_viewer.mx_image_selected.connect(self.particle_selected)
+				QtCore.QObject.connect(self.particle_viewer,QtCore.SIGNAL("module_closed"),self.on_particle_mx_view_closed)
+				QtCore.QObject.connect(self.particle_viewer,QtCore.SIGNAL("mx_image_selected"), self.particle_selected)
 				get_application().show_specific(self.particle_viewer)
 
 
@@ -695,7 +691,7 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 		if self.proj_class_single !=None: self.proj_class_single.close()
 		if self.particle_viewer != None: self.particle_viewer.close()
 		get_application().close_specific(self)
-		self.module_closed.emit() # this signal is
+		self.emit(QtCore.SIGNAL("module_closed")) # this signal is
 
 
 def set_included_1(e):
@@ -709,8 +705,6 @@ def set_included_0(e):
 
 
 class EMAsymmetricUnitInspector(EMSymInspector):
-	au_selected = QtCore.pyqtSignal(QString, QString)
-
 	def __init__(self,target,enable_trace=False,enable_og=False) :
 		EMSymInspector.__init__(self,target,enable_trace=enable_trace,enable_og=enable_og)
 
@@ -723,15 +717,15 @@ class EMAsymmetricUnitInspector(EMSymInspector):
 		self.au_tab.vbl = QtGui.QVBoxLayout(self.au_tab)
 
 		self.au_data = self.target().au_data
-		combo_entries = list(self.au_data.keys())
+		combo_entries = self.au_data.keys()
 		combo_entries.sort()
 		combo_entries.reverse()
 		self.combo = QtGui.QComboBox(self)
 		for e in combo_entries:
 			self.combo.addItem(e)
 
-		self.combo.currentIndexChanged[QString].connect(self.on_combo_change)
-		self.combo.currentIndexChanged[QString].connect(self.on_combo_change)
+		self.connect(self.combo,QtCore.SIGNAL("currentIndexChanged(QString&)"),self.on_combo_change)
+		self.connect(self.combo,QtCore.SIGNAL("currentIndexChanged(const QString&)"),self.on_combo_change)
 
 		self.au_tab.vbl.addWidget(self.combo)
 		self.refine_dir = combo_entries[0]
@@ -740,7 +734,7 @@ class EMAsymmetricUnitInspector(EMSymInspector):
 
 		self.list_widget.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
 		self.list_widget.setMouseTracking(True)
-		self.list_widget.itemClicked[QListWidgetItem].connect(self.list_widget_item_clicked)
+		QtCore.QObject.connect(self.list_widget,QtCore.SIGNAL("itemClicked(QListWidgetItem *)"),self.list_widget_item_clicked)
 
 		self.update_classes_list(first_time=True)
 		self.au_tab.vbl.addWidget(self.list_widget)
@@ -771,10 +765,10 @@ class EMAsymmetricUnitInspector(EMSymInspector):
 
 		selected_items = self.list_widget.selectedItems() # need to preserve the selection
 		if len(selected_items) == 1:
-			self.au_selected.emit(self.refine_dir, str(selected_items[0].text()))
+			self.emit(QtCore.SIGNAL("au_selected"),self.refine_dir,str(selected_items[0].text()))
 
 	def list_widget_item_clicked(self,item):
-		self.au_selected.emit(self.refine_dir, str(item.text()))
+		self.emit(QtCore.SIGNAL("au_selected"),self.refine_dir,str(item.text()))
 
 	def on_mouse_mode_clicked(self,bool):
 		for button in self.mouse_mode_buttons:

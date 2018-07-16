@@ -31,11 +31,8 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307 USA
 #
 
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
 import sys
-import os, subprocess
+import os, commands
 from EMAN2 import *
 import subprocess
 

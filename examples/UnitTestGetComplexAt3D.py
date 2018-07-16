@@ -4,7 +4,6 @@ from __future__ import print_function
 #  The even case, 3D:  Part 1
 ######################################
 
-from builtins import range
 N=4;  # This is the size of the original image
 ti = EMData(N,N,N);
 ti.to_zero();

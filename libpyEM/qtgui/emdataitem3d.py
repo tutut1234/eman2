@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from __future__ import print_function
-from __future__ import absolute_import
 #
 # Author: Ross Coleman (racolema@bcm.edu)
 # Author: James Michael Bell, 2016 (jmbell@bcm.edu)
@@ -33,19 +32,18 @@ from __future__ import absolute_import
 #
 #
 
-from builtins import range
 from EMAN2 import *
-from .embrowser import EMBrowserWidget
-from .emglobjects import EMViewportDepthTools, Camera2, get_default_gl_colors, get_RGB_tab, EM3DModel
-from .emglobjects import get_default_gl_colors
-from .emimageutil import ImgHistogram
-from .emitem3d import EMItem3D, EMItem3DInspector, drawBoundingBox
-from .emshapeitem3d import EMInspectorControlShape
+from embrowser import EMBrowserWidget
+from emglobjects import EMViewportDepthTools, Camera2, get_default_gl_colors, get_RGB_tab, EM3DModel
+from emglobjects import get_default_gl_colors
+from emimageutil import ImgHistogram
+from emitem3d import EMItem3D, EMItem3DInspector, drawBoundingBox
+from emshapeitem3d import EMInspectorControlShape
 from libpyGLUtils2 import GLUtil
 import math
 import os.path
 import sys
-from .valslider import ValSlider, EMLightControls, CameraControls, EMSpinWidget, EMQTColorWidget, EMANToolButton
+from valslider import ValSlider, EMLightControls, CameraControls, EMSpinWidget, EMQTColorWidget, EMANToolButton
 
 from OpenGL import GL
 from OpenGL.GL import *
@@ -82,7 +80,7 @@ class EMDataItem3D(EMItem3D):
 		datawidget.setLayout(grid)
 
 		EMDataItem3D.attribdict = attribdict
-		browse_button.clicked.connect(EMDataItem3D._on_browse)
+		QtCore.QObject.connect(browse_button, QtCore.SIGNAL('clicked()'), EMDataItem3D._on_browse)
 
 		return datawidget
 
@@ -219,7 +217,7 @@ class EMDataItem3DInspector(EMItem3DInspector):
 		gridbox.addWidget(self.file_path_label, 3, 0)
 
 		self.file_browse_button.clicked.connect(self.onFileBrowse)
-		self.data_checkbox.stateChanged[int].connect(self.onBBoxChange)
+		QtCore.QObject.connect(self.data_checkbox, QtCore.SIGNAL("stateChanged(int)"), self.onBBoxChange)
 
 		# Set to default, but run only once and not in each base class
 		if type(self) == EMDataItem3DInspector: self.updateItemControls()
@@ -497,9 +495,9 @@ class EMSliceInspector(EMInspectorControlShape):
 
 		self.constrained_plane_combobox.currentIndexChanged.connect(self.onConstrainedOrientationChanged)
 		self.use_3d_texture_checkbox.clicked.connect(self.on3DTextureCheckbox)
-		self.constrained_slider.valueChanged.connect(self.onConstraintSlider)
-		self.brightness_slider.valueChanged.connect(self.onBrightnessSlider)
-		self.contrast_slider.valueChanged.connect(self.onContrastSlider)
+		QtCore.QObject.connect(self.constrained_slider, QtCore.SIGNAL("valueChanged"), self.onConstraintSlider)
+		QtCore.QObject.connect(self.brightness_slider, QtCore.SIGNAL("valueChanged"), self.onBrightnessSlider)
+		QtCore.QObject.connect(self.contrast_slider, QtCore.SIGNAL("valueChanged"), self.onContrastSlider)
 
 		self.updateItemControls()
 
@@ -851,8 +849,8 @@ class EMVolumeInspector(EMInspectorControlShape):
 
 		EMInspectorControlShape.__init__(self, name, item3d)
 
-		self.brightness_slider.valueChanged.connect(self.onBrightnessSlider)
-		self.contrast_slider.valueChanged.connect(self.onContrastSlider)
+		QtCore.QObject.connect(self.brightness_slider, QtCore.SIGNAL("valueChanged"), self.onBrightnessSlider)
+		QtCore.QObject.connect(self.contrast_slider, QtCore.SIGNAL("valueChanged"), self.onContrastSlider)
 
 	def updateItemControls(self):
 		""" Updates this item inspector. Function is called by the item it observes"""
@@ -949,7 +947,7 @@ class EMVolumeInspector(EMInspectorControlShape):
 
 		self.histogram_widget.setDynamicProbe(self.probeposition, self.probecolor, self.probepresent,levelvalue) # The needs to be node AFTER the data is set
 
-		self.cappingcolor.newcolor[QColor].connect(self._on_cap_color)
+		QtCore.QObject.connect(self.cappingcolor,QtCore.SIGNAL("newcolor(QColor)"),self._on_cap_color)
 
 	def _on_cap_color(self, color):
 		rgb = color.getRgb()
@@ -979,18 +977,18 @@ class EMIsosurfaceInspector(EMInspectorControlShape):
 
 		EMInspectorControlShape.__init__(self, name, item3d)	# for the iso inspector we need two grid cols for extra space....
 
-		self.thr.valueChanged.connect(self.onThresholdSlider)
-		self.histogram_widget.thresholdChanged[float].connect(self.onHistogram)
+		QtCore.QObject.connect(self.thr, QtCore.SIGNAL("valueChanged"), self.onThresholdSlider)
+		QtCore.QObject.connect(self.histogram_widget, QtCore.SIGNAL("thresholdChanged(float)"), self.onHistogram)
 		self.cullbackface.toggled.connect(self.onCullFaces)
 		self.wireframe.toggled.connect(self.onWireframe)
 		self.colorbyradius.toggled.connect(self.onColorByRadius)
 		self.colorbymap.toggled.connect(self.onColorByMap)
 		self.cmapbrowse.clicked.connect(self.onFileBrowse)
 		self.sampling_spinbox.valueChanged[int].connect(self.onSampling)
-		self.innercolorscaling.valueChanged[int].connect(self.reColorScale)
-		self.outercolorscaling.valueChanged[int].connect(self.reColorScale)
-		self.cmapmin.valueChanged[int].connect(self.reColorMapMinMax)
-		self.cmapmax.valueChanged[int].connect(self.reColorMapMinMax)
+		QtCore.QObject.connect(self.innercolorscaling, QtCore.SIGNAL("valueChanged(int)"), self.reColorScale)
+		QtCore.QObject.connect(self.outercolorscaling, QtCore.SIGNAL("valueChanged(int)"), self.reColorScale)
+		QtCore.QObject.connect(self.cmapmin, QtCore.SIGNAL("valueChanged(int)"), self.reColorMapMinMax)
+		QtCore.QObject.connect(self.cmapmax, QtCore.SIGNAL("valueChanged(int)"), self.reColorMapMinMax)
 
 	def updateItemControls(self):
 		""" Updates this item inspector. Function is called by the item it observes"""
@@ -1129,8 +1127,8 @@ class EMIsosurfaceInspector(EMInspectorControlShape):
 	def onFileBrowse(self):
 		""" Find a color map file """
 		self.openbrowser = EMBrowserWidget(withmodal=True,multiselect=False)
-		self.openbrowser.ok.connect(self._onopen_ok)
-		self.openbrowser.cancel.connect(self._onopen_cancel)
+		QtCore.QObject.connect(self.openbrowser, QtCore.SIGNAL("ok"),self._onopen_ok)
+		QtCore.QObject.connect(self.openbrowser, QtCore.SIGNAL("cancel"),self._onopen_cancel)
 		self.openbrowser.show()
 
 	def _onopen_ok(self):

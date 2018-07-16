@@ -31,7 +31,6 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 #
 #
-from builtins import range
 import os, re
 from EMAN2 import *
 import numpy as np
@@ -169,7 +168,7 @@ def main():
 				if nimg==1 : print(infile)
 				else : print(infile,nimg)
 
-			for i in range(nimg):
+			for i in xrange(nimg):
 				if outfile!=None:
 					outfile.write(n,i,infile)
 				else:

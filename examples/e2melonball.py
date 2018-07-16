@@ -29,7 +29,6 @@ from __future__ import print_function
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 
-from builtins import range
 from EMAN2_utils import *
 from EMAN2 import *
 import math
@@ -403,10 +402,10 @@ def getptcltransforms(options):
 
 	ptclts = {}
 
-	keys = list(jsonfileopen.keys())
+	keys = jsonfileopen.keys()
 	keys.sort()
 	#n = len(keys)
-	for j in range(0,n):
+	for j in xrange(0,n):
 		label = keys[j]
 		ptclt = jsonfileopen[label][0]
 		ptclts.update({j:ptclt})

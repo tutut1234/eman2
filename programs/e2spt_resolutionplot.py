@@ -30,7 +30,6 @@
 #
 #
 from __future__ import print_function
-from builtins import range
 from EMAN2_utils import *
 from EMAN2 import *
 import os
@@ -463,7 +462,7 @@ def maxima(xaxis,yaxis,smooththresh):
 	ymaxes=[]
 
 
-	for i in range(0,len(yaxis) -1):
+	for i in xrange(0,len(yaxis) -1):
 		val=yaxis[i]
 		#print 'currrent value is', val
 		#print 'and next is', yaxis[i+1]
@@ -543,7 +542,7 @@ def fscplotter(fscs,options,apix=0.0,tag='',clearplot=False):
 
 	N = len(fscs)
 	HSV_tuples = [(x*1.0/N, 0.5, 0.5) for x in range(N)]
-	RGB_tuples = [colorsys.hsv_to_rgb(*x) for x in HSV_tuples]
+	RGB_tuples = map(lambda x: colorsys.hsv_to_rgb(*x), HSV_tuples)
 
 	kont=0
 	plot_name = ''

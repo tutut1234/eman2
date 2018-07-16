@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from __future__ import print_function
-from __future__ import absolute_import
 
 #
 # Author: Steven Ludtke, 04/10/2003 (sludtke@bcm.edu)
@@ -33,7 +32,6 @@ from __future__ import absolute_import
 #
 #
 
-from builtins import range
 from EMAN2 import *
 from OpenGL import GL, GLU, GLUT
 from OpenGL.GL import *
@@ -41,13 +39,13 @@ from OpenGL.GLU import *
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from PyQt4.QtCore import QTimer, Qt
 from e2eulerxplor import EMEulerExplorer
-from .emglobjects import Camera, Camera2, EMGLWidget, EMViewportDepthTools, EMGLProjectionViewMatrices, EMOpenGLFlagsAndTools
-from .emimage3diso import EMIsosurfaceModel
-from .emimage3dslice import EM3DSliceModel
-from .emimage3dsym import EM3DSymModel
-from .emimage3dvol import EMVolumeModel
-from .emimageutil import EMTransformPanel
-from .emlights import EMLightsInspectorBase, EMLightsDrawer
+from emglobjects import Camera, Camera2, EMGLWidget, EMViewportDepthTools, EMGLProjectionViewMatrices, EMOpenGLFlagsAndTools
+from emimage3diso import EMIsosurfaceModel
+from emimage3dslice import EM3DSliceModel
+from emimage3dsym import EM3DSymModel
+from emimage3dvol import EMVolumeModel
+from emimageutil import EMTransformPanel
+from emlights import EMLightsInspectorBase, EMLightsDrawer
 from math import *
 import weakref
 
@@ -61,7 +59,6 @@ class EMImage3DWidget(EMGLWidget, EMLightsDrawer, EMGLProjectionViewMatrices):
 	""" 
 	A QT widget for rendering 3D EMData objects
 	"""
-	set_perspective = QtCore.pyqtSignal(bool)
 	allim=weakref.WeakKeyDictionary()
 	def add_model(self,model,num=0):
 		model.set_gl_widget(self)
@@ -574,7 +571,7 @@ class EMImage3DWidget(EMGLWidget, EMLightsDrawer, EMGLProjectionViewMatrices):
 			self.qt_parent.setWindowTitle(remove_directories_from_name(self.file_name))
 	def set_perspective(self,bool):
 		self.perspective = bool
-		if self.emit_events: self.set_perspective.emit(bool)
+		if self.emit_events: self.emit(QtCore.SIGNAL("set_perspective"),bool)
 		self.updateGL()
 		#self.set_perspective(bool)
 	def set_scale(self,val):
@@ -679,11 +676,11 @@ class EMImageInspector3D(QtGui.QWidget):
 
 		self.insert_advance_tab()
 		
-		self.addIso.clicked.connect(self.add_isosurface)
-		self.addVol.clicked.connect(self.add_volume)
-		self.addSli.clicked.connect(self.add_slices)
-		self.add_sym.clicked.connect(self.add_symmetry)
-		self.delete.clicked.connect(self.delete_selection)
+		QtCore.QObject.connect(self.addIso, QtCore.SIGNAL("clicked()"), self.add_isosurface)
+		QtCore.QObject.connect(self.addVol, QtCore.SIGNAL("clicked()"), self.add_volume)
+		QtCore.QObject.connect(self.addSli, QtCore.SIGNAL("clicked()"), self.add_slices)
+		QtCore.QObject.connect(self.add_sym, QtCore.SIGNAL("clicked()"), self.add_symmetry)
+		QtCore.QObject.connect(self.delete, QtCore.SIGNAL("clicked()"), self.delete_selection)
 		
 	def update_rotations(self,t3d):
 		self.advanced_tab.update_rotations(t3d)
@@ -781,8 +778,8 @@ class EM3DAdvancedInspector(QtGui.QWidget,EMLightsInspectorBase):
 		self.vbl.addWidget(self.tabwidget)
 		
 
-		self.persbut.pressed.connect(self.perspective_clicked)
-		self.orthbut.pressed.connect(self.ortho_clicked)
+		QtCore.QObject.connect(self.persbut, QtCore.SIGNAL("pressed()"), self.perspective_clicked)
+		QtCore.QObject.connect(self.orthbut, QtCore.SIGNAL("pressed()"), self.ortho_clicked)
 	
 	
 	def get_main_tab(self):
@@ -840,7 +837,7 @@ class EM3DAdvancedInspector(QtGui.QWidget,EMLightsInspectorBase):
 
 
 if __name__ == '__main__':
-	from .emapplication import EMApp
+	from emapplication import EMApp
 	import sys
 	em_app = EMApp()
 	window = EMImage3DWidget(application=em_app)

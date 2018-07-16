@@ -30,9 +30,7 @@ Author: Jesus Galaz - oct/2017, Last update: nov/2017
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 '''
-from __future__ import print_function
 
-from builtins import range
 from optparse import OptionParser
 from EMAN2 import *
 from EMAN2jsondb import JSTask,jsonclasses
@@ -117,7 +115,7 @@ def main():
 				n = int(nt)
 				print("\nWARNING: more particles/coordinates n={} than transform parameters nt={}".format(n,nt))
 
-		keys = list(jsonfileopen.keys())
+		keys = jsonfileopen.keys()
 		keys.sort()
 		for j in range(n):
 			label = keys[j]
@@ -164,7 +162,7 @@ def main():
 				if int(len(newlines)) < int(len(coordlines)):
 					dif = len(coordlines) - len(newlines)
 					print("\nlen(newlines)={} , len(coordlines)={} , dif={}".format(len(newlines),len(coordlines),dif))
-					for kk in range(dif):
+					for kk in xrange(dif):
 						indx = len(coordlines) -1*kk -1
 						print("\nWARNING: appending untranslated cooridates from --coords {}".format(coordlines[indx]))
 						newlines.append(coordlines[indx])	#if the coordinates file grew with respect to the alignment parameters file because new particles were boxed (but not aligned), this adds untranslated coordinates from the end of the original --coords file 
@@ -195,5 +193,5 @@ def translationtransform(t):
 
 
 if __name__ == '__main__':
+	
 	main()
-

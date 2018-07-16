@@ -32,7 +32,6 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
 from EMAN2 import *
 import unittest
 import os
@@ -289,14 +288,14 @@ class TestUtils(unittest.TestCase):
         b = []
         SEED = 123456
         Util.set_randnum_seed(SEED)
-        for i in range(10):
+        for i in xrange(10):
             a.append(Util.get_irand(1,100))
         
         Util.set_randnum_seed(SEED)
-        for i in range(10):
+        for i in xrange(10):
             b.append(Util.get_irand(1,100))
         
-        for i in range(10):
+        for i in xrange(10):
             self.assertEqual(a[i], b[i])
             
         seed = Util.get_randnum_seed()

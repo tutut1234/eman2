@@ -2,10 +2,6 @@
 
 set -xe
 
-MYDIR="$(cd "$(dirname "$0")"; pwd -P)"
-
-bash "${MYDIR}/../tests/future_import_tests.sh"
-
 if [ ! -z ${TRAVIS} ];then
     source ci_support/setup_conda.sh
 
@@ -17,9 +13,6 @@ fi
 if [ ! -z ${CIRCLECI} ];then
     source ${HOME}/miniconda2/bin/activate root
 fi
-
-conda install future -c defaults --yes --quiet
-python -m compileall -q .
 
 # Build and install eman2
 rm -vf ${CONDA_PREFIX}/bin/e2*.py

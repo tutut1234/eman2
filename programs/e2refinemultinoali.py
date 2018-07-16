@@ -29,14 +29,11 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 #
 #
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
 from EMAN2 import *
 import numpy as np
 #from multiprocessing import Pool
 import threading
-from queue import Queue
+from Queue import Queue
 #from EMAN2jsondb import JSTask
 import time
 import json
@@ -138,14 +135,14 @@ def main():
 	if multimodel:
 
 		if modelstack>1:
-			models=list(range(modelstack))
+			models=range(modelstack)
 			for m in range(modelstack):
 				outfile="{path}/model_input_{k}.hdf".format(path=options.newpath, k=m)
 				run("e2proc3d.py {model} {out} {rd} --apix={apix} --first {mi} --last {mi}".format(model=inputmodel[m],out=outfile,rd=randphasecmd,apix=db_apix, mi=m))
 				inputmodel[m]=outfile
 		else:
 
-			models=list(range(len(inputmodel)))
+			models=range(len(inputmodel))
 			for m in models:
 				outfile="{path}/model_input_{k}.hdf".format(path=options.newpath, k=m)
 				run("e2proc3d.py {model} {out} {rd} --apix={apix} ".format(model=inputmodel[m],out=outfile,rd=randphasecmd,apix=db_apix))
@@ -255,7 +252,7 @@ def main():
 		output_3d.append({})
 		output_cls.append({})
 		### even/odd loop
-		for eoid,eo in list(input_eo_order.items()):
+		for eoid,eo in input_eo_order.items():
 
 			if it>0:
 				inputmodel=[output_3d[-2][eo][m] for m in models]
@@ -330,7 +327,7 @@ def main():
 			#### the threading part is copied from e2spt_align
 			jsd=Queue(0)
 			NTHREADS=max(options.threads+1,2)
-			thrds=[threading.Thread(target=do_compare,args=(jsd,xforms[i])) for i in range(npt)]
+			thrds=[threading.Thread(target=do_compare,args=(jsd,xforms[i])) for i in xrange(npt)]
 			thrtolaunch=0
 			corr=[[] for i in range(npt)]
 			while thrtolaunch<len(thrds) or threading.active_count()>1:

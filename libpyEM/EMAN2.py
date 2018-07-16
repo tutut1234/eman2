@@ -31,10 +31,6 @@ from __future__ import print_function
 #
 #
 
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
-from builtins import object
 import sys
 from math import *
 from sys import exit
@@ -42,7 +38,7 @@ import os
 import time
 import shelve
 import re
-import pickle
+import cPickle
 import zlib
 import socket
 import subprocess
@@ -122,11 +118,11 @@ def emdata_to_string(self):
 	"""This returns a compressed string representation of the EMData object, suitable for storage
 	or network communication. The EMData object is pickled, then compressed wth zlib. Restore with
 	static method from_string()."""
-	return zlib.compress(pickle.dumps(self,-1),3)	# we use a lower compression mode for speed
+	return zlib.compress(cPickle.dumps(self,-1),3)	# we use a lower compression mode for speed
 
 def emdata_from_string(s):
 	"""This will restore a serialized compressed EMData object as prepared by as_string()"""
-	return pickle.loads(zlib.decompress(s))
+	return cPickle.loads(zlib.decompress(s))
 
 EMData.from_string=emdata_from_string
 EMData.to_string=emdata_to_string
@@ -163,7 +159,7 @@ file_mode_map={
 	"float" :EMUtil.EMDataType.EM_FLOAT  }
 
 # inverse dictionary for getting printable names
-file_mode_imap=dict([[int(v),k] for k,v in list(file_mode_map.items())])
+file_mode_imap=dict([[int(v),k] for k,v in file_mode_map.items()])
 
 file_mode_intmap={
 	1 :EMUtil.EMDataType.EM_CHAR,
@@ -631,7 +627,7 @@ def unparsemodopt(tupl):
 	try:
 		if tupl[0]==None : return ""
 		if tupl[1]==None or len(tupl[1])==0 : return str(tupl[0])
-		parm=["{}={}".format(k,v) for k,v in list(tupl[1].items())]
+		parm=["{}={}".format(k,v) for k,v in tupl[1].items()]
 		return str(tupl[0])+":"+":".join(parm)
 	except:
 		return ""
@@ -827,7 +823,7 @@ def plot_image_similarity(im1,im2,skipzero=True,skipnearzero=False):
 	y=[]
 	s1=im1["sigma"]
 	s2=im2["sigma"]
-	for i in range(n):
+	for i in xrange(n):
 		if skipzero and (im1[i]==0 or im2[i]==0) : continue
 		if skipnearzero and (fabs(im1[i])<s1/10.0 or fabs(im2[i])<s2/10.0) : continue
 		x.append(im1[i])
@@ -923,7 +919,7 @@ def kill_process(pid):
 		except:
 			return 0
 
-def launch_childprocess(cmd,handle_err=0):
+def launch_childprocess(cmd):
 	'''
 	Convenience function to lauch child processes
 	'''
@@ -934,10 +930,6 @@ def launch_childprocess(cmd,handle_err=0):
 	else:
 		error = os.waitpid(p.pid, 0)[1]
 
-	if error and handle_err: 
-		print("Error {} running: {}".format(error,cmd))
-		sys.exit(1)
-		
 	return error
 
 def process_running(pid):
@@ -987,9 +979,9 @@ def memory_stats():
 			pass
 
 	elif platform_string == "Darwin":
-		import subprocess
-		status_total, output_total = subprocess.getstatusoutput("sysctl hw.memsize")
-		status_used, output_used = subprocess.getstatusoutput("sysctl hw.usermem")
+		import commands
+		status_total, output_total = commands.getstatusoutput("sysctl hw.memsize")
+		status_used, output_used = commands.getstatusoutput("sysctl hw.usermem")
 		total_strings = output_total.split()
 		if len(total_strings) >= 2: # try to make it future proof, the output of sysctl will have to be double checked. Let's put it in a unit test in
 			total_len = len("hw.memsize")
@@ -1042,8 +1034,8 @@ def num_cpus():
 		except:
 			return 2
 	elif platform_string == "Darwin":
-		import subprocess
-		status, output = subprocess.getstatusoutput("sysctl hw.logicalcpu")
+		import commands
+		status, output = commands.getstatusoutput("sysctl hw.logicalcpu")
 		strings = output.split()
 		cores = 1 # this has to be true or else it's a really special computer ;)
 		if len(strings) >=2:
@@ -1754,7 +1746,7 @@ def get_3d_font_renderer():
 		#print "Unable to import EMFTGL. The FTGL library may not be installed. Text on 3D and some 2D viewers may not work."
 		return None
 
-class EMAbstractFactory(object):
+class EMAbstractFactory:
 	'''
 	see http://blake.bcm.edu/emanwiki/Eman2FactoriesInPython
 	'''
@@ -1770,7 +1762,7 @@ class EMAbstractFactory(object):
 		"""unregister a constructor"""
 		delattr(self, methodName)
 
-class EMFunctor(object):
+class EMFunctor:
 	'''
 	Taken from http://code.activestate.com/recipes/86900/
 	'''
@@ -1887,7 +1879,7 @@ def initializeCUDAdevice():
 	except:
 		pass
 
-class LSXFile(object):
+class LSXFile:
 	"""This class will manage writing entries to LSX files, which are text files with a defined record length for
 rapid access. Each line contains an image number, a filename, and an optional comment, referencing a particle
 in another actual image file. Files MUST use the Unix /n convention, not the Windows (/r/n) convention.
@@ -2128,14 +2120,14 @@ corresponding to each 1/2 of the data."""
 		except: pass
 
 		oute=LSXFile(eset)
-		for i in range(0,n,2): oute.write(-1,i,filename)
+		for i in xrange(0,n,2): oute.write(-1,i,filename)
 		oute=None
 
 		try : os.unlink(oset)
 		except: pass
 
 		oute=LSXFile(oset)
-		for i in range(1,n,2): oute.write(-1,i,filename)
+		for i in xrange(1,n,2): oute.write(-1,i,filename)
 		oute=None
 
 	return (eset,oset)

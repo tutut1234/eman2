@@ -34,6 +34,7 @@
 #endif	//_WIN32
 
 #include <boost/python.hpp>
+#include <boost/python/detail/api_placeholder.hpp>
 #include "emdata.h"
 
 using namespace boost::python;

@@ -35,7 +35,6 @@ from __future__ import print_function
 # this was added by d.woolford. It is envisaged that a variety of timing tests will be added to this script to generate useful
 # data for benchmarking purposes.
 
-from builtins import range
 from EMAN2 import *
 from math import *
 from random import *

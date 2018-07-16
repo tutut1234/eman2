@@ -35,7 +35,6 @@ from __future__ import print_function
 
 # initial version of make3d
 
-from builtins import range
 from EMAN2 import *
 from EMAN2db import db_open_dict
 from copy import deepcopy
@@ -217,7 +216,7 @@ def main():
 	# The actual reconstruction
 
 	threads=[threading.Thread(target=reconstruct,args=(data[i::options.threads],recon,options.preprocess,options.pad,
-			options.fillangle,options.verbose-1)) for i in range(options.threads)]
+			options.fillangle,options.verbose-1)) for i in xrange(options.threads)]
 
 	recon.setup()
 	for i,t in enumerate(threads):
@@ -367,12 +366,12 @@ def initialize_data(inputfile,inputmodel,tltfile,pad,no_weights,preprocess):
 			lstinfo=lst.read(0)
 			if lstinfo[2]:
 				getlst=True
-		for i in range(n_input):
+		for i in xrange(n_input):
 			tmp.read_image(inputfile,i,True)
 			if getlst:
 				lstinfo=lst.read(i)
 				dc=eval(lstinfo[2])
-				if "score" in dc:
+				if dc.has_key("score"):
 					score=dc.pop("score")
 				else:
 					score=2

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from __future__ import print_function
-from __future__ import absolute_import
 
 #
 # Author: David Woolford (woolford@bcm.edu)
@@ -33,8 +32,6 @@ from __future__ import absolute_import
 #
 #
 
-from builtins import range
-from builtins import object
 from EMAN2 import get_image_directory, get_dtag, EMData, \
 	get_files_and_directories, db_open_dict, remove_file, \
 	remove_directories_from_name, Util, EMUtil, IMAGE_UNKNOWN, base_name, \
@@ -42,17 +39,17 @@ from EMAN2 import get_image_directory, get_dtag, EMData, \
 from EMAN2db import EMAN2DB, db_convert_path, db_open_dict, db_check_dict, e2getcwd
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from PyQt4.QtCore import Qt
-from .emapplication import ModuleEventsManager, EMApp, get_application
-from .emimage2d import EMImage2DWidget
-from .emimagemx import EMImageMXWidget
-from .emimage3diso import EMIsosurfaceModel
-from .emimage3dslice import EM3DSliceModel
-from .emimage3dsym import EM3DSymModel
-from .emimage3dvol import EMVolumeModel
-from .emimageutil import EMTransformPanel
-from .emplot2d import EMPlot2DWidget
+from emapplication import ModuleEventsManager, EMApp, get_application
+from emimage2d import EMImage2DWidget
+from emimagemx import EMImageMXWidget
+from emimage3diso import EMIsosurfaceModel
+from emimage3dslice import EM3DSliceModel
+from emimage3dsym import EM3DSymModel
+from emimage3dvol import EMVolumeModel
+from emimageutil import EMTransformPanel
+from emplot2d import EMPlot2DWidget
 #from e2simmxxplor import EMSimmxExplorer
-from .emsave import save_data
+from emsave import save_data
 import PyQt4
 import math
 import os
@@ -64,20 +61,20 @@ EMAN2DB = "EMAN2DB"
 
 MDS = "%" # metadata separator
 
-class EMActionDelegate(object):
+class EMActionDelegate:
 	'''
 	interface for action delegates - they are notified when the widget owning them is closed
 	'''
 	def closeEvent(self,event): pass
 	
-class EMItemAction(object):
+class EMItemAction:
 	'''
 	interface for single item actions
 	'''
 	
 	def item_action(self,item,target): raise NotImplementedException
 	
-class EMMultiItemAction(object):
+class EMMultiItemAction:
 	'''
 	interface for multiple item actions
 	'''
@@ -142,8 +139,8 @@ def DataDisplayModuleTemplate(Type,get_data_attr="get_data",data_functors=[],use
 			
 		def item_action(self,item,target):
 			from EMAN2 import Transform
-			from .emdataitem3d import EMDataItem3D, EMIsosurface
-			from .emshapeitem3d import EMCube
+			from emdataitem3d import EMDataItem3D, EMIsosurface
+			from emshapeitem3d import EMCube
 			
 			name = os.path.basename(str(item.get_url()))
 			single_mode = target.single_preview_only()
@@ -175,10 +172,10 @@ def DataDisplayModuleTemplate(Type,get_data_attr="get_data",data_functors=[],use
 			from e2simmxxplor import EMSimmxExplorer
 
 			if self.module_type == EM3DSymModel: #TODO: get correct symmetry or switch to e2eulerxplor.py
-				from .emimage3dsym import EMSymViewerWidget
+				from emimage3dsym import EMSymViewerWidget
 				widget = EMSymViewerWidget()
 			elif self.module_type in (EMIsosurfaceModel, EMVolumeModel, EM3DSliceModel, EMSimmxExplorer):
-				from .emglobjects import EM3DGLWidget
+				from emglobjects import EM3DGLWidget
 				widget = EM3DGLWidget()
 				model = self.module_type(widget)
 				widget.set_model(model)
@@ -237,11 +234,11 @@ class EM2DStackPreviewAction(DataDisplayModuleTemplate(EMImageMXWidget,"get_2d_s
 	def multi_item_action(self,items,target):
 		single_mode = target.single_preview_only()
 		data = []
-		from .emimagemx import ApplyAttribute
+		from emimagemx import ApplyAttribute
 		for item in items:
 			data.append([item.image_path(),item.get_idx(),[ApplyAttribute("Img #",item.get_idx())]])
 		
-		from .emimagemx import EMLightWeightParticleCache
+		from emimagemx import EMLightWeightParticleCache
 		data = EMLightWeightParticleCache(data)
 		
 		if single_mode and len(self.display_modules) != 0:
@@ -283,10 +280,6 @@ def EMSelectorBaseTemplate(Type):
 	Types currently in use are the QtGui.QWidget and the QtGui.QDialog
 	'''
 	class EMSelectorBase(Type):
-		ok = QtCore.pyqtSignal(list)
-		oky = QtCore.pyqtSignal()
-		cancel = QtCore.pyqtSignal()
-
 		def __init__(self, single_selection=False):
 			'''
 			@param single_selection - should selections be limited to singles?
@@ -338,7 +331,7 @@ def EMSelectorBaseTemplate(Type):
 			
 			self.timer_interval = 500 # half a second
 			self.timer = QtCore.QTimer()
-			self.timer.timeout.connect(self.time_out) # for auto refresh
+			QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.time_out) # for auto refresh
 			
 			self.timer.start(self.timer_interval)
 			
@@ -353,19 +346,19 @@ def EMSelectorBaseTemplate(Type):
 			self.cancel_button = QtGui.QPushButton("Cancel")
 			self.cancel_button.adjustSize()
 		
-			self.ok_button.clicked[bool].connect(self.ok_button_clicked)
-			self.cancel_button.clicked[bool].connect(self.cancel_button_clicked)
+			QtCore.QObject.connect(self.ok_button, QtCore.SIGNAL("clicked(bool)"),self.ok_button_clicked)
+			QtCore.QObject.connect(self.cancel_button, QtCore.SIGNAL("clicked(bool)"),self.cancel_button_clicked)
 		
 		def ok_button_clicked(self,bool):
 			''' Slot for OK button '''
 			#print "EMSelectorBase.ok_button_clicked"
-			self.ok.emit(self.selections)
-			self.oky.emit()
+			self.emit(QtCore.SIGNAL("ok"),self.selections)
+			self.emit(QtCore.SIGNAL("oky"))
 		
 		def cancel_button_clicked(self,bool):
 			''' Slot for Cancel button '''
 			#print "EMSelectorBase.cancel_button_clicked"
-			self.cancel.emit(self.selections)
+			self.emit(QtCore.SIGNAL("cancel"),self.selections)
 		
 		
 		def __del__(self):
@@ -435,7 +428,7 @@ def EMSelectorBaseTemplate(Type):
 			self.filter_combo.addItem("*")
 			self.filter_combo.setEditable(True)
 		
-			self.filter_combo.currentIndexChanged[int].connect(self.filter_index_changed)
+			QtCore.QObject.connect(self.filter_combo, QtCore.SIGNAL("currentIndexChanged(int)"),self.filter_index_changed)
 	#		QtCore.QObject.connect(self.filter_combo, QtCore.SIGNAL("currentIndexChanged(QString&)"),self.filter_index_changed)
 	
 		def filter_index_changed(self):
@@ -466,11 +459,11 @@ def EMSelectorBaseTemplate(Type):
 			
 			self.list_widget_data.append(None)
 			
-			list_widget.itemDoubleClicked[QListWidgetItem].connect(self.list_widget_dclicked)
+			QtCore.QObject.connect(list_widget, QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"),self.list_widget_dclicked)
 			#QtCore.QObject.connect(list_widget, QtCore.SIGNAL("itemPressed(QListWidgetItem*)"),self.list_widget_clicked)
 			#QtCore.QObject.connect(list_widget, QtCore.SIGNAL("currentRowChanged (int)"),self.list_widget_row_changed)
 			#QtCore.QObject.connect(list_widget, QtCore.SIGNAL("paintEvent (int)"),self.list_widget_row_changed)
-			list_widget.itemEntered[QListWidgetItem].connect(self.list_widget_item_entered)
+			QtCore.QObject.connect(list_widget, QtCore.SIGNAL("itemEntered(QListWidgetItem*)"),self.list_widget_item_entered)
 			#QtCore.QObject.connect(list_widget, QtCore.SIGNAL("currentItemChanged(QListWidgetItem*,QListWidgetItem*)"),self.list_widget_current_changed)
 			#QtCore.QObject.connect(list_widget, QtCore.SIGNAL("itemChanged(QListWidgetItem*)"),self.list_widget_item_changed)
 			#\QtCore.QObject.connect(list_widget, QtCore.SIGNAL("itemActivated(QListWidgetItem*)"),self.list_widget_item_activated)
@@ -578,9 +571,9 @@ def EMSelectorBaseTemplate(Type):
 			list_widget = item.listWidget()
 			if list_widget != self.current_list_widget:
 				if self.current_list_widget != None:
-					self.current_list_widget.itemSelectionChanged.disconnect(self.current_item_changed)
+					QtCore.QObject.disconnect(self.current_list_widget,QtCore.SIGNAL("itemSelectionChanged()"), self.current_item_changed)
 				self.current_list_widget = item.listWidget()
-				self.current_list_widget.itemSelectionChanged.connect(self.current_item_changed)
+				QtCore.QObject.connect(self.current_list_widget,QtCore.SIGNAL("itemSelectionChanged()"), self.current_item_changed)
 #				
 		def current_item_changed(self):
 			'''
@@ -747,7 +740,7 @@ class EMBrowser(EMBrowserType):
 		pass
 	
 	def closeEvent(self,event):
-		for delegate in list(self.action_delegates.values()):
+		for delegate in self.action_delegates.values():
 			delegate.closeEvent(event)
 		EMBrowserType.closeEvent(self, event)
 	
@@ -757,19 +750,19 @@ class EMBrowser(EMBrowserType):
 		'''
 		self.action_delegates = {}
 		if self.usescenegraph:
-			from .emscene3d import EMScene3D
+			from emscene3d import EMScene3D
 			self.action_delegates[VIEWER_3D] = DataDisplayModuleTemplate(EMScene3D, usescenegraph=self.usescenegraph)()
 		else:
-			from .emimage3d import EMImage3DWidget
+			from emimage3d import EMImage3DWidget
 			self.action_delegates[VIEWER_3D] = DataDisplayModuleTemplate(EMImage3DWidget)()
-		from .emimagemx import ApplyProcessor
+		from emimagemx import ApplyProcessor
 		self.action_delegates[VOLUME_VIEWER] = DataDisplayModuleTemplate(EMVolumeModel,data_functors=[ApplyProcessor("normalize",{})])()
 		self.action_delegates[SLICE_VIEWER] = DataDisplayModuleTemplate(EM3DSliceModel,data_functors=[ApplyProcessor("normalize",{})])()
 		self.action_delegates[SINGLE_2D_VIEWER] = DataDisplayModuleTemplate(EMImage2DWidget)()
 		stack_action = EM2DStackPreviewAction()
 		self.action_delegates[MULTI_2D_VIEWER] = stack_action #DataDisplayModuleTemplate(EMImageMXWidget,"get_2d_stack")
 		self.action_delegates[PLOT_2D_VIEWER] = DataDisplayModuleTemplate(EMPlot2DWidget)()
-		from .emplot3d import EMPlot3DWidget
+		from emplot3d import EMPlot3DWidget
 		self.action_delegates[PLOT_3D_VIEWER] = DataDisplayModuleTemplate(EMPlot3DWidget)()
 		self.action_delegates[EULER_VIEWER] = DataDisplayModuleTemplate(EM3DSymModel)()
 		from e2simmxxplor import EMSimmxExplorer
@@ -792,7 +785,7 @@ class EMBrowser(EMBrowserType):
 		self.preview_options.addItem("Multi preview")
 		#self.preview_options.setCurrentIndex(0)
 		
-		self.preview_options.currentIndexChanged[QString].connect(self.preview_options_changed)
+		QtCore.QObject.connect(self.preview_options, QtCore.SIGNAL("currentIndexChanged(QString)"), self.preview_options_changed)
 	
 	def preview_options_changed(self,qstring):
 		if str(qstring) == "Single preview":
@@ -889,7 +882,7 @@ class EMBrowser(EMBrowserType):
 					menu.addAction(SAVE_SUBSET)
 				
 
-		menu.triggered[QAction].connect(self.menu_action_triggered)
+		QtCore.QObject.connect(menu,QtCore.SIGNAL("triggered(QAction*)"),self.menu_action_triggered)
 		self.action_list_widget = l # only set if the menu acutally triggers
 		menu.exec_(event.globalPos())
 		
@@ -1084,7 +1077,7 @@ class EMListWidget(QtGui.QListWidget):
 	def get_delegate(self): return self.delegate
 	def set_delegate(self,delegate): self.delegate = delegate
 
-class EMBrowseDelegate(object):
+class EMBrowseDelegate:
 	'''
 	Base class for objects that can read urls and return lists of ListWidgetItems
 	to the EMSelector
@@ -1198,7 +1191,7 @@ class EMFileSystemDelegate(EMBrowseDelegate):
 		Return is a cache that can be treated like a list of EMData objects
 		Can give speed ups
 		'''
-		from .emimagemx import EMLightWeightParticleCache,EM3DDataListCache
+		from emimagemx import EMLightWeightParticleCache,EM3DDataListCache
 		md = self.get_metadata(full_path,0)
 		if md["nz"] > 1: return EM3DDataListCache(full_path)
 		else: return EMLightWeightParticleCache.from_file(full_path)
@@ -1340,12 +1333,12 @@ class EMFileSystemDelegate(EMBrowseDelegate):
 				
 			
 				if e.get_zsize() > 1:
-					return_items = [EM3DMetaImageItem(self,str(i),url,i) for i in range(0,EMUtil.get_image_count(url))]
+					return_items = [EM3DMetaImageItem(self,str(i),url,i) for i in xrange(0,EMUtil.get_image_count(url))]
 				else:
-					return_items = [EM2DMetaImageItem(self,str(i),url,i) for i in range(0,EMUtil.get_image_count(url))]
+					return_items = [EM2DMetaImageItem(self,str(i),url,i) for i in xrange(0,EMUtil.get_image_count(url))]
 			else:
 				d = e.get_attr_dict()
-				keys = list(d.keys())
+				keys = d.keys()
 				keys.sort() #alphabetical order
 				return_items = [EMDataHeaderItem(self,str(k)+" : "+str(d[k]),url,k,d[k]) for k in keys]
 			
@@ -1369,7 +1362,7 @@ class EMFileSystemDelegate(EMBrowseDelegate):
 			d = e.get_attr_dict()
 				
 			if len(vals) == val_idx:
-				keys = list(d.keys())
+				keys = d.keys()
 				keys.sort() #alphabetical order
 				return_items = [EMDataHeaderItem(self,str(k)+" : "+str(d[k]),url,k,d[k]) for k in keys]
 			elif len(vals) == val_idx+1:
@@ -1555,7 +1548,7 @@ class EMDataHeaderItem(EMListItem):
 	def get_url(self):
 		return self.url +MDS+str(self.key)
 
-class EMStack2DCapableMixin(object):
+class EMStack2DCapableMixin:
 	'''
 	a 2D stack capable item is something that knows how to supply
 	data to the EMImageMX set_data function.
@@ -1829,7 +1822,7 @@ class EMBDBDelegate(EMBrowseDelegate):
 		This function is called by EM2DStackItem and EM3DImageItem
 		Return is a cache that can be treated like a list of EMData objects
 		'''
-		from .emimagemx import EMLightWeightParticleCache,EM3DDataListCache
+		from emimagemx import EMLightWeightParticleCache,EM3DDataListCache
 		md = self.get_metadata(full_path,0)
 		if md["nz"] > 1: return EM3DDataListCache(db_convert_path(full_path))
 		else: return EMLightWeightParticleCache.from_file(db_convert_path(full_path))
@@ -1916,10 +1909,10 @@ class EMBDBDelegate(EMBrowseDelegate):
 				d = db.get_header(i)
 				if d!=None and "nz" in d : break
 			if  n > 1:
-				if d["nz"] > 1: return_items = [EM3DMetaImageItem(self,str(i),url,i) for i in range(0,n)]
-				else: return_items = [EM2DMetaImageItem(self,str(i),url,i) for i in range(0,n)]
+				if d["nz"] > 1: return_items = [EM3DMetaImageItem(self,str(i),url,i) for i in xrange(0,n)]
+				else: return_items = [EM2DMetaImageItem(self,str(i),url,i) for i in xrange(0,n)]
 			else: 
-				keys = list(d.keys())
+				keys = d.keys()
 				keys.sort() #alphabetical order
 				return_items = [EMDataHeaderItem(self,str(k)+" : "+str(d[k]),url,k,d[k]) for k in keys]
 		else:
@@ -1931,7 +1924,7 @@ class EMBDBDelegate(EMBrowseDelegate):
 				d = db.get_header(0)
 				
 			if len(vals) == val_idx:
-				keys = list(d.keys())
+				keys = d.keys()
 				keys.sort() #alphabetical order
 				return_items = [EMDataHeaderItem(self,str(k)+" : "+str(d[k]),url,k,d[k]) for k in keys]
 			elif len(vals) == val_idx+1:
@@ -1958,7 +1951,7 @@ class EMBDBDelegate(EMBrowseDelegate):
 			for db_key in vals[2:]:db = db[db_key]
 			
 			try:
-				for k,val in list(db.items()):
+				for k,val in db.items():
 					if isinstance(val,dict):
 						return_items.append(EMBDBDictItem(self,str(k),url,str(k)))
 					else:

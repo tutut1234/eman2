@@ -32,7 +32,6 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
 from EMAN2  import *
 from sparx  import *
 
@@ -42,10 +41,10 @@ def cut_pie(a, alpha = 45.0):
 	ny = f.get_ysize()
 	from math import atan2, pi
 	zer = f.get_value_at(0,0)
-	for j in range(ny):
+	for j in xrange(ny):
 		if(j <= ny//2): jy = ny
 		else:           jy = j - ny
-		for i in range(0,nx,2):
+		for i in xrange(0,nx,2):
 			ix = i/2
 			phi = atan2(abs(jy), ix)/pi*180
 			if(phi <45.0):
@@ -85,7 +84,7 @@ st = Util.infomask(proj, None, True)
 q = 2.0
 t = []
 n = 100
-for i in range(n):
+for i in xrange(n):
 	t.append( proj + filt_gaussl(model_gauss_noise(q*st[1], nx, ny), 0.2))
 
 rssnr, rsumsq, rvar, ssnr, sumsq, var = ssnr2d(t)
@@ -96,7 +95,7 @@ ps = rot_avg_table(ssnr)
 print(len(ps),len(pwn))
 ps.extend([0.0])
 print(len(ps),len(pwi))
-for i in range(len(ps)-1):
+for i in xrange(len(ps)-1):
 	fr.append(n*pwi[i]/pwn[i])
 	#print  i,ps[i]
 	ps[i] = max(0.0, ps[i])
@@ -111,7 +110,7 @@ st = Util.infomask(cp1, None, True)
 q = 2.0
 t = []
 n = 100
-for i in range(n):
+for i in xrange(n):
 	if i%2: t.append( cp1 + filt_gaussl(model_gauss_noise(q*st[1], nx, ny), 0.2))
 	else: t.append( cp2 + filt_gaussl(model_gauss_noise(q*st[1], nx, ny), 0.2))
 
@@ -121,7 +120,7 @@ pwn = rops_table(filt_gaussl(model_gauss_noise(q*st[1], nx, ny), 0.2))
 fr = []
 ps = rot_avg_table(ssnr)
 ps.extend([0.0])
-for i in range(len(pwi)):
+for i in xrange(len(pwi)):
 	fr.append(n*pwi[i]/pwn[i])
 	ps[i] = max(0.0, ps[i])
 
@@ -136,7 +135,7 @@ st = Util.infomask(cp1, None, True)
 q = 2.0
 t = []
 n = 100
-for i in range(n):
+for i in xrange(n):
 	if i%2: t.append( cp1 + filt_gaussl(model_gauss_noise(q*st[1], nx, ny), 0.2))
 	else: t.append( cp3 + filt_gaussl(model_gauss_noise(q*st[1], nx, ny), 0.2))
 
@@ -146,7 +145,7 @@ pwn = rops_table(filt_gaussl(model_gauss_noise(q*st[1], nx, ny), 0.2))
 fr = []
 ps = rot_avg_table(ssnr)
 ps.extend([0.0])
-for i in range(len(pwi)):
+for i in xrange(len(pwi)):
 	fr.append(n*pwi[i]/pwn[i])
 	ps[i] = max(0.0, ps[i])
 

@@ -35,9 +35,6 @@ from __future__ import print_function
 # e2bdb.py  11/13/2008 Steven Ludtke
 # This program allows manipulation and querying of the local database
 
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
 from math import *
 import time
 import os
@@ -127,7 +124,7 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 		print("WARNING: Merge mode\nCombining contents of: ",", ".join(args[1:]))
 		print("into ",args[0])
 		
-		if input("Proceed (y/n) :").lower() != "y" :
+		if raw_input("Proceed (y/n) :").lower() != "y" :
 			print("Aborting")
 			sys.exit(1)
 		
@@ -141,7 +138,7 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 				continue
 			
 			indb=db_open_dict(path,True)
-			for k in list(indb.keys()):
+			for k in indb.keys():
 				outdb[k]=indb[k]
 				
 		print("Merging complete")
@@ -184,7 +181,7 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 			slist=[]
 			for line in vdata:
 				line=line.split()
-				for i in range(n):
+				for i in xrange(n):
 					val=int(line[i])
 					slist.append(val)     		
 			del n,val,vdata
@@ -198,7 +195,7 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 			slist=[]
 			for line in vdata:
 				line=line.split()
-				for i in range(n):
+				for i in xrange(n):
 					val=int(line[i])
 					slist.append(val)     
 			n = EMUtil.get_image_count(args[0])
@@ -215,10 +212,10 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 				dct,keys=db_open_dict(path+db,ro=True,with_keys=True)
 				if dct==vstack : continue
 				if len(options.step)==2 :
-					if keys == None: vals = list(range(options.step[0],len(dct),options.step[1]))
+					if keys == None: vals = xrange(options.step[0],len(dct),options.step[1])
 					else: vals = keys[options.step[0]::options.step[1]]		# we apply --step even if we have a list of keys
 				else:
-					if keys == None: vals = list(range(options.step[0],options.step[2],options.step[1]))
+					if keys == None: vals = xrange(options.step[0],options.step[2],options.step[1])
 					else: vals = keys[options.step[0]:options.step[2]:options.step[1]]		# we apply --step even if we have a list of keys
 
 				if options.list !=None or options.exlist != None: vals=slist
@@ -265,7 +262,7 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 			IB = db_open_dict(options.restore)
 			source_old = None
 			if len(options.step)==3 : nima=min(options.step[2],nima)
-			for i in range(options.step[0],nima,options.step[1]):
+			for i in xrange(options.step[0],nima,options.step[1]):
 				source = IB.get_header(i)
 				source_path = source["source_path"]
 				ID = source["source_n"]
@@ -294,7 +291,7 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 				dct=db_open_dict(path+db,ro=True)
 				
 				#### Dump
-				keys=list(dct.keys())
+				keys=dct.keys()
 				keys.sort()
 				for k in keys:
 					v=dct[k]
@@ -318,7 +315,7 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 				dct=db_open_dict(path+db,ro=True)
 				
 				#### Dump
-				keys=list(dct.keys())
+				keys=dct.keys()
 				keys.sort()
 				if len(options.step)==3 : keys=keys[:options.step[2]]
 				for k in keys[options.step[0]::options.step[1]]:
@@ -328,7 +325,7 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 						for i in v: print("\n\t%s"%str(i), end=' ')
 						print("")
 					elif isinstance(v,dict) :
-						ks2=list(v.keys())
+						ks2=v.keys()
 						ks2.sort()
 						kc=0
 						for i in ks2:
@@ -344,7 +341,7 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 			for db in dbs:
 				print("##### CTF -> ",db)
 				dct=db_open_dict(path+db,ro=True)
-				keys=list(dct.keys())
+				keys=dct.keys()
 				if len(options.step)==3 : keys=keys[:options.step[2]]
 				defocus=set()
 				for k in keys[options.step[0]::options.step[1]]:
@@ -370,7 +367,7 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 				dct=db_open_dict(path+db,ro=True)
 				
 				#### Dump
-				keys=list(dct.keys())
+				keys=dct.keys()
 				if len(options.step)==3 : keys=keys[:options.step[2]]
 				keys.sort()
 				for k in keys[options.step[0]::options.step[1]]:
@@ -380,7 +377,7 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 						for i in v: print("\n\t%s"%str(i), end=' ')
 						print("")
 					elif isinstance(v,dict) :
-						ks2=list(v.keys())
+						ks2=v.keys()
 						ks2.sort()
 						for i in ks2:
 							print("\n\t%s : %s"%(i,v[i]), end=' ')
@@ -427,11 +424,11 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 				dct.close()
 			print(fmt%("TOTAL",total[0],"",human_size(total[1])))
 		elif options.check :
-			from pickle import loads
+			from cPickle import loads
 			for db in dbs:
 				dct=db_open_dict(path+db,ro=True)
 				dct.realopen()
-				keys=list(dct.bdb.keys())
+				keys=dct.bdb.keys()
 				allkvp={}
 				for k in keys:
 					s1,s2=k.split("\x80",1)		# start of a pickled string. 
@@ -442,7 +439,7 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 						if v in st : print("Error: value %d seen multiple times in %s (%s,%s)"%(v,db,s1,s2))
 						st.add(v)
 				print("%s : "%db, end=' ')
-				for i in list(allkvp.keys()): 
+				for i in allkvp.keys(): 
 					if options.verbose>0 : print("%s %d/%d\t"%(i,len(allkvp[i]),int(max(allkvp[i]))+1), end=' ')
 					if len(allkvp[i])!=int(max(allkvp[i])+1) : print("\nMismatch found in %s. Could be normal if file has been rewritten multiple times, but is unusual"%db)
 				if options.verbose>0 : print("")
@@ -472,7 +469,7 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 				print("You are requesting to delete the following databases:")
 				for db in dbs:
 					print(db," ", end=' ')
-				if input("\nAre you sure (y/n) ? ")[0].lower()!='y' :
+				if raw_input("\nAre you sure (y/n) ? ")[0].lower()!='y' :
 					print("Aborted")
 					sys.exit(1)
 			
@@ -533,7 +530,7 @@ def db_cleanup(force=False):
 				try: print(os.popen("ps %s"%i,"r").readlines()[-1])
 				except: print(i)
 			
-			reply=eval(input("Would you like me to kill all of these jobs (YES/NO) : "))
+			reply=raw_input("Would you like me to kill all of these jobs (YES/NO) : ")
 			if reply != "YES" : 
 				print("Not killing jobs. Please exit them manually then retry.")
 				return

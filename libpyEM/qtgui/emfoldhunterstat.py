@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from __future__ import print_function
-from __future__ import absolute_import
 
 # Author: Muthu Alagappan, 07/22/09, (m.alagappan901@gmail.com)
 # Copyright (c) 2000-2006 Baylor College of Medicine
@@ -33,8 +32,6 @@ from __future__ import absolute_import
 #
 
 
-from builtins import range
-from builtins import object
 import sys
 from random import *
 import random
@@ -44,7 +41,7 @@ from numpy import *
 import time
 
 
-class E2FoldHunterStat(object):
+class E2FoldHunterStat:
 	
 	def __init__(self): pass
 
@@ -442,9 +439,12 @@ class E2FoldHunterStat(object):
 
 
 if __name__ == '__main__':
-	from .emapplication import EMApp
+	from emapplication import EMApp
 	em_app = EMApp()
 	window2 = E2FoldHunterStat()
 	print("This program is meant to be run in conjunction with e2validatemed.py in the programs directory")
 	em_app.show()
 	em_app.execute()
+
+		
+		

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from __future__ import print_function
-from __future__ import absolute_import
 
 #
 # Author: David Woolford 10/01/2008 (woolford@bcm.edu)
@@ -33,11 +32,10 @@ from __future__ import absolute_import
 #
 #
 
-from builtins import object
 from PyQt4 import QtGui, QtCore, QtOpenGL
 from PyQt4.QtCore import Qt
 import sys
-from .emimageutil import EMParentWin
+from emimageutil import EMParentWin
 from EMAN2 import remove_directories_from_name, get_image_directory,get_3d_font_renderer, E2end,get_platform
 import EMAN2db
 import weakref
@@ -46,7 +44,7 @@ from libpyGLUtils2 import *
 try: from PyQt4 import QtWebKit
 except: pass
 
-class ModuleEventsManager(object): 
+class ModuleEventsManager: 
 	'''
 	Coordinates events of the various modules.
 	To begin with this is only the close event, then I added the idle event
@@ -60,18 +58,18 @@ class ModuleEventsManager(object):
 		except AttributeError:
 			emitter = self.module() #Ross's hack to get this to work with QWidget's as well
 			
-		emitter.module_closed.connect(self.on_module_closed)
-		emitter.module_idle.connect(self.on_module_idle)
+		QtCore.QObject.connect(emitter, QtCore.SIGNAL("module_closed"), self.module_closed)
+		QtCore.QObject.connect(emitter, QtCore.SIGNAL("module_idle"), self.module_idle)
 	
-		emitter.ok.connect(self.module_ok) # yes, redundant, but time is short
-		emitter.cancel.connect(self.module_cancel) # yes, redundant, but time is short
+		QtCore.QObject.connect(emitter, QtCore.SIGNAL("ok"), self.module_ok) # yes, redundant, but time is short
+		QtCore.QObject.connect(emitter, QtCore.SIGNAL("cancel"), self.module_cancel)# yes, redundant, but time is short
 		
 	
-	def on_module_closed(self):
+	def module_closed(self):
 		self.disconnect_object()
 		self.target().module_closed(self.module())
 		
-	def on_module_idle(self):
+	def module_idle(self):
 		self.disconnect_object()
 		self.target().module_idle(self.module())
 		
@@ -90,11 +88,11 @@ class ModuleEventsManager(object):
 		except AttributeError:
 			emitter = self.module() #Ross's hack to get this to work with QWidget's as well
 			
-		emitter.module_closed.disconnect(self.on_module_closed)
-		emitter.module_idle.disconnect(self.on_module_idle)
+		QtCore.QObject.disconnect(emitter, QtCore.SIGNAL("module_closed"), self.module_closed)
+		QtCore.QObject.disconnect(emitter, QtCore.SIGNAL("module_idle"), self.module_idle)
 	
-		emitter.ok.disconnect(self.module_ok) # yes, redundant, but time is short
-		emitter.cancel.disconnect(self.module_cancel) # yes, redundant, but time is short
+		QtCore.QObject.disconnect(emitter, QtCore.SIGNAL("ok"), self.module_ok) # yes, redundant, but time is short
+		QtCore.QObject.disconnect(emitter, QtCore.SIGNAL("cancel"), self.module_cancel)# yes, redundant, but time is short
 
 class EMGLWidget(QtOpenGL.QGLWidget):
 	"""
@@ -103,9 +101,6 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 	a self.busy attribute to prevent updateGL() from redrawing before all changes to display parameters are in place. 
 	"""
 	
-	module_closed = QtCore.pyqtSignal()
-	inspector_shown = QtCore.pyqtSignal()
-
 	def hide(self):
 		if self.qt_parent:
 			self.qt_parent.hide()
@@ -164,7 +159,7 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 			self.inspector.close()
 		QtOpenGL.QGLWidget.closeEvent(self, event)
 		if self.myparent : self.qt_parent.close()
-		self.module_closed.emit() # this could be a useful signal, especially for something like the selector module, which can potentially show a lot of images but might want to close them all when it is closed
+		self.emit(QtCore.SIGNAL("module_closed")) # this could be a useful signal, especially for something like the selector module, which can potentially show a lot of images but might want to close them all when it is closed
 		event.accept()
 		
 	def display_web_help(self,url="http://blake.bcm.edu/emanwiki/e2display"):
@@ -192,7 +187,7 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 		if self.disable_inspector: 
 			return
 		
-		self.inspector_shown.emit() # debug only
+		self.emit(QtCore.SIGNAL("inspector_shown")) # debug only
 		app = get_application()
 		if app == None:
 			print("can't show an inspector with having an associated application")
@@ -217,7 +212,7 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 		else:
 			QtOpenGL.QGLWidget.updateGL(self)
 
-class EMInstance(object):
+class EMInstance:
 	'''
 	Holds a reference to an instance, supports a static interface
 	'''
@@ -350,7 +345,7 @@ class EMApp(QtGui.QApplication):
 	
 		self.tmr=QtCore.QTimer()
 		self.tmr.setInterval(interval)
-		self.tmr.timeout.connect(function)
+		QtCore.QObject.connect(self.tmr,QtCore.SIGNAL("timeout()"), function)
 		self.tmr.start()
 		
 		self.timer_function = function
@@ -359,7 +354,7 @@ class EMApp(QtGui.QApplication):
 	def stop_timer(self):
 		print("STOP APP TIMER")
 		if self.tmr != None:
-			self.tmr.timeout.disconnect(self.timer_function)
+			QtCore.QObject.disconnect(self.tmr, QtCore.SIGNAL("timeout()"), self.timer_function)
 			self.tmr = None
 			self.timer_function = None
 		else:
@@ -376,7 +371,7 @@ class EMProgressDialog(QtGui.QProgressDialog):
 def error(msg,title="Almost"):
 	EMErrorMessageDisplay.run(msg,title)
 	
-class EMErrorMessageDisplay(object):
+class EMErrorMessageDisplay:
 	'''
 	Has a static error display function which is very useful
 	'''
@@ -407,3 +402,4 @@ class EMErrorMessageDisplay(object):
 		msg.exec_()
 	
 	run = staticmethod(run)
+			

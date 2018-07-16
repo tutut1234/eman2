@@ -34,9 +34,8 @@ from __future__ import print_function
 import sys, math, weakref
 from OpenGL.GL import *
 from OpenGL import GLU
-from PyQt4 import QtCore, QtGui, QtOpenGL
+from PyQt4 import QtCore, QtGui, QtOpenGL 
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QColor
 
 leftarrow = [
     '12 10 2 1',
@@ -79,12 +78,6 @@ class ValSlider(QtGui.QWidget):
 	setValue(float) - to programatically change the value
 	emit valueChanged(float)
 	"""
-	enableChanged = QtCore.pyqtSignal(int)
-	valueChanged = QtCore.pyqtSignal(float)
-	textChanged = QtCore.pyqtSignal(float)
-	sliderReleased = QtCore.pyqtSignal(float)
-	sliderPressed = QtCore.pyqtSignal(float)
-
 	def __init__(self, parent=None, rng=None, label=None, value=0,labelwidth=30,showenable=-1,rounding=3):
 		#if not parent: raise Exception,"ValSliders must have parents"
 		QtGui.QWidget.__init__(self,parent)
@@ -109,7 +102,7 @@ class ValSlider(QtGui.QWidget):
 			self.enablebox=QtGui.QCheckBox(self)
 			self.enablebox.setChecked(showenable)
 			self.hboxlayout.addWidget(self.enablebox)
-			self.enablebox.toggled[bool].connect(self.setEnabled)
+			QtCore.QObject.connect(self.enablebox, QtCore.SIGNAL("toggled(bool)"), self.setEnabled)
 		
 		if label:
 			self.label = QtGui.QLabel(self)
@@ -153,10 +146,10 @@ class ValSlider(QtGui.QWidget):
 		self.slider.setObjectName("slider")
 		self.hboxlayout.addWidget(self.slider)
 		
-		self.text.editingFinished.connect(self.textChange)
-		self.slider.valueChanged[int].connect(self.sliderChange)
-		self.slider.sliderReleased.connect(self.on_sliderReleased)
-		self.slider.sliderPressed.connect(self.on_sliderPressed)
+		QtCore.QObject.connect(self.text, QtCore.SIGNAL("editingFinished()"), self.textChange)
+		QtCore.QObject.connect(self.slider, QtCore.SIGNAL("valueChanged(int)"), self.sliderChange)
+		QtCore.QObject.connect(self.slider, QtCore.SIGNAL("sliderReleased()"), self.sliderReleased)
+		QtCore.QObject.connect(self.slider, QtCore.SIGNAL("sliderPressed()"), self.sliderPressed)
 		
 		self.updateboth()
 		if showenable>=0 : self.setEnabled(showenable)
@@ -170,7 +163,7 @@ class ValSlider(QtGui.QWidget):
 		self.text.setEnabled(ena)
 		try : return self.enablebox.setChecked(ena)
 		except: pass
-		self.enableChanged.emit(ena)
+		self.emit(QtCore.SIGNAL("enableChanged"),ena) 
 
 	def getEnabled(self):
 		try : return self.enablebox.isChecked()
@@ -204,7 +197,7 @@ class ValSlider(QtGui.QWidget):
 
 #		if self.intonly : print self.value,val
 		self.updateboth()
-		if not quiet and self.value!=self.oldvalue: self.valueChanged.emit(self.value)
+		if not quiet and self.value!=self.oldvalue: self.emit(QtCore.SIGNAL("valueChanged"),self.value)
 		self.oldvalue=self.value
 	
 	def getValue(self):
@@ -248,8 +241,8 @@ class ValSlider(QtGui.QWidget):
 				
 				self.updates()
 				if self.value!=self.oldvalue:
-					self.valueChanged.emit(self.value)
-					self.textChanged.emit(self.value)
+					self.emit(QtCore.SIGNAL("valueChanged"),self.value)
+					self.emit(QtCore.SIGNAL("textChanged"),self.value)
 				self.oldvalue=self.value
 			except:
 				self.updateboth()
@@ -262,14 +255,14 @@ class ValSlider(QtGui.QWidget):
 			self.value=int(self.value+.5)
 			if self.value==ov : return
 		self.updatet()
-		if self.value!=self.oldvalue: self.valueChanged.emit(self.value)
+		if self.value!=self.oldvalue: self.emit(QtCore.SIGNAL("valueChanged"),self.value)
 		self.oldvalue=self.value
 	
-	def on_sliderReleased(self):
-		self.sliderReleased.emit(self.value)
+	def sliderReleased(self):
+		self.emit(QtCore.SIGNAL("sliderReleased"),self.value)
 		
-	def on_sliderPressed(self):
-		self.sliderPressed.emit(self.value)
+	def sliderPressed(self):
+		self.emit(QtCore.SIGNAL("sliderPressed"),self.value)
 	
 	def setLabel(self,label):
 		self.label.setText(label)
@@ -298,10 +291,6 @@ class ValBox(QtGui.QWidget):
 	"""A ValSlider without the slider part. Everything is the same except that the slider doesn't exist,
 	so for virtually all purposes it could be used as a drop-in replacement.
 	"""
-	enableChanged = QtCore.pyqtSignal(int)
-	valueChanged = QtCore.pyqtSignal(int)
-	textChanged = QtCore.pyqtSignal()
-
 	def __init__(self, parent=None, rng=None, label=None, value=0,labelwidth=30,showenable=-1):
 		#if not parent: raise Exception,"ValSliders must have parents"
 		QtGui.QWidget.__init__(self,parent)
@@ -323,7 +312,7 @@ class ValBox(QtGui.QWidget):
 			self.enablebox=QtGui.QCheckBox(self)
 			self.enablebox.setChecked(showenable)
 			self.hboxlayout.addWidget(self.enablebox)
-			self.enablebox.toggled[bool].connect(self.setEnabled)
+			QtCore.QObject.connect(self.enablebox, QtCore.SIGNAL("toggled(bool)"), self.setEnabled)
 			
 		if label:
 			self.label = QtGui.QLabel(self)
@@ -352,14 +341,14 @@ class ValBox(QtGui.QWidget):
 		self.text.setObjectName("text")
 		self.hboxlayout.addWidget(self.text)
 		
-		self.text.editingFinished.connect(self.textChange)
+		QtCore.QObject.connect(self.text, QtCore.SIGNAL("editingFinished()"), self.textChange)
 		
 		if showenable>=0 : self.setEnabled(showenable)
 		self.updateboth()
 
 	def setEnabled(self,ena):
 		self.text.setEnabled(ena)
-		self.enableChanged.emit(ena)
+		self.emit(QtCore.SIGNAL("enableChanged"),ena) 
 
 	def getEnabled(self):
 		try : return self.enablebox.isChecked()
@@ -396,7 +385,7 @@ class ValBox(QtGui.QWidget):
 
 #		if self.intonly : print self.value,val
 		self.updateboth()
-		if not quiet : self.valueChanged.emit(self.value)
+		if not quiet : self.emit(QtCore.SIGNAL("valueChanged"),self.value)
 	
 	def getValue(self):
 		if self.intonly : return int(self.value)
@@ -426,8 +415,8 @@ class ValBox(QtGui.QWidget):
 				else : 
 					self.value=float(x)
 #				print "new text ",self.value
-				self.valueChanged.emit(self.value)
-				self.textChanged.emit(self.value)
+				self.emit(QtCore.SIGNAL("valueChanged"),self.value)
+				self.emit(QtCore.SIGNAL("textChanged"),self.value)
 			except:
 				self.updateboth()
 				
@@ -449,10 +438,6 @@ class ValBox(QtGui.QWidget):
 class StringBox(QtGui.QWidget):
 	"""A ValBox but it takes arbitrary text. Basically maintains the label/enable functionality for a QLineEdit widget
 	"""
-	enableChanged = QtCore.pyqtSignal(int)
-	valueChanged = QtCore.pyqtSignal(str)
-	textChanged = QtCore.pyqtSignal(str)
-
 	def __init__(self, parent=None, label=None, value="",labelwidth=30,showenable=-1):
 		#if not parent: raise Exception,"ValSliders must have parents"
 		QtGui.QWidget.__init__(self,parent)
@@ -469,7 +454,7 @@ class StringBox(QtGui.QWidget):
 			self.enablebox=QtGui.QCheckBox(self)
 			self.enablebox.setChecked(showenable)
 			self.hboxlayout.addWidget(self.enablebox)
-			self.enablebox.toggled[bool].connect(self.setEnabled)
+			QtCore.QObject.connect(self.enablebox, QtCore.SIGNAL("toggled(bool)"), self.setEnabled)
 			
 		if label:
 			self.label = QtGui.QLabel(self)
@@ -499,13 +484,13 @@ class StringBox(QtGui.QWidget):
 		self.text.setObjectName("text")
 		self.hboxlayout.addWidget(self.text)
 		
-		self.text.editingFinished.connect(self.textChange)
+		QtCore.QObject.connect(self.text, QtCore.SIGNAL("editingFinished()"), self.textChange)
 		
 		if showenable>=0 : self.setEnabled(showenable)
 
 	def setEnabled(self,ena):
 #		self.text.setEnabled(ena)
-		self.enableChanged.emit(ena)
+		self.emit(QtCore.SIGNAL("enableChanged"),ena) 
 
 	def getEnabled(self):
 		try : return self.enablebox.isChecked()
@@ -514,15 +499,15 @@ class StringBox(QtGui.QWidget):
 	def setValue(self,val,quiet=0):
 		if self.getValue()==val : return
 		self.text.setText(val)
-		if not quiet : self.valueChanged.emit(val)
+		if not quiet : self.emit(QtCore.SIGNAL("valueChanged"),val)
 	
 	def getValue(self):
 		return str(self.text.text())
 		
 	def textChange(self):
 		if self.ignore : return
-		self.valueChanged.emit(self.getValue())
-		self.textChanged.emit(self.getValue())
+		self.emit(QtCore.SIGNAL("valueChanged"),self.getValue())
+		self.emit(QtCore.SIGNAL("textChanged"),self.getValue())
 				
 	def setLabel(self,label):
 		self.label.setText(label)
@@ -534,9 +519,6 @@ class StringBox(QtGui.QWidget):
 class CheckBox(QtGui.QWidget):
 	"""A QCheckBox with a label
 	"""
-	enableChanged = QtCore.pyqtSignal(int)
-	valueChanged = QtCore.pyqtSignal()
-
 	def __init__(self, parent=None, label=None, value="",labelwidth=30,showenable=-1):
 		#if not parent: raise Exception,"ValSliders must have parents"
 		QtGui.QWidget.__init__(self,parent)
@@ -555,7 +537,7 @@ class CheckBox(QtGui.QWidget):
 			self.enablebox=QtGui.QCheckBox(self)
 			self.enablebox.setChecked(showenable)
 			self.hboxlayout.addWidget(self.enablebox)
-			self.enablebox.toggled[bool].connect(self.setEnabled)
+			QtCore.QObject.connect(self.enablebox, QtCore.SIGNAL("toggled(bool)"), self.setEnabled)
 			
 		if label:
 			self.label = QtGui.QLabel(self)
@@ -578,13 +560,13 @@ class CheckBox(QtGui.QWidget):
 		self.check.setChecked(value)
 		self.hboxlayout.addWidget(self.check)
 		
-		self.check.stateChanged[int].connect(self.boolChanged)
+		QtCore.QObject.connect(self.check, QtCore.SIGNAL("stateChanged(int)"), self.boolChanged)
 		
 		if showenable>=0 : self.setEnabled(showenable)
 
 	def setEnabled(self,ena):
 		self.check.setEnabled(ena)
-		self.enableChanged.emit(ena)
+		self.emit(QtCore.SIGNAL("enableChanged"),ena) 
 		
 	def getEnabled(self):
 		try : return self.enablebox.isChecked()
@@ -601,7 +583,7 @@ class CheckBox(QtGui.QWidget):
 				
 		if self.getValue()==val : return
 		self.check.setChecked(val)
-		if not quiet : self.valueChanged.emit(val)
+		if not quiet : self.emit(QtCore.SIGNAL("valueChanged"),val)
 	
 	def getValue(self):
 		return bool(self.check.isChecked())
@@ -609,7 +591,7 @@ class CheckBox(QtGui.QWidget):
 		
 	def boolChanged(self,newv):
 		if self.ignore : return
-		self.valueChanged.emit(bool(self.check.isChecked()))
+		self.emit(QtCore.SIGNAL("valueChanged"),bool(self.check.isChecked()))
 				
 	def setLabel(self,label):
 		self.label.setText(label)
@@ -623,8 +605,6 @@ class RangeSlider(QtGui.QWidget):
 	can be set individually or the pair can be moved up and down together. The values are displayed at
 	the top and bottom of the vertical slider.
 	"""
-	valueChanged = QtCore.pyqtSignal(tuple)
-
 	def __init__(self, parent=None, rng=(0,100), value=(25,75)):
 		#if not parent: raise Exception,"ValSliders must have parents"
 		QtGui.QWidget.__init__(self,parent)
@@ -755,7 +735,7 @@ class RangeSlider(QtGui.QWidget):
 		if v1<=v0 : v1=v0+1
 		self.value=(v0,v1)
 		self.update()
-		if not quiet : self.valueChanged.emit(self.value)
+		if not quiet : self.emit(QtCore.SIGNAL("valueChanged"), self.value)
 
 	def getValue(self):
 		return self.value
@@ -768,8 +748,6 @@ class EMSpinWidget(QtGui.QWidget):
 	@param coeff is controls the exponential growth rate when the arrow is held down
 	@param maxarrowwidth is the size of the arrow buttons
 	"""
-	valueChanged = QtCore.pyqtSignal(int)
-
 	def __init__(self, value, coeff, rounding=2, maxarrowwidth=20, postivemode=False, wheelstep=1):
 		QtGui.QWidget.__init__(self)
 		self.value = value
@@ -799,16 +777,16 @@ class EMSpinWidget(QtGui.QWidget):
 		shbox.addWidget(self.rbutton)
 		self.setLayout(shbox)
 		
-		self.numbox.editingFinished.connect(self._on_editfinish)
-		self.lbutton.clicked.connect(self._on_clickleft)
-		self.rbutton.clicked.connect(self._on_clickright)
-		self.lbutton.released.connect(self._on_unclickleft)
-		self.rbutton.released.connect(self._on_unclickright)
+		QtCore.QObject.connect(self.numbox,QtCore.SIGNAL("editingFinished()"),self._on_editfinish)
+		QtCore.QObject.connect(self.lbutton,QtCore.SIGNAL("clicked()"),self._on_clickleft)
+		QtCore.QObject.connect(self.rbutton,QtCore.SIGNAL("clicked()"),self._on_clickright)
+		QtCore.QObject.connect(self.lbutton,QtCore.SIGNAL("released()"),self._on_unclickleft)
+		QtCore.QObject.connect(self.rbutton,QtCore.SIGNAL("released()"),self._on_unclickright)
 	
 	def setValue(self, value, quiet=1):
 		self.value = value
 		self.numbox.setText(str(round(self.value, self.rounding)))
-		if not quiet: self.valueChanged.emit(self.value)
+		if not quiet: self.emit(QtCore.SIGNAL("valueChanged(int)"),self.value)
 	
 	def getValue(self):
 		return self.value
@@ -829,19 +807,19 @@ class EMSpinWidget(QtGui.QWidget):
 					self.setValue(value)
 			else:
 				self.setValue(value)
-		self.valueChanged.emit(self.value)
+		self.emit(QtCore.SIGNAL("valueChanged(int)"),self.value)
 		
 	def _on_clickleft(self):
 		self.value = self.value - self.coeff*(2**self.powercoeff)
 		self.numbox.setText(str(round(self.value, self.rounding)))
 		self.powercoeff += 0.1
-		self.valueChanged.emit(self.value)
+		self.emit(QtCore.SIGNAL("valueChanged(int)"),self.value)
 		
 	def _on_clickright(self):
 		self.value = self.value + self.coeff*(2**self.powercoeff)
 		self.numbox.setText(str(round(self.value,self.rounding)))
 		self.powercoeff += 0.1
-		self.valueChanged.emit(self.value)
+		self.emit(QtCore.SIGNAL("valueChanged(int)"),self.value)
 	
 	def _on_unclickleft(self):
 		if not self.lbutton.isDown():
@@ -855,7 +833,7 @@ class EMSpinWidget(QtGui.QWidget):
 		try:
 			oldvalue = self.value
 			self.value = float(self.numbox.text())
-			if self.value != oldvalue: self.valueChanged.emit(float(self.numbox.text()))
+			if self.value != oldvalue: self.emit(QtCore.SIGNAL("valueChanged(int)"),float(self.numbox.text()))
 			
 		except ValueError:
 			self.numbox.setText(str(self.value))
@@ -866,9 +844,6 @@ class EMQTColorWidget(QtGui.QWidget):
 	A widget displaying a color box that is used to control colors
 	multiple boxes can be implemented
 	"""
-	newcolor = QtCore.pyqtSignal(QColor)
-	newconnection = QtCore.pyqtSignal()
-
 	def __init__(self, parent=None, red=255, green=255, blue=255, width=30, height=30):
 		QtGui.QWidget.__init__(self, parent)
 		self.width = width
@@ -904,7 +879,7 @@ class EMQTColorWidget(QtGui.QWidget):
 	def dropEvent(self, e):
 		self.color = QtGui.QColor(e.mimeData().colorData())
 		self.update()
-		self.newcolor.emit(self.color)
+		self.emit(QtCore.SIGNAL("newcolor(QColor)"), self.color)
 
 	def mouseMoveEvent(self, e):
 
@@ -925,9 +900,10 @@ class EMQTColorWidget(QtGui.QWidget):
 		if event.buttons() != QtCore.Qt.RightButton:
 			self.inicolor = self.color
 			self.colrodialog = EMQtColorDialog(self.color)
-			self.colrodialog.currentColorChanged[QColor].connect(self._on_colorchange)
-			self.colrodialog.colorSelected[QColor].connect(self._on_colorselect)
-			self.colrodialog.canceled.connect(self._on_cancel)
+			QtCore.QObject.connect(self.colrodialog,QtCore.SIGNAL("currentColorChanged(const QColor &)"),self._on_colorchange)
+			QtCore.QObject.connect(self.colrodialog,QtCore.SIGNAL("colorSelected(const QColor &)"),self._on_colorselect)
+			QtCore.QObject.connect(self.colrodialog,QtCore.SIGNAL("canceled()"),self._on_cancel)
+			QtCore.QObject.connect(self.colrodialog,QtCore.SIGNAL("newconnection()"), self._on_additonal_connect)
 		else:
 			self._dragdrop(event)
 			
@@ -935,25 +911,32 @@ class EMQTColorWidget(QtGui.QWidget):
 		if color.isValid():
 			self.color = color
 			self.update()
-			self.newcolor.emit(self.color)
+			self.emit(QtCore.SIGNAL("newcolor(QColor)"), self.color)
 			
 	def _on_colorselect(self, color):
 		if color.isValid():
 			self.color = color
 			self.update()
-			self.newcolor.emit(self.color)
+			self.emit(QtCore.SIGNAL("newcolor(QColor)"), self.color)
 			
 	def _on_cancel(self):
 		self.color = self.inicolor
 		self.update()
-		self.newcolor.emit(self.color)
+		self.emit(QtCore.SIGNAL("newcolor(QColor)"), self.color)
 		
+	def _on_additonal_connect(self):
+		QtCore.QObject.disconnect(self.colrodialog,QtCore.SIGNAL("currentColorChanged(const QColor &)"),self._on_colorchange)
+		QtCore.QObject.disconnect(self.colrodialog,QtCore.SIGNAL("colorSelected(const QColor &)"),self._on_colorselect)
+		QtCore.QObject.disconnect(self.colrodialog,QtCore.SIGNAL("canceled()"),self._on_cancel)
+		QtCore.QObject.disconnect(self.colrodialog,QtCore.SIGNAL("newconnection()"), self._on_additonal_connect)
+
 def singleton(cls):
 	instances = {}
 	def getinstance(inicolor):
 		if cls not in instances:
 			instances[cls] = cls(inicolor)
 		else:
+			instances[cls].emit(QtCore.SIGNAL("newconnection()"))
 			instances[cls].setCurrentColor(inicolor)
 			if instances[cls].hidden:
 				instances[cls].show()
@@ -965,8 +948,6 @@ class EMQtColorDialog(QtGui.QColorDialog):
 	"""
 	The Is to create a non-modal color dialog. Only one color dialog is allowed at once, so I use the singltion pattern
 	"""
-	canceled = QtCore.pyqtSignal()
-
 	def __init__(self, inicolor):
 		QtGui.QColorDialog.__init__(self, inicolor)
 		self.hidden = False
@@ -975,7 +956,7 @@ class EMQtColorDialog(QtGui.QColorDialog):
 	
 	def hideEvent(self, e):
 		QtGui.QColorDialog.hideEvent(self, e)
-		self.canceled.emit()
+		self.emit(QtCore.SIGNAL("canceled()"))
 		self.hidden = True
 
 class EMLightControls(QtOpenGL.QGLWidget):
@@ -985,8 +966,6 @@ class EMLightControls(QtOpenGL.QGLWidget):
 	Its position can be set via: setAngularPosition
 	@param light, the glLight the this widget uses
 	"""
-	lightPositionMoved = QtCore.pyqtSignal(list)
-
 	def __init__(self, light, parent=None):
 		QtOpenGL.QGLWidget.__init__(self, parent)
 		self.light = light
@@ -1068,7 +1047,7 @@ class EMLightControls(QtOpenGL.QGLWidget):
 		self.init_x = event.x()
 		self.init_y = event.y()
 		self.update()
-		self.lightPositionMoved.emit([self.theta, self.phi])
+		self.emit(QtCore.SIGNAL("lightPositionMoved"), [self.theta, self.phi])
 		
 	def setPosition(self, x, y, z, w, quiet=False):
 		self.lightposition = [x, y, z, w]
@@ -1116,9 +1095,6 @@ class CameraControls(QtOpenGL.QGLWidget):
 	This widget is an observer of the Camera object (used in the Scenegraph). To update call updateWidget
 	@param scenegraph, the scenegraph this widget oberrves
 	"""
-	farMoved = QtCore.pyqtSignal(float)
-	nearMoved = QtCore.pyqtSignal(float)
-
 	def __init__(self, parent=None, scenegraph=None):
 		QtOpenGL.QGLWidget.__init__(self, parent)
 		self.scenegraph = weakref.ref(scenegraph)
@@ -1159,9 +1135,9 @@ class CameraControls(QtOpenGL.QGLWidget):
 		""" Move the clipping planes"""
 		self.movement = float(event.x() - self.init_x)*self.scale
 		if math.fabs(event.x()-(self.near_clipping + self.width/2)) > math.fabs(event.x()-(self.far_clipping + self.width/2)):
-			self.farMoved.emit(self.movement)
+			self.emit(QtCore.SIGNAL("farMoved(float)"), self.movement)
 		else:
-			self.nearMoved.emit(self.movement)
+			self.emit(QtCore.SIGNAL("nearMoved(float)"), self.movement)
 		self.init_x = event.x()
 		
 	def _drawViewingVolume(self):
@@ -1227,7 +1203,6 @@ class EMANToolButton(QtGui.QToolButton):
 	The only weakness is only one of these button groups can be used at any given time. It is possible 
 	to fix this, but when I need such functionality
 	"""
-	clicked = QtCore.pyqtSignal(int)
 	toolpanellist = []
 	def __init__(self):
 		QtGui.QToolButton.__init__(self)
@@ -1247,7 +1222,7 @@ class EMANToolButton(QtGui.QToolButton):
 	def setDown(self, state, quiet=True):
 		QtGui.QToolButton.setDown(self, state)
 		if state: self.setSelfAsUnique()
-		if not quiet: self.clicked.emit(self.isDown())
+		if not quiet: self.emit(QtCore.SIGNAL("clicked(int)"), self.isDown())
 		
 	def mousePressEvent(self, event):
 		# Toggle the button on and off

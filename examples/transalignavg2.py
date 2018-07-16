@@ -36,7 +36,6 @@ from __future__ import print_function
 # together, and optionally iterate. Translational alignment only.
 # transalignavg2.py <infile> ...
 
-from builtins import range
 from EMAN2 import *
 import sys
 from math import *
@@ -47,7 +46,7 @@ ref0.process_inplace("normalize.edgemean")
 ref0.translate(5,0,0)							# small shift to avoid nozero issue
 nx,ny=ref0["nx"],ref0["ny"]
 
-for i in range(2):
+for i in xrange(2):
 	print("Iter ",i)
 	avgr=Averagers.get("mean", {"ignore0":True})
 	ref0.write_image("seq.hdf",-1)

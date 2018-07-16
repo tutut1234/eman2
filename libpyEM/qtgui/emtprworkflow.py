@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from __future__ import print_function
-from __future__ import absolute_import
 #
 # Author: David Woolford 11/10/08 (woolford@bcm.edu)
 # Copyright (c) 2000-2008 Baylor College of Medicine
@@ -33,12 +32,10 @@ from __future__ import absolute_import
 #
 
 
-from builtins import range
-from builtins import object
-from .emsprworkflow import *
-from .emform import *
-from .emsave import EMFileTypeValidator
-from .emapplication import error, EMErrorMessageDisplay
+from emsprworkflow import *
+from emform import *
+from emsave import EMFileTypeValidator
+from emapplication import error, EMErrorMessageDisplay
 from EMAN2db import db_open_dict
 	
 class EMBaseTomoChooseFilteredPtclsTask(WorkFlowTask):
@@ -73,8 +70,6 @@ class EMBaseTomoChooseFilteredPtclsTask(WorkFlowTask):
 
 class EMTomoChooseFilteredPtclsTask(EMBaseTomoChooseFilteredPtclsTask):
 	"""Choose the particle set you wish to filter. The available sets inlcude the raw particles, and any filtered sets you have previously generated.""" 
-	replace_task = QtCore.pyqtSignal()
-
 	def __init__(self):
 		EMBaseTomoChooseFilteredPtclsTask.__init__(self)
 		self.form_db_name ="bdb:tomo.choose.filtered"
@@ -86,7 +81,7 @@ class EMTomoChooseFilteredPtclsTask(EMBaseTomoChooseFilteredPtclsTask):
 		choice = params["tomo_filt_choice"]
 		
 		task = EMTomoGenericReportTask(self.particles_map[self.particles_name_map[choice]])
-		self.replace_task.emit(task, "Filter Tomo Particles")
+		self.emit(QtCore.SIGNAL("replace_task"),task,"Filter Tomo Particles")
 		self.form.close()
 		self.form = None
 		
@@ -97,7 +92,6 @@ class EMTomoChooseFilteredPtclsTask(EMBaseTomoChooseFilteredPtclsTask):
 class E2TomoFilterParticlesTask(WorkFlowTask):	
 	"""This task is for Fourier filtering and/or rotating your data. If you choose to perform both of these operations, the Fourier filtering is performed before the rotation."""
 	
-	task_idle = QtCore.pyqtSignal()
 	preprocessor_cache = None
 	def __init__(self,ptcls_list=[],name_map={}):
 		WorkFlowTask.__init__(self)
@@ -143,7 +137,7 @@ class E2TomoFilterParticlesTask(WorkFlowTask):
 		if E2TomoFilterParticlesTask.preprocessor_cache == None:
 			a = dump_processors_list()
 			l = ["None"]
-			for key in list(a.keys()):
+			for key in a.keys():
 				if len(key) > 5 and key[:6] == "filter":
 					vals = key.split(".")
 					if len(vals) > 1:
@@ -176,7 +170,7 @@ class E2TomoFilterParticlesTask(WorkFlowTask):
 						values = vals[p[0]]
 						s = "The parameters for the %s processor are:"  %p[0]
 						
-						for i in range(1,len(values),3):
+						for i in xrange(1,len(values),3):
 							s += " " + values[i] +","
 						s = s[:-1] # get rid of the last column
 						error_message.append(s)
@@ -217,7 +211,7 @@ class E2TomoFilterParticlesTask(WorkFlowTask):
 			error("You have to supply a filter or a non zero rotation for any filtering to occur")
 			return
 		
-		self.task_idle.emit()
+		self.emit(QtCore.SIGNAL("task_idle"))
 		self.form.close()
 		self.form = None
 	
@@ -235,8 +229,8 @@ class E2TomoFilterParticlesTask(WorkFlowTask):
 #		db_map = project_db.get(name)
 		previous_sets = []
 		
-		for root_name,dict in list(db_map.items()):
-			for filt,name in list(dict.items()):
+		for root_name,dict in db_map.items():
+			for filt,name in dict.items():
 				if 	previous_sets.count(filt) == 0:
 					previous_sets.append(filt)
 					
@@ -305,8 +299,6 @@ class E2TomoFilterParticlesTask(WorkFlowTask):
 
 class EMTomoChooseFilteredPtclsForFiltTask(EMBaseTomoChooseFilteredPtclsTask):
 	"""Choose the data you wish to filter""" 
-	replace_task = QtCore.pyqtSignal()
-
 	def __init__(self,task_type=E2TomoFilterParticlesTask):
 		EMBaseTomoChooseFilteredPtclsTask.__init__(self)
 		self.form_db_name ="bdb:tomo.choose.filtered.forfilt"
@@ -319,7 +311,7 @@ class EMTomoChooseFilteredPtclsForFiltTask(EMBaseTomoChooseFilteredPtclsTask):
 		choice = params["tomo_filt_choice"]
 		
 		task = self.task_type(self.particles_map[self.particles_name_map[choice]],self.name_map)
-		self.replace_task.emit(task, "Filter Tomo Particles")
+		self.emit(QtCore.SIGNAL("replace_task"),task,"Filter Tomo Particles")
 		self.form.close()
 		self.form = None
 		
@@ -327,7 +319,6 @@ class EMTomoChooseFilteredPtclsForFiltTask(EMBaseTomoChooseFilteredPtclsTask):
 
 class EMTomoBootStapChoosePtclsTask(EMBaseTomoChooseFilteredPtclsTask):
 	"""Choose the particle set you wish to use to generate the bootstrapped probe. The sets available will include the raw particles and any filtered sets you have generated.""" 
-	replace_task = QtCore.pyqtSignal()
 
 	def __init__(self):
 		EMBaseTomoChooseFilteredPtclsTask.__init__(self)
@@ -339,13 +330,13 @@ class EMTomoBootStapChoosePtclsTask(EMBaseTomoChooseFilteredPtclsTask):
 			return
 		choice = params["tomo_filt_choice"]
 		task = EMTomoBootstrapTask(self.particles_map[self.particles_name_map[choice]],self.name_map)
-		self.replace_task.emit(task, "Filter Tomo Particles")
+		self.emit(QtCore.SIGNAL("replace_task"),task,"Filter Tomo Particles")
 		self.form.close()
 		self.form = None
 		
 		self.write_db_entries(params)
 
-class EMTomoAlignParams(object):
+class EMTomoAlignParams:
 	'''
 	A class that get parameters commonly used by alignment based programs
 	'''
@@ -361,10 +352,10 @@ class EMSubTomoDataReportTask(EMRawDataReportTask):
 		'''
 		data_dict = EMProjectDataDict(self.project_list)
 		project_data = data_dict.get_data_dict()
-		project_names = list(project_data.keys())
+		project_names = project_data.keys()
 		self.project_data_at_init = project_data # so if the user hits cancel this can be reset
 
-		from .emform import EMTomographicFileTable,EMFileTable
+		from emform import EMTomographicFileTable,EMFileTable
 		table = EMTomographicFileTable(project_names,desc_short="Sub Tomograms",desc_long="")
 		context_menu_data = EMRawDataReportTask.ProjectListContextMenu(self.project_list)
 		table.add_context_menu_data(context_menu_data)
@@ -385,10 +376,10 @@ class EMRefDataReportTask(EMRawDataReportTask):
 		'''
 		data_dict = EMProjectDataDict(self.project_list)
 		project_data = data_dict.get_data_dict()
-		project_names = list(project_data.keys())
+		project_names = project_data.keys()
 		self.project_data_at_init = project_data # so if the user hits cancel this can be reset
 
-		from .emform import EMTomographicFileTable,EMFileTable
+		from emform import EMTomographicFileTable,EMFileTable
 		table = EMTomographicFileTable(project_names,name="refnames", desc_short="Sub Tomogram References",desc_long="")
 		context_menu_data = EMRawDataReportTask.ProjectListContextMenu(self.project_list)
 		table.add_context_menu_data(context_menu_data)
@@ -412,7 +403,7 @@ class EMTomoBootstrapTask(WorkFlowTask):
 		'''
 		self.report_task = EMSubTomoDataReportTask()
 		table,n = self.report_task.get_raw_data_table()# now p is a EMParamTable with rows for as many files as there in the project
-		from .emform import EMFileTable,int_lt
+		from emform import EMFileTable,int_lt
 		return table, n
 		
 	def get_tomo_hunter_ref_table(self):
@@ -420,7 +411,7 @@ class EMTomoBootstrapTask(WorkFlowTask):
 		'''
 		self.report_task = EMRefDataReportTask()
 		table,n = self.report_task.get_raw_data_table()# now p is a EMParamTable with rows for as many files as there in the project
-		from .emform import EMFileTable,int_lt
+		from emform import EMFileTable,int_lt
 		return table, n
 		
 	def run_form(self):
@@ -428,10 +419,10 @@ class EMTomoBootstrapTask(WorkFlowTask):
 		self.form.resize(*self.preferred_size)
 		self.form.setWindowTitle(self.window_title)
 		get_application().show_specific(self.form)
-		self.form.emform_ok.connect(self.on_form_ok)
-		self.form.emform_cancel.connect(self.on_form_cancel)
-		self.form.emform_close.connect(self.on_form_close)
-		self.form.display_file.connect(self.on_display_file)
+		QtCore.QObject.connect(self.form,QtCore.SIGNAL("emform_ok"),self.on_form_ok)
+		QtCore.QObject.connect(self.form,QtCore.SIGNAL("emform_cancel"),self.on_form_cancel)
+		QtCore.QObject.connect(self.form,QtCore.SIGNAL("emform_close"),self.on_form_close)
+		QtCore.QObject.connect(self.form,QtCore.SIGNAL("display_file"),self.on_display_file)	
 		
 	def get_params(self):
 		table_params = []
@@ -453,7 +444,7 @@ class EMTomoBootstrapTask(WorkFlowTask):
 		
 		proc_data = dump_processors_list()
 		masks = {}
-		for key in list(proc_data.keys()):
+		for key in proc_data.keys():
 			if len(key) >= 5 and key[:5] == "mask.":
 				masks[key] = proc_data[key]
 		masks["None"] = ["Choose this to stop masking from occuring"]
@@ -462,7 +453,7 @@ class EMTomoBootstrapTask(WorkFlowTask):
 		params.append([pmask, pmaskparams])
 		
 		filters = {}
-		for key in list(proc_data.keys()):
+		for key in proc_data.keys():
 			if len(key) >= 7 and key[:7] == "filter.":
 				filters[key] = proc_data[key]
 		filters["None"] = ["Choose this to stop filtering from occuring"]
@@ -472,7 +463,7 @@ class EMTomoBootstrapTask(WorkFlowTask):
 
 		ali_data = dump_aligners_list()
 		caligners = {}
-		for key in list(ali_data.keys()):
+		for key in ali_data.keys():
 			if len(key) >= 19 and key[:19] == "rotate_translate_3d":
 				caligners[key] = ali_data[key]
 		pali = ParamDef("aligner3D",vartype="string",desc_short="Aligner3D",desc_long="The 3D course aligner",property=None,defaultunits=db.get("aligner3D",dfl="rotate_translate_3d"),choices=caligners)
@@ -480,7 +471,7 @@ class EMTomoBootstrapTask(WorkFlowTask):
 		params.append([pali, paliparams])
 		
 		craligners = {}
-		for key in list(ali_data.keys()):
+		for key in ali_data.keys():
 			if len(key) >= 9 and key[:9] == "refine_3d":
 				craligners[key] = ali_data[key]
 		prali = ParamDef("raligner3D",vartype="string",desc_short="RAligner3D",desc_long="The 3D refine aligner",property=None,defaultunits=db.get("raligner3D",dfl="refine_3d_grid"),choices=craligners)
@@ -587,10 +578,10 @@ class EMTomoRawDataReportTask(EMRawDataReportTask):
 		'''
 		data_dict = EMProjectDataDict(self.project_list)
 		project_data = data_dict.get_data_dict()
-		project_names = list(project_data.keys())
+		project_names = project_data.keys()
 		self.project_data_at_init = project_data # so if the user hits cancel this can be reset
 
-		from .emform import EMTomographicFileTable,EMFileTable
+		from emform import EMTomographicFileTable,EMFileTable
 		table = EMTomographicFileTable(project_names,desc_short="Tomograms",desc_long="")
 		context_menu_data = EMRawDataReportTask.ProjectListContextMenu(self.project_list)
 		table.add_context_menu_data(context_menu_data)
@@ -601,9 +592,6 @@ class EMTomoRawDataReportTask(EMRawDataReportTask):
 		
 class E2TomoBoxerGuiTask(WorkFlowTask):
 	"""Select the file you want to process and hit okay, this will launch e2spt_boxer. The yshort option sets the Z axis normal to the screen, and inmemory load the tomo into memory for fast access"""
-	task_idle = QtCore.pyqtSignal()
-	gui_exit = QtCore.pyqtSignal()
-
 	def __init__(self):
 		WorkFlowTask.__init__(self)
 		self.tomo_boxer_module = None
@@ -617,7 +605,7 @@ class E2TomoBoxerGuiTask(WorkFlowTask):
 		
 		self.report_task = EMTomoRawDataReportTask()
 		table,n = self.report_task.get_raw_data_table()# now p is a EMParamTable with rows for as many files as there in the project
-		from .emform import EMFileTable,int_lt
+		from emform import EMFileTable,int_lt
 		table.insert_column_data(0,EMFileTable.EMColumnData("Stored Boxes",E2TomoBoxerGuiTask.get_tomo_boxes_in_database,"Boxes currently stored in the EMAN2 database",int_lt))
 		
 		return table, n
@@ -680,20 +668,20 @@ class E2TomoBoxerGuiTask(WorkFlowTask):
 	def on_form_close(self):
 		# this is to avoid a task_idle signal, which would be incorrect if e2boxer is running
 		if self.tomo_boxer_module == None:
-			self.task_idle.emit()
+			self.emit(QtCore.SIGNAL("task_idle"))
 		else: pass
 	
 	def on_boxer_closed(self): 
 		if self.tomo_boxer_module != None:
 			self.tomo_boxer_module = None
-			self.gui_exit.emit()
+			self.emit(QtCore.SIGNAL("gui_exit"))
 	
 	def on_boxer_idle(self):
 		'''
 		Presently this means boxer did stuff but never opened any guis, so it's safe just to emit the signal
 		'''
 		self.tomo_boxer_module = None
-		self.gui_exit.emit()
+		self.emit(QtCore.SIGNAL("gui_exit"))
 		
 	def on_form_cancel(self):
 		if self.report_task:
@@ -701,4 +689,4 @@ class E2TomoBoxerGuiTask(WorkFlowTask):
 		
 		self.form.close()
 		self.form = None
-		self.task_idle.emit()
+		self.emit(QtCore.SIGNAL("task_idle"))

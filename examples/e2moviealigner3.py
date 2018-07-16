@@ -3,8 +3,6 @@ from __future__ import print_function
 
 # Author: James Michael Bell, jmbell@bcm.edu, 10/18/2015
 
-from builtins import range
-from builtins import object
 from EMAN2 import *
 import numpy as np
 from IPython import embed
@@ -86,7 +84,7 @@ def main(args):
 			f = EMData(fname,i)
 			if options.fixbadlines:
 				for line in options.xybadlines:
-					coords = list(map(int,line.split(',')))
+					coords = map(int,line.split(','))
 					f.process_inplace('math.xybadline',{'xloc':coords[0],'yloc':coords[1]})
 			if options.fixaxes:
 				f.process_inplace('filter.xyaxes0',{'neighbor':1,'neighbornorm':options.nnorm,'x':1,'y':1})
@@ -187,10 +185,10 @@ def incoherent_pws(frames,bs=512):
 	mx = np.arange(bs+50,frames[0]['nx']-bs+50,bs)
 	my = np.arange(bs+50,frames[1]['ny']-bs+50,bs)
 	regions = {}
-	for i in range(len(frames)): 
+	for i in xrange(len(frames)): 
 		regions[i] = [[x,y] for y in my for x in mx]
 	ips = Averagers.get('mean')
-	for i in range(len(frames)):
+	for i in xrange(len(frames)):
 		print2line("\t{}/{}".format(i+1,len(frames)))
 		img = frames[i]
 		frame_avg = Averagers.get('mean')
@@ -220,7 +218,7 @@ def ccf_ordinate(f1,f2,i,fname): # Li (2012)
 	print2line("\t\t\t({},{})".format(x,y))
 	return x,y,ccf
 
-class PairwiseCoherence(object):
+class PairwiseCoherence:
 	
 	def __init__(self,fname,frames,ips,bs=512):
 		self.fname = fname
@@ -232,17 +230,17 @@ class PairwiseCoherence(object):
 		mx = np.arange(self.bs+50,self.frames[0]['nx']-self.bs+50,self.bs)
 		my = np.arange(self.bs+50,self.frames[0]['ny']-self.bs+50,self.bs)
 		self._tiles = {}
-		for i in range(self.n):
+		for i in xrange(self.n):
 			self._tiles[i] = np.array([[x,y] for y in my for x in mx])
 		self._stacks = {}
-		for ir in range(len(self._tiles[0])):
-			self._stacks[ir] = np.array([self._tiles[i][ir] for i in range(self.n)])
+		for ir in xrange(len(self._tiles[0])):
+			self._stacks[ir] = np.array([self._tiles[i][ir] for i in xrange(self.n)])
 		self._orig_tiles = deepcopy(self._tiles)
 		self._orig_stacks = deepcopy(self._stacks)
 	
 	def _calc_coherent_power_spectrum(self):
 		cps_avg = Averagers.get('mean')
-		for s in range(len(self._stacks)):
+		for s in xrange(len(self._stacks)):
 			stack_avg = Averagers.get('mean')
 			for i,r in enumerate(self._stacks[s]):
 				reg = Region(r[0],r[1],self.bs,self.bs)
@@ -289,7 +287,7 @@ class PairwiseCoherence(object):
 		best_cps.do_ift().write_image('{}_best_coherent_pws.hdf'.format(self.fname[:-4]),-1)
 		return x,y,pwcc,best_cps
 
-class DirectDetectorUtil(object):
+class DirectDetectorUtil:
 	
 	@classmethod
 	def correct_frames(cls,options,fname,outfile=None):
@@ -309,7 +307,7 @@ class DirectDetectorUtil(object):
 		if options.path[-4:].lower() in (".mrc"): nd = hdr['nz']
 		else: nd = EMUtil.get_image_count(options.path)
 		if not outfile: outfile = options.path[:-4] + "_corrected.hdf"
-		for i in range(nd):
+		for i in xrange(nd):
 			if options.verbose:
 				print("Correcting frame: {}/{}	\r".format(i+1,nd), end=' ')
 				sys.stdout.flush()
@@ -337,7 +335,7 @@ class DirectDetectorUtil(object):
 			sigd=dark.copy()
 			sigd.to_zero()
 			a=Averagers.get("mean",{"sigma":sigd,"ignore0":1})
-			for i in range(0,nd):
+			for i in xrange(0,nd):
 				if options.verbose:
 					print("Summing dark: {}/{}	\r".format(i+1,nd), end=' ')
 					sys.stdout.flush()
@@ -365,7 +363,7 @@ class DirectDetectorUtil(object):
 			sigg=gain.copy()
 			sigg.to_zero()
 			a=Averagers.get("mean",{"sigma":sigg,"ignore0":1})
-			for i in range(0,nd):
+			for i in xrange(0,nd):
 				if options.verbose:
 					print("Summing gain: {}/{}	\r".format(i+1,nd), end=' ')
 					sys.stdout.flush()

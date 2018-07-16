@@ -33,8 +33,6 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
-from builtins import object
 from EMAN2 import *
 import os, math
 from EMAN2jsondb import JSTask,jsonclasses
@@ -254,7 +252,7 @@ def main():
 	
 	E2end(logid)
 
-class ComputeTilts(object):
+class ComputeTilts:
 	def __init__(self, options):
 		self.options = options
 		self.symmeties = Symmetries.get(self.options.sym)
@@ -443,9 +441,9 @@ try:
 	from eman2_gui.valslider import ValSlider
 	from eman2_gui.emplot2d import EMPolarPlot2DWidget
 except:
-	class dummy(object):
+	class dummy:
 		pass
-	class QWidget(object):
+	class QWidget:
 		"A dummy class for use when Qt not installed"
 		def __init__(self,parent):
 			print("Qt4 has not been loaded")
@@ -562,7 +560,8 @@ class EMValidationPlot(QtGui.QWidget):
 		box.addWidget(self.polarplot)
 		box.addWidget(frame)
 		self.setLayout(box)
-		self.polarplot.clusterStats.connect(self._on_stats)
+		self.connect(self.polarplot, QtCore.SIGNAL('clusterStats'), self._on_stats)
+		self.connect(self.polarplot, QtCore.SIGNAL('pointIdentity(int)'), self._on_point)
 		
 	def _on_stats(self, stats):
 		""" Set the selected stats """

@@ -32,7 +32,6 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
 from EMAN2 import EMANVERSION, E2init, E2end, EMData, base_name, file_exists, EMArgumentParser
 import EMAN2db
 from eman2_gui.emapplication import EMApp
@@ -108,7 +107,7 @@ def main():
 		imgs=EMData.read_images(args[0])
 		display(imgs,app,args[0])
 
-		win[0].child.mousedown.connect(lambda a,b:selectclass(options.classes[0],options.classes[1],a,b))
+		QtCore.QObject.connect(win[0].child,QtCore.SIGNAL("mousedown"),lambda a,b:selectclass(options.classes[0],options.classes[1],a,b))
 		try:
 			out=open("selected.lst","w")
 			out.write("#LST\n")
