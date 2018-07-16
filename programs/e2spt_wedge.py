@@ -30,12 +30,13 @@
 #
 #
 from __future__ import print_function
+from builtins import range
 from EMAN2 import *
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from PyQt4.QtCore import Qt
 from eman2_gui.emapplication import EMApp
 from eman2_gui import emscene3d
-from eman2_gui import emdataitem3d 
+from eman2_gui import emdataitem3d
 
 def main():
 	progname = os.path.basename(sys.argv[0])
@@ -165,15 +166,15 @@ class MissingWedgeViewer(QtGui.QWidget):
 		self.setLayout(grid)
 		
 		# Fill combox box
-		for i in xrange(len(self.volumes)):
+		for i in range(len(self.volumes)):
 			self.volcombobox.addItem(str(i))
 			
 		#Add actions
-		QtCore.QObject.connect(self.volcombobox, QtCore.SIGNAL("activated(int)"), self.onVolChange)
-		QtCore.QObject.connect(self.wedgei,QtCore.SIGNAL("editingFinished()"),self.onWedgeChange)
-		QtCore.QObject.connect(self.wedgef,QtCore.SIGNAL("editingFinished()"),self.onWedgeChange)
-		QtCore.QObject.connect(self.setwedgestats,QtCore.SIGNAL("clicked()"),self.onOneVolStats)
-		QtCore.QObject.connect(self.setallwedgestats,QtCore.SIGNAL("clicked()"),self.onManyVolStats)
+		self.volcombobox.activated[int].connect(self.onVolChange)
+		self.wedgei.editingFinished.connect(self.onWedgeChange)
+		self.wedgef.editingFinished.connect(self.onWedgeChange)
+		self.setwedgestats.clicked.connect(self.onOneVolStats)
+		self.setallwedgestats.clicked.connect(self.onManyVolStats)
 		
 		# Use first volume
 		self.onVolChange(0)

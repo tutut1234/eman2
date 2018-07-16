@@ -32,6 +32,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 import global_def
 from global_def import *
 from optparse import OptionParser
@@ -77,11 +78,11 @@ def main():
 	vecs = []
 	vecs = pca(input_stacks, options.subavg, options.rad, options.nvec, options.incore, options.shuffle, not(options.genbuf), options.mask, options.MPI)
 	if isRoot:
-		for i in xrange(len(vecs)):
+		for i in range(len(vecs)):
 			vecs[i].write_image(output_stack, i)
 	
 	global_def.BATCH = False
-        if options.MPI:
+	if options.MPI:
 		from mpi import mpi_finalize
 		mpi_finalize()
 

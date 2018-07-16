@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 
 #
 # Author: Steven Ludtke, 04/10/2003 (sludtke@bcm.edu)
@@ -32,6 +33,9 @@ from __future__ import print_function
 #
 #
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 ploticon = [
     '15 14 2 1',
     'b c #000055',
@@ -58,6 +62,8 @@ def safe_float(x):
 
 import PyQt4
 from PyQt4 import QtCore, QtGui, QtOpenGL
+from PyQt4.QtGui import QListWidgetItem
+from PyQt4.QtCore import QString
 from PyQt4.QtOpenGL import QGLWidget
 from PyQt4.QtCore import Qt
 from OpenGL import GL,GLU
@@ -67,15 +73,15 @@ import OpenGL.arrays.vbo as glvbo
 from math import *
 from EMAN2 import *
 import sys
-from emshape import *
+from .emshape import *
 import weakref
-from cPickle import dumps,loads
+from pickle import dumps,loads
 import struct, math
 from numpy import *
-from valslider import *
-from cStringIO import StringIO
+from .valslider import *
+from io import StringIO
 import re
-import emimage2d
+from . import emimage2d
 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -84,8 +90,8 @@ from matplotlib.figure import Figure
 #matplotlib.use('Agg')
 import numpy as np
 
-from emapplication import EMApp, EMGLWidget
-from emglobjects import EMOpenGLFlagsAndTools
+from .emapplication import EMApp, EMGLWidget
+from .emglobjects import EMOpenGLFlagsAndTools
 
 import traceback
 
@@ -107,6 +113,8 @@ qt_color_map["gray"] = QtGui.QColor(127,127,127)
 class EMPlot2DWidget(EMGLWidget):
 	"""A QT widget for drawing 2-D plots using matplotlib
 	"""
+	selected_sg = QtCore.pyqtSignal()
+	mousedown = QtCore.pyqtSignal(QtGui.QMouseEvent,tuple)
 
 	def __init__(self,application=None,winid=None,parent=None):
 
@@ -140,13 +148,7 @@ class EMPlot2DWidget(EMGLWidget):
 
 		self.resize(640,480)
 
-		self.particle_viewer = None
-		self.particle_viewer0 = None
-		self.particle_viewer1 = None
-		self.particle_viewer2 = None
-		self.particle_viewer3 = None
-		self.particle_viewer4 = None
-		self.particle_viewer5 = None
+		self.particle_viewers = []
 
 		self.alpha = 0.5
 
@@ -176,27 +178,15 @@ class EMPlot2DWidget(EMGLWidget):
 		self.resize_event(width,height)
 
 	def closeEvent(self,event):
-		if self.particle_viewer!=None :
-			self.particle_viewer.close()
-
-		if self.particle_viewer0!=None :
-			self.particle_viewer0.close()
-		if self.particle_viewer1!=None :
-			self.particle_viewer1.close()
-		if self.particle_viewer2!=None :
-			self.particle_viewer2.close()
-		if self.particle_viewer3!=None :
-			self.particle_viewer3.close()
-		if self.particle_viewer4!=None :
-			self.particle_viewer4.close()
-		if self.particle_viewer5!=None :
-			self.particle_viewer5.close()
+		for pv in self.particle_viewers: 
+			if pv!=None : pv.closeEvent(event)
+		self.particle_viewers=[]
 
 		self.clear_gl_memory()
 		EMGLWidget.closeEvent(self, event)
 
 		if self.inspector :
-			self.inspector.closeEvent(self, event)
+			self.inspector.closeEvent(event)
 
 	def keyPressEvent(self,event):
 		if event.key() == Qt.Key_C:
@@ -520,7 +510,7 @@ class EMPlot2DWidget(EMGLWidget):
 		GL.glPushMatrix()
 		# overcome depth issues
 		glTranslate(0,0,5)
-		for k,s in self.shapes.items():
+		for k,s in list(self.shapes.items()):
 #			print k,s
 			s.draw(self.scr2plot)
 
@@ -536,7 +526,7 @@ class EMPlot2DWidget(EMGLWidget):
 			ax.tick_params(axis='y', labelsize="x-large")
 			canvas=FigureCanvasAgg(fig)
 
-			for i in self.axes.keys():
+			for i in list(self.axes.keys()):
 				if not self.visibility[i]: continue
 				j=self.axes[i]
 #				print j
@@ -749,7 +739,7 @@ lc is the cursor selection point in plot coords"""
 
 		j=0
 		# we find the first displayed axis in the list
-		for ak in self.axes.keys():
+		for ak in list(self.axes.keys()):
 			if not self.visibility[ak]: continue
 			j=self.axes[ak]
 			break
@@ -776,7 +766,7 @@ lc is the cursor selection point in plot coords"""
 
 		# We select one point if it's within 5 pixels, then up to 4 more points within 3 pixels
 		self.selected=[srt[0]]
-		for i in xrange(1,5) :
+		for i in range(1,min(5,len(srt))) :
 			if r[srt[i]]<3 : self.selected.append(srt[i])
 
 		y0=35
@@ -786,53 +776,20 @@ lc is the cursor selection point in plot coords"""
 			try:
 				cmts = comments[p].split(";")
 
-				for i in xrange(len(cmts)/2):
+				for i in range(len(cmts)/2):
 					imn = int(cmts[2*i])
 					imf = cmts[2*i+1]
 					ptclim=EMData(imf,imn)
-					if i == 0:
-						if self.particle_viewer0==None :
-							self.particle_viewer0=emimage2d.EMImage2DWidget(ptclim)
-							self.particle_viewer0.show()
-						else:
-							self.particle_viewer0.set_data(ptclim)
-							self.particle_viewer0.show()
-					elif i == 1:
-						if self.particle_viewer1==None :
-							self.particle_viewer1=emimage2d.EMImage2DWidget(ptclim)
-							self.particle_viewer1.show()
-						else:
-							self.particle_viewer1.set_data(ptclim)
-							self.particle_viewer1.show()
-					elif i == 2:
-						if self.particle_viewer2==None :
-							self.particle_viewer2=emimage2d.EMImage2DWidget(ptclim)
-							self.particle_viewer2.show()
-						else:
-							self.particle_viewer2.set_data(ptclim)
-							self.particle_viewer2.show()
-					elif i == 3:
-						if self.particle_viewer3==None :
-							self.particle_viewer3=emimage2d.EMImage2DWidget(ptclim)
-							self.particle_viewer3.show()
-						else:
-							self.particle_viewer3.set_data(ptclim)
-							self.particle_viewer3.show()
-					elif i == 4:
-						if self.particle_viewer4==None :
-							self.particle_viewer4=emimage2d.EMImage2DWidget(ptclim)
-							self.particle_viewer4.show()
-						else:
-							self.particle_viewer4.set_data(ptclim)
-							self.particle_viewer4.show()
-					elif i == 5:
-						if self.particle_viewer5==None :
-							self.particle_viewer5=emimage2d.EMImage2DWidget(ptclim)
-							self.particle_viewer5.show()
-						else:
-							self.particle_viewer5.set_data(ptclim)
-							self.particle_viewer5.show()
-
+					try: self.particle_viewers[i].set_data(ptclim)
+					except: 
+						self.particle_viewers.append(emimage2d.EMImage2DWidget(ptclim))
+						if len(self.particle_viewers)!=i+1 : print_exc()
+					self.particle_viewers[i].show()
+#				if len(cmts)==2
+#					p1=EMData(cmts[1],cmts[0])
+#					p2=EMData(cmts[3],cmts[2])
+#					p1.process_inplace("filter.highpass.tophat",{"cutoff_freq":0.01})
+#					p1.process_inplace("filter.lowpass.tophat",{"cutoff_freq":1.0/30.0})
 			except:
 				self.add_shape("selpc",EMShape(("scrlabel",0,0,0,80,self.scrlim[3]-(35),comments[p],120.0,-1)))
 				y0+=18
@@ -840,9 +797,7 @@ lc is the cursor selection point in plot coords"""
 		for i,p in enumerate(self.selected):
 			self.add_shape("selp%d"%i,EMShape(("scrlabel",0,0,0,self.scrlim[2]-220,self.scrlim[3]-(18*i+y0),"%d. %1.3g, %1.3g"%(p,x[p],y[p]),120.0,-1)))
 
-
-
-		self.emit(QtCore.SIGNAL("selected"),self.selected)
+		self.selected_sg.emit()
 
 	def mousePressEvent(self, event):
 		lc=self.scr2plot(event.x(),event.y())
@@ -933,7 +888,7 @@ lc is the cursor selection point in plot coords"""
 		if force or self.xlimits==None or self.xlimits[1]<=self.xlimits[0] :
 			xmin=1.0e38
 			xmax=-1.0e38
-			for k in self.axes.keys():
+			for k in list(self.axes.keys()):
 				if not self.visibility[k]: continue
 				xmin=min(xmin,min(self.data[k][self.axes[k][0]]))
 				xmax=max(xmax,max(self.data[k][self.axes[k][0]]))
@@ -946,7 +901,7 @@ lc is the cursor selection point in plot coords"""
 		if force or self.ylimits==None or self.ylimits[1]<=self.ylimits[0] :
 			ymin=1.0e38
 			ymax=-1.0e38
-			for k in self.axes.keys():
+			for k in list(self.axes.keys()):
 				if not self.visibility[k]: continue
 				ymin=min(ymin,min(self.data[k][self.axes[k][1]]))
 				ymax=max(ymax,max(self.data[k][self.axes[k][1]]))
@@ -959,7 +914,7 @@ lc is the cursor selection point in plot coords"""
 		if force or self.climits==None or self.climits[1]<=self.climits[0] :
 			cmin=1.0e38
 			cmax=-1.0e38
-			for k in self.axes.keys():
+			for k in list(self.axes.keys()):
 				if not self.visibility[k]: continue
 				cmin=min(cmin,min(self.data[k][self.axes[k][2]]))
 				cmax=max(cmax,max(self.data[k][self.axes[k][2]]))
@@ -968,7 +923,7 @@ lc is the cursor selection point in plot coords"""
 		if force or self.slimits==None or self.slimits[1]<=self.slimits[0] :
 			smin=1.0e38
 			smax=-1.0e38
-			for k in self.axes.keys():
+			for k in list(self.axes.keys()):
 				if not self.visibility[k]: continue
 				smin=min(smin,min(self.data[k][self.axes[k][3]]))
 				smax=max(smax,max(self.data[k][self.axes[k][3]]))
@@ -993,6 +948,8 @@ class EMPolarPlot2DWidget(EMGLWidget):
 	"""
 	A QT widget for plotting ploar plots:
 	"""
+	clusterStats = QtCore.pyqtSignal(list)
+
 	def __init__(self,application=None,winid=None):
 		fmt=QtOpenGL.QGLFormat()
 		fmt.setDoubleBuffer(True);
@@ -1201,7 +1158,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 			statsArray = []
 			data = self.data["data"]
 			# Compute mean angle and radius
-			for i in xrange(len(data[0])):
+			for i in range(len(data[0])):
 				dist = data[1][i]**2 + self.clusterorigin_rad**2 - 2*data[1][i]*self.clusterorigin_rad*math.cos(data[0][i] - self.clusterorigin_theta)
 				if dist < self.clusterradius:
 					# We need to compute mean of angle
@@ -1227,7 +1184,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 			rmsdAngle = math.degrees(math.atan2(math.sqrt(varAngSin/pcount),math.sqrt(varAngCos/pcount)))
 			rmsdRad = math.sqrt(varRad/pcount)
 			#print "RMSD Angle: %3.2f, RMSD Rad %3.2f"%(rmsdAngle, rmsdRad)
-			self.emit(QtCore.SIGNAL("clusterStats"), [meanAngle,meanRad,rmsdAngle,rmsdRad,pcount])
+			self.clusterStats.emit([meanAngle, meanRad, rmsdAngle, rmsdRad, pcount])
 
 	def saveSnapShot(self, filename, format="tiff"):
 		"""
@@ -1356,7 +1313,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 		GL.glPushMatrix()
 		# overcome depth issues
 		glTranslate(0,0,5)
-		for k,s in self.shapes.items():
+		for k,s in list(self.shapes.items()):
 #			print k,s
 			s.draw(self.scr2plot)
 
@@ -1373,7 +1330,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 			if not self.xticklabels: ax.set_xticklabels([])
 			canvas=FigureCanvasAgg(fig)
 
-			for i in self.axes.keys():
+			for i in list(self.axes.keys()):
 				if not self.visibility[i]: continue
 				j=self.axes[i]
 				theta=self.data[i][self.axes[i][0]]
@@ -1401,7 +1358,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 				ax.set_rmax(self.pparm[i][7])
 
 			if self.datap:
-				for i in xrange(len(theta)):
+				for i in range(len(theta)):
 					ax.annotate(" "+str(self.datap[i]),(theta[i],r[i]),color=self.datalabelscolor,weight='bold',horizontalalignment='left')
 
 			canvas.draw()
@@ -1608,8 +1565,8 @@ class EMPlot2DStatsInsp(QtGui.QWidget):
 		self.table.setSortingEnabled(True)
 		gbl0.addWidget(self.table,10,0,2,2)
 
-		QtCore.QObject.connect(self.summary,QtCore.SIGNAL("clicked()"),self.printSummary)
-		QtCore.QObject.connect(self.run,QtCore.SIGNAL("clicked()"),self.runTest)
+		self.summary.clicked.connect(self.printSummary)
+		self.run.clicked.connect(self.runTest)
 
 		self.imgwin=None
 
@@ -1748,7 +1705,7 @@ class EMPlot2DRegrInsp(QtGui.QWidget):
 		self.regrb.setText("Regress")
 		gbl0.addWidget(self.regrb,8,0,1,2)
 
-		QtCore.QObject.connect(self.regrb,QtCore.SIGNAL("clicked()"),self.doRegression)
+		self.regrb.clicked.connect(self.doRegression)
 
 		self.imgwin=None
 
@@ -1897,9 +1854,9 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		self.wbmakeset.setText("New Sets")
 		gbl0.addWidget(self.wbmakeset,14,1)
 
-		QtCore.QObject.connect(self.kmeansb,QtCore.SIGNAL("clicked()"),self.doKMeans)
-		QtCore.QObject.connect(self.threshb,QtCore.SIGNAL("clicked()"),self.doThresh)
-		QtCore.QObject.connect(self.wbmakeset,QtCore.SIGNAL("clicked()"),self.doMakeSet)
+		self.kmeansb.clicked.connect(self.doKMeans)
+		self.threshb.clicked.connect(self.doThresh)
+		self.wbmakeset.clicked.connect(self.doMakeSet)
 
 		#QtCore.QObject.connect(self.wimgfilebut,QtCore.SIGNAL("clicked()"),self.selectImgFile)
 		#QtCore.QObject.connect(self.target(),QtCore.SIGNAL("selected"),self.imgSelect)
@@ -1938,7 +1895,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 				QtGui.QMessageBox.warning(self,"Error", "No filenames stored in {}".format(name))
 				return
 
-			for r in xrange(len(comments)):
+			for r in range(len(comments)):
 				try: imn,imf=comments[r].split(";")[:2]
 				except:
 					QtGui.QMessageBox.warning(self,"Error", "Invalid filename {} in {}, line {}".format(comments[r],name,r))
@@ -1965,7 +1922,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		nrow=len(data[0])
 
 		if axes=="all":
-			axes=range(ncol)
+			axes=list(range(ncol))
 		else:
 			try:
 				axes=[int(i) for i in axes.split(",")]
@@ -1999,7 +1956,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		resultc=[[] for j in range(nseg)]							# nseg lists of comments
 		for r in range(nrow):
 			s=imdata[r]["class_id"]
-			for c in xrange(ncol):
+			for c in range(ncol):
 				results[s][c].append(data[c][r])
 			if comments!=None: resultc[s].append(comments[r])
 
@@ -2023,7 +1980,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		nrow=len(data[0])
 
 		if axes == "all":
-			axes=range(ncol)
+			axes=list(range(ncol))
 		else:
 			try:
 				axes=[int(i) for i in axes.split(",")]
@@ -2089,7 +2046,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		resultc=[[] for j in range(nseg)]							# nseg lists of comments
 		for r in range(nrow):
 			s=imdata[r]["class_id"]
-			for c in xrange(ncol):
+			for c in range(ncol):
 				results[s][c].append(data[c][r])
 			if comments!=None: resultc[s].append(comments[r])
 
@@ -2099,7 +2056,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 
 	def imgSelect(self,sel=None):
 		if self.imgwin==None :
-			from emimagemx import EMImageMXWidget
+			from .emimagemx import EMImageMXWidget
 			self.imgwin=EMImageMXWidget()
 
 		try:
@@ -2118,11 +2075,11 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		self.imgwin.show()
 
 	def selectImgFile(self):
-		from embrowser import EMBrowserWidget
+		from .embrowser import EMBrowserWidget
 		self.browse = EMBrowserWidget(withmodal=True,multiselect=False)
 		self.browse.show()
-		QtCore.QObject.connect(self.browse, QtCore.SIGNAL("ok"),self.setImgFile)
-		QtCore.QObject.connect(self.browse, QtCore.SIGNAL("cancel"),self.canImgFile)
+		self.browse.ok.connect(self.setImgFile)
+		self.browse.cancel.connect(self.canImgFile)
 
 	def canImgFile(self,file=None):
 		return
@@ -2172,7 +2129,7 @@ class DragListWidget(QtGui.QListWidget):
 
 				if data==None:					# first good line
 					n=len(rex.findall(s))		# count numbers on the line
-					data=[ [] for i in xrange(n)]		# initialize empty data arrays
+					data=[ [] for i in range(n)]		# initialize empty data arrays
 
 				# parses out each number from each line and puts it in our list of lists
 				for i,f in enumerate(rex.findall(s)):
@@ -2222,9 +2179,9 @@ class DragListWidget(QtGui.QListWidget):
 
 		# create the string representation of the data set
 		sdata=StringIO()		# easier to write as if to a file
-		for y in xrange(len(data[0])):
+		for y in range(len(data[0])):
 			sdata.write("%1.8g"%data[axes[0]][y])
-			for x in xrange(1,len(axes)):
+			for x in range(1,len(axes)):
 				sdata.write("\t%1.8g"%data[axes[x]][y])
 			sdata.write("\n")
 
@@ -2474,23 +2431,6 @@ class EMPlot2DInspector(QtGui.QWidget):
 		self.wrescale.setText("Rescale")
 		vbl.addWidget(self.wrescale)
 
-		xiangan_liu = False
-		if xiangan_liu:
-			hbl3 = QtGui.QHBoxLayout()
-
-			self.good_button=QtGui.QPushButton(self)
-			self.good_button.setText("Good")
-			self.good_button.setCheckable(0)
-			hbl3.addWidget(self.good_button)
-
-			self.bad_button=QtGui.QPushButton(self)
-			self.bad_button.setText("Bad")
-			self.bad_button.setCheckable(0)
-			hbl3.addWidget(self.bad_button)
-			vbl0.addLayout(hbl3)
-			QtCore.QObject.connect(self.good_button,QtCore.SIGNAL("clicked(bool)"),self.on_good_button)
-			QtCore.QObject.connect(self.bad_button,QtCore.SIGNAL("clicked(bool)"),self.on_bad_button)
-
 		vbl0.addLayout(hbl)
 
 		hbl2a=QtGui.QHBoxLayout()
@@ -2567,48 +2507,48 @@ class EMPlot2DInspector(QtGui.QWidget):
 		self.statswin=None
 		self.regresswin=None
 
-		QtCore.QObject.connect(self.showslide, QtCore.SIGNAL("valueChanged"), self.selSlide)
-		QtCore.QObject.connect(self.allbut, QtCore.SIGNAL("clicked()"), self.selAll)
-		QtCore.QObject.connect(self.nonebut, QtCore.SIGNAL("clicked()"), self.selNone)
+		self.showslide.valueChanged.connect(self.selSlide)
+		self.allbut.clicked.connect(self.selAll)
+		self.nonebut.clicked.connect(self.selNone)
 
-		QtCore.QObject.connect(self.slidex, QtCore.SIGNAL("valueChanged(int)"), self.newCols)
-		QtCore.QObject.connect(self.slidey, QtCore.SIGNAL("valueChanged(int)"), self.newCols)
-		QtCore.QObject.connect(self.slidec, QtCore.SIGNAL("valueChanged(int)"), self.newCols)
-		QtCore.QObject.connect(self.slides, QtCore.SIGNAL("valueChanged(int)"), self.newCols)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("currentRowChanged(int)"),self.newSet)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("itemChanged(QListWidgetItem*)"),self.list_item_changed)
-		QtCore.QObject.connect(self.color,QtCore.SIGNAL("currentIndexChanged(QString)"),self.updPlotColor)
-		QtCore.QObject.connect(self.classb,QtCore.SIGNAL("clicked()"),self.openClassWin)
+		self.slidex.valueChanged[int].connect(self.newCols)
+		self.slidey.valueChanged[int].connect(self.newCols)
+		self.slidec.valueChanged[int].connect(self.newCols)
+		self.slides.valueChanged[int].connect(self.newCols)
+		self.setlist.currentRowChanged[int].connect(self.newSet)
+		self.setlist.itemChanged[QListWidgetItem].connect(self.list_item_changed)
+		self.color.currentIndexChanged[QString].connect(self.updPlotColor)
+		self.classb.clicked.connect(self.openClassWin)
 		#QtCore.QObject.connect(self.hmsel,QtCore.SIGNAL("clicked()"),self.updPlot)
-		QtCore.QObject.connect(self.symtog,QtCore.SIGNAL("clicked()"),self.updPlot)
+		self.symtog.clicked.connect(self.updPlot)
 		#QtCore.QObject.connect(self.hmsel,QtCore.SIGNAL("clicked()"),self.updPlotHmsel)
 		#QtCore.QObject.connect(self.hmbins,QtCore.SIGNAL("clicked()"),self.updPlotHmbins)
-		QtCore.QObject.connect(self.symsel,QtCore.SIGNAL("currentIndexChanged(QString)"),self.updPlotSymsel)
-		QtCore.QObject.connect(self.symsize,QtCore.SIGNAL("valueChanged(int)"),self.updPlotSymsize)
-		QtCore.QObject.connect(self.xlogtog,QtCore.SIGNAL("clicked()"),self.updPlot)
-		QtCore.QObject.connect(self.ylogtog,QtCore.SIGNAL("clicked()"),self.updPlot)
+		self.symsel.currentIndexChanged[QString].connect(self.updPlotSymsel)
+		self.symsize.valueChanged[int].connect(self.updPlotSymsize)
+		self.xlogtog.clicked.connect(self.updPlot)
+		self.ylogtog.clicked.connect(self.updPlot)
 		#QtCore.QObject.connect(self.zlogtog,QtCore.SIGNAL("clicked()"),self.updPlot)
-		QtCore.QObject.connect(self.lintog,QtCore.SIGNAL("clicked()"),self.updPlot)
+		self.lintog.clicked.connect(self.updPlot)
 		#QtCore.QObject.connect(self.hmtog,QtCore.SIGNAL("clicked()"),self.updPlot)
-		QtCore.QObject.connect(self.linsel,QtCore.SIGNAL("currentIndexChanged(QString)"),self.updPlotLinsel)
-		QtCore.QObject.connect(self.linwid,QtCore.SIGNAL("valueChanged(int)"),self.updPlotLinwid)
-		QtCore.QObject.connect(self.xlabel,QtCore.SIGNAL("textChanged(QString)"),self.updPlot)
-		QtCore.QObject.connect(self.ylabel,QtCore.SIGNAL("textChanged(QString)"),self.updPlot)
-		QtCore.QObject.connect(self.stats,QtCore.SIGNAL("clicked()"),self.openStatsWin)
-		QtCore.QObject.connect(self.regress,QtCore.SIGNAL("clicked()"),self.openRegrWin)
-		QtCore.QObject.connect(self.saveb,QtCore.SIGNAL("clicked()"),self.savePlot)
-		QtCore.QObject.connect(self.pdfb,QtCore.SIGNAL("clicked()"),self.savePdf)
-		QtCore.QObject.connect(self.concatb,QtCore.SIGNAL("clicked()"),self.saveConcatPlot)
-		QtCore.QObject.connect(self.wxmin,QtCore.SIGNAL("valueChanged"),self.newLimits)
-		QtCore.QObject.connect(self.wxmax,QtCore.SIGNAL("valueChanged"),self.newLimits)
-		QtCore.QObject.connect(self.wymin,QtCore.SIGNAL("valueChanged"),self.newLimits)
-		QtCore.QObject.connect(self.wymax,QtCore.SIGNAL("valueChanged"),self.newLimits)
-		QtCore.QObject.connect(self.wcmin,QtCore.SIGNAL("valueChanged"),self.newCLimits)
-		QtCore.QObject.connect(self.wcmax,QtCore.SIGNAL("valueChanged"),self.newCLimits)
-		QtCore.QObject.connect(self.wsmin,QtCore.SIGNAL("valueChanged"),self.newSLimits)
-		QtCore.QObject.connect(self.wsmax,QtCore.SIGNAL("valueChanged"),self.newSLimits)
-		QtCore.QObject.connect(self.wrescale,QtCore.SIGNAL("clicked()"),self.autoScale)
-		QtCore.QObject.connect(self.alphaslider,QtCore.SIGNAL("valueChanged"),self.updAlpha)
+		self.linsel.currentIndexChanged[QString].connect(self.updPlotLinsel)
+		self.linwid.valueChanged[int].connect(self.updPlotLinwid)
+		self.xlabel.textChanged[QString].connect(self.updPlot)
+		self.ylabel.textChanged[QString].connect(self.updPlot)
+		self.stats.clicked.connect(self.openStatsWin)
+		self.regress.clicked.connect(self.openRegrWin)
+		self.saveb.clicked.connect(self.savePlot)
+		self.pdfb.clicked.connect(self.savePdf)
+		self.concatb.clicked.connect(self.saveConcatPlot)
+		self.wxmin.valueChanged.connect(self.newLimits)
+		self.wxmax.valueChanged.connect(self.newLimits)
+		self.wymin.valueChanged.connect(self.newLimits)
+		self.wymax.valueChanged.connect(self.newLimits)
+		self.wcmin.valueChanged.connect(self.newCLimits)
+		self.wcmax.valueChanged.connect(self.newCLimits)
+		self.wsmin.valueChanged.connect(self.newSLimits)
+		self.wsmax.valueChanged.connect(self.newSLimits)
+		self.wrescale.clicked.connect(self.autoScale)
+		self.alphaslider.valueChanged.connect(self.updAlpha)
 
 		self.newSet(0)
 		self.datachange()
@@ -2618,7 +2558,7 @@ class EMPlot2DInspector(QtGui.QWidget):
 		rngn0=int(val)
 		rngn1=int(self.nbox.getValue())
 		rngstp=int(self.stepbox.getValue())
-		rng=range(rngn0,rngn0+rngstp*rngn1,rngstp)
+		rng=list(range(rngn0,rngn0+rngstp*rngn1,rngstp))
 		for i,k in enumerate(sorted(self.target().visibility.keys())) :
 			self.target().visibility[k]=i in rng
 		self.target().full_refresh()
@@ -2629,13 +2569,13 @@ class EMPlot2DInspector(QtGui.QWidget):
 		self.target().updateGL()
 
 	def selAll(self):
-		for k in self.target().visibility.keys() : self.target().visibility[k]=True
+		for k in list(self.target().visibility.keys()) : self.target().visibility[k]=True
 		self.target().full_refresh()
 		self.target().updateGL()
 		self.datachange()
 
 	def selNone(self):
-		for k in self.target().visibility.keys() : self.target().visibility[k]=False
+		for k in list(self.target().visibility.keys()) : self.target().visibility[k]=False
 		self.target().full_refresh()
 		self.target().updateGL()
 		self.datachange()
@@ -2676,10 +2616,10 @@ class EMPlot2DInspector(QtGui.QWidget):
 
 		f = open(fname,"w")
 
-		for i in xrange(0,len(lines)):
+		for i in range(0,len(lines)):
 			lines[i] = lines[i].strip()
 
-		for i in xrange(len(lines)-1,-1,-1):
+		for i in range(len(lines)-1,-1,-1):
 			if lines[i] in names:
 				lines.pop(i)
 
@@ -2699,7 +2639,7 @@ class EMPlot2DInspector(QtGui.QWidget):
 			lines = []
 		f = open(fname,"w")
 
-		for i in xrange(0,len(lines)):
+		for i in range(0,len(lines)):
 			lines[i] = lines[i].strip()
 
 		for name in names:
@@ -2749,7 +2689,7 @@ class EMPlot2DInspector(QtGui.QWidget):
 		for name in names :
 			data=self.target().data[name]
 
-			for i in xrange(len(data[0])):
+			for i in range(len(data[0])):
 				out.write("%g\t%g\n"%(data[xcol][i],data[ycol][i]))
 
 		out=None
@@ -2776,7 +2716,7 @@ class EMPlot2DInspector(QtGui.QWidget):
 			out=open(name2,"w")
 			xcol=self.slidex.value()
 			ycol=self.slidey.value()
-			for i in xrange(len(data[0])):
+			for i in range(len(data[0])):
 				out.write("%g\t%g\n"%(data[xcol][i],data[ycol][i]))
 
 			print("Wrote ",name2)
@@ -2994,7 +2934,7 @@ class EMPlot2DInspector(QtGui.QWidget):
 
 		flags= Qt.ItemFlags(Qt.ItemIsSelectable)|Qt.ItemFlags(Qt.ItemIsEnabled)|Qt.ItemFlags(Qt.ItemIsUserCheckable)|Qt.ItemFlags(Qt.ItemIsDragEnabled)
 
-		keys=self.target().data.keys()
+		keys=list(self.target().data.keys())
 		visible = self.target().visibility
 		keys.sort()
 		parms = self.target().pparm # get the colors from this

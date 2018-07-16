@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 
 #
 # Author: David Woolford (woolford@bcm.edu)
@@ -34,8 +35,8 @@ from __future__ import print_function
 
 import PyQt4
 from PyQt4 import QtCore, QtGui
-from emapplication import EMApp
-from emselector import EMBrowser
+from .emapplication import EMApp
+from .emselector import EMBrowser
 
 
 from EMAN2 import EMData
@@ -54,7 +55,7 @@ if __name__ == '__main__':
 	em_app = EMApp()
 	app = em_app
 	browser = EMBrowser()
-	QtCore.QObject.connect(browser,QtCore.SIGNAL("done"),on_done)
+	browser.done.connect(on_done)
 	em_app.show()
 	em_app.execute()
 

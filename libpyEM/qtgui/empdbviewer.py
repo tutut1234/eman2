@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 
 # Author: Muthu Alagappan, m.alagappan901@gmail.com, 07/22/09
 # Copyright (c) 2000-2006 Baylor College of Medicine
@@ -31,20 +32,22 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
+from builtins import object
 from EMAN2 import PDBReader, get_image_directory
 from libpyGLUtils2 import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from emglobjects import EM3DModel, get_default_gl_colors, EMViewportDepthTools, Camera2
+from .emglobjects import EM3DModel, get_default_gl_colors, EMViewportDepthTools, Camera2
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import Qt
 import sys
 import weakref
-from emimageutil import EMTransformPanel
+from .emimageutil import EMTransformPanel
 
 
 
-class AlaRenderer:
+class AlaRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -61,7 +64,7 @@ class AlaRenderer:
 		try: target.makeStick(res, 1, t1)
 		except: pass
 
-class ArgRenderer:
+class ArgRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -105,7 +108,7 @@ class ArgRenderer:
 		try: target.makeStick(res, t5, t7)
 		except: pass
 
-class AspRenderer:
+class AspRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -135,7 +138,7 @@ class AspRenderer:
 		try: target.makeStick(res, t2, t4)
 		except: pass
 
-class AsnRenderer:
+class AsnRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -165,7 +168,7 @@ class AsnRenderer:
 		try: target.makeStick(res, t2, t4)
 		except: pass
 
-class CysRenderer:
+class CysRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -186,7 +189,7 @@ class CysRenderer:
 		try: target.makeStick(res, t1, t2)
 		except: pass
 
-class GlyRenderer:
+class GlyRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -197,7 +200,7 @@ class GlyRenderer:
 		try: target.makeStick(res, 2, 3)
 		except: pass
 
-class GlnRenderer:
+class GlnRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -231,7 +234,7 @@ class GlnRenderer:
 		try: target.makeStick(res, t3, t5)
 		except: pass
 
-class GluRenderer:
+class GluRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -265,7 +268,7 @@ class GluRenderer:
 		try: target.makeStick(res, t3, t5)
 		except: pass
 
-class HisRenderer:
+class HisRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -305,7 +308,7 @@ class HisRenderer:
 		try: target.makeStick(res, t4, t6)
 		except: pass
 
-class IleRenderer:
+class IleRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -335,7 +338,7 @@ class IleRenderer:
 		try: target.makeStick(res, t2, t4)
 		except: pass
 
-class LeuRenderer:
+class LeuRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -365,7 +368,7 @@ class LeuRenderer:
 		try: target.makeStick(res, t2, t4)
 		except: pass
 
-class LysRenderer:
+class LysRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -399,7 +402,7 @@ class LysRenderer:
 		try: target.makeStick(res, t4, t5)
 		except: pass
 
-class MetRenderer:
+class MetRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -429,7 +432,7 @@ class MetRenderer:
 		try: target.makeStick(res, t3, t4)
 		except: pass
 
-class PheRenderer:
+class PheRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -473,7 +476,7 @@ class PheRenderer:
 		try: target.makeStick(res, t6, t7)
 		except: pass
 
-class ProRenderer:
+class ProRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -503,7 +506,7 @@ class ProRenderer:
 		try: target.makeStick(res, t3, t4)
 		except: pass
 
-class SerRenderer:
+class SerRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -524,7 +527,7 @@ class SerRenderer:
 		try: target.makeStick(res, t1, t2)
 		except: pass
 
-class ThrRenderer:
+class ThrRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -549,7 +552,7 @@ class ThrRenderer:
 		try: target.makeStick(res, t1, t3)
 		except: pass
 
-class TrpRenderer:
+class TrpRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -604,7 +607,7 @@ class TrpRenderer:
 		try: target.makeStick(res, t10, t9)
 		except: pass
 
-class TyrRenderer:
+class TyrRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -652,7 +655,7 @@ class TyrRenderer:
 		try: target.makeStick(res, t7, t8)
 		except: pass
 
-class ValRenderer:
+class ValRenderer(object):
 	def __init__(self): pass
 		
 	def __call__(self,res,target):
@@ -1005,8 +1008,8 @@ class EMPDBInspector(QtGui.QWidget):
 
 		self.setLayout(vbl)
 		
-		QtCore.QObject.connect(self.text, QtCore.SIGNAL("textEdited(const QString&)"), self.on_text_change)
-		QtCore.QObject.connect(self.browse, QtCore.SIGNAL("clicked(bool)"), self.on_browse)
+		self.text.textEdited[QString].connect(self.on_text_change)
+		self.browse.clicked[bool].connect(self.on_browse)
 	
 	def on_text_change(self,text):
 		print("Use the Browse button to update the pdb file")
@@ -1032,8 +1035,8 @@ class EMPDBInspector(QtGui.QWidget):
 		self.rotation_sliders.set_xyz_trans(x,y,z)
 
 if __name__ == '__main__':
-	from emapplication import EMApp
-	from emimage3d import EMImage3DWidget
+	from .emapplication import EMApp
+	from .emimage3d import EMImage3DWidget
 	em_app = EMApp()
 
 	window = EMImage3DWidget()

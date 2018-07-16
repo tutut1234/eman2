@@ -35,6 +35,8 @@ from __future__ import print_function
 # e2ctf.py  10/29/2008 Steven Ludtke
 # This is a program for determining CTF parameters
 
+from builtins import range
+from builtins import object
 import global_def
 from global_def import *
 
@@ -499,7 +501,7 @@ def powspec_with_bg(stackfile,radius=0,edgenorm=True,oversamp=1):
 	pav2.write_image("av2.hdf",0)
 	pva1.write_image("va1.hdf",0)
 	pva2.write_image("va2.hdf",0)
-	write_text_file([range(ys2//2+1), rot_avg_table(pav1), rot_avg_table(pva1), rot_avg_table(pav2), rot_avg_table(pva2)],"pwsa.txt")
+	write_text_file([list(range(ys2//2+1)), rot_avg_table(pav1), rot_avg_table(pva1), rot_avg_table(pav2), rot_avg_table(pva2)],"pwsa.txt")
 	#write_text_file([range(ys2//2+1), fofo[0], fofo[1], fofo[2], fofo[3], fofo[4], fofo[5]],"ipwsa.txt")
 	return (av1_1d,av2_1d,av1,av2)
 
@@ -639,7 +641,7 @@ def ctf_fit(im_1d,bg_1d,im_2d,bg_2d,voltage,cs,ac,apix,bgadj=0,autohp=False):
 	ctf=EMAN2Ctf()
 	ctf.from_dict({"defocus":1.0,"voltage":voltage,"bfactor":0.0,"cs":cs,"ampcont":ac,"apix":apix,"dsbg":ds,"background":bg_1d})
 	
-	sf = sfact([i*ds for i in xrange(ys)], "ribosome","nono")
+	sf = sfact([i*ds for i in range(ys)], "ribosome","nono")
 	#print "  SF ",sf
 	
 	if debug: dfout=open("ctf.df.txt","w")
@@ -704,22 +706,22 @@ def ctf_fit(im_1d,bg_1d,im_2d,bg_2d,voltage,cs,ac,apix,bgadj=0,autohp=False):
 		# now we try to construct a better background based on the CTF zeroes being zero
 		bg2=bg_1d[:]
 		last=0,1.0
-		for x in xrange(1,len(bg2)-1) : 
+		for x in range(1,len(bg2)-1) : 
 			if cc[x]*cc[x+1]<0 :
 				# we search +-1 point from the zero for the minimum
 				cur=(x,min(im_1d[x]/bg_1d[x],im_1d[x-1]/bg_1d[x-1],im_1d[x+1]/bg_1d[x+1]))
 				# once we have a pair of zeros we adjust the background values between
-				for xx in xrange(last[0],cur[0]):
+				for xx in range(last[0],cur[0]):
 					w=(xx-last[0])/float(cur[0]-last[0])
 					bg_1d[xx]=bg2[xx]*(cur[1]*w+last[1]*(1.0-w))
 #					print xx,"\t",(cur[1]*w+last[1]*(1.0-w)) #,"\t",cur[1],last[1]
 				last=cur
 		# cover the area from the last zero crossing to the end of the curve
-		for xx in xrange(last[0],len(bg2)):
+		for xx in range(last[0],len(bg2)):
 			bg_1d[xx]=bg2[xx]*last[1]
 
 
-	snr=[snr_safe(im_1d[i],bg_1d[i]) for i in xrange(len(im_1d))]
+	snr=[snr_safe(im_1d[i],bg_1d[i]) for i in range(len(im_1d))]
 	# This will dramatically reduce the intensity of the initial sharp peak found in almost all single particle data
 	# this applies to the SNR curve only, downweighting the importance of this section of the spectrum without actually
 	# removing the information by filtering the image data. It will, of course also impact Wiener filters.
@@ -751,8 +753,8 @@ def ctf_fit(im_1d,bg_1d,im_2d,bg_2d,voltage,cs,ac,apix,bgadj=0,autohp=False):
 	for b in range(1,len(bfs)-1):
 		ctf.bfactor=bfs[b]
 		cc=ctf.compute_1d(ys,ds,Ctf.CtfType.CTF_AMP)
-		sf = sfact([ds*i for i in xrange(len(cc))], "ribosome","original")
-		cc=[sf[i]*cc[i]**2 for i in xrange(len(cc))]
+		sf = sfact([ds*i for i in range(len(cc))], "ribosome","original")
+		cc=[sf[i]*cc[i]**2 for i in range(len(cc))]
 
 		# adjust the amplitude to match well
 		a0,a1=0,0
@@ -773,11 +775,11 @@ def ctf_fit(im_1d,bg_1d,im_2d,bg_2d,voltage,cs,ac,apix,bgadj=0,autohp=False):
 	# Stupid replication here, in a hurry
 	bb=best[1]
 	best=(best[0],bfs[best[1]])
-	for b in xrange(20):
+	for b in range(20):
 		ctf.bfactor=bfs[bb-1]*(1.0-b/20.0)+bfs[bb+1]*(b/20.0)
 		cc=ctf.compute_1d(ys,ds,Ctf.CtfType.CTF_AMP)
-		sf = sfact([i*ds for i in xrange(len(cc))], "ribosome","original")
-		cc=[sf[i]*cc[i]**2 for i in xrange(len(cc))]
+		sf = sfact([i*ds for i in range(len(cc))], "ribosome","original")
+		cc=[sf[i]*cc[i]**2 for i in range(len(cc))]
 		# adjust the amplitude to match well
 		a0,a1=0,0
 		for s in range(s0,s1): 
@@ -789,7 +791,7 @@ def ctf_fit(im_1d,bg_1d,im_2d,bg_2d,voltage,cs,ac,apix,bgadj=0,autohp=False):
 		
 		er=0
 		# compute the error
-		for s in xrange(s0,len(bg_1d)-1):
+		for s in range(s0,len(bg_1d)-1):
 			er+=(cc[s]-im_1d[s]+bg_1d[s])**2
 
 		if best[0]==0 or er<best[0] :
@@ -831,9 +833,9 @@ try:
 	from eman2_gui.valslider import ValSlider
 except:
 	print("Warning: PyQt4 must be installed to use the --gui option")
-	class dummy:
+	class dummy(object):
 		pass
-	class QWidget:
+	class QWidget(object):
 		"A dummy class for use when Qt not installed"
 		def __init__(self,parent):
 			print("Qt4 has not been loaded")
@@ -868,10 +870,10 @@ class GUIctf(QtGui.QWidget):
 		self.guiim=EMImage2DWidget(application=self.app())
 		self.guiplot=EMPlot2DWidget(application=self.app())
 		
-		self.guiim.connect(self.guiim,QtCore.SIGNAL("mousedown"),self.imgmousedown)
-		self.guiim.connect(self.guiim,QtCore.SIGNAL("mousedrag"),self.imgmousedrag)
-		self.guiim.connect(self.guiim,QtCore.SIGNAL("mouseup")  ,self.imgmouseup)
-		self.guiplot.connect(self.guiplot,QtCore.SIGNAL("mousedown"),self.plotmousedown)
+		self.guiim.mousedown.connect(self.imgmousedown)
+		self.guiim.mousedrag.connect(self.imgmousedrag)
+		self.guiim.mouseup.connect(self.imgmouseup)
+		self.guiplot.mousedown.connect(self.plotmousedown)
 		
 		self.guiim.mmode="app"
 
@@ -935,18 +937,18 @@ class GUIctf(QtGui.QWidget):
 		self.vbl.addLayout(self.hbl_buttons)
 		self.vbl.addLayout(self.hbl_buttons2)
 		
-		QtCore.QObject.connect(self.sdefocus, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sbfactor, QtCore.SIGNAL("valueChanged"), self.newCTF)
+		self.sdefocus.valueChanged.connect(self.newCTF)
+		self.sbfactor.valueChanged.connect(self.newCTF)
 #		QtCore.QObject.connect(self.sapix, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sampcont, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.svoltage, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.scs, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("currentRowChanged(int)"),self.newSet)
-		QtCore.QObject.connect(self.splotmode,QtCore.SIGNAL("currentIndexChanged(int)"),self.newPlotMode)
+		self.sampcont.valueChanged.connect(self.newCTF)
+		self.svoltage.valueChanged.connect(self.newCTF)
+		self.scs.valueChanged.connect(self.newCTF)
+		self.setlist.currentRowChanged[int].connect(self.newSet)
+		self.splotmode.currentIndexChanged[int].connect(self.newPlotMode)
 
-		QtCore.QObject.connect(self.saveparms,QtCore.SIGNAL("clicked(bool)"),self.on_save_params)
-		QtCore.QObject.connect(self.recallparms,QtCore.SIGNAL("clicked(bool)"),self.on_recall_params)
-		QtCore.QObject.connect(self.output,QtCore.SIGNAL("clicked(bool)"),self.on_output)
+		self.saveparms.clicked[bool].connect(self.on_save_params)
+		self.recallparms.clicked[bool].connect(self.on_recall_params)
+		self.output.clicked[bool].connect(self.on_output)
 		
 		self.update_data()
 		
@@ -1037,7 +1039,7 @@ class GUIctf(QtGui.QWidget):
 		val=self.curset
 		ctf=self.data[val][1]
 		ds=self.data[val][1].dsbg
-		s=[ds*i for i in xrange(len(ctf.background))]
+		s=[ds*i for i in range(len(ctf.background))]
 		if self.plotmode==1:
 			self.guiplot.set_data((s,self.data[val][2]),"fg",True,True)
 			self.guiplot.set_data((s,self.data[val][3]),"bg")
@@ -1048,11 +1050,11 @@ class GUIctf(QtGui.QWidget):
 			
 			fit=ctf.compute_1d(len(s)*2,ds,Ctf.CtfType.CTF_AMP)		# The fit curve
 			sf = sfact(s, "ribosome","nono")
-			fit=[sf[i]*fit[i]**2 for i in xrange(len(s))]		# squared * a generic structure factor
+			fit=[sf[i]*fit[i]**2 for i in range(len(s))]		# squared * a generic structure factor
 
 			# auto-amplitude for b-factor adjustment
 			rto,nrto=0,0
-			for i in xrange(int(.04/ds)+1,min(int(0.15/ds),len(s)-1)): 
+			for i in range(int(.04/ds)+1,min(int(0.15/ds),len(s)-1)): 
 				if bgsub[i]>0 : 
 					#rto+=fit[i]**2/fabs(bgsub[i])
 					#nrto+=fit[i]

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 
 #
 # Author: Steven Ludtke, 04/10/2003 (sludtke@bcm.edu)
@@ -35,19 +36,19 @@ from __future__ import print_function
 
 
 from PyQt4 import QtCore, QtGui, QtOpenGL
-from PyQt4.QtCore import Qt
+from PyQt4.QtCore import Qt, QString
 from OpenGL import GL,GLU,GLUT
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from valslider import ValSlider
+from .valslider import ValSlider
 from math import *
 from EMAN2 import *
 import sys
 import weakref
 from time import *
 
-from emglobjects import EM3DModel, EMOpenGLFlagsAndTools, Camera2, EMViewportDepthTools
-from emimageutil import ImgHistogram, EMTransformPanel
+from .emglobjects import EM3DModel, EMOpenGLFlagsAndTools, Camera2, EMViewportDepthTools
+from .emimageutil import ImgHistogram, EMTransformPanel
 
 
 MAG_INCREMENT_FACTOR = 1.1
@@ -181,7 +182,7 @@ class EM3DSliceModel(EM3DModel):
 		self.inspector.set_slice(self.zslice)
 		self.generate_current_display_list()
 		
-		from emglobjects import EM3DGLWidget
+		from .emglobjects import EM3DGLWidget
 		if isinstance(self.get_gl_widget(),EM3DGLWidget):
 			self.get_gl_widget().set_camera_defaults(self.data)
 			
@@ -479,14 +480,14 @@ class EM3DSliceInspector(QtGui.QWidget):
 		
 #		self.current_src = EULER_EMAN
 		
-		QtCore.QObject.connect(self.slice, QtCore.SIGNAL("valueChanged"), target.set_slice)
-		QtCore.QObject.connect(self.glcontrast, QtCore.SIGNAL("valueChanged"), target.set_GL_contrast)
-		QtCore.QObject.connect(self.glbrightness, QtCore.SIGNAL("valueChanged"), target.set_GL_brightness)
-		QtCore.QObject.connect(self.axisCombo, QtCore.SIGNAL("currentIndexChanged(QString)"), target.setAxis)
-		QtCore.QObject.connect(self.cubetog, QtCore.SIGNAL("toggled(bool)"), target.toggle_cube)
-		QtCore.QObject.connect(self.defaults, QtCore.SIGNAL("clicked(bool)"), self.set_defaults)
-		QtCore.QObject.connect(self.contrast, QtCore.SIGNAL("valueChanged"), self.on_contrast_changed)
-		QtCore.QObject.connect(self.bright, QtCore.SIGNAL("valueChanged"), self.on_brightness_changed)
+		self.slice.valueChanged.connect(target.set_slice)
+		self.glcontrast.valueChanged.connect(target.set_GL_contrast)
+		self.glbrightness.valueChanged.connect(target.set_GL_brightness)
+		self.axisCombo.currentIndexChanged[QString].connect(target.setAxis)
+		self.cubetog.toggled[bool].connect(target.toggle_cube)
+		self.defaults.clicked[bool].connect(self.set_defaults)
+		self.contrast.valueChanged.connect(self.on_contrast_changed)
+		self.bright.valueChanged.connect(self.on_brightness_changed)
 	
 	def on_contrast_changed(self,val):
 		if self.busy: return
@@ -595,8 +596,8 @@ class EM3DSliceInspector(QtGui.QWidget):
 		
 	
 if __name__ == '__main__':
-	from emapplication import EMApp
-	from emglobjects import EM3DGLWidget
+	from .emapplication import EMApp
+	from .emglobjects import EM3DGLWidget
 	em_app = EMApp()
 	window = EM3DGLWidget()
 	slice_model = EM3DSliceModel(window)

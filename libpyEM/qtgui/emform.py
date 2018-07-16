@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 
 #
 # Author: David Woolford 11/7/2008 (woolford@bcm.edu)
@@ -32,19 +33,21 @@ from __future__ import print_function
 #
 
 
-from emdatastorage import ParamDef
+from builtins import range
+from builtins import object
+from .emdatastorage import ParamDef
 from PyQt4 import QtGui,QtCore
 from PyQt4.QtCore import Qt
 import os
-from emselector import EMSelectorDialog
-from emapplication import get_application
+from .emselector import EMSelectorDialog
+from .emapplication import get_application
 from EMAN2 import Util, get_image_directory,file_exists,dump_aligners_list,dump_processors_list
 import EMAN2
 import weakref
 import warnings
 import time
 
-class EMButtonDialog:
+class EMButtonDialog(object):
 	'''
 	A base class for adding a dialog to the form
 	Call add_to_layout to add the button to some layout.
@@ -76,7 +79,7 @@ class EMButtonDialog:
 		else: self.button = QtGui.QPushButton(self.desc_short)
 		self.button.setToolTip(self.desc_long)
 		layout.addWidget(self.button)
-		QtCore.QObject.connect(self.button, QtCore.SIGNAL("clicked(bool)"), self.on_button)
+		self.button.clicked[bool].connect(self.on_button)
 	
 	def on_button(self,unused=None): 
 		'''
@@ -107,7 +110,7 @@ class EMOrientationDistDialog(EMButtonDialog):
 		symnumber = name_map["symnumber"][0] # assume the first entry in the list is a text entry
 		if symnumber.isEnabled(): symname += str(symnumber.text())
 		
-		from emimage3dsym import EMSymChoiceDialog
+		from .emimage3dsym import EMSymChoiceDialog
 		dialog = EMSymChoiceDialog(symname)
 		result = dialog.exec_()
 		if result != None:
@@ -244,6 +247,8 @@ class EMParamTable(list):
 			item.setSelected(True)
 
 class EMFileTable(QtGui.QTableWidget):
+	updateform = QtCore.pyqtSignal()
+
 	def __init__(self,listed_names=[],name="filenames",desc_short="File Names",desc_long="A list of file names",single_selection=False,enable_save=True):
 		'''
 		@param listed_names The names that will be listed in the first column of the table
@@ -264,7 +269,7 @@ class EMFileTable(QtGui.QTableWidget):
 		self.vartype = "file_table" # This is used by the EMFormWidget to insert this object correctly into a widget
 		self.name_conversions = {} # This is used to convert the displayed name to the real name of the file on the operating system
 		self.context_menu_data = {} # see self.get_context_menu_dict help
-		QtCore.QObject.connect(self, QtCore.SIGNAL("itemDoubleClicked(QTableWidgetItem*)"),self.table_item_double_clicked)
+		self.itemDoubleClicked[QTableWidgetItem].connect(self.table_item_double_clicked)
 
 		if enable_save: self.context_menu_data["Save As"] = EMFileTable.save_as
 		self.context_menu_refs = [] # to keep a reference to context menus related objects - somebody has to
@@ -287,7 +292,7 @@ class EMFileTable(QtGui.QTableWidget):
 	def register_animated_column(self,column_title):
 		if self.timer == None:
 			self.timer = QtCore.QTimer()
-			QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.time_out)
+			self.timer.timeout.connect(self.time_out)
 			self.timer.start(self.timer_interval)
 			
 		self.animated_columns[column_title] = -1 # -1 is a flag
@@ -295,28 +300,28 @@ class EMFileTable(QtGui.QTableWidget):
 	def time_out(self):
 		if self.busy :
 			self.timer.stop()
-			from emapplication import EMErrorMessageDisplay
+			from .emapplication import EMErrorMessageDisplay
 			EMErrorMessageDisplay.run(["Disabling updates of %s for speed" %key] )
 		
 		stime=time.time()	
 		self.busy = 1
-		for key,value in self.animated_columns.items():
+		for key,value in list(self.animated_columns.items()):
 			if value == -1:
-				for i in xrange(0,self.columnCount()):
+				for i in range(0,self.columnCount()):
 					if (str(self.horizontalHeaderItem(i).text())) == key:
 						self.animated_columns[key] = i
 						break
 				else:
-					from emapplication import EMErrorMessageDisplay
+					from .emapplication import EMErrorMessageDisplay
 					EMErrorMessageDisplay.run(["Can't animate %s" %key] )
 					self.animated_columns.pop(key)
 					self.busy = 0
 					return
 				
 		
-		for key,value in self.animated_columns.items():
+		for key,value in list(self.animated_columns.items()):
 			cd = self.column_data[value-1]
-			for i in xrange(0,len(self.listed_names)):
+			for i in range(0,len(self.listed_names)):
 				
 				item = self.item(i,value)
 				item.setText(cd.function(self.convert_text(str(self.item(i,0).text()))))
@@ -325,7 +330,7 @@ class EMFileTable(QtGui.QTableWidget):
 		
 		if time.time()-stime>0.5 :
 			self.timer.stop()
-			from emapplication import EMErrorMessageDisplay
+			from .emapplication import EMErrorMessageDisplay
 			EMErrorMessageDisplay.run(["Disabling updates of %s for speed" %key] )
 		
 	
@@ -334,7 +339,7 @@ class EMFileTable(QtGui.QTableWidget):
 		Sometimes the first column displays a shortened version of the name of a file on
 		disk, but it occurs that you want to recall the full name. This function does that
 		'''
-		for key,value in self.name_conversions.items():
+		for key,value in list(self.name_conversions.items()):
 			if value == name:
 				return key
 		return None
@@ -364,7 +369,7 @@ class EMFileTable(QtGui.QTableWidget):
 		for these "action-functions"
 		'''
 		self.context_menu_refs.append(context_menu_data)
-		for key,value in context_menu_data.items():
+		for key,value in list(context_menu_data.items()):
 			self.add_context_menu_action(key,value)
 
 	def add_column_data(self,column_data):
@@ -376,7 +381,7 @@ class EMFileTable(QtGui.QTableWidget):
 			self.column_data.append(column_data)
 		else:
 			self.column_data_refs.append(column_data)
-			for key,value in column_data.column_data.items():
+			for key,value in list(column_data.column_data.items()):
 				self.column_data.append(EMFileTable.EMColumnData(key,value,""))
 	def remove_column_data(self,column_data_name):
 		'''
@@ -483,13 +488,13 @@ class EMFileTable(QtGui.QTableWidget):
 			item.setToolTip(cd.tooltip)
 			
 			self.setHorizontalHeaderItem(col,item)
-			for i in xrange(0,len(self.listed_names)):
+			for i in range(0,len(self.listed_names)):
 				try : item = QtGui.QTableWidgetItem(cd.function(self.listed_names[i]))
 				except : item = QtGui.QTableWidgetItem("-")
 				item.setTextAlignment(QtCore.Qt.AlignHCenter)
 				item.setFlags(flag3)
 				if cd.lt_function: # This is how sort gets customized
-					import new 
+					import new
 					item.__lt__ = new.instancemethod(cd.lt_function,item,QtGui.QTableWidgetItem)
 				self.setItem(i, col, item)
 			col += 1
@@ -512,7 +517,7 @@ class EMFileTable(QtGui.QTableWidget):
 		flag3 = Qt.ItemFlags(Qt.ItemIsEnabled)
 		flag4 = Qt.ItemFlags(Qt.ItemIsEditable)
 		new_items = []
-		for i in xrange(0,len(list_of_names)):
+		for i in range(0,len(list_of_names)):
 			if self.icon != None: item = QtGui.QTableWidgetItem(self.icon,self.display_name(list_of_names[i]))
 			else: item = QtGui.QTableWidgetItem(self.display_name(list_of_names[i]))
 			item.setFlags(flag2|flag3)
@@ -527,7 +532,7 @@ class EMFileTable(QtGui.QTableWidget):
 				item.setTextAlignment(QtCore.Qt.AlignHCenter)
 				item.setFlags(flag3)
 				if cd.lt_function: # This is how sort gets customized
-					import new 
+					import new
 					item.__lt__ = new.instancemethod(cd.lt_function,item,QtGui.QTableWidgetItem)
 				self.setItem(r+i,j+1, item)
 			
@@ -548,9 +553,9 @@ class EMFileTable(QtGui.QTableWidget):
 		'''
 		menu = QtGui.QMenu()
 		cmenu = self.context_menu_data
-		for k in cmenu.keys():
+		for k in list(cmenu.keys()):
 			menu.addAction(k)
-		QtCore.QObject.connect(menu,QtCore.SIGNAL("triggered(QAction*)"),self.menu_action_triggered)
+		menu.triggered[QAction].connect(self.menu_action_triggered)
 		menu.exec_(event.globalPos())
 		event.accept()
 	
@@ -579,7 +584,7 @@ class EMFileTable(QtGui.QTableWidget):
 		@table_widget The table widget from which the entries were selected
 		'''
 		for name in list_of_names:
-			from emsave import LightEMDataSave, save_data
+			from .emsave import LightEMDataSave, save_data
 			tmp = LightEMDataSave(table_widget.convert_text(name))
 			val = save_data(tmp)
 			if val == "":
@@ -595,12 +600,12 @@ class EMFileTable(QtGui.QTableWidget):
 		for button_data in self.button_data:
 			button = QtGui.QPushButton(button_data.name,None)
 			layout.addWidget(button,0)
-			QtCore.QObject.connect(button,QtCore.SIGNAL("clicked(bool)"),button_data.function)
-			QtCore.QObject.connect(button,QtCore.SIGNAL("clicked(bool)"),self.sendupdate)
+			button.clicked[bool].connect(button_data.function)
+			button.clicked[bool].connect(self.sendupdate)
 	def sendupdate(self):
-		self.emit(QtCore.SIGNAL("updateform"))
+		self.updateform.emit()
 		
-	class EMColumnData:
+	class EMColumnData(object):
 		'''
 		This class defines what's required to add column data to the EMFileTable
 		'''
@@ -610,7 +615,7 @@ class EMFileTable(QtGui.QTableWidget):
 			self.tooltip = tooltip # The helpful tooltip
 			self.lt_function = lt_function # less than function - if specified is used as the operator< and sophisticates the sorting behavior
 			
-	class EMButtonData:
+	class EMButtonData(object):
 		'''
 		This class defines what's required to add button data to the EMFileTable
 		'''
@@ -671,14 +676,14 @@ class EM2DFileTable(EMFileTable):
 		if not file_exists(filename): return # this happens sometimes when there is filtered data but no raw data
 		get_application().setOverrideCursor(Qt.BusyCursor)
 		if self.display_module == None:
-			from emimage import EMWidgetFromFile
+			from .emimage import EMWidgetFromFile
 			self.display_module = EMWidgetFromFile(filename,get_application())
-			from emapplication import ModuleEventsManager
+			from .emapplication import ModuleEventsManager
 			self.module_events_manager = ModuleEventsManager(self,self.display_module)
 		else:
 			from EMAN2 import EMData
-			import emscene3d
-			import emdataitem3d 
+			from . import emscene3d
+			from . import emdataitem3d
 			
 			data=emdataitem3d.EMDataItem3D(filename)
 			self.display_module.insertNewNode(os.path.basename(filename), data, parentnode=self.display_module)
@@ -748,9 +753,9 @@ class EM2DStackTable(EMFileTable):
 			if not file_exists(name):
 				error("File %s doesn't exist" %s, "Error")
 				continue
-			from emimagemx import EMDataListCache
+			from .emimagemx import EMDataListCache
 			tmp = EMDataListCache(table_widget.convert_text(name))
-			from emsave import save_data
+			from .emsave import save_data
 			val = save_data(tmp)
 			if val == "":
 				break
@@ -765,12 +770,12 @@ class EM2DStackTable(EMFileTable):
 		if not file_exists(filename): return # this happens sometimes when there is filtered data but no raw data
 		get_application().setOverrideCursor(Qt.BusyCursor)
 		if self.display_module == None:
-			from emimage import EMWidgetFromFile
+			from .emimage import EMWidgetFromFile
 			self.display_module = EMWidgetFromFile(filename,get_application())
-			from emapplication import ModuleEventsManager
+			from .emapplication import ModuleEventsManager
 			self.module_events_manager = ModuleEventsManager(self,self.display_module)
 		else:
-			from emimagemx import EMLightWeightParticleCache
+			from .emimagemx import EMLightWeightParticleCache
 			self.display_module.set_data(EMLightWeightParticleCache.from_file(filename)) #  I know this looks stupid, but c'est la vie
 			self.display_module.updateGL()
 					
@@ -804,9 +809,9 @@ class EMPlotTable(EMFileTable):
 		if not file_exists(filename): return # this happens sometimes when there is filtered data but no raw data
 		get_application().setOverrideCursor(Qt.BusyCursor)
 		if self.display_module == None:
-			from emimage import EMWidgetFromFile
+			from .emimage import EMWidgetFromFile
 			self.display_module = EMWidgetFromFile(filename,get_application())
-			from emapplication import ModuleEventsManager
+			from .emapplication import ModuleEventsManager
 			self.module_events_manager = ModuleEventsManager(self,self.display_module)
 		else:
 			self.display_module.set_data_from_file(filename,True)
@@ -862,9 +867,9 @@ class EM2DStackExamineTable(EM2DStackTable):
 		if not file_exists(filename): return # this happens sometimes when there is filtered data but no raw data
 		get_application().setOverrideCursor(Qt.BusyCursor)
 		if self.display_module == None:
-			from emimagemx import EMImageMXWidget
+			from .emimagemx import EMImageMXWidget
 			self.display_module = EMImageMXWidget(None,get_application())
-			from emapplication import ModuleEventsManager
+			from .emapplication import ModuleEventsManager
 			#self.module_events_manager = ModuleEventsManager(self,self.display_module)
 		
 		self.display_module.set_data(filename,filename) #  I know this looks stupid, but c'est la vie
@@ -882,7 +887,7 @@ class EM2DStackExamineTable(EM2DStackTable):
 	def module_closed(self,module_instance):
 		self.display_module = None
 
-class EMBrowseEventHandler:
+class EMBrowseEventHandler(object):
 	'''
 	Base class for browse event handlers - came into existence because there are many different ways of handler the results
 	of the browsing operation.
@@ -894,15 +899,15 @@ class EMBrowseEventHandler:
 		warnings.warn("EMBrowseEventHandler.__init__()", DeprecationWarning)
 		self.browser = None
 		self.browser_title = "Set this to be clear"
-		QtCore.QObject.connect(browse_button,QtCore.SIGNAL("clicked(bool)"),self.browse_pressed)
+		browse_button.clicked[bool].connect(self.browse_pressed)
 		
 	def browse_pressed(self,bool):
 		if self.browser == None:
 			self.browser = EMSelectorDialog(False, False)
 			self.browser.setWindowTitle(self.browser_title)
 			self.browser.exec_()
-			QtCore.QObject.connect(self.browser,QtCore.SIGNAL("ok"),self.on_browser_ok)
-			QtCore.QObject.connect(self.browser,QtCore.SIGNAL("cancel"),self.on_browser_cancel)
+			self.browser.ok.connect(self.on_browser_ok)
+			self.browser.cancel.connect(self.on_browser_cancel)
 		else:
 			self.browser.exec_()
 
@@ -925,7 +930,7 @@ def get_table_items_in_column(table_widget,column):
 	'''
 	r = table_widget.rowCount()
 	entries = []
-	for i in xrange(0,r):
+	for i in range(0,r):
 		entries.append(table_widget.item(i,column))
 		
 	return entries
@@ -949,7 +954,7 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		self.strategy_output = {}
 		self.current_strategy = None
 		
-		for key in self.dumped_dict.keys():
+		for key in list(self.dumped_dict.keys()):
 			self.strategy_widget[key] = None
 		
 		self.current_widget = None
@@ -970,7 +975,7 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		
 		self.main_combo = QtGui.QComboBox()
 		start_idx = None
-		dumped_dict_keys = self.dumped_dict.keys()
+		dumped_dict_keys = list(self.dumped_dict.keys())
 		dumped_dict_keys.sort()
 		for i,key in enumerate(dumped_dict_keys):
 			if key == self.defaultunits:
@@ -986,7 +991,7 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		
 		self.vbl.addWidget(groupbox)
 		
-		QtCore.QObject.connect(self.main_combo, QtCore.SIGNAL("currentIndexChanged(QString)"), self.selection_changed)
+		self.main_combo.currentIndexChanged[QString].connect(self.selection_changed)
 		
 		if start_idx != None:
 			if start_idx != 0:
@@ -1023,7 +1028,7 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		widget.setToolTip(data[0])
 		params = []
 		tmp_params = []
-		for i in xrange(1,len(data),3):
+		for i in range(1,len(data),3):
 			vartype = data[i+1]
 			
 			if vartype in self.auto_incorporate:
@@ -1064,7 +1069,7 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		
 		result = self.current_strategy
 		
-		for key,val in d.items():
+		for key,val in list(d.items()):
 			if isinstance(val,str):
 				if len(val) > 0:
 					result += ":"+key+"="+val
@@ -1084,6 +1089,11 @@ class EMFormWidget(QtGui.QWidget):
 	If ok is clicked the "emform_ok" signal is emitted along with a dictionary containing all of the form entries
 	If cancel is clicked the "emform_cancel" signal is emmitted. No extra information is sent in this case
 	'''
+	emform_close = QtCore.pyqtSignal()
+	emform_ok = QtCore.pyqtSignal(dict)
+	emform_cancel = QtCore.pyqtSignal()
+	display_file = QtCore.pyqtSignal(str)
+
 	def __init__(self,params=None,disable_ok_cancel=False):
 		QtGui.QWidget.__init__(self,None)
 		self.params = params
@@ -1129,7 +1139,7 @@ class EMFormWidget(QtGui.QWidget):
 		self.plot_icon = QtGui.QIcon(get_image_directory() + "/plot.png")
 	
 	def closeEvent(self, event):
-		self.emit(QtCore.SIGNAL("emform_close"))
+		self.emform_close.emit()
 		QtGui.QWidget.closeEvent(self, event)
 	
 	def incorporate_params(self,params,layout):
@@ -1318,16 +1328,16 @@ class EMFormWidget(QtGui.QWidget):
 		cancel_button = QtGui.QPushButton("Cancel")
 		hbl.addWidget(cancel_button,0)
 		layout.addLayout(hbl)
-		QtCore.QObject.connect(ok_button,QtCore.SIGNAL("clicked(bool)"),self.ok_pressed)
-		QtCore.QObject.connect(cancel_button,QtCore.SIGNAL("clicked(bool)"),self.cancel_pressed)
+		ok_button.clicked[bool].connect(self.ok_pressed)
+		cancel_button.clicked[bool].connect(self.cancel_pressed)
 		
 	def ok_pressed(self,bool):
 		ret = {}
 		for output in self.output_writers: output.write_data(ret)
-		self.emit(QtCore.SIGNAL("emform_ok"),ret)
+		self.emform_ok.emit(ret)
 		
 	def cancel_pressed(self,bool):
-		self.emit(QtCore.SIGNAL("emform_cancel"))
+		self.emform_cancel.emit()
 
 
 	def update_texture(self):
@@ -1335,10 +1345,10 @@ class EMFormWidget(QtGui.QWidget):
 
 
 	def display_file(self,filename):
-		self.emit(QtCore.SIGNAL("display_file"),filename)
+		self.display_file.emit(filename)
 
 
-class IncorpStrategy:
+class IncorpStrategy(object):
 	def __init__(self): pass
 	def __call__(self,strategy,layout,target=None):
 		num_choices = None
@@ -1346,7 +1356,7 @@ class IncorpStrategy:
 		layout.addWidget(strategy)
 		if target != None: target.output_writers.append(strategy)
 		
-class IncorpButtonDialog:
+class IncorpButtonDialog(object):
 	def __init__(self): pass
 	def __call__(self,buttondialog,layout,target):
 		buttondialog.set_target(target)
@@ -1354,7 +1364,7 @@ class IncorpButtonDialog:
 		target.event_handlers.append(buttondialog)    
 		
 
-class IncorpFileTable:
+class IncorpFileTable(object):
 	def __init__(self): pass
 	def __call__(self,paramtable,layout,target=None):
 		num_choices = None
@@ -1381,7 +1391,7 @@ class IncorpFileTable:
 		layout.addWidget(groupbox,10)
 		if target != None: target.output_writers.append(EMFileTableWriter(paramtable.name,paramtable,str))
 
-class IncorpParamTable:
+class IncorpParamTable(object):
 	def __init__(self): pass
 	def __call__(self,paramtable,layout,target):
 	
@@ -1441,24 +1451,24 @@ class IncorpParamTable:
 		
 		target.name_widget_map[paramtable.name] = groupbox
 		
-class IncorpStringList:
+class IncorpStringList(object):
 	def __init__(self): pass
 	def __call__(self,param,layout,target):
 		target.incorporate_list(param,layout,target,str)
 
-class IncorpFloatList:
+class IncorpFloatList(object):
 	def __init__(self): pass
 	def __call__(self,param,layout,target):
 		target.incorporate_list(param,layout,target,float)
 
-class IncorpIntList:
+class IncorpIntList(object):
 	def __init__(self): pass
 	def __call__(self,param,layout,target):
 		target.incorporate_list(param,layout,target,int)
 
 
 
-class IncorpBool:
+class IncorpBool(object):
 	def __init__(self): pass
 	def __call__(self,param,layout,target):
 		hbl=QtGui.QHBoxLayout()
@@ -1475,7 +1485,7 @@ class IncorpBool:
 		if hasattr(param,"dependents"):
 			target.event_handlers.append(BoolDependentsEventHandler(target,check_box,param.dependents,hasattr(param,"invert_logic") and param.invert_logic))    
 
-class IncorpString:
+class IncorpString(object):
 	def __init__(self): pass
 	def __call__(self,param,layout,target):
 		if param.choices != None and len(param.choices) > 1:
@@ -1494,7 +1504,7 @@ class IncorpString:
 			target.output_writers.append(StringParamWriter(param.name,line_edit))
 			target.name_widget_map[param.name] =  [line_edit,label]
 	
-class IncorpFloat:
+class IncorpFloat(object):
 	def __init__(self): pass
 	def __call__(self,param,layout,target):
 		if param.choices != None and len(param.choices) > 1:
@@ -1515,7 +1525,7 @@ class IncorpFloat:
 			target.output_writers.append(FloatParamWriter(param.name,line_edit))
 			target.name_widget_map[param.name] = [line_edit,label]
 	
-class IncorpInt:
+class IncorpInt(object):
 	def __init__(self): pass
 	def __call__(self,param,layout,target):
 		if param.choices != None and len(param.choices) > 1:
@@ -1537,7 +1547,7 @@ class IncorpInt:
 			target.output_writers.append(IntParamWriter(param.name,line_edit))
 			target.name_widget_map[param.name] = [line_edit,label]
 	
-class IncorpText:
+class IncorpText(object):
 	def __init__(self): pass
 	def __call__(self,param,layout,target):
 #			hbl=QtGui.QHBoxLayout()
@@ -1561,7 +1571,7 @@ class IncorpText:
 		target.output_writers.append(TextParamWriter(param.name,text_edit))	
 		#target.name_widget_map[param.name] = groupbox
 	
-class IncorpUrl:
+class IncorpUrl(object):
 	def __init__(self): pass
 	def __call__(self,param,layout,target):
 		vbl=QtGui.QVBoxLayout()
@@ -1601,7 +1611,7 @@ class IncorpUrl:
 		target.output_writers.append(UrlParamWriter(param.name,text_edit))
 		target.name_widget_map[param.name] = groupbox
 
-class IncorpDict:
+class IncorpDict(object):
 	def __init__(self): pass
 	def __call__(self,param,layout,target):
 		'''
@@ -1613,7 +1623,7 @@ class IncorpDict:
 		hbl.setMargin(0)
 		hbl.setSpacing(2)
 		
-		keys = param.choices.keys()
+		keys = list(param.choices.keys())
 		keys.sort() # yes this is somewhat restrictive but it was my only way around something
 #		label = QtGui.QLabel(param.desc_short+":",target)
 #		label.setToolTip(param.desc_long)
@@ -1649,7 +1659,7 @@ class IncorpDict:
 		
 		target.name_widget_map[param.name] = groupbox
 
-class IncorpChoice:
+class IncorpChoice(object):
 	def __init__(self): pass
 	def __call__(self,param,layout,target):
 	
@@ -1669,7 +1679,7 @@ class IncorpChoice:
 		
 		target.name_widget_map[param.name] = [groupbox,buttons]
 
-class EMParamTableWriter:
+class EMParamTableWriter(object):
 	def __init__(self,param_name,table_widget,type_of):
 		self.param_name = param_name
 		self.table_widget = table_widget
@@ -1679,7 +1689,7 @@ class EMParamTableWriter:
 		sel = [self.type_of(item.text()) for item in self.table_widget.selectedItems()]
 		dict[self.param_name] = sel
 		
-class EMFileTableWriter:
+class EMFileTableWriter(object):
 	def __init__(self,param_name,table_widget,type_of=str):
 		self.param_name = param_name
 		self.table_widget = table_widget
@@ -1689,7 +1699,7 @@ class EMFileTableWriter:
 		sel = [self.table_widget.convert_text(self.type_of(item.text())) for item in self.table_widget.selectedItems()]
 		dict[self.param_name] = sel
 
-class BoolParamWriter:
+class BoolParamWriter(object):
 	def __init__(self,param_name,check_box):
 		self.param_name = param_name
 		self.check_box = check_box
@@ -1697,7 +1707,7 @@ class BoolParamWriter:
 	def write_data(self,dict):
 		dict[self.param_name] = bool(self.check_box.isChecked())
 
-class FloatChoiceParamWriter:
+class FloatChoiceParamWriter(object):
 	def __init__(self,param_name,combo):
 		self.param_name = param_name
 		self.combo = combo
@@ -1708,7 +1718,7 @@ class FloatChoiceParamWriter:
 			dict[self.param_name] = float(text)
 		# else the key is not written to the dictionary!
 
-class IntChoiceParamWriter:
+class IntChoiceParamWriter(object):
 	def __init__(self,param_name,combo):
 		self.param_name = param_name
 		self.combo = combo
@@ -1719,7 +1729,7 @@ class IntChoiceParamWriter:
 			dict[self.param_name] = int(text)
 		# else the key is not written to the dictionary!
 
-class StringChoiceParamWriter:
+class StringChoiceParamWriter(object):
 	def __init__(self,param_name,combo):
 		self.param_name = param_name
 		self.combo = combo
@@ -1728,7 +1738,7 @@ class StringChoiceParamWriter:
 		dict[self.param_name] = str(self.combo.currentText())
 
 
-class ListWidgetParamWriter:
+class ListWidgetParamWriter(object):
 	def __init__(self,param_name,list_widget,type_of):
 		self.param_name = param_name
 		self.list_widget = list_widget
@@ -1741,7 +1751,7 @@ class ListWidgetParamWriter:
 			
 		dict[self.param_name] = choices
 
-class StringParamWriter:
+class StringParamWriter(object):
 	def __init__(self,param_name,line_edit):
 		self.param_name = param_name
 		self.line_edit = line_edit
@@ -1750,7 +1760,7 @@ class StringParamWriter:
 		dict[self.param_name] = str(self.line_edit.text())
 
 
-class FloatParamWriter:
+class FloatParamWriter(object):
 	def __init__(self,param_name,line_edit):
 		self.param_name = param_name
 		self.line_edit = line_edit
@@ -1761,7 +1771,7 @@ class FloatParamWriter:
 			dict[self.param_name] = float(text)
 		# else the key is not written to the dictionary!
 
-class IntParamWriter:
+class IntParamWriter(object):
 	def __init__(self,param_name,line_edit):
 		self.param_name = param_name
 		self.line_edit = line_edit
@@ -1771,7 +1781,7 @@ class IntParamWriter:
 		if len(text) != 0:
 			dict[self.param_name] = int(text)
 		# else the key is not written to the dictionary!
-class TextParamWriter:
+class TextParamWriter(object):
 	def __init__(self,param_name,text_edit):
 		self.param_name = param_name
 		self.text_edit = text_edit
@@ -1779,7 +1789,7 @@ class TextParamWriter:
 	def write_data(self,dict):
 		dict[self.param_name] = str(self.text_edit.toPlainText())
 		
-class UrlParamWriter:
+class UrlParamWriter(object):
 	def __init__(self,param_name,text_edit):
 		self.param_name = param_name
 		self.text_edit = text_edit
@@ -1797,7 +1807,7 @@ class UrlParamWriter:
 			strings.pop(i)
 		dict[self.param_name] = strings
 
-class DictParamWriter:
+class DictParamWriter(object):
 	def __init__(self,param,combo1,combo2):
 		self.param = param
 		self.combo1 = combo1
@@ -1822,7 +1832,7 @@ class DictParamWriter:
 	
 		# get value1
 		idx1 = self.combo1.currentIndex()
-		keys = self.param.choices.keys()
+		keys = list(self.param.choices.keys())
 		keys.sort() # because it was sorted above 
 		value1 = keys[idx1] # this preserves the type - overkill, well, foolproof, yes a bit more so
 		
@@ -1833,7 +1843,7 @@ class DictParamWriter:
 		dict[key1] = value1
 		dict[key2] = value2
 		
-class ChoiceParamWriter:
+class ChoiceParamWriter(object):
 	def __init__(self,param_name,list_radio_buttons,correct_type):
 		self.param_name = param_name
 		self.list_radio_buttons = list_radio_buttons
@@ -1845,7 +1855,7 @@ class ChoiceParamWriter:
 				choice = self.correct_type(str(button.text()))
 		dict[self.param_name] = choice
 
-class EMParamTableEventHandler:
+class EMParamTableEventHandler(object):
 	'''
 	handles events for param tables, atm this is only the double click event, which can
 	be used to trigger image display, for example
@@ -1855,7 +1865,7 @@ class EMParamTableEventHandler:
 		self.table_widget = table_widget
 		table_widget.contextMenuEvent = self.contextMenuEvent
 				
-		QtCore.QObject.connect(table_widget, QtCore.SIGNAL("itemDoubleClicked(QTableWidgetItem*)"),self.table_item_double_clicked)
+		table_widget.itemDoubleClicked[QTableWidgetItem].connect(self.table_item_double_clicked)
 		
 	def table_item_double_clicked(self,item):
 		if hasattr(self.table_widget,"convert_text"):
@@ -1865,9 +1875,9 @@ class EMParamTableEventHandler:
 	def contextMenuEvent(self,event):
 		if hasattr(self.table_widget,"context_menu"):
 			menu = QtGui.QMenu()
-			for k in self.table_widget.context_menu.keys():
+			for k in list(self.table_widget.context_menu.keys()):
 				menu.addAction(k)
-			QtCore.QObject.connect(menu,QtCore.SIGNAL("triggered(QAction*)"),self.menu_action_triggered)
+			menu.triggered[QAction].connect(self.menu_action_triggered)
 			menu.exec_(event.globalPos())
 	
 	def menu_action_triggered(self,action):
@@ -1908,7 +1918,7 @@ class UrlEventHandler(EMBrowseEventHandler):
 		EMBrowseEventHandler.__init__(self,browse_button)
 		self.browser_title = title
 		
-		QtCore.QObject.connect(clear_button,QtCore.SIGNAL("clicked(bool)"),self.clear_pressed)
+		clear_button.clicked[bool].connect(self.clear_pressed)
 		
 	def on_browser_ok(self,stringlist):
 		new_string = str(self.text_edit.toPlainText())
@@ -1927,7 +1937,7 @@ class UrlEventHandler(EMBrowseEventHandler):
 		#self.target().update_texture()# in the desktop the texture would have to be updated
 		self.text_edit.clear()
 		
-class DictEventHandler:
+class DictEventHandler(object):
 	'''
 	Dictionaries are presented as two combo boxes - when the first combo box changes the values in the second box are updated (according to what is in the dictionary)
 	'''
@@ -1936,11 +1946,11 @@ class DictEventHandler:
 		self.combo1 = combo1
 		self.combo2 = combo2
 		
-		QtCore.QObject.connect(self.combo1, QtCore.SIGNAL("currentIndexChanged(int)"),self.combo1_index_changed)
+		self.combo1.currentIndexChanged[int].connect(self.combo1_index_changed)
 	
 	def combo1_index_changed(self,i):
 		
-		keys = self.dict.keys()
+		keys = list(self.dict.keys())
 		keys.sort() # because the keys are sorted in the display
 		key = keys[i]
 		values = self.dict[key]
@@ -1949,7 +1959,7 @@ class DictEventHandler:
 		for v in values:
 			self.combo2.addItem(str(v))
 			
-class BoolDependentsEventHandler:
+class BoolDependentsEventHandler(object):
 	'''
 	This event handler works on the assumption that a boolean type is always a checkbox.
 	If the boolean types also has the "dependents" attribute, then toggling the checkbox will enable/disable the dependent widgets
@@ -1962,7 +1972,7 @@ class BoolDependentsEventHandler:
 		self.checkbox = checkbox
 		self.dependents = dependents # a list of depent names (ParamDef.name)
 		self.invert_logic = invert_logic
-		QtCore.QObject.connect(self.checkbox, QtCore.SIGNAL("stateChanged(int)"),self.checkbox_state_changed)
+		self.checkbox.stateChanged[int].connect(self.checkbox_state_changed)
 		
 	def checkbox_state_changed(self,integer=0):
 		name_map = self.target().name_widget_map
@@ -2116,19 +2126,17 @@ def on_cancel():
 # This is just for testing, of course
 if __name__ == '__main__':
 	
-	from emapplication import EMApp
+	from .emapplication import EMApp
 	em_app = EMApp()
 	window = EMFormWidget(params=get_example_form_params())
 	window.setWindowTitle("A test form")
-	QtCore.QObject.connect(window,QtCore.SIGNAL("emform_ok"),on_ok)
-	QtCore.QObject.connect(window,QtCore.SIGNAL("emform_cancel"),on_cancel)
+	window.emform_ok.connect(on_ok)
+	window.emform_cancel.connect(on_cancel)
 	
 	window2= EMTableFormWidget(params=get_example_table_form_params())
 	window2.setWindowTitle("A test form")
-	QtCore.QObject.connect(window2,QtCore.SIGNAL("emform_ok"),on_ok)
-	QtCore.QObject.connect(window2,QtCore.SIGNAL("emform_cancel"),on_cancel)
+	window2.emform_ok.connect(on_ok)
+	window2.emform_cancel.connect(on_cancel)
 	
 	em_app.show()
 	em_app.execute()
-	
-	

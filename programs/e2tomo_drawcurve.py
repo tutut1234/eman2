@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # Muyuan Chen 2017-03
+from __future__ import print_function
+from builtins import range
 from EMAN2 import *
 from EMAN2_utils import *
 import numpy as np
@@ -35,7 +37,7 @@ def main():
 	E2end(logid)
 
 def run(cmd):
-	print cmd
+	print(cmd)
 	launch_childprocess(cmd)
 
 class Contour(EMShape):
@@ -93,7 +95,7 @@ class Contour(EMShape):
 				dst[-1]=d1*3
 
 				mi=np.argmin(dst)
-				print mi, len(pts)
+				print(mi, len(pts))
 				#ci=pts[mi, 3]
 				if mi==0:
 					pts=np.vstack([ np.append(newpt, ci), pts])
@@ -158,7 +160,7 @@ class Contour(EMShape):
 		if pts[ii,2]==mi: return
 		last=pts[ii,2]
 		pts=pts[pts[:,2]==last]
-		print mi, last, pts.shape
+		print(mi, last, pts.shape)
 		img=self.image.data.numpy()
 
 		vec=[]
@@ -291,8 +293,8 @@ class EMDrawWindow(QtGui.QMainWindow):
 		self.imgview.shapes = {0:self.contour}
 
 
-		QtCore.QObject.connect(self.imgview,QtCore.SIGNAL("mouseup"),self.mouseup  )
-		QtCore.QObject.connect(self.imgview,QtCore.SIGNAL("keypress"),self.key_press)
+		self.imgview.mouseup.connect(self.on_mouseup)
+		self.imgview.keypress.connect(self.key_press)
 
 		glEnable(GL_POINT_SMOOTH)
 		glEnable( GL_LINE_SMOOTH );
@@ -318,7 +320,7 @@ class EMDrawWindow(QtGui.QMainWindow):
 			self.imgview.shapechange=1
 			self.imgview.updateGL()
 
-	def mouseup(self, event):
+	def on_mouseup(self, event):
 		x,y=self.imgview.scr_to_img((event.x(),event.y()))
 		if not event.button()&Qt.LeftButton:
 			return
@@ -345,10 +347,10 @@ class EMDrawWindow(QtGui.QMainWindow):
 				if res[ii]<20:
 					#### select contour
 					ci=self.contour.points[ii][3]
-					print 'select contour {}'.format(ci)
+					print('select contour {}'.format(ci))
 					self.contour.select=ci
 				else:
-					print 'new contour'
+					print('new contour')
 					self.contour.add_point([x, y], True)
 
 
@@ -360,4 +362,3 @@ class EMDrawWindow(QtGui.QMainWindow):
 
 if __name__ == '__main__':
 	main()
-

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 
 #
 # Author: Steven Ludtke, 04/10/2003 (sludtke@bcm.edu)
@@ -34,12 +35,13 @@ from __future__ import print_function
 
 
 
+from builtins import range
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from PyQt4.QtCore import Qt
 from OpenGL import GL,GLU,GLUT
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from valslider import ValSlider
+from .valslider import ValSlider
 from math import *
 from EMAN2 import *
 import sys
@@ -48,8 +50,8 @@ from weakref import WeakKeyDictionary
 import weakref
 from time import *
 
-from emglobjects import EM3DModel, EMViewportDepthTools, Camera2, Camera, EMOpenGLFlagsAndTools
-from emimageutil import ImgHistogram, EMTransformPanel
+from .emglobjects import EM3DModel, EMViewportDepthTools, Camera2, Camera, EMOpenGLFlagsAndTools
+from .emimageutil import ImgHistogram, EMTransformPanel
 
 MAG_INCREMENT_FACTOR = 1.1
 
@@ -157,7 +159,7 @@ class EMVolumeModel(EM3DModel):
 		
 		self.update_data_and_texture()
 		
-		from emglobjects import EM3DGLWidget
+		from .emglobjects import EM3DGLWidget
 		if isinstance(self.get_gl_widget(),EM3DGLWidget):
 			self.get_gl_widget().set_camera_defaults(self.data)
 		
@@ -611,13 +613,13 @@ class EMVolumeInspector(QtGui.QWidget):
 		
 		self.n3_showing = False
 		
-		QtCore.QObject.connect(self.contrast, QtCore.SIGNAL("valueChanged"), target.set_contrast)
-		QtCore.QObject.connect(self.glcontrast, QtCore.SIGNAL("valueChanged"), target.set_GL_contrast)
-		QtCore.QObject.connect(self.glbrightness, QtCore.SIGNAL("valueChanged"), target.set_GL_brightness)
-		QtCore.QObject.connect(self.bright, QtCore.SIGNAL("valueChanged"), target.set_brightness)
-		QtCore.QObject.connect(self.cubetog, QtCore.SIGNAL("toggled(bool)"), target.toggle_cube)
-		QtCore.QObject.connect(self.defaults, QtCore.SIGNAL("clicked(bool)"), self.set_defaults)
-		QtCore.QObject.connect(self.smp, QtCore.SIGNAL("valueChanged(int)"), target.set_texture_sample)
+		self.contrast.valueChanged.connect(target.set_contrast)
+		self.glcontrast.valueChanged.connect(target.set_GL_contrast)
+		self.glbrightness.valueChanged.connect(target.set_GL_brightness)
+		self.bright.valueChanged.connect(target.set_brightness)
+		self.cubetog.toggled[bool].connect(target.toggle_cube)
+		self.defaults.clicked[bool].connect(self.set_defaults)
+		self.smp.valueChanged[int].connect(target.set_texture_sample)
 	
 	def update_rotations(self,t3d):
 		self.rotation_sliders.update_rotations(t3d)
@@ -718,8 +720,8 @@ class EMVolumeInspector(QtGui.QWidget):
 
 
 if __name__ == '__main__':
-	from emapplication import EMApp
-	from emglobjects import EM3DGLWidget
+	from .emapplication import EMApp
+	from .emglobjects import EM3DGLWidget
 	
 	em_app = EMApp()
 	window = EM3DGLWidget()

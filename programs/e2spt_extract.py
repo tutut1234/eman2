@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # Muyuan Chen 2018-04
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 from EMAN2 import *
 import numpy as np
-import Queue
+import queue
 import threading
 
 
@@ -35,10 +39,12 @@ def main():
 	
 	pfile=args[0]
 	
-	################# reading alignment info...
+	#### reading alignment info...
 	js=js_open_dict(info_name(pfile))
 	ttparams=np.array(js["tlt_params"])
-	if options.noctf==False and js.has_key("defocus"):
+	
+	if options.noctf==False and "defocus" in js:
+		#### read ctf info when exist
 		defocus=np.array(js["defocus"])
 		phase=np.array(js["phase"])
 		voltage=float(js["voltage"])
@@ -64,7 +70,7 @@ def main():
 	print("Scaling factor: {:.1f}, y-tilt: {:.1f}, z-shift: {:d}.".format(scale, options.ytilt, int(zshift)))
 	
 	
-	############## reading particle location
+	#### reading particle location from json file corresponding to the tomogram input
 	ptclpos=[]
 	nptcl=EMUtil.get_image_count(pfile)
 	e=EMData(pfile, 0, True)
@@ -72,10 +78,10 @@ def main():
 		print("Reading particle location from a tomogram...")
 		js=js_open_dict(info_name(pfile))
 		towrite=[]
-		if js.has_key("class_list") and js.has_key("boxes_3d"):
+		if "class_list" in js and "boxes_3d" in js:
 			clslst=js["class_list"]
 			boxes=js["boxes_3d"]
-			for ky in clslst.keys():
+			for ky in list(clslst.keys()):
 				val=clslst[ky]
 				if options.label:
 					if str(val["name"])!=options.label:
@@ -91,7 +97,7 @@ def main():
 				else:
 					sz=int(np.round(options.boxsz/2.*scale))
 				towrite.append((bxs, outname, sz))
-				print("{} : {} boxes, box size {}".format(val["name"], len(bxs), int(sz))) 
+				print("{} : {} boxes, unbinned box size {}".format(val["name"], len(bxs), int(sz*2))) 
 		
 		if len(towrite)==0:
 			print("No particles. exit..")
@@ -127,7 +133,7 @@ def main():
 	
 	
 	print("Reading tilt series file: {}".format(tfile))
-	   
+	#### make sure this works on image stack or mrc volume
 	img=EMData(tfile,0)
 	if img["nz"]>1:
 		imgs=[img.get_clip(Region(0, 0, i, img["nx"], img["ny"], 1)).copy() for i in range(img["nz"])]
@@ -161,7 +167,7 @@ def main():
 		try: os.remove(options.output2d)
 		except: pass
 
-		jsd=Queue.Queue(0)
+		jsd=queue.Queue(0)
 		jobs=[]
 		
 		batchsz=4
@@ -171,7 +177,7 @@ def main():
 			ctf=[]
 			
 		for tid in range(0,nptcl,batchsz):
-			ids=range(tid, min(tid+batchsz, nptcl))
+			ids=list(range(tid, min(tid+batchsz, nptcl)))
 			jobs.append([jsd, ids, imgs, ttparams, ptclpos, options, ctf])
 		
 		
@@ -183,7 +189,6 @@ def main():
 			if thrtolaunch<len(thrds):
 				while (threading.active_count()==options.threads+tsleep ) : 
 					#print threading.active_count(), options.threads, tsleep, thrtolaunch, len(thrds)
-					
 					time.sleep(.1)
 				thrds[thrtolaunch].start()
 				thrtolaunch+=1
@@ -275,7 +280,7 @@ def make3d(jsd, ids, imgs, ttparams, ppos, options, ctfinfo=[]):
 				e=fft1.do_ift()
 				
 				if options.dotest:
-					print tpm[3], pz, dz, defocus[nid]-dz
+					print(tpm[3], pz, dz, defocus[nid]-dz)
 			
 
 			xform=Transform({"type":"xyz","ytilt":tpm[3],"xtilt":tpm[4], "ztilt":tpm[2], "tx":txdf, "ty":tydf})
@@ -319,10 +324,10 @@ def get_xf_pos(tpm, pk):
 
 
 def run(cmd):
-	print cmd
+	print(cmd)
 	launch_childprocess(cmd)
 	
 	
 if __name__ == '__main__':
 	main()
-	
+

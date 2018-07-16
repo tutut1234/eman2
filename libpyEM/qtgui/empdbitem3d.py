@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 
 #
 # Author: James Michael Bell, 2016 (jmbell@bcm.edu)
@@ -32,9 +33,10 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307 USA
 #
 
+from builtins import range
 from EMAN2 import *
-from emglobjects import get_default_gl_colors
-from emitem3d import EMItem3D, EMItem3DInspector, drawBoundingBox
+from .emglobjects import get_default_gl_colors
+from .emitem3d import EMItem3D, EMItem3DInspector, drawBoundingBox
 from libpyGLUtils2 import GLUtil
 import os
 import sys
@@ -73,7 +75,7 @@ class EMPDBItem3D(EMItem3D):
 		EMItem3D.get_transformlayout(grid, 4, attribdict)
 		pdbwidget.setLayout(grid)
 		EMPDBItem3D.attribdict = attribdict
-		QtCore.QObject.connect(browse_button, QtCore.SIGNAL('clicked()'), EMPDBItem3D._on_browse)
+		browse_button.clicked.connect(EMPDBItem3D._on_browse)
 		return pdbwidget
 	
 	@staticmethod
@@ -201,7 +203,7 @@ class EMPDBItem3DInspector(EMItem3DInspector):
 		self.file_path_label.setFont(lfont)
 		gridbox.addWidget(self.file_path_label, 3, 0)
 		self.file_browse_button.clicked.connect(self.onFileBrowse)
-		QtCore.QObject.connect(self.data_checkbox, QtCore.SIGNAL("stateChanged(int)"), self.onBBoxChange)
+		self.data_checkbox.stateChanged[int].connect(self.onBBoxChange)
 		# Set to default, but run only once and not in each base class
 		if type(self) == EMPDBItem3DInspector: self.updateItemControls()
 
@@ -1179,7 +1181,7 @@ class EMSphereModel(EMPDBItem3D):
 		if self.dl == None: #self.dl is the display list, every time a new file is added, this is changed back to None
 			self.dl=glGenLists(1)
 			glNewList(self.dl,GL_COMPILE)
-			for i in xrange(self.natoms):
+			for i in range(self.natoms):
 				glPushMatrix()
 				glTranslate(self.coords[i][0],self.coords[i][1],self.coords[i][2])
 				glScale(self.vwr[i],self.vwr[i],self.vwr[i])
@@ -1207,10 +1209,9 @@ class EMSphereModelInspector(EMPDBItem3DInspector):
 
 if __name__ == '__main__' :
 	print("WARNING: This module is not designed to be run as a program. The browser you see is for testing purposes.")
-	from emapplication import EMApp
-	from embrowser import EMBrowserWidget
+	from .emapplication import EMApp
+	from .embrowser import EMBrowserWidget
 	app = EMApp()
 	browser = EMBrowserWidget(withmodal = False, multiselect = False)
 	browser.show()
 	app.execute()
-	

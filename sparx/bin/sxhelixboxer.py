@@ -32,6 +32,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from EMAN2 import get_image_directory, Transform, Region, EMANVERSION, EMData, E2init, E2end, EMArgumentParser
 from EMAN2db import db_open_dict, db_check_dict, db_close_dict
 from math import *
@@ -482,7 +483,7 @@ def save_particle_coords(helix_particle_coords_dict, output_filepath, micrograph
 	out_file.write("#micrograph: " + micrograph_filepath + "\n")
 	out_file.write("#segment length: " + str(ptcl_length) + "\n")
 	out_file.write("#segment width: " + str(ptcl_width) + "\n")
-	for helix_coords in helix_particle_coords_dict.keys():
+	for helix_coords in list(helix_particle_coords_dict.keys()):
 		out_file.write("#helix: " + str(tuple(helix_coords[0:2])) + "," + str(tuple(helix_coords[2:4])) + "," + str(helix_coords[4]) + "\n")
 		particle_list = helix_particle_coords_dict[helix_coords]
 		for ptcl_center in particle_list:
@@ -718,7 +719,7 @@ def db_save_particles(micrograph_filepath, ptcl_filepath = None, px_dst = None, 
 			helix_particles = get_rotated_particles(micrograph, coords, px_dst, px_length, px_width, gridding, mic_name = micrograph_filename)
 		else:
 			helix_particles = get_unrotated_particles(micrograph, coords, px_dst, px_length, px_width,mic_name = micrograph_filename)
-		for ii in xrange(len(helix_particles)):
+		for ii in range(len(helix_particles)):
 			(helix_particles[ii]).set_attr("filament", micrograph_filename+"%04d"%nhelix)
 		nhelix = nhelix + 1
 		all_particles.append(helix_particles)
@@ -754,12 +755,12 @@ if ENABLE_GUI:
 			self.ptcls_coords_line_edit.setText( os.path.join(self.default_dir, self.micrograph_name + "_helix_ptcl_coords.txt") )
 			self.ptcls_images_line_edit.setText( os.path.join(self.default_dir, self.micrograph_name + "_helix_ptcl."+saveext) )
 
-			self.connect(self.helices_coords_browse_button, QtCore.SIGNAL("clicked()"), self.browse_helix_coords)
-			self.connect(self.helices_images_browse_button, QtCore.SIGNAL("clicked()"), self.browse_helix_images)
-			self.connect(self.ptcls_coords_browse_button, QtCore.SIGNAL("clicked()"), self.browse_ptcl_coords)
-			self.connect(self.ptcls_images_browse_button, QtCore.SIGNAL("clicked()"), self.browse_ptcl_images)
-			self.connect(self.button_box, QtCore.SIGNAL("accepted()"), self.save)
-			self.connect(self.button_box, QtCore.SIGNAL("rejected()"), self.cancel)
+			self.helices_coords_browse_button.clicked.connect(self.browse_helix_coords)
+			self.helices_images_browse_button.clicked.connect(self.browse_helix_images)
+			self.ptcls_coords_browse_button.clicked.connect(self.browse_ptcl_coords)
+			self.ptcls_images_browse_button.clicked.connect(self.browse_ptcl_images)
+			self.button_box.accepted.connect(self.save)
+			self.button_box.rejected.connect(self.cancel)
 
 		def __create_ui(self):
 			self.helices_groupbox = QtGui.QGroupBox(self.tr("Write &Helices:"))
@@ -969,7 +970,7 @@ if ENABLE_GUI:
 			if self.helices_groupbox.isChecked():
 				if self.helices_coords_groupbox.isChecked():
 					path = str( self.helices_coords_line_edit.text() )
-					save_helix_coords(helices_dict.keys(), path)
+					save_helix_coords(list(helices_dict.keys()), path)
 				if self.helices_images_groupbox.isChecked():
 					helix_filepath = str(self.helices_images_line_edit.text())
 					i = 0
@@ -1008,7 +1009,7 @@ if ENABLE_GUI:
 							side = max(px_length, px_width)
 							helix_particles = get_unrotated_particles(micrograph, coords_key, px_dst, side, side, mic_name=self.micrograph_filename)
 							px_overlap = side - px_dst
-						for ii in xrange(len(helix_particles)):
+						for ii in range(len(helix_particles)):
 							(helix_particles[ii]).set_attr("filament", self.micrograph_filename+"%04d"%nhelix)
 						nhelix = nhelix + 1
 						all_particles.append(helix_particles)
@@ -1075,14 +1076,14 @@ if ENABLE_GUI:
 				self.micrograph_filepath_set = set(micrograph_filepaths) # [micrograph1_filepath, micrograph2_filepath, ...]
 			self.update_micrograph_table()
 
-			self.connect(self.box_width_spinbox, QtCore.SIGNAL("valueChanged(int)"), self.width_changed)
-			self.connect( self.img_quality_combobox, QtCore.SIGNAL("currentIndexChanged(int)"), self.set_image_quality )
-			self.connect(self.load_boxes_action, QtCore.SIGNAL("triggered()"), self.load_boxes)
-			self.connect(self.load_micrograph_action, QtCore.SIGNAL("triggered()"), self.open_micrograph)
+			self.box_width_spinbox.valueChanged[int].connect(self.width_changed)
+			self.img_quality_combobox.currentIndexChanged[int].connect(self.set_image_quality)
+			self.load_boxes_action.triggered.connect(self.load_boxes)
+			self.load_micrograph_action.triggered.connect(self.open_micrograph)
 	#        self.connect(self.write_coords_action, QtCore.SIGNAL("triggered()"), self.write_coords)
-			self.connect(self.write_images_action, QtCore.SIGNAL("triggered()"), self.write_images)
-			self.connect(self.quit_action, QtCore.SIGNAL("triggered()"), self.close)
-			self.connect( self.micrograph_table, QtCore.SIGNAL("currentCellChanged (int,int,int,int)"), self.micrograph_table_selection)
+			self.write_images_action.triggered.connect(self.write_images)
+			self.quit_action.triggered.connect(self.close)
+			self.micrograph_table.currentCellChanged [int, int, int, int].connect(self.micrograph_table_selection)
 			
 			self.micrograph_table.setCurrentCell(0,0) #self.micrograph_table_selection() will display this micrograph
 			
@@ -1151,7 +1152,7 @@ if ENABLE_GUI:
 			hbl_doctf.addWidget(self.doctf_chk)
 			self.vbl.addLayout(hbl_doctf)
 			
-			QtCore.QObject.connect(self.doctf_chk,QtCore.SIGNAL("clicked(bool)"),self.doctf_checked)
+			self.doctf_chk.clicked[bool].connect(self.doctf_checked)
 
 		def doctf_checked(self,val):
 			if not(self.doctf):
@@ -1260,15 +1261,15 @@ if ENABLE_GUI:
 					hbl_ctf_cter.addWidget(self.estimate_ctf_cter)
 					self.vbl.addLayout(hbl_ctf_cter)
 					
-					QtCore.QObject.connect(self.ctf_window_size,QtCore.SIGNAL("editingFinished()"),self.new_ctf_window)
-					QtCore.QObject.connect(self.ctf_cs,QtCore.SIGNAL("editingFinished()"),self.new_ctf_cs)
-					QtCore.QObject.connect(self.ctf_edge_size,QtCore.SIGNAL("editingFinished()"),self.new_ctf_edge)
-					QtCore.QObject.connect(self.ctf_volt,QtCore.SIGNAL("editingFinished()"),self.new_ctf_volt)
-					QtCore.QObject.connect(self.ctf_overlap_size,QtCore.SIGNAL("editingFinished()"),self.new_ctf_overlap_size)
-					QtCore.QObject.connect(self.ctf_ampcont,QtCore.SIGNAL("editingFinished()"),self.new_ctf_ampcont)
-					QtCore.QObject.connect(self.ctf_kboot,QtCore.SIGNAL("editingFinished()"),self.new_ctf_kboot)
-					QtCore.QObject.connect(self.ctf_pixel,QtCore.SIGNAL("editingFinished()"),self.new_ctf_pixel)
-					QtCore.QObject.connect(self.estimate_ctf_cter,QtCore.SIGNAL("clicked(bool)"), self.calc_ctf_cter)
+					self.ctf_window_size.editingFinished.connect(self.new_ctf_window)
+					self.ctf_cs.editingFinished.connect(self.new_ctf_cs)
+					self.ctf_edge_size.editingFinished.connect(self.new_ctf_edge)
+					self.ctf_volt.editingFinished.connect(self.new_ctf_volt)
+					self.ctf_overlap_size.editingFinished.connect(self.new_ctf_overlap_size)
+					self.ctf_ampcont.editingFinished.connect(self.new_ctf_ampcont)
+					self.ctf_kboot.editingFinished.connect(self.new_ctf_kboot)
+					self.ctf_pixel.editingFinished.connect(self.new_ctf_pixel)
+					self.estimate_ctf_cter.clicked[bool].connect(self.calc_ctf_cter)
 	
 		def new_ctf_pixel(self):
 			self.pixelsize=self.ctf_pixel.text()
@@ -1391,7 +1392,7 @@ if ENABLE_GUI:
 				#self.helix_viewer.setWindowTitle("Current Helix")
 				self.helix_viewer.resize(300,800)
 				self.helix_viewer.set_scale(1)
-			QtCore.QObject.connect(self.helix_viewer, QtCore.SIGNAL("module_closed"), self.helix_viewer_closed)
+			self.helix_viewer.module_closed.connect(self.helix_viewer_closed)
 			self.helix_viewer.set_data(helix_emdata)
 			self.helix_viewer.setWindowTitle("Current Helix: %d x %d pixels" % (helix_emdata["nx"], helix_emdata["ny"]) )
 			get_application().show_specific(self.helix_viewer)
@@ -1471,10 +1472,10 @@ if ENABLE_GUI:
 			
 			if not self.main_image:
 				self.main_image = EMImage2DWidget(application=self.app)
-				QtCore.QObject.connect(self.main_image,QtCore.SIGNAL("module_closed"), self.main_image_closed)
-				QtCore.QObject.connect( self.main_image, QtCore.SIGNAL("mousedown"), self.mouse_down)
-				QtCore.QObject.connect( self.main_image, QtCore.SIGNAL("mousedrag"), self.mouse_drag)
-				QtCore.QObject.connect( self.main_image, QtCore.SIGNAL("mouseup"), self.mouse_up)
+				self.main_image.module_closed.connect(self.main_image_closed)
+				self.main_image.mousedown.connect(self.mouse_down)
+				self.main_image.mousedrag.connect(self.mouse_drag)
+				self.main_image.mouseup.connect(self.mouse_up)
 			self.main_image.set_data( micrograph_emdata, self.micrograph_filepath )
 			self.main_image.shapes = EMShapeDict()
 			self.main_image.shapechange=1
@@ -1505,7 +1506,7 @@ if ENABLE_GUI:
 			
 			width = self.box_width
 			if self.helices_dict:
-				first_coords = self.helices_dict.keys()[0]
+				first_coords = list(self.helices_dict.keys())[0]
 				width = first_coords[4]
 			self.box_width_spinbox.setValue(width)
 		def main_image_closed(self):
@@ -1594,7 +1595,7 @@ if ENABLE_GUI:
 			#resize current boxes
 			#TODO: this is similar to part of self.mouse_up ==> make both methods call a function with common code
 			shapes = self.main_image.get_shapes() #an EMShapeDict of EMShapes
-			for box_key in shapes.keys():
+			for box_key in list(shapes.keys()):
 				old_emshape = shapes.get(box_key)
 				old_coords = old_emshape.getShape()[4:9]
 				new_coords = (old_coords[0], old_coords[1], old_coords[2], old_coords[3], width)
@@ -2026,7 +2027,7 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 		flist2.sort(key=str.lower)
 		nfiles = len(flist2)
 		print_msg('Sorted file list in %s:\n'%v1)
-		for iii in xrange(nfiles):
+		for iii in range(nfiles):
 			print_msg('%s,'%flist2[iii])
 		print_msg('\n')
 		for i2, v2 in enumerate(flist2):
@@ -2054,7 +2055,7 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 			region,hist = hist_list(cutoffhistogram,lhist)	
 			msg = "      Histogram of cut off frequencies\n      ERROR       number of frequencies\n"
 			print_msg(msg)
-			for lhx in xrange(len(lhist)):
+			for lhx in range(len(lhist)):
 				msg = " %10.3f     %7d\n"%(region[lhx], hist[lhx])
 				print_msg(msg)
 		print_msg('The percentage of micrographs filtered by the cutoff frequency: %6f\n' % (len(cutoffhistogram)*1.0/lenmicnames))		
@@ -2104,7 +2105,7 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 	'''
 	from utilities    import pad, model_blank, read_text_row, get_im, print_msg
 	from fundamentals import ramp, resample
-	from filter	  	  import filt_gaussh,filt_tanl 
+	from filter	  	  import filt_gaussh,filt_tanl
 	from pixel_error  import getnewhelixcoords
 	from EMAN2 	      import EMUtil, Util
 	from subprocess   import call
@@ -2118,7 +2119,7 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 	if importctf:	
 		ctfs = read_text_row(importctf)
 		nx = True
-		for i in xrange(len(ctfs)):
+		for i in range(len(ctfs)):
 			smic = ctfs[i][-1].split('/')
 			ctfilename = (smic[-1].split('.'))[0]
 			if(ctfilename == filename):
@@ -2241,7 +2242,7 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 			else:
 				print_msg( "otcl_images: %s\n"%otcl_images)
 				print_msg( "ptcl_images: %s\n"%ptcl_images)
-				for j in xrange(n1):
+				for j in range(n1):
 					prj = get_im(ptcl_images, j)
 					prj = ramp(prj)
 					stat = Util.infomask( prj, mask, False )

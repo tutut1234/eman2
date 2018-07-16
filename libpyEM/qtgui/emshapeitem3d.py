@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 #
 # Author: Grant Tang (gtang@bcm.edu)
 # Author: John Flanagan (jfflanag@bcm.edu)
@@ -33,16 +34,18 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from EMAN2 import *
-from emglobjects import init_glut, get_default_gl_colors
-from emitem3d import EMItem3D, EMItem3DInspector, drawBoundingBox
+from .emglobjects import init_glut, get_default_gl_colors
+from .emitem3d import EMItem3D, EMItem3DInspector, drawBoundingBox
 from libpyGLUtils2 import FTGLFontMode
 import math
-from valslider import EMQTColorWidget, ValSlider, EMSpinWidget
+from .valslider import EMQTColorWidget, ValSlider, EMSpinWidget
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from PyQt4 import QtCore, QtGui, QtOpenGL
+from PyQt4.QtGui import QColor
 
 import numpy as np
 
@@ -218,7 +221,7 @@ class EMRuler(EMShapeBase):
 			self.direction = [0.0,0.0,0.0]
 		self.rsinO = self.barwidth*math.sin(angle)
 		self.rcosO = self.barwidth*math.cos(angle)
-		self.smallbars = [[i*self.direction[0],i*self.direction[1]] for i in xrange(0,int(self.pixlen),int(2*self.barwidth))]
+		self.smallbars = [[i*self.direction[0],i*self.direction[1]] for i in range(0,int(self.pixlen),int(2*self.barwidth))]
 		
 	def renderShape(self):        
 		# Material properties of the box
@@ -462,7 +465,7 @@ class EMScatterPlot3D(EMShapeBase):
 		gluQuadricNormals(quadratic, GLU_SMOOTH)    # Create Smooth Normals (NEW) 
 		gluQuadricTexture(quadratic, GL_TRUE)      # Create Texture Coords (NEW)
 		
-		for i in xrange(len(self.data[0])):
+		for i in range(len(self.data[0])):
 			glPushMatrix()
 			
 			glTranslatef(self.data[0][i],self.data[1][i],self.data[2][i])
@@ -1034,10 +1037,10 @@ class EMInspectorControlShape(EMItem3DInspector):
 		# Set to default, but do not run if being inherited
 		if type(self) == EMInspectorControlShape: self.updateItemControls()
 		
-		QtCore.QObject.connect(self.ambcolorbox,QtCore.SIGNAL("newcolor(QColor)"),self._on_ambient_color)
-		QtCore.QObject.connect(self.diffusecolorbox,QtCore.SIGNAL("newcolor(QColor)"),self._on_diffuse_color)
-		QtCore.QObject.connect(self.specularcolorbox,QtCore.SIGNAL("newcolor(QColor)"),self._on_specular_color)
-		QtCore.QObject.connect(self.shininess,QtCore.SIGNAL("valueChanged"),self._on_shininess)
+		self.ambcolorbox.newcolor[QColor].connect(self._on_ambient_color)
+		self.diffusecolorbox.newcolor[QColor].connect(self._on_diffuse_color)
+		self.specularcolorbox.newcolor[QColor].connect(self._on_specular_color)
+		self.shininess.valueChanged.connect(self._on_shininess)
 		
 	def _on_ambient_color(self, color):
 		rgb = color.getRgb()
@@ -1112,7 +1115,7 @@ class EMInspectorControlScatterPlot(EMInspectorControlShape):
 		if type(self) == EMInspectorControlScatterPlot: 
 			self.updateItemControls()
 		
-		QtCore.QObject.connect(self.pointsize,QtCore.SIGNAL("valueChanged(int)"),self.onPointSizeChanged)
+		self.pointsize.valueChanged[int].connect(self.onPointSizeChanged)
 	
 	def onPointSizeChanged(self):
 		self.item3d().setPointSize(self.pointsize.getValue())
@@ -1215,9 +1218,9 @@ class EMInspectorControl3DText(EMInspectorControlShape):
 			self.updateMetaData()
 			
 		self.textModeBox.currentIndexChanged.connect(self.on3DTextModeChanged)
-		QtCore.QObject.connect(self.fontDepth,QtCore.SIGNAL("valueChanged(int)"),self.on3DTextDepthChanged)
-		QtCore.QObject.connect(self.fontSize,QtCore.SIGNAL("valueChanged(int)"),self.on3DTextFontChanged)
-		QtCore.QObject.connect(self.text3d,QtCore.SIGNAL("textChanged(const QString&)"),self.on3DTextChanged)
+		self.fontDepth.valueChanged[int].connect(self.on3DTextDepthChanged)
+		self.fontSize.valueChanged[int].connect(self.on3DTextFontChanged)
+		self.text3d.textChanged[QString].connect(self.on3DTextChanged)
 		
 	def on3DTextModeChanged(self):
 		textMode = str(self.textModeBox.currentText())
@@ -1370,17 +1373,17 @@ class EMInspectorControlLine(EMInspectorControlShape):
 			self.updateItemControls()
 			self.updateMetaData()
 		
-		QtCore.QObject.connect(self.leftShowArrow, QtCore.SIGNAL("stateChanged(int)"), self.redraw)
-		QtCore.QObject.connect(self.rightShowArrow, QtCore.SIGNAL("stateChanged(int)"), self.redraw)
-		QtCore.QObject.connect(self.leftArrowSize,QtCore.SIGNAL("valueChanged(int)"),self.redraw)
-		QtCore.QObject.connect(self.leftArrowLength,QtCore.SIGNAL("valueChanged(int)"),self.redraw)
-		QtCore.QObject.connect(self.rightArrowSize,QtCore.SIGNAL("valueChanged(int)"),self.redraw)
-		QtCore.QObject.connect(self.rightArrowLength,QtCore.SIGNAL("valueChanged(int)"),self.redraw)
-		QtCore.QObject.connect(self.linelength,QtCore.SIGNAL("valueChanged(int)"),self.redraw)
-		QtCore.QObject.connect(self.linewidth,QtCore.SIGNAL("valueChanged(int)"),self.redraw)
+		self.leftShowArrow.stateChanged[int].connect(self.redraw)
+		self.rightShowArrow.stateChanged[int].connect(self.redraw)
+		self.leftArrowSize.valueChanged[int].connect(self.redraw)
+		self.leftArrowLength.valueChanged[int].connect(self.redraw)
+		self.rightArrowSize.valueChanged[int].connect(self.redraw)
+		self.rightArrowLength.valueChanged[int].connect(self.redraw)
+		self.linelength.valueChanged[int].connect(self.redraw)
+		self.linewidth.valueChanged[int].connect(self.redraw)
 		
-		QtCore.QObject.connect(self.slice,QtCore.SIGNAL("valueChanged"),self.redraw)
-		QtCore.QObject.connect(self.stack,QtCore.SIGNAL("valueChanged"),self.redraw)
+		self.slice.valueChanged.connect(self.redraw)
+		self.stack.valueChanged.connect(self.redraw)
 	
 	def redraw(self):
 		self.item3d().setShowLeftArrow(self.leftShowArrow.isChecked())

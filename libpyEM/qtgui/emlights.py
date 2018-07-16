@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 
 #
 # Author: Steven Ludtke, 04/10/2003 (sludtke@bcm.edu)
@@ -33,25 +34,28 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
+from builtins import object
 from EMAN2 import *
 from OpenGL import GL, GLU, GLUT
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
 from PyQt4 import QtCore, QtGui, QtOpenGL
-from PyQt4.QtCore import Qt
-from emglobjects import Camera2, get_default_gl_colors, EMViewportDepthTools2, get_RGB_tab, get_gl_lights_vector, init_glut, EM3DModel
-from emimageutil import EMTransformPanel # for EMLightsInspector
+from PyQt4.QtCore import Qt, QString
+from PyQt4.QtGui import QListWidgetItem
+from .emglobjects import Camera2, get_default_gl_colors, EMViewportDepthTools2, get_RGB_tab, get_gl_lights_vector, init_glut, EM3DModel
+from .emimageutil import EMTransformPanel # for EMLightsInspector
 from math import *
 from time import *
-from valslider import ValSlider
+from .valslider import ValSlider, CheckBox
 import weakref # for EMLightsInspector
 
 
 
 MAG_INCREMENT_FACTOR = 1.1
 
-class EMLightsDrawer:
+class EMLightsDrawer(object):
 	'''
 	Base clase, works with EMLightsInspectorBase
 	'''
@@ -733,7 +737,7 @@ class EMLights(EMLightsDrawer,EM3DModel):
 			EM3DModel.mouseReleaseEvent(self, event)
 
 
-class EMLightsInspectorBase:
+class EMLightsInspectorBase(object):
 	'''
 	Inherit from this if you want its functionality
 	'''
@@ -861,22 +865,21 @@ class EMLightsInspectorBase:
 		
 		vbl.addWidget(light_material_tab_widget)
 
-		QtCore.QObject.connect(self.light_ambient.r, QtCore.SIGNAL("valueChanged"), self.update_light)
-		QtCore.QObject.connect(self.light_ambient.g, QtCore.SIGNAL("valueChanged"), self.update_light)
-		QtCore.QObject.connect(self.light_ambient.b, QtCore.SIGNAL("valueChanged"), self.update_light)
-		QtCore.QObject.connect(self.light_diffuse.r, QtCore.SIGNAL("valueChanged"), self.update_light)
-		QtCore.QObject.connect(self.light_diffuse.g, QtCore.SIGNAL("valueChanged"), self.update_light)
-		QtCore.QObject.connect(self.light_diffuse.b, QtCore.SIGNAL("valueChanged"), self.update_light)
-		QtCore.QObject.connect(self.light_specular.r, QtCore.SIGNAL("valueChanged"), self.update_light)
-		QtCore.QObject.connect(self.light_specular.g, QtCore.SIGNAL("valueChanged"), self.update_light)
-		QtCore.QObject.connect(self.light_specular.b, QtCore.SIGNAL("valueChanged"), self.update_light)
-		QtCore.QObject.connect(self.light_x_dir, QtCore.SIGNAL("valueChanged(double)"), self.update_light)
-		QtCore.QObject.connect(self.light_y_dir, QtCore.SIGNAL("valueChanged(double)"), self.update_light)
-		QtCore.QObject.connect(self.light_z_dir, QtCore.SIGNAL("valueChanged(double)"), self.update_light)
-		QtCore.QObject.connect(self.light_manip_check, QtCore.SIGNAL("valueChanged(double)"), self.update_light)
-		QtCore.QObject.connect(self.light_manip_check, QtCore.SIGNAL("stateChanged(int)"), self.target().light_manipulation_toggled)
-		QtCore.QObject.connect(show_lights, QtCore.SIGNAL("stateChanged(int)"), self.target().show_lights)
-		QtCore.QObject.connect(self.local_viewer_check, QtCore.SIGNAL("stateChanged(int)"), self.local_viewer_checked)
+		self.light_ambient.r.valueChanged.connect(self.update_light)
+		self.light_ambient.g.valueChanged.connect(self.update_light)
+		self.light_ambient.b.valueChanged.connect(self.update_light)
+		self.light_diffuse.r.valueChanged.connect(self.update_light)
+		self.light_diffuse.g.valueChanged.connect(self.update_light)
+		self.light_diffuse.b.valueChanged.connect(self.update_light)
+		self.light_specular.r.valueChanged.connect(self.update_light)
+		self.light_specular.g.valueChanged.connect(self.update_light)
+		self.light_specular.b.valueChanged.connect(self.update_light)
+		self.light_x_dir.valueChanged[float].connect(self.update_light)
+		self.light_y_dir.valueChanged[float].connect(self.update_light)
+		self.light_z_dir.valueChanged[float].connect(self.update_light)
+		self.light_manip_check.stateChanged[int].connect(self.target().light_manipulation_toggled)
+		show_lights.stateChanged[int].connect(self.target().show_lights)
+		self.local_viewer_check.stateChanged[int].connect(self.local_viewer_checked)
 		#QtCore.QObject.connect(self.light_w_pos, QtCore.SIGNAL("valueChanged(int)"), self.update_light)
 	 
 		return light_tab
@@ -1140,9 +1143,9 @@ class EMLightsInspectorBase:
 		
 		vbl.addLayout(hbl_trans)
 		
-		QtCore.QObject.connect(new_light, QtCore.SIGNAL("clicked()"), self.new_directional_light)
-		QtCore.QObject.connect(del_light, QtCore.SIGNAL("clicked()"), self.del_directional_light)
-		QtCore.QObject.connect(self.light_list, QtCore.SIGNAL("itemPressed(QListWidgetItem*)"), self.light_list_clicked)
+		new_light.clicked.connect(self.new_directional_light)
+		del_light.clicked.connect(self.del_directional_light)
+		self.light_list.itemPressed[QListWidgetItem].connect(self.light_list_clicked)
 		
 		return self.directional_light_widget
 	
@@ -1291,21 +1294,21 @@ class EMLightsInspectorBase:
 		vbl.addWidget(self.spot_exponent)
 		
 		
-		QtCore.QObject.connect(new_light, QtCore.SIGNAL("clicked()"), self.new_pointsource_light)
-		QtCore.QObject.connect(self.point_light_list, QtCore.SIGNAL("itemPressed(QListWidgetItem*)"), self.point_light_list_clicked)
-		QtCore.QObject.connect(self.light_x_pos, QtCore.SIGNAL("valueChanged(double)"), self.update_light)
-		QtCore.QObject.connect(self.light_y_pos, QtCore.SIGNAL("valueChanged(double)"), self.update_light)
-		QtCore.QObject.connect(self.light_z_pos, QtCore.SIGNAL("valueChanged(double)"), self.update_light)
-		QtCore.QObject.connect(self.light_ps_xdir, QtCore.SIGNAL("valueChanged(double)"), self.update_light)
-		QtCore.QObject.connect(self.light_ps_ydir, QtCore.SIGNAL("valueChanged(double)"), self.update_light)
-		QtCore.QObject.connect(self.light_ps_zdir, QtCore.SIGNAL("valueChanged(double)"), self.update_light)
-		QtCore.QObject.connect(self.spot_cutoff, QtCore.SIGNAL("valueChanged"), self.update_light)
-		QtCore.QObject.connect(self.spot_exponent, QtCore.SIGNAL("valueChanged"), self.update_light)
-		QtCore.QObject.connect(self.const_atten, QtCore.SIGNAL("valueChanged"), self.update_light)
-		QtCore.QObject.connect(self.linear_atten, QtCore.SIGNAL("valueChanged"), self.update_light)
-		QtCore.QObject.connect(self.quad_atten, QtCore.SIGNAL("valueChanged"), self.update_light)
+		new_light.clicked.connect(self.new_pointsource_light)
+		self.point_light_list.itemPressed[QListWidgetItem].connect(self.point_light_list_clicked)
+		self.light_x_pos.valueChanged[float].connect(self.update_light)
+		self.light_y_pos.valueChanged[float].connect(self.update_light)
+		self.light_z_pos.valueChanged[float].connect(self.update_light)
+		self.light_ps_xdir.valueChanged[float].connect(self.update_light)
+		self.light_ps_ydir.valueChanged[float].connect(self.update_light)
+		self.light_ps_zdir.valueChanged[float].connect(self.update_light)
+		self.spot_cutoff.valueChanged.connect(self.update_light)
+		self.spot_exponent.valueChanged.connect(self.update_light)
+		self.const_atten.valueChanged.connect(self.update_light)
+		self.linear_atten.valueChanged.connect(self.update_light)
+		self.quad_atten.valueChanged.connect(self.update_light)
 
-		QtCore.QObject.connect(del_light, QtCore.SIGNAL("clicked()"), self.del_pointsource_light)
+		del_light.clicked.connect(self.del_pointsource_light)
 		
 		return self.pointsource_light_widget
 	
@@ -1351,11 +1354,11 @@ class EMLightsInspector(QtGui.QWidget,EMLightsInspectorBase):
 		self.n3_showing = False
 		self.quiet = False
 
-		QtCore.QObject.connect(self.cbb, QtCore.SIGNAL("currentIndexChanged(QString)"), target.setColor)
-		QtCore.QObject.connect(self.wiretog, QtCore.SIGNAL("toggled(bool)"), target.toggle_wire)
-		QtCore.QObject.connect(self.lighttog, QtCore.SIGNAL("toggled(bool)"), target.toggle_light)
-		QtCore.QObject.connect(self.glcontrast, QtCore.SIGNAL("valueChanged"), target.set_GL_contrast)
-		QtCore.QObject.connect(self.glbrightness, QtCore.SIGNAL("valueChanged"), target.set_GL_brightness)
+		self.cbb.currentIndexChanged[QString].connect(target.setColor)
+		self.wiretog.toggled[bool].connect(target.toggle_wire)
+		self.lighttog.toggled[bool].connect(target.toggle_light)
+		self.glcontrast.valueChanged.connect(target.set_GL_contrast)
+		self.glbrightness.valueChanged.connect(target.set_GL_brightness)
 
 	def update_rotations(self,t3d):
 		self.rotation_sliders.update_rotations(t3d)
@@ -1429,8 +1432,8 @@ class EMLightsInspector(QtGui.QWidget,EMLightsInspectorBase):
 		
 # This is just for testing, of course
 if __name__ == '__main__':
-	from emapplication import EMApp
-	from emglobjects import EM3DGLWidget
+	from .emapplication import EMApp
+	from .emglobjects import EM3DGLWidget
 	em_app = EMApp()
 	window = EM3DGLWidget()
 	em_lights = EMLights(window)

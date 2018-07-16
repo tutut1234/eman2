@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # Muyuan Chen 2018-04
+from __future__ import print_function
 from EMAN2 import *
 import os
 import numpy as np
@@ -16,7 +17,7 @@ import subprocess
 
 def main():
 	
-	usage=" "
+	usage="This is a GUI program that allows users inspect tomograms easily. Simply run without argument in a tomogram project directory."
 	parser = EMArgumentParser(usage=usage,version=EMANVERSION)
 	parser.add_argument("--ppid", type=int,help="", default=None)
 
@@ -67,8 +68,8 @@ class TomoEvalGUI(QtGui.QWidget):
 		self.imglst.setColumnWidth(1,200)
 		self.imglst_srtby=0
 		hdr=self.imglst.horizontalHeader()
-		QtCore.QObject.connect(self.imglst,QtCore.SIGNAL("cellClicked(int,int)"),self.selimg)
-		QtCore.QObject.connect(hdr,QtCore.SIGNAL("sectionPressed(int)"),self.sortlst)
+		self.imglst.cellClicked[int, int].connect(self.selimg)
+		hdr.sectionPressed[int].connect(self.sortlst)
 		
 		self.wg_thumbnail=EMImage2DWidget(parent=self)
 		self.wg_thumbnail.set_scale(1)
@@ -108,18 +109,17 @@ class TomoEvalGUI(QtGui.QWidget):
 		self.gbl.addWidget(self.bt_plotctf, 7,2)
 		
 
-		QtCore.QObject.connect(self.bt_show2d,QtCore.SIGNAL("clicked(bool)"),self.show2d)
-		QtCore.QObject.connect(self.bt_runboxer,QtCore.SIGNAL("clicked(bool)"),self.runboxer)
-		QtCore.QObject.connect(self.bt_plotloss,QtCore.SIGNAL("clicked(bool)"),self.plot_loss)
-		QtCore.QObject.connect(self.bt_plottpm,QtCore.SIGNAL("clicked(bool)"),self.plot_tltparams)
-		QtCore.QObject.connect(self.bt_showtlts,QtCore.SIGNAL("clicked(bool)"),self.show_tlts)
-		QtCore.QObject.connect(self.bt_refresh,QtCore.SIGNAL("clicked(bool)"),self.update_files)
-		QtCore.QObject.connect(self.bt_plotctf,QtCore.SIGNAL("clicked(bool)"),self.plot_ctf)
+		self.bt_show2d.clicked[bool].connect(self.show2d)
+		self.bt_runboxer.clicked[bool].connect(self.runboxer)
+		self.bt_plotloss.clicked[bool].connect(self.plot_loss)
+		self.bt_plottpm.clicked[bool].connect(self.plot_tltparams)
+		self.bt_showtlts.clicked[bool].connect(self.show_tlts)
+		self.bt_refresh.clicked[bool].connect(self.update_files)
+		self.bt_plotctf.clicked[bool].connect(self.plot_ctf)
 		
 		self.wg_2dimage=EMImage2DWidget()
 		self.wg_2dimage.setWindowTitle("Tomo2D")
 		self.cur_data=None
-		
 		
 		self.wg_tltimage=EMImage2DWidget()
 		self.wg_tltimage.setWindowTitle("Tiltseries")
@@ -131,15 +131,17 @@ class TomoEvalGUI(QtGui.QWidget):
 		self.itemflags=	Qt.ItemFlags(Qt.ItemIsEditable)|Qt.ItemFlags(Qt.ItemIsSelectable)|Qt.ItemFlags(Qt.ItemIsEnabled)|Qt.ItemFlags(Qt.ItemIsUserCheckable)
 		
 		self.wg_notes=QtGui.QTextEdit(self)
+		self.wg_notes.setText("Comments:")
+		#self.wg_notes.setStyleSheet("color: rgb(150, 150, 150);")
 		self.gbl.addWidget(self.wg_notes, 10,1,1,2)
-				
-		QtCore.QObject.connect(self.setspanel,QtCore.SIGNAL("itemChanged(QListWidgetItem*)"),self.clickset)
-		QtCore.QObject.connect(self.wg_notes,QtCore.SIGNAL("textChanged()"),self.noteupdate)
+		
+		self.setspanel.itemChanged[QtGui.QListWidgetItem].connect(self.clickset)
+		self.wg_notes.textChanged.connect(self.noteupdate)
 		
 		self.wg_plot2d=EMPlot2DWidget()
 		
 		self.update_files()
-		
+
 	def update_files(self):
 		self.imginfo=[]
 		
@@ -154,54 +156,55 @@ class TomoEvalGUI(QtGui.QWidget):
 				bxcls={}
 				js=js_open_dict(info)
 				
-				if js.has_key("boxes_3d"):
+				if "boxes_3d" in js:
 					boxes=js["boxes_3d"]
 					nbox=len(boxes)
 					
-				if js.has_key("ali_loss"):
+				if "ali_loss" in js:
 					dic["loss"]=np.array(js["ali_loss"])
 				else:
 					dic["loss"]=[]
 				
-				if js.has_key("tlt_params"):
+				if "tlt_params" in js:
 					dic["tlt_params"]=np.array(js["tlt_params"])
 				else:
 					dic["tlt_params"]=[]
 				
-				if js.has_key("tlt_file"):
+				if "tlt_file" in js:
 					dic["tltfile"]=str(js["tlt_file"])
 				else:
 					dic["tltfile"]=""
 					
-				if js.has_key("notes"):
+				if "notes" in js:
 					dic["notes"]=str(js["notes"])
 				else:
 					dic["notes"]=""
 					
-				if js.has_key("defocus"):
+				if "defocus" in js:
 					dic["defocus"]=np.array(js["defocus"])
 				else:
 					dic["defocus"]=[]
 					
-				if js.has_key("phase"):
+				if "phase" in js:
 					dic["phase"]=np.array(js["phase"])
 				else:
 					dic["phase"]=[]
 					
-				if nbox>0 and js.has_key("class_list"):
+				if nbox>0 and "class_list" in js:
 					cls=js["class_list"]
-					for k in cls.keys():
+					for k in list(cls.keys()):
 						vname=str(cls[k]["name"])
 						n=np.sum([b[-1]==int(k) for b in boxes])
 						
 						if n>0:
 							bxcls[vname]=n
-							if ptclcls.has_key(vname):
+							if vname in ptclcls:
 								ptclcls[vname][1]+=n
 							else:
 								ptclcls[vname]=[1,n]
 				
 				dic["basename"]= os.path.basename(name).split(".")[0] #base_name(name)
+				dic["e2basename"] = base_name(name)
 				dic["filename"]=name
 				dic["nbox"]=nbox
 				dic["boxcls"]=bxcls
@@ -215,7 +218,7 @@ class TomoEvalGUI(QtGui.QWidget):
 		
 		#### update particle type list
 		self.setspanel.clear()
-		for k in self.ptclcls.keys():
+		for k in list(self.ptclcls.keys()):
 			v=self.ptclcls[k]
 			kname="    {}\t:  {}".format(k, v[1])
 			item=QtGui.QListWidgetItem(kname)
@@ -224,7 +227,6 @@ class TomoEvalGUI(QtGui.QWidget):
 			item.setCheckState(Qt.Checked)
 	
 	def update_list(self):
-		
 		#### update file list
 		self.imglst.clear()
 		self.imglst.setRowCount(len(self.imginfo))
@@ -237,7 +239,7 @@ class TomoEvalGUI(QtGui.QWidget):
 			self.imglst.setItem(i,0,it)
 			self.imglst.setItem(i,1,QtGui.QTableWidgetItem(str(info["basename"])))
 			nbox=0
-			for kname in info["boxcls"].keys():
+			for kname in list(info["boxcls"].keys()):
 				if self.ptclcls[kname][0]==1:
 					nbox+=info["boxcls"][kname]
 			it=QtGui.QTableWidgetItem()
@@ -253,6 +255,7 @@ class TomoEvalGUI(QtGui.QWidget):
 			self.imglst.setItem(i,3, it)
 		
 	def get_id_info(self):
+		#### utility function to get the info of current selected row.
 		crow=self.imglst.currentRow()
 		idx=self.imglst.item(crow, 0).text()
 		info=self.imginfo[int(idx)]
@@ -260,7 +263,7 @@ class TomoEvalGUI(QtGui.QWidget):
 	
 	def plot_loss(self):
 		idx, info=self.get_id_info()
-		self.wg_plot2d.set_data(info["loss"], info["basename"], replace=True)
+		self.wg_plot2d.set_data(info["loss"], info["e2basename"], replace=True)
 		self.wg_plot2d.show()
 	
 	def plot_tltparams(self):
@@ -268,8 +271,8 @@ class TomoEvalGUI(QtGui.QWidget):
 		if len(info["tlt_params"])==0: return 
 		tpm=info["tlt_params"].T
 		tpm=np.vstack([np.arange(len(tpm[0])), tpm])
-		self.wg_plot2d.set_data(tpm, info["basename"], replace=True, linetype=0,symtype=0)
-		self.wg_plot2d.setAxes(info["basename"], 4, 2)
+		self.wg_plot2d.set_data(tpm, info["e2basename"], replace=True, linetype=0,symtype=0)
+		self.wg_plot2d.setAxes(info["e2basename"], 4, 2)
 		self.wg_plot2d.show()
 		
 	def show2d(self):
@@ -301,13 +304,14 @@ class TomoEvalGUI(QtGui.QWidget):
 			if len(info["phase"])>0:
 				data=np.vstack([data, info["phase"]])
 			
-			self.wg_plot2d.set_data(data, info["basename"], replace=True, linetype=0,symtype=0)
+			self.wg_plot2d.set_data(data, info["e2basename"], replace=True, linetype=0,symtype=0)
 			self.wg_plot2d.setAxes(info["basename"], 1, 2)
 			self.wg_plot2d.show()
 			
 	
 	def runboxer(self):
 		idx, info=self.get_id_info()
+		#### not doing this via launch_childprocess so the boxer wont be killed when one kill the browser...
 		subprocess.Popen(["e2spt_boxer22.py",info["filename"]] )
 
 	def clickset(self, item):
@@ -326,7 +330,7 @@ class TomoEvalGUI(QtGui.QWidget):
 			return
 		try:	
 			info["notes"]=notes
-			infoname=info_name(info["basename"])
+			infoname=info_name(info["e2basename"])
 			js=js_open_dict(infoname)
 			js["notes"]=notes
 			js=None
@@ -351,12 +355,12 @@ class TomoEvalGUI(QtGui.QWidget):
 		
 		
 	def sortlst(self,col):
-		print "Sort by",self.imglst.horizontalHeaderItem(col).text()
+		print("Sort by",self.imglst.horizontalHeaderItem(col).text())
 		self.imglst_srtby=1-self.imglst_srtby
 		self.imglst.sortItems(col, self.imglst_srtby)
 		
 	def closeEvent(self,event):
-		print "Exiting"
+		print("Exiting")
 		
 		self.wg_2dimage.close()
 		self.wg_plot2d.close()
@@ -365,9 +369,9 @@ class TomoEvalGUI(QtGui.QWidget):
 		
 	
 def run(cmd):
-	print cmd
+	print(cmd)
 	launch_childprocess(cmd)
 	
 if __name__ == '__main__':
 	main()
-	
+

@@ -31,13 +31,15 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307 USA
 #
 
+from builtins import range
+from builtins import object
 from time import time
 
 from PyQt4 import QtCore
 from math import sin,acos
 from EMAN2 import Vec3f, Transform
 
-class Animator:
+class Animator(object):
 	'''
 	Register Animatables with this class
 	'''
@@ -63,7 +65,9 @@ class Animator:
 		
 			self.update()
 		else:
-			if not QtCore.QObject.disconnect(self.timer, QtCore.SIGNAL("timeout()"), self.time_out):
+			try:
+				self.timer.timeout.disconnect(self.time_out)
+			except:
 				print("failed to disconnect timer")
 			
 			self.timer_enabled = False
@@ -82,7 +86,7 @@ class Animator:
 	def __enable_timer(self):
 		if self.timer_enabled == False:
 			self.timer = QtCore.QTimer()
-			QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.time_out)
+			self.timer.timeout.connect(self.time_out)
 			
 			self.timer.start(self.timer_interval)
 			self.timer_enabled = True
@@ -90,7 +94,7 @@ class Animator:
 		
 	def animation_done_event(self,animated): raise NotImplementedError("Inheriting classes should define this function")
 
-class Animatable:
+class Animatable(object):
 	cache_dts = None
 	def __init__(self):
 		self.time = 0		# time indicates the current time used for the basis of animation.
@@ -429,4 +433,3 @@ class OrientationListAnimation(Animatable):
 		self.target.arc_animation_update(self.arc_points)
 		
 	def transform(self):pass
-		

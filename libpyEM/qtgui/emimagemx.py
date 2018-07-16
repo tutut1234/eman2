@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 
 #
 # Author: Steven Ludtke (sludtke@bcm.edu)
@@ -32,12 +33,15 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
+from builtins import object
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QAction, QAbstractButton, QListWidgetItem
 from OpenGL import GL,GLU,GLUT
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from valslider import ValSlider
+from .valslider import ValSlider
 from math import *
 from EMAN2 import *
 #import EMAN2db
@@ -47,22 +51,23 @@ import EMAN2
 import copy
 import sys
 import numpy
-from emimageutil import ImgHistogram, EMParentWin
+from .emimageutil import ImgHistogram, EMParentWin
 from weakref import WeakKeyDictionary
 from pickle import dumps,loads
+from PyQt4 import QtGui
 from PyQt4.QtGui import QImage
 from PyQt4.QtCore import QTimer
 from libpyGLUtils2 import *
 
-from emglobjects import EMOpenGLFlagsAndTools,EMGLProjectionViewMatrices,EMBasicOpenGLObjects,init_glut
-from emapplication import EMGLWidget, get_application, EMApp
-from emanimationutil import LineAnimation
+from .emglobjects import EMOpenGLFlagsAndTools,EMGLProjectionViewMatrices,EMBasicOpenGLObjects,init_glut
+from .emapplication import EMGLWidget, get_application, EMApp
+from .emanimationutil import LineAnimation
 import weakref
 
-from emapplication import EMProgressDialog
+from .emapplication import EMProgressDialog
 
 
-class EMMatrixPanel:
+class EMMatrixPanel(object):
 	'''
 	A class for managing the parameters of displaying a matrix panel
 	'''
@@ -84,8 +89,8 @@ class EMMatrixPanel:
 		[self.ystart,self.visiblerows,self.visiblecols] = self.visible_row_col(view_width,view_height,view_scale,view_data,y)
 		if self.ystart == None:
 			return False
-		  	# if you uncomment this code it will automatically set the scale in the main window so that the mxs stay visible
-		  	# it's not what we wanted but it's left here in case anyone wants to experiment
+			# if you uncomment this code it will automatically set the scale in the main window so that the mxs stay visible
+			# it's not what we wanted but it's left here in case anyone wants to experiment
 #			scale = self.get_min_scale(view_width,view_height,view_scale,view_data)
 #			target.scale = scale
 #			view_scale = taget.scale
@@ -201,6 +206,17 @@ class EMMatrixPanel:
 #		print self.height,self.xsep,self.visiblecols
 
 class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
+
+	setsChanged = QtCore.pyqtSignal()
+	mx_boxdeleted = QtCore.pyqtSignal(QtGui.QMouseEvent, list, bool)
+	signal_set_scale = QtCore.pyqtSignal(float, float, bool)
+	origin_update = QtCore.pyqtSignal(float, float)
+	mx_image_selected = QtCore.pyqtSignal(QtGui.QMouseEvent, tuple)
+	mx_image_double = QtCore.pyqtSignal(QtGui.QMouseEvent, tuple)
+	mx_mousedrag = QtCore.pyqtSignal(QtGui.QMouseEvent, float)
+	mx_mouseup = QtCore.pyqtSignal(QtGui.QMouseEvent, tuple)
+	set_origin = QtCore.pyqtSignal(float, float, bool)
+
 	def __init__(self, data=None,application=None,winid=None, parent=None, title=""):
 		self.emit_events = False
 
@@ -398,7 +414,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 		self.force_display_update()
 		if update: self.updateGL()
 
-		self.emit(QtCore.SIGNAL("setsChanged"))
+		self.setsChanged.emit()
 
 	def save_set(self,name):
 		"""Saves the particles in a named set to a file"""
@@ -443,12 +459,12 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 		self.force_display_update()
 		if update: self.updateGL()
 
-		self.emit(QtCore.SIGNAL("setsChanged"))
+		self.setsChanged.emit()
 
 	def clear_sets(self,update=True):
 		"""This doesn't erase sets, it just hides"""
 		self.sets_visible={}
-		self.emit(QtCore.SIGNAL("setsChanged"))
+		self.setsChanged.emit()
 		self.force_display_update()
 		if update: self.updateGL()
 
@@ -460,7 +476,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 		except : self.sets_visible={}
 		if self.current_set==None : self.current_set=name
 
-		self.emit(QtCore.SIGNAL("setsChanged"))
+		self.setsChanged.emit()
 		self.force_display_update()
 		self.updateGL()
 
@@ -477,7 +493,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 			except: self.sets={}
 		else: self.sets={}
 		self.sets_visible={}
-		self.emit(QtCore.SIGNAL("setsChanged"))
+		self.setsChanged.emit()
 
 	def commit_sets(self):
 		"""this will store all of the current sets in the appropriate _info.json file, if available"""
@@ -572,7 +588,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 		self.deleteLater()
 
 	def get_emit_signals_and_connections(self):
-		return {"set_origin":self.set_origin,"set_scale":self.set_scale,"origin_update":self.origin_update}
+		return {"set_origin":self.set_origin,"signal_set_scale":self.set_scale,"origin_update":self.origin_update}
 
 	def get_data(self):
 		'''
@@ -625,9 +641,9 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 			if update_gl:
 				self.force_display_update()
 				self.updateGL()
-				if event != None: self.emit(QtCore.SIGNAL("mx_boxdeleted"),event,[idx],False)
+				if event != None: self.mx_boxdeleted.emit(event, [idx], False)
 		else:
-			self.emit(QtCore.SIGNAL("mx_boxdeleted"),event,[idx],False)
+			self.mx_boxdeleted.emit(event, [idx], False)
 
 
 	def get_box_image(self,idx):
@@ -654,12 +670,12 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 	def get_img_num_offset(self):
 		return self.img_num_offset
 
-	def set_draw_background(self,bool):
-		self.draw_background = bool
+	def set_draw_background(self,state):
+		self.draw_background = state
 		self.force_display_update()# empty display lists causes an automatic regeneration of the display list
 
-	def set_use_display_list(self,bool):
-		self.use_display_list = bool
+	def set_use_display_list(self,state):
+		self.use_display_list = state
 
 	def set_max_idx(self,n):
 		self.force_display_update()# empty display lists causes an automatic regeneration of the display list
@@ -927,7 +943,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 			self.draw_scroll = True
 			self.scroll_bar.update_target_ypos()
 
-		if self.emit_events: self.emit(QtCore.SIGNAL("set_scale"),self.scale,adjust,update_gl)
+		if self.emit_events: self.signal_set_scale.emit(self.scale, adjust, update_gl)
 		if update_gl: self.updateGL()
 
 	def resize_event(self, width, height):
@@ -1532,7 +1548,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 		if  self.max_idx == 0: return # there is no data
 
 		absloc=((vec[0]),(self.height()-(vec[1])))
-		for item in self.coords.items():
+		for item in list(self.coords.items()):
 			index = item[0]+self.img_num_offset
 			if index != 0: index %= self.max_idx
 			data = item[1]
@@ -1565,7 +1581,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 			return
 
 		self.data.set_excluded_ptcls(self.deletion_manager.deleted_ptcls())
-		from emsave import save_data
+		from .emsave import save_data
 		file_name = save_data(self.data)
 		if file_name == self.file_name and file_exists(file_name): # the file we are working with was overwritten
 			self.set_data(file_name)
@@ -1583,7 +1599,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 
 		progress = EMProgressDialog("Writing files", "abort", 0, len(self.data),None)
 		progress.show()
-		for i in xrange(0,len(self.data)):
+		for i in range(0,len(self.data)):
 			d = self.data[i]
 			if d == None: continue # the image has been excluded
 			progress.setValue(i)
@@ -1662,7 +1678,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 		else:
 			return
 
-		if self.emit_events: self.emit(QtCore.SIGNAL("origin_update"),self.origin)
+		if self.emit_events: self.origin_update.emit(self.origin)
 
 	def check_newy(self,y):
 		newy = y
@@ -1681,7 +1697,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 #				print "select ",lc[0]
 				#print "setting selected"
 				self.set_selected([lc[0]],True)
-				self.emit(QtCore.SIGNAL("mx_image_selected"),event,lc)
+				self.mx_image_selected.emit(event, lc)
 			xians_stuff = False
 			if xians_stuff:
 				if lc[0] != None:
@@ -1703,17 +1719,17 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 			lc=self.scr_to_img((event.x(),event.y()))
 			if lc:
 #				print "dselect ",lc[0]
-				self.emit(QtCore.SIGNAL("mx_image_double"),event,lc)
+				self.mx_image_double.emit(event, lc)
 
 	def __app_mode_mouse_move(self, event):
 		if event.buttons()&Qt.LeftButton:
-			self.emit(QtCore.SIGNAL("mx_mousedrag"),event,self.get_scale())
+			self.mx_mousedrag.emit(event, self.get_scale())
 
 	def __app_mode_mouse_up(self,event):
 		if self.downbutton==Qt.LeftButton:
 			lc=self.scr_to_img((event.x(),event.y()))
 
-			self.emit(QtCore.SIGNAL("mx_mouseup"),event,lc)
+			self.mx_mouseup.emit(event, lc)
 
 			# disabled by stevel 2/17/2011 for external application flexibility
 			#if  not event.modifiers()&Qt.ShiftModifier:
@@ -1851,7 +1867,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 				resize_necessary = False
 				if self.class_window == None:
 					self.class_window = EMImageMXWidget()
-					QtCore.QObject.connect(self.class_window,QtCore.SIGNAL("module_closed"),self.on_class_window_closed)
+					self.class_window.module_closed.connect(self.on_class_window_closed)
 					resize_necessary = True
 
 				self.class_window.set_data(data,"Class Particles")
@@ -1931,7 +1947,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 
 			#self.origin=(self.origin[0]+self.mousedrag[0]-event.x(),self.origin[1]-self.mousedrag[1]+event.y())
 			self.origin=(self.matrix_panel.xoffset,newy)
-			if self.emit_events: self.emit(QtCore.SIGNAL("set_origin"),self.origin[0],self.origin[1],False)
+			if self.emit_events: self.set_origin.emit(self.origin[0], self.origin[1], False)
 			self.mousedrag=(event.x(),event.y())
 			try:self.updateGL()
 			except: pass
@@ -1987,7 +2003,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 		self.scroll_bar.draw()
 		glPopMatrix()
 
-class EMGLScrollBar:
+class EMGLScrollBar(object):
 	def __init__(self,target):
 		self.min = 0
 		self.max = 0
@@ -2315,7 +2331,7 @@ class EMImageInspectorMX(QtGui.QWidget):
 		self.font_size.setValue(int(self.target().get_font_size()))
 		self.hbl.addWidget(self.font_size)
 
-		QtCore.QObject.connect(self.font_size, QtCore.SIGNAL("valueChanged(int)"), self.target().set_font_size)
+		self.font_size.valueChanged[int].connect(self.target().set_font_size)
 
 
 		self.banim = QtGui.QPushButton("Animate")
@@ -2339,19 +2355,19 @@ class EMImageInspectorMX(QtGui.QWidget):
 
 		self.busy=0
 
-		QtCore.QObject.connect(self.vals, QtCore.SIGNAL("triggered(QAction*)"), self.newValDisp)
+		self.vals.triggered[QAction].connect(self.newValDisp)
 #		QtCore.QObject.connect(self.mapp, QtCore.SIGNAL("clicked(bool)"), self.set_app_mode)
 #		QtCore.QObject.connect(self.mDel, QtCore.SIGNAL("clicked(bool)"), self.set_Del_mode)
 #		QtCore.QObject.connect(self.mdrag, QtCore.SIGNAL("clicked(bool)"), self.set_drag_mode)
 #		QtCore.QObject.connect(self.mset, QtCore.SIGNAL("clicked(bool)"), self.set_set_mode)
-		QtCore.QObject.connect(self.mouse_mode_but_grp,QtCore.SIGNAL("buttonClicked(QAbstractButton *)"),self.mouse_mode_button_clicked)
+		self.mouse_mode_but_grp.buttonClicked[QAbstractButton].connect(self.mouse_mode_button_clicked)
 
-		QtCore.QObject.connect(self.bsavedata, QtCore.SIGNAL("clicked(bool)"), self.save_data)
+		self.bsavedata.clicked[bool].connect(self.save_data)
 		if allow_opt_button:
-			QtCore.QObject.connect(self.opt_fit, QtCore.SIGNAL("clicked(bool)"), self.target().optimize_fit)
-		QtCore.QObject.connect(self.bsnapshot, QtCore.SIGNAL("clicked(bool)"), self.snapShot)
+			self.opt_fit.clicked[bool].connect(self.target().optimize_fit)
+		self.bsnapshot.clicked[bool].connect(self.snapShot)
 		#QtCore.QObject.connect(self.bnorm, QtCore.SIGNAL("clicked(bool)"), self.setNorm)
-		QtCore.QObject.connect(self.banim, QtCore.SIGNAL("clicked(bool)"), self.animation_clicked)
+		self.banim.clicked[bool].connect(self.animation_clicked)
 	
 	def update_vals(self):
 		try:
@@ -2390,7 +2406,7 @@ class EMImageInspectorMX(QtGui.QWidget):
 			self.xyz.addItems(QtCore.QStringList(["x","y","z"]))
 			self.hbl.addWidget(self.xyz)
 			self.xyz.setCurrentIndex(2)
-			QtCore.QObject.connect(self.xyz, QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.target().xyz_changed)
+			self.xyz.currentIndexChanged[QString].connect(self.target().xyz_changed)
 
 	def disable_xyz(self):
 		if self.xyz != None:
@@ -2398,8 +2414,8 @@ class EMImageInspectorMX(QtGui.QWidget):
 			self.xyz.deleteLater()
 			self.xyz = None
 
-	def animation_clicked(self,bool):
-		self.target().animation_enabled = bool
+	def animation_clicked(self,state):
+		self.target().animation_enabled = state
 
 	def get_image_manip_page(self):
 		self.impage = QtGui.QWidget()
@@ -2444,12 +2460,12 @@ class EMImageInspectorMX(QtGui.QWidget):
 		self.gammas.setValue(1.0)
 		vbl.addWidget(self.gammas)
 
-		QtCore.QObject.connect(self.scale, QtCore.SIGNAL("valueChanged"), self.target().set_scale)
-		QtCore.QObject.connect(self.mins, QtCore.SIGNAL("valueChanged"), self.newMin)
-		QtCore.QObject.connect(self.maxs, QtCore.SIGNAL("valueChanged"), self.newMax)
-		QtCore.QObject.connect(self.brts, QtCore.SIGNAL("valueChanged"), self.newBrt)
-		QtCore.QObject.connect(self.conts, QtCore.SIGNAL("valueChanged"), self.newCont)
-		QtCore.QObject.connect(self.gammas, QtCore.SIGNAL("valueChanged"), self.newGamma)
+		self.scale.valueChanged.connect(self.target().set_scale)
+		self.mins.valueChanged.connect(self.newMin)
+		self.maxs.valueChanged.connect(self.newMax)
+		self.brts.valueChanged.connect(self.newBrt)
+		self.conts.valueChanged.connect(self.newCont)
+		self.gammas.valueChanged.connect(self.newGamma)
 
 
 		return self.impage
@@ -2570,7 +2586,7 @@ class EMImageInspectorMX(QtGui.QWidget):
 		self.update_brightness_contrast()
 
 
-class EMMXDeletionManager:
+class EMMXDeletionManager(object):
 	'''
 	This class handles everything to do with Deleting particles
 	'''
@@ -2618,12 +2634,12 @@ class EMMXSetsPanel(QtGui.QWidget):
 
 		hbl.addLayout(vbl)
 
-		QtCore.QObject.connect(self.save_set_button, QtCore.SIGNAL("clicked(bool)"), self.save_set)
-		QtCore.QObject.connect(self.new_set_button, QtCore.SIGNAL("clicked(bool)"), self.new_set)
-		QtCore.QObject.connect(self.delete_set_button, QtCore.SIGNAL("clicked(bool)"), self.delete_set)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("itemChanged(QListWidgetItem*)"),self.set_list_item_changed)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("currentRowChanged(int)"),self.set_list_row_changed)
-		QtCore.QObject.connect(self.target(),QtCore.SIGNAL("setsChanged"),self.sets_changed)
+		self.save_set_button.clicked[bool].connect(self.save_set)
+		self.new_set_button.clicked[bool].connect(self.new_set)
+		self.delete_set_button.clicked[bool].connect(self.delete_set)
+		self.setlist.itemChanged[QListWidgetItem].connect(self.set_list_item_changed)
+		self.setlist.currentRowChanged[int].connect(self.set_list_row_changed)
+		self.target().setsChanged.connect(self.sets_changed)
 
 
 	def sets_changed(self):
@@ -2684,7 +2700,7 @@ class EMMXSetsPanel(QtGui.QWidget):
 
 
 
-class EMMXDataCache:
+class EMMXDataCache(object):
 	'''
 	Base class for EMMXDataCaches
 	'''
@@ -2780,14 +2796,14 @@ class EMMXDataCache:
 		'''
 		raise NotImplementedException
 
-class ApplyTransform:
+class ApplyTransform(object):
 	def __init__(self,transform):
 		self.transform = transform
 
 	def __call__(self,emdata):
 		emdata.transform(self.transform)
 
-class ApplyAttribute:
+class ApplyAttribute(object):
 	def __init__(self,attribute,value):
 		self.attribute = attribute
 		self.value = value
@@ -2795,7 +2811,7 @@ class ApplyAttribute:
 	def __call__(self,emdata):
 		emdata.set_attr(self.attribute,self.value)
 
-class ApplyProcessor:
+class ApplyProcessor(object):
 	def __init__(self,processor="",processor_args={}):
 		self.processor = processor
 		self.processor_args = processor_args
@@ -2825,7 +2841,7 @@ class EMLightWeightParticleCache(EMMXDataCache):
 		'''
 
 		n = EMUtil.get_image_count(file_name)
-		data = [[file_name,i,[]] for i in xrange(n)]
+		data = [[file_name,i,[]] for i in range(n)]
 
 		return EMLightWeightParticleCache(data,len(data))
 
@@ -2916,7 +2932,7 @@ class EMLightWeightParticleCache(EMMXDataCache):
 		Gets the keys in the header of the first image
 		'''
 		if self.header_keys == None:
-			self.header_keys = self.get_image_header(self.cache_start).keys()
+			self.header_keys = list(self.get_image_header(self.cache_start).keys())
 		return self.header_keys
 
 	def refocus_cache(self,new_focus):
@@ -3124,14 +3140,14 @@ class EMDataListCache(EMMXDataCache):
 				for i in self.images:
 					try:
 						if self.images[i] != None:
-							self.keys = self.images[i].get_attr_dict().keys()
+							self.keys = list(self.images[i].get_attr_dict().keys())
 							break
 					except: pass
 
 			elif self.mode == EMDataListCache.LIST_MODE:
 				for i in self.images:
 					try:
-						 self.keys = i.get_attr_dict().keys()
+						 self.keys = list(i.get_attr_dict().keys())
 						 break
 					except: pass
 
@@ -3321,7 +3337,7 @@ class EM3DDataListCache(EMMXDataCache):
 
 	def get_image_header_keys(self):
 		if self.keys == None:
-			self.keys = self[0].get_attr_dict().keys()
+			self.keys = list(self[0].get_attr_dict().keys())
 
 		return self.keys
 

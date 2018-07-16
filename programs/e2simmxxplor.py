@@ -33,6 +33,7 @@ from __future__ import print_function
 #
 
 
+from builtins import range
 import os,sys
 from PyQt4 import QtGui,QtCore
 from eman2_gui.valslider import ValSlider
@@ -188,7 +189,7 @@ class EMSimmxExplorer(EM3DSymModel):
 		if self.mx_display == None:
 			self.mx_display = EMImage2DWidget()
 #			self.mx_display = EMImageMXWidget()
-			QtCore.QObject.connect(self.mx_display,QtCore.SIGNAL("module_closed"),self.on_mx_display_closed)
+			self.mx_display.module_closed.connect(self.on_mx_display_closed)
 			resize_necessary = True
 
 		if self.frc_display == None:
@@ -337,7 +338,7 @@ class EMSimmxXplorInspector(EMSymInspector):
 		self.ptcl_slider.setSingleStep(1)
 		self.ptcl_slider.setValue(0)
 		layout.addWidget(self.ptcl_slider)
-		self.connect(self.ptcl_slider, QtCore.SIGNAL("valueChanged(int)"), self.set_ptcl_idx)
+		self.ptcl_slider.valueChanged[int].connect(self.set_ptcl_idx)
 
 
 	def set_ptcl_idx(self,val):
@@ -358,8 +359,8 @@ class EMSimmxXplorInspector(EMSymInspector):
 		self.combo = QtGui.QComboBox(self)
 		for e in combo_entries: self.combo.addItem(e)
 
-		self.connect(self.combo,QtCore.SIGNAL("currentIndexChanged(QString&)"),self.on_combo_change)
-		self.connect(self.combo,QtCore.SIGNAL("currentIndexChanged(const QString&)"),self.on_combo_change)
+		self.combo.currentIndexChanged[QString].connect(self.on_combo_change)
+		self.combo.currentIndexChanged[QString].connect(self.on_combo_change)
 
 		vbl.addWidget(self.combo)
 
@@ -367,7 +368,7 @@ class EMSimmxXplorInspector(EMSymInspector):
 
 		self.list_widget.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
 		self.list_widget.setMouseTracking(True)
-		QtCore.QObject.connect(self.list_widget,QtCore.SIGNAL("itemClicked(QListWidgetItem *)"),self.list_widget_item_clicked)
+		self.list_widget.itemClicked[QListWidgetItem].connect(self.list_widget_item_clicked)
 
 		self.update_simmx_list(True)
 		vbl.addWidget(self.list_widget)
@@ -470,7 +471,7 @@ def simmx_xplore_dir_data():
 			simmx+=[pfx+i for i in dl if "simmx_stg1" == i[:10] and "_even" in i]
 
 			if len(prjs)==len(simmx) : ret.append([dir,str(ptcl[0]),prjs,simmx])
-			else : print("Mismatch in :",zip(prjs,simmx))
+			else : print("Mismatch in :",list(zip(prjs,simmx)))
 
 			prjs=[pfx+i for i in dl if "projections_" in i and i[-4:]==".hdf" and "_odd" in i]
 			simmx=[pfx+i for i in dl if "simmx_" == i[:6] and "stg1_" not in i and "_odd" in i]
@@ -479,7 +480,7 @@ def simmx_xplore_dir_data():
 			simmx+=[pfx+i for i in dl if "simmx_stg1" == i[:10] and "_odd" in i]
 
 			if len(prjs)==len(simmx) : ret.append([dir,str(ptcl[1]),prjs,simmx])
-			else : print("Mismatch in :",zip(prjs,simmx))
+			else : print("Mismatch in :",list(zip(prjs,simmx)))
 
 	print(ret)
 

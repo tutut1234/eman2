@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 
 #
 # Author: Steven Ludtke (sludtke@bcm.edu)
@@ -31,22 +32,25 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307 USA
 #
 
+from builtins import range
+from builtins import object
 from EMAN2 import *
 from EMAN2jsondb import js_open_dict
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import QChar, QString, Qt
-from emapplication import EMApp
-from emimage2d import *
-from emimagemx import *
-from empdbitem3d import *
-from emplot2d import *
-from emhist import *
-from emplot3d import *
-from expand_string import expand_string
+from PyQt4.QtCore import QChar, QString, Qt, QModelIndex
+from PyQt4.QtGui import QAction,QTreeWidgetItem
+from .emapplication import EMApp
+from .emimage2d import *
+from .emimagemx import *
+from .empdbitem3d import *
+from .emplot2d import *
+from .emhist import *
+from .emplot3d import *
+from .expand_string import expand_string
 from libpyUtils2 import EMUtil
-from matching import matches_pats
+from .matching import matches_pats
 from string import lower
-from valslider import StringBox
+from .valslider import StringBox
 import os
 import re
 import threading
@@ -226,7 +230,7 @@ class EMFileType(object) :
 		brws.busy()
 
 		if self.n >= 0 : ns = [self.n]
-		else : ns = xrange(EMUtil.get_image_count(self.path))
+		else : ns = list(range(EMUtil.get_image_count(self.path)))
 
 		for i in ns :
 			im = EMData(self.path, i)
@@ -331,7 +335,7 @@ class EMFileType(object) :
 		target = emscene3d.EMScene3D()
 		brws.view3d.append(target)
 
-		for n in xrange(self.nimg) :
+		for n in range(self.nimg) :
 			data = emdataitem3d.EMDataItem3D(self.path, n = n)
 			target.insertNewNode("{} #{}".format(self.path.split("/")[-1], n), data)
 			iso = emdataitem3d.EMIsosurface(data)
@@ -363,7 +367,7 @@ class EMFileType(object) :
 		except :
 			target = EMImageMXWidget()
 			target.set_data(self.path, self.path)
-			QtCore.QObject.connect(target, QtCore.SIGNAL("mx_image_double"), target.mouse_double_click)		# this makes class average viewing work in app mode
+			target.mx_image_double.connect(target.mouse_double_click)		# this makes class average viewing work in app mode
 			# if self.getSetsDB() : target.set_single_active_set(self.getSetsDB())
 			brws.view2ds.append(target)
 
@@ -386,7 +390,7 @@ class EMFileType(object) :
 
 		target = EMImageMXWidget()
 		target.set_data(self.path, self.path)
-		QtCore.QObject.connect(target, QtCore.SIGNAL("mx_image_double"), target.mouse_double_click)
+		target.mx_image_double.connect(target.mouse_double_click)
 		# if self.getSetsDB() : target.set_single_active_set(self.getSetsDB())
 		brws.view2ds.append(target)
 
@@ -746,7 +750,7 @@ class EMPlotFileType(EMFileType) :
 
 		data = []
 
-		for c in xrange(self.numc) :
+		for c in range(self.numc) :
 			data.append([i[c] for i in data1])
 
 		target = EMHistogramWidget()
@@ -774,7 +778,7 @@ class EMPlotFileType(EMFileType) :
 
 		data = []
 
-		for c in xrange(self.numc) :
+		for c in range(self.numc) :
 			data.append([i[c] for i in data1])
 
 		try :
@@ -887,7 +891,7 @@ class EMJSONFileType(EMFileType) :
 		EMFileType.__init__(self, path)	# the current path this FileType is representing
 
 		self.js = js_open_dict(path)
-		self.keys = self.js.keys()
+		self.keys = list(self.js.keys())
 		self.dim = (0, 0, 0)
 
 	def __del__(self) :
@@ -935,7 +939,7 @@ class EMBdbFileType(EMFileType) :
 
 		self.nimg = len(self.bdb)
 
-		if self.nimg == 0 : self.keys = self.bdb.keys()
+		if self.nimg == 0 : self.keys = list(self.bdb.keys())
 		else : self.keys = None
 
 		if self.nimg > 0 :
@@ -1004,6 +1008,7 @@ class EMBdbFileType(EMFileType) :
 
 class EMImageFileType(EMFileType) :
 	"""FileType for files containing a single 2-D image"""
+	module_closed = QtCore.pyqtSignal()
 
 	def __init__(self, path) :
 		if path[:2] == "./" : path = path[2:]
@@ -1026,7 +1031,7 @@ class EMImageFileType(EMFileType) :
 
 		event.accept()
 		# self.app().close_specific(self)
-		self.emit(QtCore.SIGNAL("module_closed"))
+		self.module_closed.emit()
 
 	@staticmethod
 	def name() :
@@ -1130,7 +1135,7 @@ class EMStackFileType(EMFileType) :
 
 		try : im0 = EMData(path, 0, True)
 		except :
-			for i in xrange(1, 10) :
+			for i in range(1, 10) :
 				try : im0 = EMData(path, i, True)
 				except : continue
 				break
@@ -1655,7 +1660,7 @@ class EMDirEntry(object) :
 		if self.nimg > 0 :
 			try : tmp = EMData(self.path(), 0, True)		# try to read an image header for the file
 			except :
-				for i in xrange(1, 10) :
+				for i in range(1, 10) :
 					try : tmp = EMData(self.path(), i, True)
 					except : continue
 					break
@@ -1992,10 +1997,10 @@ class EMTextInfoPane(EMInfoPane) :
 
 		self.vbl.addLayout(self.hbl)
 
-		QtCore.QObject.connect(self.wfind, QtCore.SIGNAL("valueChanged"), self.find)
-		QtCore.QObject.connect(self.wbutedit, QtCore.SIGNAL('clicked(bool)'), self.buttonEdit)
-		QtCore.QObject.connect(self.wbutcancel, QtCore.SIGNAL('clicked(bool)'), self.buttonCancel)
-		QtCore.QObject.connect(self.wbutok, QtCore.SIGNAL('clicked(bool)'), self.buttonOk)
+		self.wfind.valueChanged.connect(self.find)
+		self.wbutedit.clicked[bool].connect(self.buttonEdit)
+		self.wbutcancel.clicked[bool].connect(self.buttonCancel)
+		self.wbutok.clicked[bool].connect(self.buttonOk)
 
 	def display(self, data) :
 		"""display information for the target EMDirEntry"""
@@ -2067,10 +2072,10 @@ class EMHTMLInfoPane(EMInfoPane) :
 
 		self.vbl.addLayout(self.hbl)
 
-		QtCore.QObject.connect(self.wfind, QtCore.SIGNAL("valueChanged"), self.find)
-		QtCore.QObject.connect(self.wbutedit, QtCore.SIGNAL('clicked(bool)'), self.buttonEdit)
-		QtCore.QObject.connect(self.wbutcancel, QtCore.SIGNAL('clicked(bool)'), self.buttonCancel)
-		QtCore.QObject.connect(self.wbutok, QtCore.SIGNAL('clicked(bool)'), self.buttonOk)
+		self.wfind.valueChanged.connect(self.find)
+		self.wbutedit.clicked[bool].connect(self.buttonEdit)
+		self.wbutcancel.clicked[bool].connect(self.buttonCancel)
+		self.wbutok.clicked[bool].connect(self.buttonOk)
 
 	def display(self, data) :
 		"""display information for the target EMDirEntry"""
@@ -2128,10 +2133,10 @@ class EMPDBInfoPane(EMInfoPane) :
 		self.wbutok.setEnabled(False)
 		self.hbl.addWidget(self.wbutok)
 		self.vbl.addLayout(self.hbl)
-		QtCore.QObject.connect(self.wfind, QtCore.SIGNAL("valueChanged"), self.find)
-		QtCore.QObject.connect(self.wbutedit, QtCore.SIGNAL('clicked(bool)'), self.buttonEdit)
-		QtCore.QObject.connect(self.wbutcancel, QtCore.SIGNAL('clicked(bool)'), self.buttonCancel)
-		QtCore.QObject.connect(self.wbutok, QtCore.SIGNAL('clicked(bool)'), self.buttonOk)
+		self.wfind.valueChanged.connect(self.find)
+		self.wbutedit.clicked[bool].connect(self.buttonEdit)
+		self.wbutcancel.clicked[bool].connect(self.buttonCancel)
+		self.wbutok.clicked[bool].connect(self.buttonOk)
 
 	def display(self, data) :
 		"""display information for the target EMDirEntry"""
@@ -2203,11 +2208,11 @@ class EMPlotInfoPane(EMInfoPane) :
 		else : self.plotdata.setRowCount(len(data))
 
 		self.plotdata.setColumnCount(numc)
-		self.plotdata.setVerticalHeaderLabels([str(i) for i in xrange(len(data))])
-		self.plotdata.setHorizontalHeaderLabels([str(i) for i in xrange(numc)])
+		self.plotdata.setVerticalHeaderLabels([str(i) for i in range(len(data))])
+		self.plotdata.setHorizontalHeaderLabels([str(i) for i in range(numc)])
 
-		for r in xrange(len(data)) :
-			for c in xrange(numc) :
+		for r in range(len(data)) :
+			for c in range(numc) :
 				self.plotdata.setItem(r, c, QtGui.QTableWidgetItem("%1.4g"%data[r][c]))
 
 		if len(data) == 2500 :
@@ -2275,7 +2280,7 @@ class EMBDBInfoPane(EMInfoPane) :
 				self.wbutmisc.append(QtGui.QPushButton(""))
 				self.hbl2.addWidget(self.wbutmisc[-1], j, i)
 				self.wbutmisc[-1].hide()
-				QtCore.QObject.connect(self.wbutmisc[-1], QtCore.SIGNAL('clicked(bool)'), lambda x, v = i*2+j :self.buttonMisc(v))
+				self.wbutmisc[-1].clicked[bool].connect(lambda x, v = i*2+j :self.buttonMisc(v))
 
 		# These just clean up the layout a bit
 
@@ -2288,8 +2293,8 @@ class EMBDBInfoPane(EMInfoPane) :
 
 		self.gbl.addLayout(self.hbl2, 2, 0, 1, 2)
 
-		QtCore.QObject.connect(self.wimnum, QtCore.SIGNAL("valueChanged(int)"), self.imNumChange)
-		QtCore.QObject.connect(self.wimlist, QtCore.SIGNAL("itemSelectionChanged()"), self.imSelChange)
+		self.wimnum.valueChanged[int].connect(self.imNumChange)
+		self.wimlist.itemSelectionChanged.connect(self.imSelChange)
 ##		QtCore.QObject.connect(self.wbutedit, QtCore.SIGNAL('clicked(bool)'), self.buttonEdit)
 
 		self.view2d = []
@@ -2329,7 +2334,7 @@ class EMBDBInfoPane(EMInfoPane) :
 
 		if target.nimg == 0 :
 			self.wimnum.hide()
-			k = self.bdb.keys()
+			k = list(self.bdb.keys())
 			k.sort()
 			self.wimlist.addItems(k)
 			self.wimlist.show()
@@ -2467,7 +2472,7 @@ class EMJSONInfoPane(EMInfoPane) :
 				self.wbutmisc.append(QtGui.QPushButton(""))
 				self.hbl2.addWidget(self.wbutmisc[-1], j, i)
 				self.wbutmisc[-1].hide()
-				QtCore.QObject.connect(self.wbutmisc[-1], QtCore.SIGNAL('clicked(bool)'), lambda x, v = i*2+j :self.buttonMisc(v))
+				self.wbutmisc[-1].clicked[bool].connect(lambda x, v = i*2+j :self.buttonMisc(v))
 
 		# These just clean up the layout a bit
 
@@ -2480,11 +2485,11 @@ class EMJSONInfoPane(EMInfoPane) :
 
 		self.gbl.addLayout(self.hbl2, 2, 0, 1, 2)
 
-		QtCore.QObject.connect(self.wkeylist, QtCore.SIGNAL("itemSelectionChanged()"), self.imSelChange)
-		QtCore.QObject.connect(self.wheadtree, QtCore.SIGNAL("itemExpanded(QTreeWidgetItem*)"), self.treeExp)
-		QtCore.QObject.connect(self.wheadtree, QtCore.SIGNAL("itemCollapsed(QTreeWidgetItem*)"), self.treeExp)
-		QtCore.QObject.connect(self.wheadtree, QtCore.SIGNAL("itemSelectionChanged()"), self.treeSel)
-		QtCore.QObject.connect(self.wheadtree, QtCore.SIGNAL("itemActivated(QTreeWidgetItem*, int)"), self.treeAct)
+		self.wkeylist.itemSelectionChanged.connect(self.imSelChange)
+		self.wheadtree.itemExpanded[QTreeWidgetItem].connect(self.treeExp)
+		self.wheadtree.itemCollapsed[QTreeWidgetItem].connect(self.treeExp)
+		self.wheadtree.itemSelectionChanged.connect(self.treeSel)
+		self.wheadtree.itemActivated[QTreeWidgetItem, int].connect(self.treeAct)
 ##		QtCore.QObject.connect(self.wbutedit, QtCore.SIGNAL('clicked(bool)'), self.buttonEdit)
 		self.view2d = []
 		self.view3d = []
@@ -2514,7 +2519,7 @@ class EMJSONInfoPane(EMInfoPane) :
 
 		# Set up image selectors for stacks
 
-		k = self.js.keys()
+		k = list(self.js.keys())
 		k.sort()
 		self.wkeylist.addItems(k)
 		self.wkeylist.show()
@@ -2578,8 +2583,8 @@ class EMJSONInfoPane(EMInfoPane) :
 				else : itms.append(QtGui.QTreeWidgetItem(QtCore.QStringList((str(k), str(trg[k])))))
 		elif isinstance(trg, (list, tuple, set)) :
 			if isinstance(trg, set) : trg = sorted(trg)		# make a list temporarily
-			if len(trg) > 120 : vals = range(0, 50)+[-1]+range(len(trg)-50, len(trg))
-			else : vals = xrange(len(trg))
+			if len(trg) > 120 : vals = list(range(0, 50))+[-1]+list(range(len(trg)-50, len(trg)))
+			else : vals = list(range(len(trg)))
 			for k in vals :
 				if k == -1 : itms.append(QtGui.QTreeWidgetItem(QtCore.QStringList(("...", "..."))))
 				else :
@@ -2591,7 +2596,7 @@ class EMJSONInfoPane(EMInfoPane) :
 		elif isinstance(trg, EMAN2Ctf) :
 			itms.append(QtGui.QTreeWidgetItem(QtCore.QStringList(("EMAN2Ctf", ""))))
 			subitms = []
-			for k, v in trg.to_dict().items() :
+			for k, v in list(trg.to_dict().items()) :
 				if isinstance(v, (list, tuple)) :
 					v = ["%1.3g"%i for i in v]
 					subitms.append(QtGui.QTreeWidgetItem(QtCore.QStringList((str(k), ", ".join(v)))))
@@ -2676,6 +2681,7 @@ class EMImageInfoPane(EMInfoPane) :
 #---------------------------------------------------------------------------
 
 class EMStackInfoPane(EMInfoPane) :
+	module_closed = QtCore.pyqtSignal()
 	maxim = 500
 
 	def __init__(self, parent = None) :
@@ -2735,14 +2741,14 @@ class EMStackInfoPane(EMInfoPane) :
 		self.hbl2.setRowStretch(1, 1) # Jesus
 		self.hbl2.setRowStretch(2, 1) # Jesus
 
-		for i in xrange(5) :
+		for i in range(5) :
 			self.hbl2.setColumnStretch(i, 2)
 	
 			for j in range(2) :
 				self.wbutmisc.append(QtGui.QPushButton(""))
 				self.hbl2.addWidget(self.wbutmisc[-1], j, i)
 				self.wbutmisc[-1].hide()
-				QtCore.QObject.connect(self.wbutmisc[-1], QtCore.SIGNAL('clicked(bool)'), lambda x, v = i*2+j :self.buttonMisc(v))
+				self.wbutmisc[-1].clicked[bool].connect(lambda x, v = i*2+j :self.buttonMisc(v))
 
 		# These just clean up the layout a bit
 
@@ -2760,8 +2766,8 @@ class EMStackInfoPane(EMInfoPane) :
 		# self.gbl.addLayout(self.hbl2, 2, 0, 1, 2) # JOHN
 		self.gbl.addLayout(self.hbl2, 3, 0, 1, 2) # Jesus
 
-		QtCore.QObject.connect(self.wimnum, QtCore.SIGNAL("valueChanged(int)"), self.imNumChange)
-		QtCore.QObject.connect(self.wimlist, QtCore.SIGNAL("itemSelectionChanged()"), self.imSelChange)
+		self.wimnum.valueChanged[int].connect(self.imNumChange)
+		self.wimlist.itemSelectionChanged.connect(self.imSelChange)
 #		QtCore.QObject.connect(self.wbutedit, QtCore.SIGNAL('clicked(bool)'), self.buttonEdit)
 		self.view2d = []
 		self.view3d = []
@@ -2783,7 +2789,7 @@ class EMStackInfoPane(EMInfoPane) :
 		event.accept()
 
 		# self.app().close_specific(self)
-		self.emit(QtCore.SIGNAL("module_closed"))
+		self.module_closed.emit()
 
 	def hideEvent(self, event) :
 		"""If this pane is no longer visible close any child views"""
@@ -2902,6 +2908,7 @@ class EMStackInfoPane(EMInfoPane) :
 
 class EMInfoWin(QtGui.QWidget) :
 	"""The info window"""
+	winclosed = QtCore.pyqtSignal()
 
 	def __init__(self, parent = None) :
 		QtGui.QWidget.__init__(self, parent)
@@ -2935,6 +2942,7 @@ class EMInfoWin(QtGui.QWidget) :
 			# If we got here, then we need to make a new instance of the appropriate pane
 
 			if cls == None : print("No class ! (%s)"%str(ftype))
+			#self.winclosed = QtCore.pyqtSignal()
 			pane = cls()
 			i = self.stack.addWidget(pane)		# add the new pane and get its index
 			pane.display(target)
@@ -2942,7 +2950,7 @@ class EMInfoWin(QtGui.QWidget) :
 
 	def closeEvent(self, event) :
 		QtGui.QWidget.closeEvent(self, event)
-		self.emit(QtCore.SIGNAL("winclosed()"))
+		self.winclosed.emit()
 
 class SortSelTree(QtGui.QTreeView) :
 	"""This is a subclass of QtGui.QTreeView. It is almost identical but implements selection processing with sorting.
@@ -2951,7 +2959,7 @@ class SortSelTree(QtGui.QTreeView) :
 	def __init__(self, parent = None) :
 		QtGui.QTreeView.__init__(self, parent)
 		self.header().setClickable(True)
-		self.connect(self.header(), QtCore.SIGNAL("sectionClicked(int)"), self.colclick)
+		self.header().sectionClicked[int].connect(self.colclick)
 		self.scol = -1
 		self.sdir = 1
 
@@ -3009,6 +3017,9 @@ class EMBrowserWidget(QtGui.QWidget) :
 	- embedding BDB: databases into the observed filesystem
 	- remote database access (EMEN2)*
 	"""
+	ok = QtCore.pyqtSignal()
+	cancel = QtCore.pyqtSignal()
+	module_closed = QtCore.pyqtSignal()
 
 	def __init__(self, parent = None, withmodal = False, multiselect = False, startpath = ".", setsmode = None) :
 		"""withmodal - if specified will have ok/cancel buttons, and provide a mechanism for a return value (not truly modal)
@@ -3021,8 +3032,8 @@ class EMBrowserWidget(QtGui.QWidget) :
 		# although this looks dumb it is necessary to break Python's issue with circular imports(a major weakness of Python IMO)
 
 		global emscene3d, emdataitem3d
-		import emscene3d
-		import emdataitem3d
+		from . import emscene3d
+		from . import emdataitem3d
 
 		QtGui.QWidget.__init__(self, parent)
 
@@ -3165,7 +3176,7 @@ class EMBrowserWidget(QtGui.QWidget) :
 				self.hbl2.addWidget(self.wbutmisc[-1], j, i)
 				self.wbutmisc[-1].hide()
 #				self.wbutmisc[-1].setEnabled(False)
-				QtCore.QObject.connect(self.wbutmisc[-1], QtCore.SIGNAL('clicked(bool)'), lambda x, v = i*2+j :self.buttonMisc(v))
+				self.wbutmisc[-1].clicked[bool].connect(lambda x, v = i*2+j :self.buttonMisc(v))
 
 		self.wbutxx = QtGui.QLabel("")
 		self.wbutxx.setMaximumHeight(12)
@@ -3190,24 +3201,24 @@ class EMBrowserWidget(QtGui.QWidget) :
 			self.hbl2.setColumnStretch(7, 1)
 			self.hbl2.setColumnStretch(8, 1)
 
-			QtCore.QObject.connect(self.wbutcancel, QtCore.SIGNAL('clicked(bool)'), self.buttonCancel)
-			QtCore.QObject.connect(self.wbutok, QtCore.SIGNAL('clicked(bool)'), self.buttonOk)
+			self.wbutcancel.clicked[bool].connect(self.buttonCancel)
+			self.wbutok.clicked[bool].connect(self.buttonOk)
 
 		self.gbl.addLayout(self.hbl2, 4, 1)
 
-		QtCore.QObject.connect(self.wbutback, QtCore.SIGNAL('clicked(bool)'), self.buttonBack)
-		QtCore.QObject.connect(self.wbutfwd, QtCore.SIGNAL('clicked(bool)'), self.buttonFwd)
-		QtCore.QObject.connect(self.wbutup, QtCore.SIGNAL('clicked(bool)'), self.buttonUp)
-		QtCore.QObject.connect(self.wbutrefresh, QtCore.SIGNAL('clicked(bool)'), self.buttonRefresh)
-		QtCore.QObject.connect(self.wbutinfo, QtCore.SIGNAL('clicked(bool)'), self.buttonInfo)
-		QtCore.QObject.connect(self.selectall, QtCore.SIGNAL('clicked(bool)'), self.selectAll)
-		QtCore.QObject.connect(self.wtree, QtCore.SIGNAL('clicked(const QModelIndex)'), self.itemSel)
-		QtCore.QObject.connect(self.wtree, QtCore.SIGNAL('activated(const QModelIndex)'), self.itemActivate)
-		QtCore.QObject.connect(self.wtree, QtCore.SIGNAL('doubleClicked(const QModelIndex)'), self.itemDoubleClick)
-		QtCore.QObject.connect(self.wtree, QtCore.SIGNAL('expanded(const QModelIndex)'), self.itemExpand)
-		QtCore.QObject.connect(self.wpath, QtCore.SIGNAL('returnPressed()'), self.editPath)
-		QtCore.QObject.connect(self.wbookmarks, QtCore.SIGNAL('actionTriggered(QAction*)'), self.bookmarkPress)
-		QtCore.QObject.connect(self.wfilter, QtCore.SIGNAL('currentIndexChanged(int)'), self.editFilter)
+		self.wbutback.clicked[bool].connect(self.buttonBack)
+		self.wbutfwd.clicked[bool].connect(self.buttonFwd)
+		self.wbutup.clicked[bool].connect(self.buttonUp)
+		self.wbutrefresh.clicked[bool].connect(self.buttonRefresh)
+		self.wbutinfo.clicked[bool].connect(self.buttonInfo)
+		self.selectall.clicked[bool].connect(self.selectAll)
+		self.wtree.clicked[QModelIndex].connect(self.itemSel)
+		self.wtree.activated[QModelIndex].connect(self.itemActivate)
+		self.wtree.doubleClicked[QModelIndex].connect(self.itemDoubleClick)
+		self.wtree.expanded[QModelIndex].connect(self.itemExpand)
+		self.wpath.returnPressed.connect(self.editPath)
+		self.wbookmarks.actionTriggered[QAction].connect(self.bookmarkPress)
+		self.wfilter.currentIndexChanged[int].connect(self.editFilter)
 
 		self.setsmode = setsmode	# The sets mode is used when selecting bad particles
 		self.curmodel = None	# The current data model displayed in the tree
@@ -3231,7 +3242,7 @@ class EMBrowserWidget(QtGui.QWidget) :
 		# These items are used to do gradually filling in of file details for better interactivity
 
 		self.updtimer = QTimer()		# This causes the actual display updates, which can't be done from a python thread
-		QtCore.QObject.connect(self.updtimer, QtCore.SIGNAL('timeout()'), self.updateDetailsDisplay)
+		self.updtimer.timeout.connect(self.updateDetailsDisplay)
 		self.updthreadexit = False		# when set, this triggers the update thread to exit
 		self.updthread = threading.Thread(target = self.updateDetails)	# The actual thread
 		self.updlist = []				# List of QModelIndex items in need of updating
@@ -3419,7 +3430,7 @@ class EMBrowserWidget(QtGui.QWidget) :
 
 		# we add the child items to the list needing updates
 
-		for i in xrange(self.curmodel.rowCount(qmi)-1, -1, -1) :
+		for i in range(self.curmodel.rowCount(qmi)-1, -1, -1) :
 			self.updlist.append(self.curmodel.index(i, 0, qmi))
 
 	def buttonMisc(self, num) :
@@ -3435,14 +3446,14 @@ class EMBrowserWidget(QtGui.QWidget) :
 		qism = self.wtree.selectionModel().selectedRows()
 		self.result = [i.internalPointer().path().replace(os.getcwd(), ".") for i in qism]
 		self.updtimer.stop()
-		self.emit(QtCore.SIGNAL("ok")) # this signal is important when e2ctf is being used by a program running its own eve
+		self.ok.emit() # this signal is important when e2ctf is being used by a program running its own eve
 
 	def buttonCancel(self, tog) :
 		"""When the Cancel button is pressed, a signal is emitted, but getResult should not be called."""
 
 		self.result = []
 		self.updtimer.stop()
-		self.emit(QtCore.SIGNAL("cancel")) # this signal is important when e2ctf is being used by a program running its own eve
+		self.cancel.emit() # this signal is important when e2ctf is being used by a program running its own eve
 		self.close()
 
 	def selectAll(self) :
@@ -3503,7 +3514,7 @@ class EMBrowserWidget(QtGui.QWidget) :
 			if len(qism) == 1 :
 				self.infowin.set_target(qism[0].internalPointer(), self.curft)
 			else : self.infowin.set_target(None, None)
-			QtCore.QObject.connect(self.infowin, QtCore.SIGNAL('winclosed()'), self.infowinClosed)
+			self.infowin.winclosed.connect(self.infowinClosed)
 		else :
 			if self.infowin != None :
 				self.infowin.hide()
@@ -3518,7 +3529,7 @@ class EMBrowserWidget(QtGui.QWidget) :
 
 		self.close()
 
-		for i in xrange(len(self.result)) :
+		for i in range(len(self.result)) :
 			if self.result[i][:2] == "./" : self.result[i] = self.result[i][2:]
 		return self.result
 
@@ -3640,7 +3651,7 @@ class EMBrowserWidget(QtGui.QWidget) :
 
 		# we add the child items to the list needing updates
 
-		for i in xrange(self.curmodel.rowCount(None)-1, -1, -1) :
+		for i in range(self.curmodel.rowCount(None)-1, -1, -1) :
 			self.updlist.append(self.curmodel.index(i, 0, None))
 
 		if not silent :
@@ -3674,7 +3685,7 @@ class EMBrowserWidget(QtGui.QWidget) :
 		event.accept()
 		self.updtimer.stop()
 		# self.app().close_specific(self)
-		self.emit(QtCore.SIGNAL("module_closed"))
+		self.module_closed.emit()
 
 # This is just for testing, of course
 
@@ -3686,8 +3697,8 @@ def test_result() :
 if __name__ == '__main__' :
 	em_app = EMApp()
 	window = EMBrowserWidget(withmodal = True, multiselect = True)
-	QtCore.QObject.connect(window, QtCore.SIGNAL("ok"), test_result)
-	QtCore.QObject.connect(window, QtCore.SIGNAL("cancel"), test_result)
+	window.ok.connect(test_result)
+	window.cancel.connect(test_result)
 
 	window.show()
 	ret = em_app.exec_()

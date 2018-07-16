@@ -32,6 +32,8 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
+from builtins import object
 from EMAN2 import BoxingTools,gm_time_string,Transform, E2init, E2end, E2progress,db_open_dict,EMArgumentParser
 from EMAN2db import db_check_dict
 from EMAN2jsondb import *
@@ -52,9 +54,9 @@ def e2boxer_check(options,args):
 			db = js_open_dict("e2boxercache/swarm.json")
 			if options.autoboxer not in db:
 				s = "There is no autoboxing information present for %s." %options.autoboxer
-				if len(db.keys()) > 0:
+				if len(list(db.keys())) > 0:
 					s+= ("Choose from")
-					for k in db.keys():
+					for k in list(db.keys()):
 						try: s+=" "+str(k)+";"
 						except: pass
 				error_message.append(s)
@@ -431,7 +433,7 @@ def gen_rot_ave_template(image_name,ref_boxes,shrink,box_size,iter=4):
 	return averages
 
 
-class SwarmShrunkenImageMediator:
+class SwarmShrunkenImageMediator(object):
 	def __init__(self,template_radius,subsample_rate):
 		self.template_radius = template_radius
 		self.subsample_rate = subsample_rate
@@ -439,7 +441,7 @@ class SwarmShrunkenImageMediator:
 	def get_template_radius(self): return self.template_radius
 	def get_subsample_rate(self): return self.subsample_rate
 
-class SwarmFLCFImageMediator:
+class SwarmFLCFImageMediator(object):
 	def __init__(self,template_radius,subsample_rate,template_image):
 		self.template_radius = template_radius
 		self.subsample_rate = subsample_rate
@@ -449,7 +451,7 @@ class SwarmFLCFImageMediator:
 	def get_subsample_rate(self): return self.subsample_rate
 	def get_template_object(self): return self.template_object
 
-	class TemplateObject:
+	class TemplateObject(object):
 		def __init__(self,template_image):
 			self.template_image = template_image
 
@@ -459,7 +461,7 @@ class SwarmFLCFImageMediator:
 
 		def get_radius(self): return
 
-class SwarmBox:
+class SwarmBox(object):
 	def __init__(self,x,y,image_name,in_template=True,profile=None):
 		self.x = x
 		self.y = y
@@ -505,7 +507,7 @@ class SwarmBox:
 			self.profile = BoxingTools.get_min_delta_profile(correlation,self.peak_x,self.peak_y, mediator.get_template_radius() )
 
 
-class SwarmPanel:
+class SwarmPanel(object):
 	DB_NAME = "e2boxercache/swarm_panel.json"
 
 	def __init__(self,target,particle_diameter=128):
@@ -621,21 +623,21 @@ class SwarmPanel:
 			vbl.addLayout(hbl_bb)
 
 
-			QtCore.QObject.connect(self.ptcl_diam_edit,QtCore.SIGNAL("editingFinished()"),self.new_ptcl_diam)
-			QtCore.QObject.connect(self.update_template,QtCore.SIGNAL("clicked(bool)"),self.update_template_checked)
-			QtCore.QObject.connect(self.auto_update,QtCore.SIGNAL("clicked(bool)"),self.auto_update_checked)
-			QtCore.QObject.connect(self.clear, QtCore.SIGNAL("clicked(bool)"), self.clear_clicked)
-			QtCore.QObject.connect(self.view_template, QtCore.SIGNAL("clicked(bool)"), self.view_template_clicked)
-			QtCore.QObject.connect(self.autobox, QtCore.SIGNAL("clicked(bool)"), self.auto_box_clicked)
-			QtCore.QObject.connect(self.method_group,QtCore.SIGNAL("buttonClicked (QAbstractButton *)"),self.method_group_clicked)
-			QtCore.QObject.connect(self.enable_interactive_threshold, QtCore.SIGNAL("clicked(bool)"), self.interact_thresh_clicked)
-			QtCore.QObject.connect(self.thr,QtCore.SIGNAL("sliderReleased"),self.new_threshold_release)
-			QtCore.QObject.connect(self.thr,QtCore.SIGNAL("textChanged"),self.new_threshold_text_changed)
-			QtCore.QObject.connect(self.step_back, QtCore.SIGNAL("clicked(bool)"), self.step_back_clicked)
-			QtCore.QObject.connect(self.step_forward, QtCore.SIGNAL("clicked(bool)"), self.step_forward_clicked)
-			QtCore.QObject.connect(self.proximity_thr,QtCore.SIGNAL("sliderReleased"),self.proximity_threshold_release)
-			QtCore.QObject.connect(self.proximity_thr,QtCore.SIGNAL("textChanged"),self.proximity_threshold_text_changed)
-			QtCore.QObject.connect(self.enable_overlap_removal, QtCore.SIGNAL("clicked(bool)"), self.enable_overlap_removal_clicked)
+			self.ptcl_diam_edit.editingFinished.connect(self.new_ptcl_diam)
+			self.update_template.clicked[bool].connect(self.update_template_checked)
+			self.auto_update.clicked[bool].connect(self.auto_update_checked)
+			self.clear.clicked[bool].connect(self.clear_clicked)
+			self.view_template.clicked[bool].connect(self.view_template_clicked)
+			self.autobox.clicked[bool].connect(self.auto_box_clicked)
+			self.method_group.buttonClicked [QAbstractButton].connect(self.method_group_clicked)
+			self.enable_interactive_threshold.clicked[bool].connect(self.interact_thresh_clicked)
+			self.thr.sliderReleased.connect(self.new_threshold_release)
+			self.thr.textChanged.connect(self.new_threshold_text_changed)
+			self.step_back.clicked[bool].connect(self.step_back_clicked)
+			self.step_forward.clicked[bool].connect(self.step_forward_clicked)
+			self.proximity_thr.sliderReleased.connect(self.proximity_threshold_release)
+			self.proximity_thr.textChanged.connect(self.proximity_threshold_text_changed)
+			self.enable_overlap_removal.clicked[bool].connect(self.enable_overlap_removal_clicked)
 		return self.widget
 
 	def update_states(self,swarm_boxer):
@@ -804,7 +806,7 @@ def compare_box_correlation(box1,box2):
 	else: return 1
 
 
-class SwarmBoxer:
+class SwarmBoxer(object):
 	THRESHOLD = "Threshold"
 	SELECTIVE = "Selective"
 	MORESELECTIVE = "More Selective"
@@ -1096,7 +1098,7 @@ class SwarmBoxer:
 
 		nearness_sq = self.proximity_threshold**2 # avoid use of sqrt
 
-		if isinstance(boxes,dict): keys = boxes.keys()
+		if isinstance(boxes,dict): keys = list(boxes.keys())
 		elif isinstance(boxes,list): keys = [i for i in range(len(boxes))]
 
 		for i,key in enumerate(keys):
@@ -1264,7 +1266,7 @@ class SwarmBoxer:
 			self.template_viewer.set_data(self.templates,soft_delete=True) # should work if self.templates is None
 			self.template_viewer.setWindowTitle("Templates")
 			from PyQt4 import QtCore
-			QtCore.QObject.connect(self.template_viewer,QtCore.SIGNAL("module_closed"),self.template_viewer_closed)
+			self.template_viewer.module_closed.connect(self.template_viewer_closed)
 
 		get_application().show_specific(self.template_viewer)
 
@@ -1652,7 +1654,7 @@ class SwarmBoxer:
 				if len(self.profile) != len(box.profile): raise RuntimeError("This should never happen")
 
 				profile = box.profile
-				for j in xrange(0,len(self.profile)):
+				for j in range(0,len(self.profile)):
 					if profile[j] < self.profile[j]: self.profile[j] = profile[j]
 
 		if self.profile == None:
@@ -1916,7 +1918,7 @@ def histogram1d( data, nbin, presize=0 ) :
 	start = fmin - binsize*presize
 	region = [None]*nbin
 	hist = [None]*nbin
-	for i in xrange(nbin):
+	for i in range(nbin):
 		region[i] = start + (i+0.5)*binsize
 		hist[i] = 0
 
@@ -1926,7 +1928,7 @@ def histogram1d( data, nbin, presize=0 ) :
 
 	return region,hist
 
-class GaussPanel:
+class GaussPanel(object):
 	DB_NAME = "e2boxercache/gauss_panel.json"
 	GDB_NAME = 'e2boxercache/gauss_box_DB.json' # cache for putting params related to gauss method autoboxer
 
@@ -2219,27 +2221,27 @@ class GaussPanel:
 			#vbl.addLayout(hbl_ctf)
 
 
-			QtCore.QObject.connect(self.pixel_input_edit,QtCore.SIGNAL("editingFinished()"),self.new_pixel_input)
-			QtCore.QObject.connect(self.pixel_output_edit,QtCore.SIGNAL("editingFinished()"),self.new_pixel_output)
-			QtCore.QObject.connect(self.autobox, QtCore.SIGNAL("clicked(bool)"), self.auto_box_clicked)
-			QtCore.QObject.connect(self.clear, QtCore.SIGNAL("clicked(bool)"), self.clear_clicked)
-			QtCore.QObject.connect(self.invert_contrast_chk,QtCore.SIGNAL("clicked(bool)"),self.invert_contrast_checked)
-			QtCore.QObject.connect(self.use_variance_chk,QtCore.SIGNAL("clicked(bool)"),self.use_variance_checked)
-			QtCore.QObject.connect(self.gauss_width_slider, QtCore.SIGNAL("valueChanged(int)"), self.gauss_width_changed)
-			QtCore.QObject.connect(self.gauss_width, QtCore.SIGNAL("editingFinished()"), self.gauss_width_edited)
-			QtCore.QObject.connect(self.thr_low_edit,QtCore.SIGNAL("editingFinished()"),self.new_thr_low)
-			QtCore.QObject.connect(self.thr_hi_edit,QtCore.SIGNAL("editingFinished()"),self.new_thr_hi)
+			self.pixel_input_edit.editingFinished.connect(self.new_pixel_input)
+			self.pixel_output_edit.editingFinished.connect(self.new_pixel_output)
+			self.autobox.clicked[bool].connect(self.auto_box_clicked)
+			self.clear.clicked[bool].connect(self.clear_clicked)
+			self.invert_contrast_chk.clicked[bool].connect(self.invert_contrast_checked)
+			self.use_variance_chk.clicked[bool].connect(self.use_variance_checked)
+			self.gauss_width_slider.valueChanged[int].connect(self.gauss_width_changed)
+			self.gauss_width.editingFinished.connect(self.gauss_width_edited)
+			self.thr_low_edit.editingFinished.connect(self.new_thr_low)
+			self.thr_hi_edit.editingFinished.connect(self.new_thr_hi)
 #			QtCore.QObject.connect(self.estimate_ctf,QtCore.SIGNAL("clicked(bool)"), self.calc_ctf)
 #			QtCore.QObject.connect(self.inspect_button,QtCore.SIGNAL("clicked(bool)"), self.inspect_ctf)
-			QtCore.QObject.connect(self.ctf_window_size,QtCore.SIGNAL("editingFinished()"),self.new_ctf_window)
-			QtCore.QObject.connect(self.ctf_cs,QtCore.SIGNAL("editingFinished()"),self.new_ctf_cs)
-			QtCore.QObject.connect(self.ctf_edge_size,QtCore.SIGNAL("editingFinished()"),self.new_ctf_edge)
-			QtCore.QObject.connect(self.ctf_volt,QtCore.SIGNAL("editingFinished()"),self.new_ctf_volt)
-			QtCore.QObject.connect(self.ctf_overlap_size,QtCore.SIGNAL("editingFinished()"),self.new_ctf_overlap_size)
-			QtCore.QObject.connect(self.ctf_ampcont,QtCore.SIGNAL("editingFinished()"),self.new_ctf_ampcont)
-			QtCore.QObject.connect(self.ctf_kboot,QtCore.SIGNAL("editingFinished()"),self.new_ctf_kboot)
+			self.ctf_window_size.editingFinished.connect(self.new_ctf_window)
+			self.ctf_cs.editingFinished.connect(self.new_ctf_cs)
+			self.ctf_edge_size.editingFinished.connect(self.new_ctf_edge)
+			self.ctf_volt.editingFinished.connect(self.new_ctf_volt)
+			self.ctf_overlap_size.editingFinished.connect(self.new_ctf_overlap_size)
+			self.ctf_ampcont.editingFinished.connect(self.new_ctf_ampcont)
+			self.ctf_kboot.editingFinished.connect(self.new_ctf_kboot)
 
-			QtCore.QObject.connect(self.estimate_ctf_cter,QtCore.SIGNAL("clicked(bool)"), self.calc_ctf_cter)
+			self.estimate_ctf_cter.clicked[bool].connect(self.calc_ctf_cter)
 
 		return self.widget
 
@@ -2491,7 +2493,7 @@ class GaussPanel:
 		#print "calc_ctf image_name: ", image_name
 		if image_name in gbdb:
 			olddict=gbdb[image_name]
-			gbdb[image_name] = dict((olddict).items() + ctfdict.items() ) # merge the two dictionaries with conflict resolution resolved in favorr of the latest ctf parameters
+			gbdb[image_name] = dict(list((olddict).items()) + list(ctfdict.items()) ) # merge the two dictionaries with conflict resolution resolved in favorr of the latest ctf parameters
 		else:
 			gbdb[image_name]=ctfdict
 
@@ -2597,7 +2599,7 @@ class GaussPanel:
 		#print "calc_ctf image_name: ", image_name
 		if image_name in gbdb:
 			olddict=gbdb[image_name]
-			gbdb[image_name] = dict((olddict).items() + ctfdict.items() ) # merge the two dictionaries with conflict resolution resolved in favorr of the latest ctf parameters
+			gbdb[image_name] = dict(list((olddict).items()) + list(ctfdict.items()) ) # merge the two dictionaries with conflict resolution resolved in favorr of the latest ctf parameters
 		else:
 			gbdb[image_name]=ctfdict
 
@@ -2606,7 +2608,7 @@ class GaussPanel:
 
 
 
-class GaussBoxer:
+class GaussBoxer(object):
 
 	CACHE_MAX = 10 # Each image has its last CACHE_MAX SwarmBoxer instance stored (or retrievable) automatically
 	PROFILE_MAX = 0.8 # this is a percentage - it stops the profile trough point from going to the end
@@ -2757,7 +2759,7 @@ class GaussBoxer:
 		print("invert: ", self.invert)
 		print("gauss width: ", self.gauss_width)
 		print("variance: ", self.use_variance)
-		for i in xrange(npeak):
+		for i in range(npeak):
 			cx = peaks[3*i+1]
 			cy = peaks[3*i+2]
 
@@ -2810,7 +2812,7 @@ class GaussBoxer:
 
 		if imgname in gbdb:
 			oldautoboxdict = gbdb[imgname]
-			gbdb[imgname] = dict(oldautoboxdict.items() + autoboxdict.items()) # resolve conflicts in favor of new autoboxdict
+			gbdb[imgname] = dict(list(oldautoboxdict.items()) + list(autoboxdict.items())) # resolve conflicts in favor of new autoboxdict
 		else:
 			gbdb[imgname] = autoboxdict
 		#######################################################
@@ -3008,7 +3010,7 @@ class GaussBoxer:
 		npeak = len(peaks)/3
 		print("npeak: ", npeak)
 		boxes = []
-		for i in xrange(npeak):
+		for i in range(npeak):
 			cx = peaks[3*i+1]
 			cy = peaks[3*i+2]
 
@@ -3277,9 +3279,9 @@ class CTFInspectorWidget(QtGui.QWidget):
 
 
 			if ((self.i_start is not None) and (self.i_stop is not None)):
-				sizeh = max([max(self.data[i][self.i_start:self.i_stop]) for i in xrange(len(self.data)-1)])
+				sizeh = max([max(self.data[i][self.i_start:self.i_stop]) for i in range(len(self.data)-1)])
 			else:
-				sizeh = max([max(self.data[i]) for i in xrange(len(self.data)-1)])
+				sizeh = max([max(self.data[i]) for i in range(len(self.data)-1)])
 
 
 			sizeh = float(sizeh)
@@ -3299,7 +3301,7 @@ class CTFInspectorWidget(QtGui.QWidget):
 
 			tickspacing = min(int(sizew/30)+1, 5)
 
-			for list_index in xrange(len(self.data)):
+			for list_index in range(len(self.data)):
 
 				p.setPen(color[list_index])
 				metrics = p.fontMetrics()
@@ -3308,7 +3310,7 @@ class CTFInspectorWidget(QtGui.QWidget):
 				p.drawText(w-wborder-fw/2, hborder+(list_index)*fh, str(labels[list_index]))
 
 
-				for index in xrange(self.i_start,self.i_stop):
+				for index in range(self.i_start,self.i_stop):
 
 
 					p.setPen(color[list_index])

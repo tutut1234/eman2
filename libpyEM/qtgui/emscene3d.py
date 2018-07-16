@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 #
 # Author: John Flanagan (jfflanag@bcm.edu)
 # Copyright (c) 2011- Baylor College of Medicine
@@ -32,25 +33,28 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
+from builtins import object
 from EMAN2 import *
 import copy
-from emapplication import EMGLWidget
-from emdataitem3d import *
-from emglobjects import get_default_gl_colors
-from emitem3d import EMItem3D, EMItem3DInspector
-from empdbitem3d import *
-from emshapeitem3d import *
+from .emapplication import EMGLWidget
+from .emdataitem3d import *
+from .emglobjects import get_default_gl_colors
+from .emitem3d import EMItem3D, EMItem3DInspector
+from .empdbitem3d import *
+from .emshapeitem3d import *
 from libpyGLUtils2 import GLUtil
 import math
 import os
 import pickle
-from valslider import ValSlider, EMLightControls, CameraControls, EMSpinWidget, EMQTColorWidget, EMANToolButton
+from .valslider import ValSlider, EMLightControls, CameraControls, EMSpinWidget, EMQTColorWidget, EMANToolButton
 import weakref
 
 from OpenGL import GLU
 from OpenGL.GL import *
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QTreeWidgetItem, QColor
 
 
 #from emdataitem3d import EMDataItem3D, EMIsosurface, EMSliceItem3D, EMVolumeItem3D
@@ -727,6 +731,9 @@ class EMScene3D(EMItem3D, EMGLWidget):
 	"""
 	Widget for rendering 3D objects. Uses a scne graph for rendering
 	"""
+	sgmousepress = QtCore.pyqtSignal(float, float)
+	sgmousemove = QtCore.pyqtSignal(float, float)
+	sgmouserelease = QtCore.pyqtSignal(float, float)
 	name = "SG"
 	def __init__(self, parentwidget=None, SGactivenodeset=set(), scalestep=0.5):
 		"""
@@ -989,7 +996,7 @@ class EMScene3D(EMItem3D, EMGLWidget):
 		# Process mouse events
 		if (event.buttons()&Qt.LeftButton and self.mousemode == "app"):
 			QtGui.qApp.setOverrideCursor(self.appcursor)
-			self.emit(QtCore.SIGNAL("sgmousepress()"), [event.x(), event.y()])
+			self.sgmousepress.emit([event.x(), event.y()])
 		if (event.buttons()&Qt.LeftButton and self.mousemode == "data"):
 			QtGui.qApp.setOverrideCursor(self.datacursor)
 			filename = QtGui.QFileDialog.getOpenFileName(self, 'Get file', os.getcwd())
@@ -1106,7 +1113,7 @@ class EMScene3D(EMItem3D, EMGLWidget):
 		x = event.x()
 		y = event.y()
 		if (event.buttons()&Qt.LeftButton and self.mousemode == "app"):
-			self.emit(QtCore.SIGNAL("sgmousemove()"), [event.x(), event.y()])
+			self.sgmousemove.emit([event.x(), event.y()])
 		if (event.buttons()&Qt.LeftButton and self.mousemode == "line"):
 			self.newnode.setEndAndWidth(0.0, 0.0, 0.0, x - self.first_x, self.first_y - y, 0.0, 20.0)
 		if (event.buttons()&Qt.LeftButton and self.mousemode == "ruler"):
@@ -1149,7 +1156,7 @@ class EMScene3D(EMItem3D, EMGLWidget):
 		Qt event handler. Returns the cursor to arrow unpon mouse button release
 		"""
 		if (event.buttons()&Qt.LeftButton and self.mousemode == "app"):
-			self.emit(QtCore.SIGNAL("sgmouserelease()"), [event.x(), event.y()])
+			self.sgmouserelease.emit([event.x(), event.y()])
 			
 		QtGui.qApp.setOverrideCursor(Qt.ArrowCursor)
 		# Select using the selection box
@@ -1673,7 +1680,7 @@ class EMScene3D(EMItem3D, EMGLWidget):
 		
 	# Maybe add methods to control the lights
 
-class EMLight:
+class EMLight(object):
 	def __init__(self, light):
 		"""
 		@type light: GL_LIGHTX, where 0 =< X <= 8
@@ -1815,7 +1822,7 @@ class EMLight:
 		self.setAmbient(self.colorambient[0], self.colorambient[1], self.colorambient[2], self.colorambient[3])
 		self.setGlobalAmbient(self.colorglobalambient[0], self.colorglobalambient[1], self.colorglobalambient[2], self.colorglobalambient[3])
 		
-class EMCamera:
+class EMCamera(object):
 	"""Implmentation of the camera"""
 	def __init__(self, near, far, usingortho=True, fovy=60.0, boundingbox=50.0, screenfraction=0.5):
 		"""
@@ -2069,7 +2076,7 @@ class EMInspector3D(QtGui.QWidget):
 		vbox.addWidget(self.inspectortab)
 		vbox.addWidget(toolframe)
 		
-		QtCore.QObject.connect(self.inspectortab, QtCore.SIGNAL("currentChanged(int)"), self._on_load_camera)
+		self.inspectortab.currentChanged[int].connect(self._on_load_camera)
 		
 		self.setLayout(vbox)
 		self.updateGeometry()
@@ -2117,19 +2124,19 @@ class EMInspector3D(QtGui.QWidget):
 		tvbox.addWidget(self.tree_node_button_remove)
 		tvbox.addWidget(self.tree_node_slider)
 		
-		QtCore.QObject.connect(self.tree_widget, QtCore.SIGNAL("itemClicked(QTreeWidgetItem*,int)"), self._tree_widget_click)
-		QtCore.QObject.connect(self.tree_widget, QtCore.SIGNAL("visibleItem(QTreeWidgetItem*)"), self._tree_widget_visible)
-		QtCore.QObject.connect(self.tree_widget, QtCore.SIGNAL("editItem(QTreeWidgetItem*)"), self._tree_widget_edit)
-		QtCore.QObject.connect(self.tree_node_button_remove, QtCore.SIGNAL("clicked()"), self._tree_widget_remove)
-		QtCore.QObject.connect(self.tree_node_button_add, QtCore.SIGNAL("clicked()"), self._on_add_button)
-		QtCore.QObject.connect(self.tree_node_slider, QtCore.SIGNAL("valueChanged"), self._slider_change)
+		self.tree_widget.itemClicked[QTreeWidgetItem, int].connect(self._tree_widget_click)
+		self.tree_widget.visibleItem[QTreeWidgetItem].connect(self._tree_widget_visible)
+		self.tree_widget.editItem[QTreeWidgetItem].connect(self._tree_widget_edit)
+		self.tree_node_button_remove.clicked.connect(self._tree_widget_remove)
+		self.tree_node_button_add.clicked.connect(self._on_add_button)
+		self.tree_node_slider.valueChanged.connect(self._slider_change)
 		
 		return tvbox
 	
 	def _recursiveupdatetreeselvis(self, item):
 		item.setSelectionStateBox()
 		item.getVisibleState()
-		for childidx in xrange(item.childCount()):
+		for childidx in range(item.childCount()):
 			self._recursiveupdatetreeselvis(item.child(childidx))
 			
 	def updateTreeSelVis(self, selecteditem=None):
@@ -2344,21 +2351,21 @@ class EMInspector3D(QtGui.QWidget):
 		tvbox.addWidget(self.apptool)
 		tvbox.setAlignment(QtCore.Qt.AlignLeft)
 		
-		QtCore.QObject.connect(self.rotatetool, QtCore.SIGNAL("clicked(int)"), self._rotatetool_clicked)
-		QtCore.QObject.connect(self.translatetool, QtCore.SIGNAL("clicked(int)"), self._transtool_clicked)
-		QtCore.QObject.connect(self.ztranslate, QtCore.SIGNAL("clicked(int)"), self._ztranstool_clicked)
-		QtCore.QObject.connect(self.scaletool, QtCore.SIGNAL("clicked(int)"), self._scaletool_clicked)
-		QtCore.QObject.connect(self.rulertool, QtCore.SIGNAL("clicked(int)"), self._rulertool_clicked)
-		QtCore.QObject.connect(self.selectiontool, QtCore.SIGNAL("clicked(int)"), self._seltool_clicked)
-		QtCore.QObject.connect(self.multiselectiontool, QtCore.SIGNAL("clicked(int)"), self._multiseltool_clicked)
-		QtCore.QObject.connect(self.linetool, QtCore.SIGNAL("clicked(int)"), self._linetool_clicked)
-		QtCore.QObject.connect(self.cubetool, QtCore.SIGNAL("clicked(int)"), self._cubetool_clicked)
-		QtCore.QObject.connect(self.spheretool, QtCore.SIGNAL("clicked(int)"), self._spheretool_clicked)
-		QtCore.QObject.connect(self.cylindertool, QtCore.SIGNAL("clicked(int)"), self._cylindertool_clicked)
-		QtCore.QObject.connect(self.conetool, QtCore.SIGNAL("clicked(int)"), self._conetool_clicked)
-		QtCore.QObject.connect(self.texttool, QtCore.SIGNAL("clicked(int)"), self._texttool_clicked)
-		QtCore.QObject.connect(self.datatool, QtCore.SIGNAL("clicked(int)"), self._datatool_clicked)
-		QtCore.QObject.connect(self.apptool, QtCore.SIGNAL("clicked(int)"), self._apptool_clicked)
+		self.rotatetool.clicked[int].connect(self._rotatetool_clicked)
+		self.translatetool.clicked[int].connect(self._transtool_clicked)
+		self.ztranslate.clicked[int].connect(self._ztranstool_clicked)
+		self.scaletool.clicked[int].connect(self._scaletool_clicked)
+		self.rulertool.clicked[int].connect(self._rulertool_clicked)
+		self.selectiontool.clicked[int].connect(self._seltool_clicked)
+		self.multiselectiontool.clicked[int].connect(self._multiseltool_clicked)
+		self.linetool.clicked[int].connect(self._linetool_clicked)
+		self.cubetool.clicked[int].connect(self._cubetool_clicked)
+		self.spheretool.clicked[int].connect(self._spheretool_clicked)
+		self.cylindertool.clicked[int].connect(self._cylindertool_clicked)
+		self.conetool.clicked[int].connect(self._conetool_clicked)
+		self.texttool.clicked[int].connect(self._texttool_clicked)
+		self.datatool.clicked[int].connect(self._datatool_clicked)
+		self.apptool.clicked[int].connect(self._apptool_clicked)
 			
 		return tvbox
 	
@@ -2442,10 +2449,10 @@ class EMInspector3D(QtGui.QWidget):
 		lvbox.addWidget(self.ambientlighting)
 		lwidget.setLayout(lvbox)
 		
-		QtCore.QObject.connect(self.lightwidget, QtCore.SIGNAL("lightPositionMoved"), self._light_position_moved)
-		QtCore.QObject.connect(self.hvalslider,QtCore.SIGNAL("valueChanged"),self._on_light_slider)
-		QtCore.QObject.connect(self.vvalslider,QtCore.SIGNAL("valueChanged"),self._on_light_slider)
-		QtCore.QObject.connect(self.ambientlighting,QtCore.SIGNAL("valueChanged"),self._on_light_ambient)
+		self.lightwidget.lightPositionMoved.connect(self._light_position_moved)
+		self.hvalslider.valueChanged.connect(self._on_light_slider)
+		self.vvalslider.valueChanged.connect(self._on_light_slider)
+		self.ambientlighting.valueChanged.connect(self._on_light_ambient)
 
 		return lwidget
 	
@@ -2524,15 +2531,15 @@ class EMInspector3D(QtGui.QWidget):
 		grid.addWidget(frame, 3, 0, 1, 2)
 		cwidget.setLayout(grid)
 
-		QtCore.QObject.connect(self.near,QtCore.SIGNAL("valueChanged(int)"),self._on_near)
-		QtCore.QObject.connect(self.far,QtCore.SIGNAL("valueChanged(int)"),self._on_far)
-		QtCore.QObject.connect(self.camerawidget,QtCore.SIGNAL("nearMoved(float)"),self._on_near_move)
-		QtCore.QObject.connect(self.camerawidget,QtCore.SIGNAL("farMoved(float)"),self._on_far_move)
-		QtCore.QObject.connect(self.orthoradio,QtCore.SIGNAL("clicked()"),self._on_radio_click)
-		QtCore.QObject.connect(self.perspectiveradio,QtCore.SIGNAL("clicked()"),self._on_radio_click)
-		QtCore.QObject.connect(self.capcb,QtCore.SIGNAL("clicked()"),self._on_capping)
-		QtCore.QObject.connect(self.linkcb,QtCore.SIGNAL("clicked()"),self._on_linking)
-		QtCore.QObject.connect(self.cappingcolor,QtCore.SIGNAL("newcolor(QColor)"),self._on_cap_color)
+		self.near.valueChanged[int].connect(self._on_near)
+		self.far.valueChanged[int].connect(self._on_far)
+		self.camerawidget.nearMoved[float].connect(self._on_near_move)
+		self.camerawidget.farMoved[float].connect(self._on_far_move)
+		self.orthoradio.clicked.connect(self._on_radio_click)
+		self.perspectiveradio.clicked.connect(self._on_radio_click)
+		self.capcb.clicked.connect(self._on_capping)
+		self.linkcb.clicked.connect(self._on_linking)
+		self.cappingcolor.newcolor[QColor].connect(self._on_cap_color)
 		
 		return cwidget
 		
@@ -2650,12 +2657,12 @@ class EMInspector3D(QtGui.QWidget):
 		uvbox.addWidget(self.moviebutton)
 		uwidget.setLayout(uvbox)
 		
-		QtCore.QObject.connect(self.backgroundcolor,QtCore.SIGNAL("newcolor(QColor)"),self._on_bg_color)
-		QtCore.QObject.connect(self.hideselectionbutton, QtCore.SIGNAL("clicked()"),self._on_hide)
-		QtCore.QObject.connect(self.savebutton, QtCore.SIGNAL("clicked()"),self._on_save)
-		QtCore.QObject.connect(self.moviebutton, QtCore.SIGNAL("clicked()"),self._on_save_movie)
-		QtCore.QObject.connect(self.savesession_button, QtCore.SIGNAL("clicked()"),self._on_save_session)
-		QtCore.QObject.connect(self.opensession_button, QtCore.SIGNAL("clicked()"),self._on_open_session)
+		self.backgroundcolor.newcolor[QColor].connect(self._on_bg_color)
+		self.hideselectionbutton.clicked.connect(self._on_hide)
+		self.savebutton.clicked.connect(self._on_save)
+		self.moviebutton.clicked.connect(self._on_save_movie)
+		self.savesession_button.clicked.connect(self._on_save_session)
+		self.opensession_button.clicked.connect(self._on_open_session)
 		
 		return uwidget
 	
@@ -2802,7 +2809,7 @@ class EMSGNodeInspector(EMItem3DInspector):
 		self.isothr_box=QtGui.QLineEdit("0.0")
 		gridbox.addWidget(self.getthresh, 1, 0, 1, 1)
 		gridbox.addWidget(self.isothr_box, 1, 1, 1, 1)
-		QtCore.QObject.connect(self.isothr_box,QtCore.SIGNAL("returnPressed()"),self._on_change_threshold)
+		self.isothr_box.returnPressed.connect(self._on_change_threshold)
 		#QtCore.QObject.connect(self.getthresh, QtCore.SIGNAL("clicked()"), self._on_get_thresh)
 		
 	def _on_change_threshold(self):
@@ -2845,10 +2852,10 @@ class EMSGNodeInspector(EMItem3DInspector):
 		buttonframe.setLayout(buttongrid)
 		gridbox.addWidget(buttonframe, 3, 0, 1, 1)
 		# Add connections
-		QtCore.QObject.connect(centerall, QtCore.SIGNAL("clicked()"), self._on_centerall)
-		QtCore.QObject.connect(distributeall, QtCore.SIGNAL("clicked()"), self._on_distributeall)
-		QtCore.QObject.connect(selectall, QtCore.SIGNAL("clicked()"), self._on_selectall)
-		QtCore.QObject.connect(addaxes, QtCore.SIGNAL("clicked()"), self._on_addaxes)
+		centerall.clicked.connect(self._on_centerall)
+		distributeall.clicked.connect(self._on_distributeall)
+		selectall.clicked.connect(self._on_selectall)
+		addaxes.clicked.connect(self._on_addaxes)
 		
 	def _on_centerall(self):
 		for child in self.item3d().getChildren():
@@ -2924,15 +2931,18 @@ class EMQTreeWidget(QtGui.QTreeWidget):
 	"""
 	Subclassing the QTreeWidget to enable is_visible toggling
 	"""
+	visibleItem = QtCore.pyqtSignal(QTreeWidgetItem)
+	editItem = QtCore.pyqtSignal(QTreeWidgetItem)
+
 	def __init__(self, parent=None):
 		QtGui.QTreeWidget.__init__(self, parent)
 			
 	def mousePressEvent(self, e):
 		QtGui.QTreeWidget.mousePressEvent(self, e)
 		if e.button()==Qt.RightButton:
-			self.emit(QtCore.SIGNAL("visibleItem(QTreeWidgetItem*)"), self.currentItem())
+			self.visibleItem.emit(self.currentItem())
 		if e.button()==Qt.MidButton or (e.buttons()&Qt.LeftButton and e.modifiers()&Qt.AltModifier):
-			self.emit(QtCore.SIGNAL("editItem(QTreeWidgetItem*)"), self.currentItem())
+			self.editItem.emit(self.currentItem())
 			
 			
 class EMQTreeWidgetItem(QtGui.QTreeWidgetItem):
@@ -2991,7 +3001,7 @@ class EMQTreeWidgetItem(QtGui.QTreeWidgetItem):
 		"""
 		Remove all children from the SG
 		"""
-		for i in xrange(self.childCount()):
+		for i in range(self.childCount()):
 			self.child(0).removeAllChildren(inspector)
 			inspector.removeTreeNode(self, 0) 
 
@@ -3014,8 +3024,8 @@ class NodeEditDialog(QtGui.QDialog):
 		grid.addWidget(self.cancel_button, 2, 1, 1, 1)
 		self.setLayout(grid)
 		
-		self.connect(self.ok_button, QtCore.SIGNAL('clicked()'), self._on_ok)
-		self.connect(self.cancel_button, QtCore.SIGNAL('clicked()'), self._on_cancel)
+		self.ok_button.clicked.connect(self._on_ok)
+		self.cancel_button.clicked.connect(self._on_cancel)
 	
 	def _on_ok(self):
 		self.item.item3d().setLabel(self.nodename.text())
@@ -3104,9 +3114,9 @@ class NodeDialog(QtGui.QDialog):
 			self.volumewidgetdict = {}
 			self.node_stacked_widget.addWidget(EMVolumeItem3D.getNodeDialogWidget(self.volumewidgetdict))
 		
-		self.connect(self.addnode_button, QtCore.SIGNAL('clicked()'), self._on_add_node)
-		self.connect(self.cancel_button, QtCore.SIGNAL('clicked()'), self._on_cancel)
-		self.connect(self.node_type_combo, QtCore.SIGNAL("activated(int)"), self._node_combobox_changed)
+		self.addnode_button.clicked.connect(self._on_add_node)
+		self.cancel_button.clicked.connect(self._on_cancel)
+		self.node_type_combo.activated[int].connect(self._node_combobox_changed)
 	
 	def _on_add_node(self):
 		insertion_node = None

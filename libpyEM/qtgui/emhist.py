@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 
 #
 # Author: Steven Ludtke, 04/10/2003 (sludtke@bcm.edu)
@@ -32,6 +33,9 @@ from __future__ import print_function
 #
 #
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 ploticon = [
     '15 14 2 1',
     'b c #000055',
@@ -63,13 +67,13 @@ import OpenGL.arrays.vbo as glvbo
 from math import *
 from EMAN2 import *
 import sys
-from emshape import *
+from .emshape import *
 import weakref
-from cPickle import dumps,loads
+from pickle import dumps,loads
 import struct, math
 from numpy import *
-from valslider import *
-from cStringIO import StringIO
+from .valslider import *
+from io import StringIO
 import re
 #import emimage2d
 
@@ -81,8 +85,8 @@ from matplotlib.figure import Figure
 
 import numpy as np
 
-from emapplication import EMApp, EMGLWidget
-from emglobjects import EMOpenGLFlagsAndTools
+from .emapplication import EMApp, EMGLWidget
+from .emglobjects import EMOpenGLFlagsAndTools
 
 import traceback
 
@@ -439,7 +443,7 @@ class EMHistogramWidget(EMGLWidget):
 		GL.glPushMatrix()
 		# overcome depth issues
 		glTranslate(0,0,5)
-		for k,s in self.shapes.items():
+		for k,s in list(self.shapes.items()):
 			s.draw(self.scr2plot)
 		GL.glPopMatrix()
 		if render:
@@ -463,7 +467,7 @@ class EMHistogramWidget(EMGLWidget):
 			elif self.alignment == "edge":
 				histalign = "left"
 
-			for k in self.axes.keys():
+			for k in list(self.axes.keys()):
 				if not self.visibility[k]: continue
 
 				dcurr = self.data[k][self.axes[k][0]]
@@ -478,7 +482,7 @@ class EMHistogramWidget(EMGLWidget):
 					self.bins[k] = np.cumsum(self.bins[k])
 				if self.normed:
 					self.bins[k] /= np.sum(self.bins[k])
-					self.bins[k] /= len(self.axes.keys())
+					self.bins[k] /= len(list(self.axes.keys()))
 
 				if self.histtype == "bar":
 					if self.stacked and len(usedkeys) > 0:
@@ -723,7 +727,7 @@ lc is the cursor selection point in plot coords"""
 
 	def getBinCount(self,n,keys=[]):
 		if len(keys) == 0:
-			return sum([self.bins[k][n] for k in self.bins.keys()])
+			return sum([self.bins[k][n] for k in list(self.bins.keys())])
 		else:
 			return sum([self.bins[k][n] for k in keys])
 
@@ -786,7 +790,7 @@ lc is the cursor selection point in plot coords"""
 		"This autoscales, but only axes which currently have invalid settings"
 
 		if force or self.xlimits==None or self.xlimits[1]<=self.xlimits[0] :
-			for k in self.axes.keys():
+			for k in list(self.axes.keys()):
 				if not self.visibility[k]: continue
 				xmin=min(xmin,min(self.data[k][self.axes[k][0]]))
 				xmax=max(xmax,max(self.data[k][self.axes[k][0]]))
@@ -801,7 +805,7 @@ lc is the cursor selection point in plot coords"""
 				ymax = max(ymax,max(counts))
 				ymin = min(ymin,min(counts))
 			else:
-				for k in self.bins.keys():
+				for k in list(self.bins.keys()):
 					#print(self.bins[k])
 					ymax = max(ymax,max(self.bins[k]))
 					ymin = min(ymin,min(self.bins[k]))
@@ -1074,33 +1078,33 @@ class EMHistogramInspector(QtGui.QWidget):
 		self.quiet=0
 		self.busy=0
 
-		QtCore.QObject.connect(self.showslide, QtCore.SIGNAL("valueChanged"), self.selSlide)
-		QtCore.QObject.connect(self.allbut, QtCore.SIGNAL("clicked()"), self.selAll)
-		QtCore.QObject.connect(self.nonebut, QtCore.SIGNAL("clicked()"), self.selNone)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("currentRowChanged(int)"),self.newSet)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("itemChanged(QListWidgetItem*)"),self.list_item_changed)
-		QtCore.QObject.connect(self.saveb,QtCore.SIGNAL("clicked()"),self.savePlot)
-		QtCore.QObject.connect(self.pdfb,QtCore.SIGNAL("clicked()"),self.savePdf)
-		QtCore.QObject.connect(self.concatb,QtCore.SIGNAL("clicked()"),self.saveConcatPlot)
-		QtCore.QObject.connect(self.normed,QtCore.SIGNAL("stateChanged(int)"),self.updPlotRepr)
-		QtCore.QObject.connect(self.logtogy,QtCore.SIGNAL("stateChanged(int)"),self.updPlotRepr)
-		QtCore.QObject.connect(self.cumulative,QtCore.SIGNAL("stateChanged(int)"),self.updPlotRepr)
-		QtCore.QObject.connect(self.stacked,QtCore.SIGNAL("stateChanged(int)"),self.updPlotRepr)
-		QtCore.QObject.connect(self.slidecol, QtCore.SIGNAL("valueChanged(int)"), self.newCols)
-		QtCore.QObject.connect(self.slidenbs, QtCore.SIGNAL("valueChanged(int)"), self.newNBins)
-		QtCore.QObject.connect(self.rwidth,QtCore.SIGNAL("valueChanged"),self.updPlot)
-		QtCore.QObject.connect(self.alpha,QtCore.SIGNAL("valueChanged"),self.updPlot)
-		QtCore.QObject.connect(self.color,QtCore.SIGNAL("currentIndexChanged(QString)"),self.updPlot)
-		QtCore.QObject.connect(self.histtype,QtCore.SIGNAL("currentIndexChanged(QString)"),self.updPlotRepr)
-		QtCore.QObject.connect(self.orient,QtCore.SIGNAL("currentIndexChanged(QString)"),self.updPlotRepr)
-		QtCore.QObject.connect(self.align,QtCore.SIGNAL("currentIndexChanged(QString)"),self.updPlotRepr)
+		self.showslide.valueChanged.connect(self.selSlide)
+		self.allbut.clicked.connect(self.selAll)
+		self.nonebut.clicked.connect(self.selNone)
+		self.setlist.currentRowChanged[int].connect(self.newSet)
+		self.setlist.itemChanged[QListWidgetItem].connect(self.list_item_changed)
+		self.saveb.clicked.connect(self.savePlot)
+		self.pdfb.clicked.connect(self.savePdf)
+		self.concatb.clicked.connect(self.saveConcatPlot)
+		self.normed.stateChanged[int].connect(self.updPlotRepr)
+		self.logtogy.stateChanged[int].connect(self.updPlotRepr)
+		self.cumulative.stateChanged[int].connect(self.updPlotRepr)
+		self.stacked.stateChanged[int].connect(self.updPlotRepr)
+		self.slidecol.valueChanged[int].connect(self.newCols)
+		self.slidenbs.valueChanged[int].connect(self.newNBins)
+		self.rwidth.valueChanged.connect(self.updPlot)
+		self.alpha.valueChanged.connect(self.updPlot)
+		self.color.currentIndexChanged[QString].connect(self.updPlot)
+		self.histtype.currentIndexChanged[QString].connect(self.updPlotRepr)
+		self.orient.currentIndexChanged[QString].connect(self.updPlotRepr)
+		self.align.currentIndexChanged[QString].connect(self.updPlotRepr)
 		#QtCore.QObject.connect(self.xlabel,QtCore.SIGNAL("textChanged(QString)"),self.updPlot)
 		#QtCore.QObject.connect(self.ylabel,QtCore.SIGNAL("textChanged(QString)"),self.updPlot)
-		QtCore.QObject.connect(self.wxmin,QtCore.SIGNAL("valueChanged"),self.newLimits)
-		QtCore.QObject.connect(self.wxmax,QtCore.SIGNAL("valueChanged"),self.newLimits)
-		QtCore.QObject.connect(self.wymin,QtCore.SIGNAL("valueChanged"),self.newLimits)
-		QtCore.QObject.connect(self.wymax,QtCore.SIGNAL("valueChanged"),self.newLimits)
-		QtCore.QObject.connect(self.wrescale,QtCore.SIGNAL("clicked()"),self.autoScale)
+		self.wxmin.valueChanged.connect(self.newLimits)
+		self.wxmax.valueChanged.connect(self.newLimits)
+		self.wymin.valueChanged.connect(self.newLimits)
+		self.wymax.valueChanged.connect(self.newLimits)
+		self.wrescale.clicked.connect(self.autoScale)
 
 		self.newSet(0)
 		self.datachange()
@@ -1109,7 +1113,7 @@ class EMHistogramInspector(QtGui.QWidget):
 		rngn0=int(val)
 		rngn1=int(self.nbox.getValue())
 		rngstp=int(self.stepbox.getValue())
-		rng=range(rngn0,rngn0+rngstp*rngn1,rngstp)
+		rng=list(range(rngn0,rngn0+rngstp*rngn1,rngstp))
 		for i,k in enumerate(sorted(self.target().visibility.keys())) :
 			self.target().visibility[k]=i in rng
 		self.target().full_refresh()
@@ -1117,13 +1121,13 @@ class EMHistogramInspector(QtGui.QWidget):
 		self.datachange()
 
 	def selAll(self):
-		for k in self.target().visibility.keys() : self.target().visibility[k]=True
+		for k in list(self.target().visibility.keys()) : self.target().visibility[k]=True
 		self.target().full_refresh()
 		self.target().updateGL()
 		self.datachange()
 
 	def selNone(self):
-		for k in self.target().visibility.keys() : self.target().visibility[k]=False
+		for k in list(self.target().visibility.keys()) : self.target().visibility[k]=False
 		self.target().full_refresh()
 		self.target().updateGL()
 		self.datachange()
@@ -1135,9 +1139,9 @@ class EMHistogramInspector(QtGui.QWidget):
 			inf.close()
 		else: return
 		f = open(fname,"w")
-		for i in xrange(0,len(lines)):
+		for i in range(0,len(lines)):
 			lines[i] = lines[i].strip()
-		for i in xrange(len(lines)-1,-1,-1):
+		for i in range(len(lines)-1,-1,-1):
 			if lines[i] in names:
 				lines.pop(i)
 		for line in lines:
@@ -1152,7 +1156,7 @@ class EMHistogramInspector(QtGui.QWidget):
 		else:
 			lines = []
 		f = open(fname,"w")
-		for i in xrange(0,len(lines)):
+		for i in range(0,len(lines)):
 			lines[i] = lines[i].strip()
 		for name in names:
 			if name not in lines:
@@ -1183,7 +1187,7 @@ class EMHistogramInspector(QtGui.QWidget):
 		out=open(name2,"a")
 		for name in names :
 			data=self.target().data[name]
-			for i in xrange(len(data[0])):
+			for i in range(len(data[0])):
 				out.write("%g\t%g\n"%(data[0][i],data[1][i]))
 		out=None
 		print("Wrote ",name2)
@@ -1204,7 +1208,7 @@ class EMHistogramInspector(QtGui.QWidget):
 				name2="plt_%s_%02d.txt"%(sname,i)
 				i+=1
 			out=open(name2,"w")
-			for i in xrange(len(data[0])):
+			for i in range(len(data[0])):
 				out.write("%g\t%g\n"%(data[0][i],data[1][i]))
 			print("Wrote ",name2)
 
@@ -1303,7 +1307,7 @@ class EMHistogramInspector(QtGui.QWidget):
 	def datachange(self):
 		self.setlist.clear()
 		flags= Qt.ItemFlags(Qt.ItemIsSelectable)|Qt.ItemFlags(Qt.ItemIsEnabled)|Qt.ItemFlags(Qt.ItemIsUserCheckable)|Qt.ItemFlags(Qt.ItemIsDragEnabled)
-		keys=self.target().data.keys()
+		keys=list(self.target().data.keys())
 		visible = self.target().visibility
 		keys.sort()
 		parms = self.target().pparm # get the colors from this
@@ -1364,7 +1368,7 @@ class DragListWidget(QtGui.QListWidget):
 				if len(s.strip())==0 or s[0]=="#" : continue
 				if data==None:					# first good line
 					n=len(rex.findall(s))		# count numbers on the line
-					data=[ [] for i in xrange(n)]		# initialize empty data arrays
+					data=[ [] for i in range(n)]		# initialize empty data arrays
 				# parses out each number from each line and puts it in our list of lists
 				for i,f in enumerate(rex.findall(s)):
 					try: data[i].append(float(f))
@@ -1402,9 +1406,9 @@ class DragListWidget(QtGui.QListWidget):
 		if axes[0]<0: axes=[axes[0]]
 		## create the string representation of the data set
 		sdata=StringIO()		# easier to write as if to a file
-		for y in xrange(len(data[0])):
+		for y in range(len(data[0])):
 			sdata.write("%1.8g"%data[axes[0]][y])
-			for x in xrange(1,len(axes)):
+			for x in range(1,len(axes)):
 				sdata.write("\t%1.8g"%data[axes[x]][y])
 			sdata.write("\n")
 		# start the drag operation

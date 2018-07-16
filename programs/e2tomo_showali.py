@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # Muyuan Chen 2018-04
+from __future__ import print_function
+from builtins import range
 from EMAN2 import *
 from EMAN2_utils import *
 import numpy as np
@@ -45,7 +47,7 @@ def main():
 		e=EMData(aname, i, True)
 		s=e["score"]
 		dirs[e["nid"], e["pid"]]=[s[1], -s[0]]
-	print dirs
+	print(dirs)
 
 	app = EMApp()
 
@@ -57,7 +59,7 @@ def main():
 	E2end(logid)
 
 def run(cmd):
-	print cmd
+	print(cmd)
 	launch_childprocess(cmd)
 
 def get_circle(p,r):
@@ -160,4 +162,3 @@ class EMDrawWindow(QtGui.QMainWindow):
 
 if __name__ == '__main__':
 	main()
-

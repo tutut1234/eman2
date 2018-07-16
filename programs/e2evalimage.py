@@ -32,6 +32,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from EMAN2 import *
 from EMAN2db import db_open_dict, db_close_dict, db_check_dict, db_list_dicts
 from OpenGL import GL,GLUT
@@ -166,12 +167,12 @@ class GUIEvalImage(QtGui.QWidget):
 		for i in images:
 			n=EMUtil.get_image_count(i)
 			if n!=1:
-				for j in xrange(n): newimages.append(i+",%d"%j)
+				for j in range(n): newimages.append(i+",%d"%j)
 			else:
 				h=EMData(i,0,True)		# read header
 				n=h["nz"]
 				if n!=1:
-					for j in xrange(n): newimages.append(i+";%d"%j)
+					for j in range(n): newimages.append(i+";%d"%j)
 				else : newimages.append(i)
 		images=newimages
 
@@ -212,13 +213,12 @@ class GUIEvalImage(QtGui.QWidget):
 		self.wplot.setWindowTitle("e2evalimage - Plot")
 
 
-		self.wimage.connect(self.wimage,QtCore.SIGNAL("mousedown"),self.imgmousedown)
-		self.wimage.connect(self.wimage,QtCore.SIGNAL("mousedrag"),self.imgmousedrag)
-		self.wimage.connect(self.wimage,QtCore.SIGNAL("mouseup")  ,self.imgmouseup)
-		self.wfft.connect(self.wfft,QtCore.SIGNAL("mousedown"),self.fftmousedown)
-		self.wfft.connect(self.wfft,QtCore.SIGNAL("mousedrag"),self.fftmousedrag)
-		self.wfft.connect(self.wfft,QtCore.SIGNAL("mouseup")  ,self.fftmouseup)
-		self.wplot.connect(self.wplot,QtCore.SIGNAL("mousedown"),self.plotmousedown)
+		self.wimage.mousedown.connect(self.imgmousedown)
+		self.wimage.mousedrag.connect(self.imgmousedrag)
+		self.wimage.mouseup.connect(self.imgmouseup)
+		self.wfft.mousedown.connect(self.fftmousedown)
+		self.wfft.mousedrag.connect(self.fftmousedrag)
+		self.wfft.mouseup.connect(self.fftmouseup)
 
 		self.wimage.mmode="app"
 		self.wfft.mmode="app"
@@ -358,27 +358,27 @@ class GUIEvalImage(QtGui.QWidget):
 		self.cxray=CheckBox(None,"X-ray Pixels")
 		self.bvbl.addWidget(self.cxray)
 
-		QtCore.QObject.connect(self.bimport, QtCore.SIGNAL("clicked(bool)"),self.doImport)
-		QtCore.QObject.connect(self.brefit, QtCore.SIGNAL("clicked(bool)"),self.doRefit)
-		QtCore.QObject.connect(self.cbgadj, QtCore.SIGNAL("valueChanged"),self.bgAdj)
-		QtCore.QObject.connect(self.sdefocus, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sbfactor, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sdfdiff, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sdfang, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sapix, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sampcont, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.svoltage, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.scs, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sboxsize, QtCore.SIGNAL("valueChanged"), self.newBox)
+		self.bimport.clicked[bool].connect(self.doImport)
+		self.brefit.clicked[bool].connect(self.doRefit)
+		self.cbgadj.valueChanged.connect(self.bgAdj)
+		self.sdefocus.valueChanged.connect(self.newCTF)
+		self.sbfactor.valueChanged.connect(self.newCTF)
+		self.sdfdiff.valueChanged.connect(self.newCTF)
+		self.sdfang.valueChanged.connect(self.newCTF)
+		self.sapix.valueChanged.connect(self.newCTF)
+		self.sampcont.valueChanged.connect(self.newCTF)
+		self.svoltage.valueChanged.connect(self.newCTF)
+		self.scs.valueChanged.connect(self.newCTF)
+		self.sboxsize.valueChanged.connect(self.newBox)
 #		QtCore.QObject.connect(self.soversamp, QtCore.SIGNAL("valueChanged"), self.newBox)
-		QtCore.QObject.connect(self.sang45, QtCore.SIGNAL("valueChanged"), self.recalc_real)
-		QtCore.QObject.connect(self.squality,QtCore.SIGNAL("valueChanged"),self.newQualityFactor)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("currentRowChanged(int)"),self.newSet)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("keypress"),self.listkey)
-		QtCore.QObject.connect(self.scalcmode,QtCore.SIGNAL("currentIndexChanged(int)"),self.newCalcMode)
-		QtCore.QObject.connect(self.s2dmode,QtCore.SIGNAL("currentIndexChanged(int)"),self.new2DMode)
-		QtCore.QObject.connect(self.s2danmode,QtCore.SIGNAL("currentIndexChanged(int)"),self.new2DAnMode)
-		QtCore.QObject.connect(self.splotmode,QtCore.SIGNAL("currentIndexChanged(int)"),self.newPlotMode)
+		self.sang45.valueChanged.connect(self.recalc_real)
+		self.squality.valueChanged.connect(self.newQualityFactor)
+		self.setlist.currentRowChanged[int].connect(self.newSet)
+		self.setlist.keypress.connect(self.listkey)
+		self.scalcmode.currentIndexChanged[int].connect(self.newCalcMode)
+		self.s2dmode.currentIndexChanged[int].connect(self.new2DMode)
+		self.s2danmode.currentIndexChanged[int].connect(self.new2DAnMode)
+		self.splotmode.currentIndexChanged[int].connect(self.newPlotMode)
 
 	   	#QtCore.QObject.connect(self.saveparms,QtCore.SIGNAL("clicked(bool)"),self.on_save_params)
 		#QtCore.QObject.connect(self.recallparms,QtCore.SIGNAL("clicked(bool)"),self.on_recall_params)
@@ -396,7 +396,7 @@ class GUIEvalImage(QtGui.QWidget):
 		self.errors=None		# used to communicate errors back from the reprocessing thread
 
 		self.timer=QTimer()
-		QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.timeOut)
+		self.timer.timeout.connect(self.timeOut)
 		self.timer.start(100)
 
 		self.setWindowTitle("e2evalimage - Control Panel")
@@ -546,7 +546,7 @@ class GUIEvalImage(QtGui.QWidget):
 		elif self.plotmode==2:
 			if self.fft1dang==None: self.recalc_real()
 			bgsub=self.fft1d-bg1d
-			bgsuba=[array(self.fft1dang[i])-bg1d for i in xrange(4)]
+			bgsuba=[array(self.fft1dang[i])-bg1d for i in range(4)]
 					# Write the current image parameters to the database
 
 #			for i in xrange(4): bgsuba[i][0]=0
@@ -577,9 +577,9 @@ class GUIEvalImage(QtGui.QWidget):
 			#bgsub=self.fft1d-bg1d
 			#bgsuba=[array(self.fft1dang[i])-bg1d for i in xrange(4)]
 			fg=self.fft1d
-			fga=[array(self.fft1dang[i]) for i in xrange(4)]
+			fga=[array(self.fft1dang[i]) for i in range(4)]
 
-			for i in xrange(4): fga[i][0]=0
+			for i in range(4): fga[i][0]=0
 			self.wplot.set_data((s,fg),"fg",quiet=True,color=0,linetype=0)
 			self.wplot.set_data((s,fga[0]),"fg 0-45",quiet=True,color=2,linetype=0)
 			self.wplot.set_data((s,fga[1]),"fg 45-90",quiet=True,color=3,linetype=0)
@@ -980,14 +980,14 @@ class GUIEvalImage(QtGui.QWidget):
 			# Find the minimum value near the origin, which we'll use as a zero (though it likely should not be)
 			mv=(self.fft1d[1],1)
 			fz=int(ctf.zero(0)/(ds*2))
-			for lz in xrange(1,fz):
+			for lz in range(1,fz):
 				mv=min(mv,(self.fft1d[lz],lz))
 
 #			print mv,int(ctf.zero(0)/(ds*2)),min(self.fft1d[1:int(ctf.zero(0)/(ds*2))])
 			xyd.insort(mv[1],mv[0])
 
 			# now we add all of the zero locations to our XYData object
-			for i in xrange(100):
+			for i in range(100):
 				z=int(ctf.zero(i)/ds)
 				if z>=len(bg_1d)-1: break
 				if self.fft1d[z-1]<self.fft1d[z] and self.fft1d[z-1]<self.fft1d[z+1]: mv=(z-1,self.fft1d[z-1])
@@ -996,17 +996,17 @@ class GUIEvalImage(QtGui.QWidget):
 				xyd.insort(mv[0],mv[1])
 
 			# new background is interpolated XYData
-			parms[1].background=[xyd.get_yatx_smooth(i,1) for i in xrange(len(bg_1d))]
+			parms[1].background=[xyd.get_yatx_smooth(i,1) for i in range(len(bg_1d))]
 
 			# if our first point (between the origin and the first 0) is too high, we readjust it once
-			bs=[self.fft1d[i]-parms[1].background[i] for i in xrange(fz)]
+			bs=[self.fft1d[i]-parms[1].background[i] for i in range(fz)]
 			if min(bs)<0 :
 				mv=(bs[0],self.fft1d[0],0)
-				for i in xrange(1,fz): mv=min(mv,(bs[i],self.fft1d[i],i))
+				for i in range(1,fz): mv=min(mv,(bs[i],self.fft1d[i],i))
 				xyd.set_x(0,mv[2])
 				xyd.set_y(0,mv[1])
 				
-				parms[1].background=[xyd.get_yatx_smooth(i,1) for i in xrange(len(bg_1d))]
+				parms[1].background=[xyd.get_yatx_smooth(i,1) for i in range(len(bg_1d))]
 
 		self.needredisp=True
 
@@ -1091,10 +1091,6 @@ class GUIEvalImage(QtGui.QWidget):
 		"up"
 		#m=self.wfft.scr_to_img((event.x(),event.y()))
 
-
-	def plotmousedown(self,event) :
-		"mousedown in plot"
-#		m=self.guiim.scr_to_img((event.x(),event.y()))
 
 if __name__ == "__main__":
 	main()

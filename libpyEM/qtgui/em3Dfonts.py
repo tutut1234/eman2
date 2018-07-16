@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import absolute_import
 #
 # Author: Steven Ludtke, 04/10/2003 (sludtke@bcm.edu)
 # and David Woolford 10/26/2007 (woolford@bcm.edu)
@@ -32,25 +33,26 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307 USA
 #
 
+from builtins import object
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from PyQt4.QtCore import Qt
 from OpenGL import GL,GLU,GLUT
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from valslider import ValSlider
+from .valslider import ValSlider
 from math import *
 from EMAN2 import *
-from emimageutil import EMTransformPanel
+from .emimageutil import EMTransformPanel
 import weakref
 from time import *
 from libpyGLUtils2 import *
 
-from emglobjects import EM3DModel, Camera2,EMViewportDepthTools, get_default_gl_colors
-from emlights import *
+from .emglobjects import EM3DModel, Camera2,EMViewportDepthTools, get_default_gl_colors
+from .emlights import *
 
 MAG_INCREMENT_FACTOR = 101.1
 
-class DynamicFonts:
+class DynamicFonts(object):
 	def __init__(self):
 		self.font_renderer = get_3d_font_renderer()
 
@@ -320,21 +322,21 @@ class EMFontInspector(QtGui.QWidget, EMLightsInspectorBase):
 		self.vbl.addWidget(self.tabwidget2)
 		self.n3_showing = False
 
-		QtCore.QObject.connect(self.cbb, QtCore.SIGNAL("currentIndexChanged(QString)"), target.setColor)
-		QtCore.QObject.connect(self.wiretog, QtCore.SIGNAL("toggled(bool)"), target.toggle_wire)
-		QtCore.QObject.connect(self.lighttog, QtCore.SIGNAL("toggled(bool)"), target.toggle_light)
-		QtCore.QObject.connect(self.glcontrast, QtCore.SIGNAL("valueChanged"), target.set_GL_contrast)
-		QtCore.QObject.connect(self.glbrightness, QtCore.SIGNAL("valueChanged"), target.set_GL_brightness)
-		QtCore.QObject.connect(self.combo, QtCore.SIGNAL("currentIndexChanged (const QString&)"), self.on_combo_change)
-		QtCore.QObject.connect(self.text, QtCore.SIGNAL("textChanged(const QString&)"), self.on_text_change)
-		QtCore.QObject.connect(self.lspacing, QtCore.SIGNAL("valueChanged"), self.set_GL_lspacing)
-		QtCore.QObject.connect(self.length, QtCore.SIGNAL("valueChanged"), self.set_GL_length)
-		QtCore.QObject.connect(self.tsize, QtCore.SIGNAL("valueChanged(int)"), self.set_GL_tsize)
-		QtCore.QObject.connect(self.Dfont, QtCore.SIGNAL("currentIndexChanged (const QString&)"), self.on_Dfont_change)
-		QtCore.QObject.connect(self.bgR, QtCore.SIGNAL("valueChanged"), self.set_GL_bgR)
-		QtCore.QObject.connect(self.bgG, QtCore.SIGNAL("valueChanged"), self.set_GL_bgG)
-		QtCore.QObject.connect(self.bgB, QtCore.SIGNAL("valueChanged"), self.set_GL_bgB)
-		QtCore.QObject.connect(self.bg_a, QtCore.SIGNAL("valueChanged"), self.set_GL_bg_a)
+		self.cbb.currentIndexChanged[QString].connect(target.setColor)
+		self.wiretog.toggled[bool].connect(target.toggle_wire)
+		self.lighttog.toggled[bool].connect(target.toggle_light)
+		self.glcontrast.valueChanged.connect(target.set_GL_contrast)
+		self.glbrightness.valueChanged.connect(target.set_GL_brightness)
+		self.combo.currentIndexChanged [QString].connect(self.on_combo_change)
+		self.text.textChanged[QString].connect(self.on_text_change)
+		self.lspacing.valueChanged.connect(self.set_GL_lspacing)
+		self.length.valueChanged.connect(self.set_GL_length)
+		self.tsize.valueChanged[int].connect(self.set_GL_tsize)
+		self.Dfont.currentIndexChanged [QString].connect(self.on_Dfont_change)
+		self.bgR.valueChanged.connect(self.set_GL_bgR)
+		self.bgG.valueChanged.connect(self.set_GL_bgG)
+		self.bgB.valueChanged.connect(self.set_GL_bgB)
+		self.bg_a.valueChanged.connect(self.set_GL_bg_a)
 	
 	def get_transform_layout(self):
 		return self.transform_vbl
@@ -652,8 +654,8 @@ class EMFontInspector(QtGui.QWidget, EMLightsInspectorBase):
 #		
 # This is just for testing, of course
 if __name__ == '__main__':
-	from emapplication import EMApp
-	from emimage3d import EMImage3DWidget
+	from .emapplication import EMApp
+	from .emimage3d import EMImage3DWidget
 	em_app = EMApp()
 	window = EMImage3DWidget()
 	font_model = EM3DFontModel(window)
