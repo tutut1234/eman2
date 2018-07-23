@@ -44,6 +44,14 @@
 #include "geometry.h"
 #include <math.h>
 
+//#include "numpy/arrayobject.h"
+
+#include <boost/python.hpp>
+#include <boost/python/numpy.hpp>
+
+namespace p = boost::python;
+namespace np = boost::python::numpy;
+
 #include <gsl/gsl_sf_bessel.h>
 #include <gsl/gsl_errno.h>
 
@@ -79,7 +87,7 @@ EMData::EMData() :
 	fftcache(0),
 #endif //FFT_CACHING
 		attr_dict(), rdata(0), supp(0), flags(0), changecount(0), nx(0), ny(0), nz(0), nxy(0), nxyz(0), xoff(0), yoff(0),
-		zoff(0), all_translation(),	path(""), pathnum(0), rot_fp(0)
+		zoff(0), all_translation(),	path(""), pathnum(0), rot_fp(0), py_array(np::array(p::object()))
 
 {
 	ENTERFUNC;
@@ -98,7 +106,12 @@ EMData::EMData() :
 #ifdef MEMDEBUG2
 	printf("EMDATA+  %4d    %p\n",EMData::totalalloc,this);
 #endif
-	
+
+	py_array = np::from_data(rdata, np::dtype::get_builtin<float>(),
+	                         p::make_tuple(get_size()),
+	                         p::make_tuple(sizeof(float)),
+	                         p::object());
+
 	EXITFUNC;
 }
 
@@ -110,7 +123,7 @@ EMData::EMData(const string& filename, int image_index) :
 	fftcache(0),
 #endif //FFT_CACHING
 		attr_dict(), rdata(0), supp(0), flags(0), changecount(0), nx(0), ny(0), nz(0), nxy(0), nxyz(0), xoff(0), yoff(0), zoff(0),
-		all_translation(),	path(filename), pathnum(image_index), rot_fp(0)
+		all_translation(),	path(filename), pathnum(image_index), rot_fp(0), py_array(np::array(p::object()))
 {
 	ENTERFUNC;
 
@@ -125,6 +138,14 @@ EMData::EMData(const string& filename, int image_index) :
 	attr_dict["datatype"] = (int)EMUtil::EM_FLOAT;
 
 	this->read_image(filename, image_index);
+
+//	Py_Initialize();
+//	np::initialize();
+//
+	py_array = np::from_data(rdata, np::dtype::get_builtin<float>(),
+	                         p::make_tuple(get_size()),
+	                         p::make_tuple(sizeof(float)),
+	                         p::object());
 
 	update();
 	EMData::totalalloc++;
@@ -144,7 +165,7 @@ EMData::EMData(const EMData& that) :
 #endif //FFT_CACHING
 		attr_dict(that.attr_dict), rdata(0), supp(0), flags(that.flags), changecount(that.changecount), nx(that.nx), ny(that.ny), nz(that.nz),
 		nxy(that.nx*that.ny), nxyz((size_t)that.nx*that.ny*that.nz), xoff(that.xoff), yoff(that.yoff), zoff(that.zoff),all_translation(that.all_translation),	path(that.path),
-		pathnum(that.pathnum), rot_fp(0)
+		pathnum(that.pathnum), rot_fp(0), py_array(np::array(p::object()))
 {
 	ENTERFUNC;
 	
@@ -155,6 +176,7 @@ EMData::EMData(const EMData& that) :
 		rdata = (float*)EMUtil::em_malloc(num_bytes);
 		EMUtil::em_memcpy(rdata, data, num_bytes);
 	}
+
 #ifdef EMAN2_USING_CUDA
 	if (EMData::usecuda == 1 && num_bytes != 0 && that.cudarwdata != 0) {
 		//cout << "That copy constructor" << endl;
@@ -170,6 +192,11 @@ EMData::EMData(const EMData& that) :
 #ifdef MEMDEBUG2
 	printf("EMDATA+  %4d    %p\n",EMData::totalalloc,this);
 #endif
+
+	py_array = np::from_data(rdata, np::dtype::get_builtin<float>(),
+	                         p::make_tuple(get_size()),
+	                         p::make_tuple(sizeof(float)),
+	                         p::object());
 
 	ENTERFUNC;
 }
@@ -230,7 +257,7 @@ EMData::EMData(int nx, int ny, int nz, bool is_real) :
 	fftcache(0),
 #endif //FFT_CACHING
 		attr_dict(), rdata(0), supp(0), flags(0), changecount(0), nx(0), ny(0), nz(0), nxy(0), nxyz(0), xoff(0), yoff(0), zoff(0),
-		all_translation(),	path(""), pathnum(0), rot_fp(0)
+		all_translation(),	path(""), pathnum(0), rot_fp(0), py_array(np::array(p::object()))
 {
 	ENTERFUNC;
 
@@ -273,6 +300,11 @@ EMData::EMData(int nx, int ny, int nz, bool is_real) :
 	printf("EMDATA+  %4d    %p\n",EMData::totalalloc,this);
 #endif
 
+	py_array = np::from_data(rdata, np::dtype::get_builtin<float>(),
+	                         p::make_tuple(get_size()),
+	                         p::make_tuple(sizeof(float)),
+	                         p::object());
+
 	EXITFUNC;
 }
 
@@ -285,7 +317,7 @@ EMData::EMData(float* data, const int x, const int y, const int z, const Dict& a
 	fftcache(0),
 #endif //FFT_CACHING
 		attr_dict(attr_dict), rdata(data), supp(0), flags(0), changecount(0), nx(x), ny(y), nz(z), nxy(x*y), nxyz((size_t)x*y*z), xoff(0),
-		yoff(0), zoff(0), all_translation(), path(""), pathnum(0), rot_fp(0)
+		yoff(0), zoff(0), all_translation(), path(""), pathnum(0), rot_fp(0), py_array(np::array(p::object()))
 {
 	ENTERFUNC;
 	// used to replace cube 'pixel'
@@ -297,6 +329,11 @@ EMData::EMData(float* data, const int x, const int y, const int z, const Dict& a
 #ifdef MEMDEBUG2
 	printf("EMDATA+  %4d    %p\n",EMData::totalalloc,this);
 #endif
+
+	py_array = np::from_data(rdata, np::dtype::get_builtin<float>(),
+	                         p::make_tuple(get_size()),
+	                         p::make_tuple(sizeof(float)),
+	                         p::object());
 
 	update();
 	EXITFUNC;
@@ -349,6 +386,10 @@ EMData::~EMData()
 	printf("EMDATA-  %4d    %p\n",EMData::totalalloc,this);
 #endif
 	EXITFUNC;
+}
+
+np::ndarray EMData::get_ndarray(){
+	return py_array;
 }
 
 void EMData::clip_inplace(const Region & area,const float& fill_value)

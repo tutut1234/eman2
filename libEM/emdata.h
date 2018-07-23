@@ -64,6 +64,12 @@ using std::ostream;
 #include <utility>
 using std::pair;
 
+#include <boost/python.hpp>
+#include <boost/python/numpy.hpp>
+
+namespace p = boost::python;
+namespace np = boost::python::numpy;
+
 namespace EMAN
 {
 	class ImageIO;
@@ -171,14 +177,15 @@ namespace EMAN
 		*/
 		EMData& operator=(const EMData& that);
 
+		np::ndarray get_ndarray();
 
-		/** Get an inclusive clip. Pads to fill if larger than this image.
-		 * .
-		 * @param area The clip area, can be 2D/3D
-		 * @param fill the value to assign new pixels outside the area of the original image
-		 * @exception ImageDimensionException if any of the dimensions of the argument region are negative
-		 * @return The clip image.
-		 */
+			/** Get an inclusive clip. Pads to fill if larger than this image.
+			 * .
+			 * @param area The clip area, can be 2D/3D
+			 * @param fill the value to assign new pixels outside the area of the original image
+			 * @exception ImageDimensionException if any of the dimensions of the argument region are negative
+			 * @return The clip image.
+			 */
 		EMData *get_clip(const Region & area, const float fill = 0) const;
 
 		/** Clip the image inplace - clipping region must be smaller than the current region
@@ -828,6 +835,9 @@ namespace EMAN
 		mutable Dict attr_dict;
 		/** image real data */
 		mutable float *rdata;
+
+		np::ndarray py_array;
+
 		/** supplementary data array */
 		float *supp;
 

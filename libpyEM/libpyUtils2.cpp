@@ -33,10 +33,13 @@
 #endif	//_WIN32
 
 #include <Python.h>
-#include <numpy/arrayobject.h>
+//#include <numpy/ndarrayobject.h>
+
+
 
 // Boost Includes ==============================================================
 #include <boost/python.hpp>
+#include <boost/python/numpy.hpp>
 #include <boost/cstdint.hpp>
 
 // Includes ====================================================================
@@ -278,138 +281,138 @@ struct EMAN_Util_Wrapper: EMAN::Util
 	PyObject* py_self;
 };*/
 
-using boost::python::numeric::array;
+//using boost::python::numeric::array;
 
-float* get_fptr( array& a )
-{
-/*
-	if (!PyArray_Check(a.ptr())) {
-		//PyErr_SetString(PyExc_ValueError, "expected a PyArrayObject for get_fptr");
-		//return NULL;
-		throw std::runtime_error( "Expected a PyArryaObject for get_fptr" );
-	} */
-
-	PyArrayObject* aptr = (PyArrayObject*)a.ptr();
-        char datatype = aptr->descr->type;
-        if( datatype != 'f' )
-        {
-		//PyErr_SetString(PyExc_ValueError, "expected a float PyArrayObject for get_fptr");
-		//return NULL;
-		throw std::runtime_error( "Expected a float array for get_fptr" );
-
-	}
-
-	return (float*)(aptr->data);
-
-
-}
+//float* get_fptr( array& a )
+//{
+///*
+//	if (!PyArray_Check(a.ptr())) {
+//		//PyErr_SetString(PyExc_ValueError, "expected a PyArrayObject for get_fptr");
+//		//return NULL;
+//		throw std::runtime_error( "Expected a PyArryaObject for get_fptr" );
+//	} */
+//
+//	PyArrayObject* aptr = (PyArrayObject*)a.ptr();
+//        char datatype = aptr->descr->type;
+//        if( datatype != 'f' )
+//        {
+//		//PyErr_SetString(PyExc_ValueError, "expected a float PyArrayObject for get_fptr");
+//		//return NULL;
+//		throw std::runtime_error( "Expected a float array for get_fptr" );
+//
+//	}
+//
+//	return (float*)(aptr->data);
 
 
-int* get_iptr( array& a )
-{
-/*
-	if (!PyArray_Check(a.ptr())) {
-		PyErr_SetString(PyExc_ValueError, "expected a PyArrayObject for get_iptr");
-		return NULL;
-	}
-*/
-	PyArrayObject* aptr = (PyArrayObject*)a.ptr();
-        char datatype = aptr->descr->type;
-        if( datatype != 'i' && datatype != 'l') // for some reaons on a mac it is 'l'
-        {
-		//cout << "datatype != 'i's: " << datatype << endl;
-        	//PyErr_SetString(PyExc_ValueError, "expected an integer PyArrayObject for get_iptr");
-		throw std::runtime_error( "Expected a int array for get_fptr" );
-	}
-
-	return (int*)(aptr->data);
-}
+//}
 
 
-
-int pysstevd(const string& jobz, int n, array& diag, array& subdiag, array& qmat, int kstep, array& fwork, int lfwrk, array& iwork, int liwrk )
-{
-    int info;
-
-    float* d = get_fptr( diag );
-    float* e = get_fptr( subdiag );
-    float* f = get_fptr( qmat );
-    float* g = get_fptr( fwork );
-    int*  ih = get_iptr( iwork );
-
-    sstevd_( (char*)jobz.c_str(), &n, d, e, f, &kstep, g, &lfwrk, ih, &liwrk, &info );
-    return info;
-}
-
-float pysnrm2( int n, array& a, int incx )
-{
-    float* f = get_fptr( a );
-    return snrm2_(&n, f, &incx);
-}
-
-int pysgemv( const string& trans, int m, int n, float alpha, array& a, int lda, array& x, int incx, float beta, array& y, int incy )
-{
-    float* fa = get_fptr( a );
-    float* fx = get_fptr( x );
-    float* fy = get_fptr( y );
-    return sgemv_( trans.c_str(), &m, &n, &alpha, fa, &lda, fx, &incx, &beta, fy, &incy );
-}
-
-int pysaxpy( int n, float alpha, array& x, int incx, array& y, int incy )
-{
-    float* fx = get_fptr( x );
-    float* fy = get_fptr( y );
-    return saxpy_( &n, &alpha, fx, &incx, fy, &incy );
-}
-
-float pysdot( int n, array& x, int incx, array& y, int incy )
-{
-    float* fx = get_fptr( x );
-    float* fy = get_fptr( y );
-    assert( fx != NULL && fy != NULL );
-    return sdot_( &n, fx, &incx, fy, &incy );
-}
-
-void readarray( object& f, array& x, int size)
-{
-#ifdef IS_PY3K
-	extern PyTypeObject PyIOBase_Type;
-	if(!PyObject_IsInstance(f.ptr(), (PyObject *)&PyIOBase_Type) )
-#else
-	if( !PyFile_Check(f.ptr()) )
-#endif	//IS_PY3K
-    {
-        std::cout << "Error: expecting a file object" << std::endl;
-        return;
-    }
-
-#ifdef IS_PY3K
-	int fd = PyObject_AsFileDescriptor( f.ptr() );
-	FILE*  fh = fdopen(fd, "r");
-#else
-    FILE*  fh = PyFile_AsFile( f.ptr() );
-#endif	//IS_PY3K
-    float* fx = get_fptr( x );
-
-    fread( fx, sizeof(float), size, fh );
-}
+//int* get_iptr( array& a )
+//{
+///*
+//	if (!PyArray_Check(a.ptr())) {
+//		PyErr_SetString(PyExc_ValueError, "expected a PyArrayObject for get_iptr");
+//		return NULL;
+//	}
+//*/
+//	PyArrayObject* aptr = (PyArrayObject*)a.ptr();
+//        char datatype = aptr->descr->type;
+//        if( datatype != 'i' && datatype != 'l') // for some reaons on a mac it is 'l'
+//        {
+//		//cout << "datatype != 'i's: " << datatype << endl;
+//        	//PyErr_SetString(PyExc_ValueError, "expected an integer PyArrayObject for get_iptr");
+//		throw std::runtime_error( "Expected a int array for get_fptr" );
+//	}
+//
+//	return (int*)(aptr->data);
+//}
+//
 
 
-// k_means_cont_table_ is locate to util_sparx.cpp
-int pyk_means_cont_table(array& group1, array& group2, array& stb, long int s1, long int s2, int flag) {
-    int* pt_group1 = get_iptr(group1);
-    int* pt_group2 = get_iptr(group2);
-    int* pt_stb  = get_iptr(stb);
-    return EMAN::Util::k_means_cont_table_(pt_group1, pt_group2, pt_stb, s1, s2, flag);
-}
+//int pysstevd(const string& jobz, int n, array& diag, array& subdiag, array& qmat, int kstep, array& fwork, int lfwrk, array& iwork, int liwrk )
+//{
+//    int info;
+//
+//    float* d = get_fptr( diag );
+//    float* e = get_fptr( subdiag );
+//    float* f = get_fptr( qmat );
+//    float* g = get_fptr( fwork );
+//    int*  ih = get_iptr( iwork );
+//
+//    sstevd_( (char*)jobz.c_str(), &n, d, e, f, &kstep, g, &lfwrk, ih, &liwrk, &info );
+//    return info;
+//}
+//
+//float pysnrm2( int n, array& a, int incx )
+//{
+//    float* f = get_fptr( a );
+//    return snrm2_(&n, f, &incx);
+//}
+//
+//int pysgemv( const string& trans, int m, int n, float alpha, array& a, int lda, array& x, int incx, float beta, array& y, int incy )
+//{
+//    float* fa = get_fptr( a );
+//    float* fx = get_fptr( x );
+//    float* fy = get_fptr( y );
+//    return sgemv_( trans.c_str(), &m, &n, &alpha, fa, &lda, fx, &incx, &beta, fy, &incy );
+//}
+//
+//int pysaxpy( int n, float alpha, array& x, int incx, array& y, int incy )
+//{
+//    float* fx = get_fptr( x );
+//    float* fy = get_fptr( y );
+//    return saxpy_( &n, &alpha, fx, &incx, fy, &incy );
+//}
+//
+//float pysdot( int n, array& x, int incx, array& y, int incy )
+//{
+//    float* fx = get_fptr( x );
+//    float* fy = get_fptr( y );
+//    assert( fx != NULL && fy != NULL );
+//    return sdot_( &n, fx, &incx, fy, &incy );
+//}
+//
+//void readarray( object& f, array& x, int size)
+//{
+//#ifdef IS_PY3K
+//	extern PyTypeObject PyIOBase_Type;
+//	if(!PyObject_IsInstance(f.ptr(), (PyObject *)&PyIOBase_Type) )
+//#else
+//	if( !PyFile_Check(f.ptr()) )
+//#endif	//IS_PY3K
+//    {
+//        std::cout << "Error: expecting a file object" << std::endl;
+//        return;
+//    }
+//
+//#ifdef IS_PY3K
+//	int fd = PyObject_AsFileDescriptor( f.ptr() );
+//	FILE*  fh = fdopen(fd, "r");
+//#else
+//    FILE*  fh = PyFile_AsFile( f.ptr() );
+//#endif	//IS_PY3K
+//    //float* fx = get_fptr( x );
+//
+//    fread( fx, sizeof(float), size, fh );
+//}
 
-// bb_enumerateMPI is locate in util_sparx.cpp
-vector<int> pybb_enumerateMPI(array& parts, array& classDims, int nParts, int nClasses, int T, int nguesses,int LARGEST_CLASS,int J, int max_branching, float stmult, int
-branchfunc, int LIM) {
-    int* pt_parts = get_iptr(parts);
-    int* pt_classDims = get_iptr(classDims);
-    return EMAN::Util::bb_enumerateMPI_(pt_parts, pt_classDims, nParts, nClasses,T,nguesses,LARGEST_CLASS, J, max_branching, stmult, branchfunc, LIM);
-}
+//
+//// k_means_cont_table_ is locate to util_sparx.cpp
+//int pyk_means_cont_table(array& group1, array& group2, array& stb, long int s1, long int s2, int flag) {
+//    int* pt_group1 = get_iptr(group1);
+//    int* pt_group2 = get_iptr(group2);
+//    int* pt_stb  = get_iptr(stb);
+//    return EMAN::Util::k_means_cont_table_(pt_group1, pt_group2, pt_stb, s1, s2, flag);
+//}
+
+//// bb_enumerateMPI is locate in util_sparx.cpp
+//vector<int> pybb_enumerateMPI(array& parts, array& classDims, int nParts, int nClasses, int T, int nguesses,int LARGEST_CLASS,int J, int max_branching, float stmult, int
+//branchfunc, int LIM) {
+//    int* pt_parts = get_iptr(parts);
+//    int* pt_classDims = get_iptr(classDims);
+//    return EMAN::Util::bb_enumerateMPI_(pt_parts, pt_classDims, nParts, nClasses,T,nguesses,LARGEST_CLASS, J, max_branching, stmult, branchfunc, LIM);
+//}
 
 // Module ======================================================================
 BOOST_PYTHON_MODULE(libpyUtils2)
@@ -743,14 +746,14 @@ hyb -- y- mesh spacing above f0\nhya -- y- mesh spacing below f0\n \nInterpolant
 		.def("merge_peaks", &EMAN::Util::merge_peaks, args("peak1", "peak2", "p_size"), "")
 		.def("point_is_in_triangle_2d", &EMAN::Util::point_is_in_triangle_2d, args("p1", "p2", "p3", "actual_point"), "Determines if a point is in a 2D triangle using the Barycentric method, which is\na fast way of performing the query\nTriangle points can be specified in any order\n \np1 - point one\np2 - point two\np3 - point three\nactual_point - the point which might be in the triangle described by p1,p2 and p3\n \nreturn true if the point is in the triangle, false otherwise")
 		.def("point_is_in_convex_polygon_2d", &EMAN::Util::point_is_in_convex_polygon_2d, args("p1", "p2", "p3", "p4", "actual_point"), "Determines if a point is in a 2D convex polygon described by 4 points using\nthe Barycentric method, which is a fast way of performing the query.\nThe points must be ordered in the way you would encounter them if you traversed\nthe boundary of the polygon. Direction is irrelevant.\nCould be generalized for polygons with more points\n \np1 - point one\np2 - point two\np3 - point three\np4 - point three\nactual_point - the point which might be in the polygon described by p1,p2,p3 and p4\n \nreturn true if the point is in the polygon, false otherwise")
-		.def("sstevd", &pysstevd, args("jobz", "n", "diag", "subdiag", "qmat", "kstep", "fwork", "lfwrk", "iwork", "liwrk"), "")
-		.def("snrm2",  &pysnrm2, args("n", "a", "incx"), "")
-		.def("sgemv",  &pysgemv, args("trans", "m", "n", "alpha", "a", "lda", "x", "incx", "beta", "y", "incy"), "")
-		.def("saxpy",  &pysaxpy, args("n", "alpha", "x", "incx", "y", "incy"), "")
-		.def("sdot",   &pysdot, args("n", "x", "incx", "y", "incy"), "")
-		.def("readarray", &readarray, args("f", "x", "size"), "")
-		.def("k_means_cont_table", &pyk_means_cont_table, args("group1", "group2", "stb", "s1", "s2", "flag"), "k_means_cont_table_ is locate to util_sparx.cpp\nhelper to create the contengency table for partition matching (k-means)\nflag define is the list of stable obj must be store to stb, but the size st\nmust be know before. The trick is first start wihtout the flag to get number\nof elements stable, then again with the flag to get the list. This avoid to\nhave two differents functions for the same thing.")
-		.def("bb_enumerateMPI", &pybb_enumerateMPI, args("parts", "classDims", "nParts", "nClasses", "T", "nguesses", "LARGEST_CLASS","J","max_branching","stmult","branchfunc", "LIM"), "bb_enumerateMPI is locate in util_sparx.cpp\nK is the number of classes in each partition (should be the same for all partitions)\nthe first element of each class is its original index in the partition, and second is dummy var\nMPI: if nTop <= 0, then initial prune is called, and the pruned partitions are returned in a 1D array.\nThe first element is reserved for max_levels (the size of the smallest\npartition after pruning).\nif nTop > 0, then partitions are assumed to have been pruned, where only dummy variables of un-pruned partitions are set to 1, and findTopLargest is called\nto find the top weighted matches. The matches, where each match is preceded by its cost, is returned in a one dimensional vector.\nessentially the same as bb_enumerate but with the option to do mpi version.")
+		//.def("sstevd", &pysstevd, args("jobz", "n", "diag", "subdiag", "qmat", "kstep", "fwork", "lfwrk", "iwork", "liwrk"), "")
+		//.def("snrm2",  &pysnrm2, args("n", "a", "incx"), "")
+		//.def("sgemv",  &pysgemv, args("trans", "m", "n", "alpha", "a", "lda", "x", "incx", "beta", "y", "incy"), "")
+		//.def("saxpy",  &pysaxpy, args("n", "alpha", "x", "incx", "y", "incy"), "")
+		//.def("sdot",   &pysdot, args("n", "x", "incx", "y", "incy"), "")
+		//.def("readarray", &readarray, args("f", "x", "size"), "")
+		//.def("k_means_cont_table", &pyk_means_cont_table, args("group1", "group2", "stb", "s1", "s2", "flag"), "k_means_cont_table_ is locate to util_sparx.cpp\nhelper to create the contengency table for partition matching (k-means)\nflag define is the list of stable obj must be store to stb, but the size st\nmust be know before. The trick is first start wihtout the flag to get number\nof elements stable, then again with the flag to get the list. This avoid to\nhave two differents functions for the same thing.")
+		//.def("bb_enumerateMPI", &pybb_enumerateMPI, args("parts", "classDims", "nParts", "nClasses", "T", "nguesses", "LARGEST_CLASS","J","max_branching","stmult","branchfunc", "LIM"), "bb_enumerateMPI is locate in util_sparx.cpp\nK is the number of classes in each partition (should be the same for all partitions)\nthe first element of each class is its original index in the partition, and second is dummy var\nMPI: if nTop <= 0, then initial prune is called, and the pruned partitions are returned in a 1D array.\nThe first element is reserved for max_levels (the size of the smallest\npartition after pruning).\nif nTop > 0, then partitions are assumed to have been pruned, where only dummy variables of un-pruned partitions are set to 1, and findTopLargest is called\nto find the top weighted matches. The matches, where each match is preceded by its cost, is returned in a one dimensional vector.\nessentially the same as bb_enumerate but with the option to do mpi version.")
 		.def("Normalize_ring", &EMAN::Util::Normalize_ring, args("ring", "numr", "norm_by_square"), "")
 		.def("image_mutation", &EMAN::Util::image_mutation, args("img", "mutation_rate"), "")
 		.def("list_mutation", &EMAN::Util::list_mutation, args("list", "rate", "min_val", "max_val", "K", "is_mirror"), "")
