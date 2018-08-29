@@ -3719,9 +3719,13 @@ def steptwo_mpi(tvol, tweight, treg, cfsc = None, regularized = True, color = 0)
 	we_data =  get_image_data(tweight)
 	#  tvol is overwritten, meaning it is also an output
 	n_iter =10
+        from time import time
+	if( Blockdata["myid_on_node"] == 0 ):  at = time()
+
 	ifi = mpi_iterefa( vol_data.__array_interface__['data'][0] ,  we_data.__array_interface__['data'][0] , nx, ny, nz, maxr2, \
 			Tracker["constants"]["nnxo"], Blockdata["myid_on_node"], color, Blockdata["no_of_processes_per_group"],  Blockdata["shared_comm"], n_iter)
 	if( Blockdata["myid_on_node"] == 0 ):
+		print(" iterefa  ",(time()-at)/60.0)
 		#  Either pad or window in F space to 2*nnxo
 		nx = tvol.get_ysize()
 		if( nx > 2*Tracker["constants"]["nnxo"]):  tvol = fdecimate(tvol, 2*Tracker["constants"]["nnxo"], 2*Tracker["constants"]["nnxo"], 2*Tracker["constants"]["nnxo"], False, False)
@@ -3788,9 +3792,12 @@ def steptwo_mpi_filter(tvol, tweight, treg, cfsc = None, cutoff_freq = 0.45, aa 
 	we_data =  get_image_data(tweight)
 	#  tvol is overwritten, meaning it is also an output
 	n_iter =10
+	from time import time
+	if( Blockdata["myid_on_node"] == 0 ):  at = time()
 	ifi = mpi_iterefa( vol_data.__array_interface__['data'][0] ,  we_data.__array_interface__['data'][0] , nx, ny, nz, maxr2, \
 			Tracker["constants"]["nnxo"], Blockdata["myid_on_node"], color, Blockdata["no_of_processes_per_group"],  Blockdata["shared_comm"], n_iter)	
 	if( Blockdata["myid_on_node"] == 0 ):
+		print(" iterefa  ",(time()-at)/60.0)
 		from filter       import  filt_tanl
 		#  Either pad or window in F space to 2*nnxo
 		tvol = filt_tanl(tvol, cutoff_freq2, aa)
