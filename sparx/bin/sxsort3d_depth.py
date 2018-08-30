@@ -2307,6 +2307,7 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 	cdata  = [None]*nima
 	rdata  = [None]*nima
 	fdata  = [None]*nima	# focusmask projections
+	ctfa = EMAN2Ctf()
 	for im in range(nima):
 		image = original_data[im].copy()
 		chunk_id = image.get_attr("chunk_id")
@@ -2346,15 +2347,19 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 		# FT
 		rimage  = fft(rimage)
 		cimage  = fft(cimage)
+		if im ==0: ny = cimage.get_ysize()
 		if Tracker["constants"]["CTF"] :
-			ctf_params = rimage.get_attr("ctf")
+			ctf_params = rimage.get_attr('ctf')
+			if( not same_ctf(ctf_params,ctfa) ):
+            	ctfa = ctf_img_real(ny, ctf_params)
+            Util.mulclreal(cimage, ctfa)
 			rimage      = fdecimate(rimage, Tracker["nxinit"]*npad, Tracker["nxinit"]*npad, 1, False, False)
 			cimage      = fdecimate(cimage, Tracker["nxinit"]*npad, Tracker["nxinit"]*npad, 1, False, False)
 			ctf_params.apix = ctf_params.apix/shrinkage
 			rimage.set_attr('ctf', ctf_params)
 			cimage.set_attr('ctf', ctf_params)
 			rimage.set_attr('ctf_applied', 0)
-			cimage.set_attr('ctf_applied', 0)
+			cimage.set_attr('ctf_applied', 1)
 			if return_real :  rimage = fft(rimage)
 		else:
 			ctf_params = rimage.get_attr_default("ctf", False)
@@ -6304,7 +6309,7 @@ def main():
 	
 		###=====<--options for advanced users:
 		Tracker["total_number_of_iterations"] = 25
-		Tracker["clean_volumes"]              = True # always true
+		Tracker["clean_volumes"]              = False # always true
 	
 		### -----------Orientation constraints
 		Tracker["tilt1"]                =  0.0
