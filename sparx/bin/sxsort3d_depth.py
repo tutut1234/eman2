@@ -222,7 +222,7 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 				if bad_box == 1: bad_clustering = 1
 				time_box_finish = (time() - time_box_start)//60.
 				if(Blockdata["myid"] == Blockdata["main_node"]):
-					print('%d box of %d layer is done and it costs %f minutes'%(nbox, depth, time_box_finish))
+					log_main.add(' Box %d of layer %d is done and it costs %f minutes'%(nbox, depth, time_box_finish))
 			if bad_clustering !=1:
 				partition_per_box_per_layer_list = []
 				stop_generation = 0
@@ -492,6 +492,8 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 	import copy, shutil
 	from   shutil import copyfile
 	from   math   import sqrt
+	box_start      = time()
+	acc_time       = 0.0
 	box_niter      = 5
 	no_groups_runs = 0
 	if(Blockdata["myid"] == Blockdata["main_node"]):
@@ -519,8 +521,9 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 	total_stack              = total_stack_init
 	current_number_of_groups = number_of_groups_init
 	unaccounted_list         = new_assignment[:]
-	
 	while (keepgoing == 1):
+		if(Blockdata["myid"] == Blockdata["main_node"]):
+			log_main.add(' Box %d has been under processing for %f minutes...'%(nbox, (time()-box_start)/60.))
 		within_box_run_dir = os.path.join(work_dir, "run%d"%nruns)
 		unaccounted_file   = os.path.join(within_box_run_dir, "Unaccounted_from_previous_run.txt")
 		if(Blockdata["myid"] == Blockdata["main_node"]):
@@ -616,7 +619,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 				mpi_barrier(MPI_COMM_WORLD)
 				
 				tmp_final_list, premature =  Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
-				     MGSKmeans_index_file, params, minimum_grp_size, clean_volumes= True)
+				     MGSKmeans_index_file, params, minimum_grp_size, clean_volumes= Tracker["clean_volumes"] )
 					   
 				if Blockdata["myid"] == Blockdata["main_node"]:
 					write_text_row(tmp_final_list, os.path.join(iter_dir, "partition_%03d.txt"%indep_run_iter))
@@ -1247,7 +1250,7 @@ def shuffle_assignment(iter_assignment, number_of_groups):
 	
 #####
 def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
-    partids, params, minimum_group_size_init, clean_volumes = False):
+    partids, params, minimum_group_size_init, clean_volumes = True):
 	global Tracker, Blockdata
 	import shutil
 	import numpy as np
@@ -6306,7 +6309,7 @@ def main():
 	
 		###=====<--options for advanced users:
 		Tracker["total_number_of_iterations"] = 25
-		Tracker["clean_volumes"]              = False # always true
+		Tracker["clean_volumes"]              = True # always true
 	
 		### -----------Orientation constraints
 		Tracker["tilt1"]                =  0.0
