@@ -2350,9 +2350,8 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 		if im ==0: ny = cimage.get_ysize()
 		if Tracker["constants"]["CTF"] :
 			ctf_params = rimage.get_attr('ctf')
-			if( not same_ctf(ctf_params,ctfa) ):
-            	ctfa = ctf_img_real(ny, ctf_params)
-            Util.mulclreal(cimage, ctfa)
+			if (not same_ctf(ctf_params,ctfa)):ctfa = ctf_img_real(ny, ctf_params)
+			Util.mulclreal(cimage, ctfa)
 			rimage      = fdecimate(rimage, Tracker["nxinit"]*npad, Tracker["nxinit"]*npad, 1, False, False)
 			cimage      = fdecimate(cimage, Tracker["nxinit"]*npad, Tracker["nxinit"]*npad, 1, False, False)
 			ctf_params.apix = ctf_params.apix/shrinkage
@@ -2472,17 +2471,15 @@ def compare_two_images_eucd(data, ref_vol, fdata):
 	peaks   = len(data)*[None]
 	ny      = data[0].get_ysize()
 	ref_vol = prep_vol(ref_vol, npad = 2, interpolation_method = 1)
-	ctfs    = [ctf_img_real(ny, q.get_attr('ctf')) for q in data]
+	ctfs    = EMAN2Ctf()
 	qt = float(Tracker["constants"]["nnxo"]*Tracker["constants"]["nnxo"])
 	for im in range(len(data)):
+		current_ctf = data[im].get_attr('ctf')
+		if( not same_ctf(current_ctf,ctfs) ):
+			ctfs = ctf_img_real(ny, current_ctf)
 		phi, theta, psi, s2x, s2y = get_params_proj(data[im], xform = "xform.projection")
-		if Tracker["constants"]["focus3D"]:
-			rtemp = prgl(ref_vol,[phi, theta, psi, 0.0,0.0], 1, True)
-			rtemp = fft(rtemp*fdata[im])
-		else:
-			rtemp = prgl(ref_vol,[phi, theta, psi, 0.0,0.0], 1, False)
-		rtemp.set_attr("is_complex",0)
-		if data[im].get_attr("is_complex") ==1: data[im].set_attr("is_complex",0)
+		rtemp = prgl(ref_vol,[phi, theta, psi, 0.0,0.0], 1, False)
+		if Tracker["constants"]["focus3D"]: rtemp = fft(fft(rtemp)*fdata[im])
 		
 		if Tracker["applybckgnoise"]:
 			peaks[im] = -Util.sqed(data[im], rtemp, ctfs[im], Blockdata["unrolldata"][data[im].get_attr("particle_group")])/qt
