@@ -2498,7 +2498,6 @@ def compare_two_images_cross(data, ref_vol):
 		phi, theta, psi, s2x, s2y = get_params_proj(data[im], xform = "xform.projection")
 		ref = prgl( volft, [phi, theta, psi, 0.0, 0.0], 1, False)
 		nrmref = sqrt(Util.innerproduct(ref, ref, m))
-		data[im].set_attr("is_complex",0)
 		if Tracker["applybckgnoise"]:  peaks[im] = Util.innerproduct(ref, data[im], Blockdata["unrolldata"][data[im].get_attr("particle_group")])/nrmref
 		else:                          peaks[im] = Util.innerproduct(ref, data[im], m)/nrmref
 
