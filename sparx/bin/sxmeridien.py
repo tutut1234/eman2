@@ -79,13 +79,15 @@ Local with an = 12*delta
 """
 08/14/2018
 Normalization issues:
-This is for real space filter
+#This is for real space filter
+nx = 1024
 mask = Util.unrollmask(nx)
 for j in range(nx//2,nx):  mask[0,j]=1.0
-This is for Fourier valid region
+#This is for Fourier valid region
 m = Util.unrollmask(nx)
-fp1=fft(Util.mulnclreal(fft(p1),mask))
-Util.innerproduct(p2,p2,m)/(nx*nx*2) = Util.innerproduct(fp1,fp1,None)
+p2 = fft(p1)
+fp1=fft(Util.mulnclreal(p2,mask))
+Util.innerproduct(p2,p2,m)/(nx*nx/2) = Util.innerproduct(fp1,fp1,None)
 """
 
 
@@ -1735,6 +1737,7 @@ def difangc5(n4,p1):
 	return degrees(min(acos(max(min((n1[0]*n4[0]+n1[1]*n4[1]+n1[2]*n4[2]),1.0),-1.0)),\
 	acos(max(min((n2[0]*n4[0]+n2[1]*n4[1]+n2[2]*n4[2]),1.0),-1.0)),acos(max(min((n3[0]*n4[0]+n3[1]*n4[1]+n3[2]*n4[2]),1.0),-1.0))))
 '''
+
 def Numrinit_local(first_ring, last_ring, skip=1, mode="F"):
 	"""This function calculates the necessary information for the 2D 
 	   polar interpolation. For each ring, three elements are recorded:
@@ -1961,10 +1964,9 @@ def Xali3D_direct_ccc(data, refang, shifts, ctfs = None, bckgnoise = None, kb3D 
 						###if kb3D:  rtemp = fft(prgs(volprep, kb3D, [refang[i][0],refang[i][1],psi, 0.0,0.0]))
 						###else:     
 						temp = prgl(volprep,[ refang[itemp][0],refang[itemp][1],psi, 0.0,0.0], 1, False)
-						temp.set_attr("is_complex",0)
-						Util.mulclreal(temp, mask)
-						nrmref = sqrt(Util.innerproduct(temp, temp, None))
+						nrmref = sqrt(Util.innerproduct(temp, temp, mask))
 						Util.mul_scalar(temp, 1.0/nrmref)
+						temp.set_attr("is_complex",0)
 						bigbuffer.insert_clip(temp,(0,0,(itemp-i)*npsi+j))
 	
 			mpi_barrier(Blockdata["shared_comm"])
@@ -2185,10 +2187,9 @@ def XXali3D_direct_ccc(data, refang, shifts, coarse_angles, coarse_shifts, ctfs 
 						###if kb3D:  rtemp = fft(prgs(volprep, kb3D, [refang[i][0],refang[i][1],psi, 0.0,0.0]))
 						###else:
 						temp = prgl(volprep,[ coarse_angles[itemp][0],coarse_angles[itemp][1],psi, 0.0,0.0], 1, False)
-						temp.set_attr("is_complex",0)
-						Util.mulclreal(temp, mask)
-						nrmref = sqrt(Util.innerproduct(temp, temp, None))
+						nrmref = sqrt(Util.innerproduct(temp, temp, mask))
 						Util.mul_scalar(temp, 1.0/nrmref)
+						temp.set_attr("is_complex",0)
 						bigbuffer.insert_clip(temp,(0,0,(itemp-i)*npsi+j))
 
 			mpi_barrier(Blockdata["shared_comm"])
@@ -2222,10 +2223,9 @@ def XXali3D_direct_ccc(data, refang, shifts, coarse_angles, coarse_shifts, ctfs 
 			for j in range(npsi):
 				psi = (refang[i][2] + j*Tracker["delta"])%360.0
 				temp = prgl(volprep,[ refang[itemp][0],refang[itemp][1],psi, 0.0,0.0], 1, False)
-				temp.set_attr("is_complex",0)
-				Util.mulclreal(temp, mask)
-				nrmref = sqrt(Util.innerproduct(temp, temp, None))
+				nrmref = sqrt(Util.innerproduct(temp, temp, mask))
 				Util.mul_scalar(temp, 1.0/nrmref)
+				temp.set_attr("is_complex",0)
 				bigbuffer.insert_clip(temp,(0,0,itemp*npsi+j))
 
 	mpi_barrier(Blockdata["shared_comm"])
@@ -2619,7 +2619,7 @@ def ali3D_polar_ccc(refang, shifts, coarse_angles, coarse_shifts, procid, origin
 			xx = iq[0]*shrink
 			yy = iq[1]*shrink
 			dss = fshift(dataml, xx, yy)
-			dss.set_attr("is_complex",0)
+			#!#dss.set_attr("is_complex",0)
 			data.append(dss)
 
 		#  This will get it to real space

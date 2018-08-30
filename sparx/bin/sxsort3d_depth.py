@@ -605,7 +605,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 	      Tracker["constants"]["nnxo"], Tracker["nosmearing"], norm_per_particle, Tracker["constants"]["nsmear"])
 		del rdata
 		mpi_barrier(MPI_COMM_WORLD)
-		
+
 		while((iter < box_niter) and (converged == 0)):
 			for indep_run_iter in range(2):
 				Tracker["directory"] = os.path.join(iter_dir, "MGSKmeans_%03d"%indep_run_iter)
@@ -1840,8 +1840,8 @@ def get_data_prep_compare_rec3d(partids, partstack, return_real = False, preshif
 		cimage.set_attr("chunk_id", chunk_id)
 		cimage.set_attr("group", groupids[im])
 		cimage.set_attr("particle_group", particle_group_id)
-		rdata[im] =  image
-		cdata[im] =  cimage
+		rdata[im] = image
+		cdata[im] = cimage
 		if Tracker["applybckgnoise"]: 
 			rdata[im].set_attr("bckgnoise", Blockdata["bckgnoise"][particle_group_id])
 			if Tracker["constants"]["comparison_method"] == "cross": Util.mulclreal(cdata[im], Blockdata["unrolldata"][particle_group_id])                                
@@ -1850,6 +1850,7 @@ def get_data_prep_compare_rec3d(partids, partstack, return_real = False, preshif
 			if Tracker["constants"]["CTF"]: cdata[im].set_attr("ctf", rdata[im].get_attr("ctf"))
 		cdata[im].set_attr("is_complex",0)
 	return cdata, rdata
+
 #####4
 def get_shrink_data_final(nxinit, procid, original_data = None, oldparams = None, \
 		return_real = False, preshift = False, apply_mask = True, nonorm = False, npad = 1):
@@ -1961,6 +1962,7 @@ def get_shrink_data_final(nxinit, procid, original_data = None, oldparams = None
 			###  Do not adjust the values, we try to keep everything in the same Fourier values.
 			data[im].set_attr("bckgnoise", [temp[i] for i in range(temp.get_xsize())])
 	return data
+
 ###5
 def read_data_for_sorting(partids, partstack, previous_partstack):
 	# The function will read from stack a subset of images specified in partids
@@ -2022,8 +2024,8 @@ def read_data_for_sorting(partids, partstack, previous_partstack):
 		norm_per_particle[im] = mnorm
 		data[im] = image
 	return data, norm_per_particle
-###6 read paramstructure
 
+###6 read paramstructure
 def read_paramstructure_for_sorting(partids, paramstructure_dict_file, paramstructure_dir):
 	global Tracker, Blockdata
 	from utilities    import read_text_row, read_text_file, wrap_mpi_bcast
@@ -2263,6 +2265,7 @@ def precalculate_shifted_data_for_recons3D(prjlist, paramstructure, refang, rshi
 		del bckgn, recdata, tdir, ipsiandiang, allshifts, probs, data
 		return recdata_list
 ##### read data/paramstructure ends
+
 ###=====<----downsize data---->>>>
 def downsize_data_for_sorting(original_data, return_real = False, preshift = True, npad = 1, norms = None):
 	# The function will read from stack a subset of images specified in partids
@@ -2397,6 +2400,7 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 			fdata[im] = focusmask
 		cdata[im].set_attr("is_complex",0)
 	return cdata, rdata, fdata
+
 ##=====<----for 3D----->>>>
 def downsize_data_for_rec3D(original_data, particle_size, return_real = False, npad = 1):
 	# The function will read from stack a subset of images specified in partids
@@ -2480,32 +2484,23 @@ def compare_two_images_eucd(data, ref_vol, fdata):
 		else:
 			peaks[im] = -Util.sqed(data[im], rtemp, ctfs[im], Blockdata["unrolldata"])/qt
 	return peaks
-#
+
 def compare_two_images_cross(data, ref_vol):
 	global Tracker, Blockdata
 	from utilities import same_ctf
 	ny    = data[0].get_ysize()
+	m = Util.unrollmask(ny)
 	peaks = len(data)*[None]
 	volft = prep_vol(ref_vol, 2, 1)
-
 	at = time()
 	#  Ref is in reciprocal space
-	ctfa = EMAN2Ctf()
 	for im in range(len(data)):
-		current_ctf = data[im].get_attr('ctf')
-		if( not same_ctf(current_ctf,ctfa) ):
-			ctfa = ctf_img_real(ny, current_ctf)
 		phi, theta, psi, s2x, s2y = get_params_proj(data[im], xform = "xform.projection")
 		ref = prgl( volft, [phi, theta, psi, 0.0, 0.0], 1, False)
-		Util.mulclreal(ref, ctfa)
-		ref.set_attr("is_complex", 0)
-		ref.set_value_at(0,0,0.0)
-		nrmref = sqrt(Util.innerproduct(ref, ref, None))
+		nrmref = sqrt(Util.innerproduct(ref, ref, m))
 		data[im].set_attr("is_complex",0)
-		if Tracker["constants"]["focus3D"]: peaks[im] = Util.innerproduct(ref, data[im], None)/nrmref
-		else:
-			if Tracker["applybckgnoise"]:  peaks[im] = Util.innerproduct(ref, data[im], Blockdata["unrolldata"][data[im].get_attr("particle_group")])/nrmref
-			else:                          peaks[im] = Util.innerproduct(ref, data[im], None)/nrmref
+		if Tracker["applybckgnoise"]:  peaks[im] = Util.innerproduct(ref, data[im], Blockdata["unrolldata"][data[im].get_attr("particle_group")])/nrmref
+		else:                          peaks[im] = Util.innerproduct(ref, data[im], m)/nrmref
 
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		print("computing distances    ",strftime("%a, %d %b %Y %H:%M:%S", localtime()),"   ",(time()-at)/60.)
@@ -3737,7 +3732,7 @@ def steptwo_mpi(tvol, tweight, treg, cfsc = None, regularized = True, color = 0)
 	vol_data = get_image_data(tvol)
 	we_data =  get_image_data(tweight)
 	#  tvol is overwritten, meaning it is also an output
-	n_iter = 1
+	n_iter = 10
 
 	if( Blockdata["myid_on_node"] == 0 ):  at = time()
 
@@ -3810,7 +3805,7 @@ def steptwo_mpi_filter(tvol, tweight, treg, cfsc = None, cutoff_freq = 0.45, aa 
 	vol_data = get_image_data(tvol)
 	we_data =  get_image_data(tweight)
 	#  tvol is overwritten, meaning it is also an output
-	n_iter = 1
+	n_iter = 10
 
 	if( Blockdata["myid_on_node"] == 0 ):  at = time()
 	ifi = mpi_iterefa( vol_data.__array_interface__['data'][0] ,  we_data.__array_interface__['data'][0] , nx, ny, nz, maxr2, \
