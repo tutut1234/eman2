@@ -2350,14 +2350,16 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 		# FT
 		rimage  = fft(rimage)
 		cimage  = fft(cimage)
-		if im ==0: ny = cimage.get_ysize()
 		if Tracker["constants"]["CTF"] :
 			ctf_params = rimage.get_attr('ctf')
-			if (not same_ctf(ctf_params,ctfa)):ctfa = ctf_img_real(ny, ctf_params)
-			if Tracker["constants"]["comparison_method"]=='cross': Util.mulclreal(cimage, ctfa)
 			rimage      = fdecimate(rimage, Tracker["nxinit"]*npad, Tracker["nxinit"]*npad, 1, False, False)
 			cimage      = fdecimate(cimage, Tracker["nxinit"]*npad, Tracker["nxinit"]*npad, 1, False, False)
 			ctf_params.apix = ctf_params.apix/shrinkage
+			if im ==0: ny = cimage.get_ysize()
+			if (not same_ctf(ctf_params,ctfa)):
+				ctfa = ctf_img_real(ny, ctf_params)
+			if Tracker["constants"]["comparison_method"]=='cross': 
+				Util.mulclreal(cimage, ctfa)
 			rimage.set_attr('ctf', ctf_params)
 			cimage.set_attr('ctf', ctf_params)
 			rimage.set_attr('ctf_applied', 0)
