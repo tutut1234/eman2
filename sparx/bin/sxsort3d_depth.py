@@ -2355,15 +2355,13 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 			rimage      = fdecimate(rimage, Tracker["nxinit"]*npad, Tracker["nxinit"]*npad, 1, False, False)
 			cimage      = fdecimate(cimage, Tracker["nxinit"]*npad, Tracker["nxinit"]*npad, 1, False, False)
 			ctf_params.apix = ctf_params.apix/shrinkage
-			if im ==0: ny = cimage.get_ysize()
-			if (not same_ctf(ctf_params,ctfa)):
-				ctfa = ctf_img_real(ny, ctf_params)
-			if Tracker["constants"]["comparison_method"]=='cross': 
-				Util.mulclreal(cimage, ctfa)
+			#if im ==0: ny = cimage.get_ysize()
+			#if (not same_ctf(ctf_params,ctfa)):ctfa = ctf_img_real(ny, ctf_params)
+			#if Tracker["constants"]["comparison_method"]=='cross': Util.mulclreal(cimage, ctfa)
 			rimage.set_attr('ctf', ctf_params)
 			cimage.set_attr('ctf', ctf_params)
 			rimage.set_attr('ctf_applied', 0)
-			cimage.set_attr('ctf_applied', 1)
+			cimage.set_attr('ctf_applied', 0)
 			if return_real :  rimage = fft(rimage)
 		else:
 			ctf_params = rimage.get_attr_default("ctf", False)
@@ -2496,20 +2494,25 @@ def compare_two_images_cross(data, ref_vol):
 	global Tracker, Blockdata
 	from utilities import same_ctf
 	ny    = data[0].get_ysize()
-	m = Util.unrollmask(ny)
+	m     = Util.unrollmask(ny)
 	peaks = len(data)*[None]
 	volft = prep_vol(ref_vol, 2, 1)
 	at = time()
 	#  Ref is in reciprocal space
+	ctfa = EMAN2Ctf()
 	for im in range(len(data)):
 		phi, theta, psi, s2x, s2y = get_params_proj(data[im], xform = "xform.projection")
 		ref = prgl( volft, [phi, theta, psi, 0.0, 0.0], 1, False)
+		current_ctf = data[im].get_attr('ctf')
+		if not same_ctf(current_ctf, ctfa):
+			ctfa = current_ctf
+			ctfimg  = ctf_img_real(ny, ctfa)
+		Util.mulclreal(ref, ctfimg)
 		nrmref = sqrt(Util.innerproduct(ref, ref, m))
 		if Tracker["applybckgnoise"]:  peaks[im] = Util.innerproduct(ref, data[im], Blockdata["unrolldata"][data[im].get_attr("particle_group")])/nrmref
 		else:                          peaks[im] = Util.innerproduct(ref, data[im], m)/nrmref
-
-	if Blockdata["myid"] == Blockdata["main_node"]:
-		print("computing distances    ",strftime("%a, %d %b %Y %H:%M:%S", localtime()),"   ",(time()-at)/60.)
+	#if Blockdata["myid"] == Blockdata["main_node"]:
+	#	print("computing distances    ",strftime("%a, %d %b %Y %H:%M:%S", localtime()),"   ",(time()-at)/60.)
 	return peaks
 		
 #####==========--------------------utilities of creating random assignments
