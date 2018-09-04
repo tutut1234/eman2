@@ -589,7 +589,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 				parameterstructure, norm_per_particle, log_main)
 			
 		if Blockdata["myid"] == Blockdata["main_node"]:
-			log_main.add('Sorting cutoff frequency is %f'%(Tracker["freq_fsc143_cutoff"]))
+			log_main.add('Sorting cutoff frequency is %f'%(round(Tracker["freq_fsc143_cutoff"], 4)))
 			
 		Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
 			
@@ -803,47 +803,52 @@ def get_sorting_image_size(original_data, partids, number_of_groups, sparamstruc
 	global Tracker, Blockdata
 	from utilities    import wrap_mpi_bcast, read_text_file, write_text_file
 	from applications import MPI_start_end
-	iter = 0
-	Tracker["number_of_groups"] = number_of_groups
-	if(Blockdata["myid"] == Blockdata["main_node"]):
-		log_main.add("3D reconstruction is computed using window size:  %d"%Tracker["nxinit_refinement"])
-		lpartids = read_text_file(partids, -1)
-		if len(lpartids) == 1:
-			iter_assignment = []
-			for im in range(len(lpartids[0])):
-				iter_assignment.append(randint(0,number_of_groups - 1))# simple version
-		else:
-			iter_assignment = lpartids[0]
-	else:   iter_assignment = 0
-	iter_assignment = wrap_mpi_bcast(iter_assignment, Blockdata["main_node"])
+	if Tracker["compute_fsc"]:
+		iter = 0
+		Tracker["number_of_groups"] = number_of_groups
+		if(Blockdata["myid"] == Blockdata["main_node"]):
+			log_main.add("3D reconstruction is computed using window size:  %d"%Tracker["nxinit_refinement"])
+			lpartids = read_text_file(partids, -1)
+			if len(lpartids) == 1:
+				iter_assignment = []
+				for im in range(len(lpartids[0])):
+					iter_assignment.append(randint(0,number_of_groups - 1))# simple version
+			else:
+				iter_assignment = lpartids[0]
+		else:   iter_assignment = 0
+		iter_assignment = wrap_mpi_bcast(iter_assignment, Blockdata["main_node"])
 	
-	Tracker["total_stack"] = len(iter_assignment)
-	proc_list = [[None, None] for iproc in range(Blockdata["nproc"])]
-	for iproc in range(Blockdata["nproc"]):
-		iproc_image_start, iproc_image_end = MPI_start_end(Tracker["total_stack"], Blockdata["nproc"], iproc)
-		proc_list[iproc] = [iproc_image_start, iproc_image_end]
+		Tracker["total_stack"] = len(iter_assignment)
+		proc_list = [[None, None] for iproc in range(Blockdata["nproc"])]
+		for iproc in range(Blockdata["nproc"]):
+			iproc_image_start, iproc_image_end = MPI_start_end(Tracker["total_stack"], Blockdata["nproc"], iproc)
+			proc_list[iproc] = [iproc_image_start, iproc_image_end]
 	
-	compute_noise(Tracker["nxinit_refinement"])
-	rdata = downsize_data_for_rec3D(original_data, Tracker["nxinit_refinement"], return_real = False, npad = 1)
-	update_rdata_assignment(iter_assignment, proc_list, Blockdata["myid"], rdata)
-	Tracker["nxinit"] = Tracker["nxinit_refinement"]
-	compute_noise(Tracker["nxinit"])
-	do3d_sorting_groups_fsc_only_iter(rdata, sparamstructure, snorm_per_particle, iteration = iter)
-	del rdata
-		
-	if( Blockdata["myid"] == Blockdata["main_node"]):
-		fsc_data = []
-		for igroup in range(Tracker["number_of_groups"]):
-			for ichunk in range(2):
-				tmp_fsc_data = read_text_file(os.path.join(Tracker["directory"], "fsc_driver_chunk%d_grp%03d_iter%03d.txt"%(ichunk, igroup, iter)), -1)
-				fsc_data.append(tmp_fsc_data[0])
-	else: fsc_data = 0
-	fsc_data = wrap_mpi_bcast(fsc_data, Blockdata["main_node"])
-	avg_fsc = [0.0 for i in range(len(fsc_data[0]))]
-	avg_fsc[0] = 1.0
-	for igroup in range(1): # Use group zero first
-		for ifreq in range(1, len(fsc_data[0])):avg_fsc[ifreq] += fsc_data[igroup][ifreq]
-	fsc143 = len(fsc_data[0])
+		compute_noise(Tracker["nxinit_refinement"])
+		rdata = downsize_data_for_rec3D(original_data, Tracker["nxinit_refinement"], return_real = False, npad = 1)
+		update_rdata_assignment(iter_assignment, proc_list, Blockdata["myid"], rdata)
+		Tracker["nxinit"] = Tracker["nxinit_refinement"]
+		compute_noise(Tracker["nxinit"])
+		do3d_sorting_groups_fsc_only_iter(rdata, sparamstructure, snorm_per_particle, iteration = iter)
+		del rdata
+		if( Blockdata["myid"] == Blockdata["main_node"]):
+			fsc_data = []
+			for igroup in range(Tracker["number_of_groups"]):
+				for ichunk in range(2):
+					tmp_fsc_data = read_text_file(os.path.join(Tracker["directory"], "fsc_driver_chunk%d_grp%03d_iter%03d.txt"%(ichunk, igroup, iter)), -1)
+					fsc_data.append(tmp_fsc_data[0])
+		else: fsc_data = 0
+		fsc_data = wrap_mpi_bcast(fsc_data, Blockdata["main_node"])
+		avg_fsc = [0.0 for i in range(len(fsc_data[0]))]
+		avg_fsc[0] = 1.0
+		for igroup in range(1): # Use group zero first
+			for ifreq in range(1, len(fsc_data[0])):avg_fsc[ifreq] += fsc_data[igroup][ifreq]
+		fsc143 = len(fsc_data[0])
+	else:
+		from statistics import scale_fsc_datasetsize
+		avg_fsc = scale_fsc_datasetsize(Tracker["constants"]["fsc_curve"], \
+		     float(Tracker["constants"]["total_stack"]), Tracker["total_stack"]//number_of_groups)
+		fsc143 = len(avg_fsc)
 	for ifreq in range(len(avg_fsc)):
 		if avg_fsc[ifreq] < 0.143:
 			fsc143 = ifreq -1
@@ -852,9 +857,10 @@ def get_sorting_image_size(original_data, partids, number_of_groups, sparamstruc
 	else: ERROR("Program obtains wrong image size", "get_sorting_image_size", 1, Blockdata["myid"])
 	freq_fsc143_cutoff = float(fsc143)/float(nxinit)
 	if(Blockdata["myid"] == Blockdata["main_node"]): write_text_file(avg_fsc, os.path.join(Tracker["directory"], "fsc_image_size.txt"))
-	del iter_assignment
-	del proc_list
-	del fsc_data
+	if Tracker["compute_fsc"]:
+		del iter_assignment
+		del proc_list
+		del fsc_data
 	del avg_fsc
 	return nxinit, freq_fsc143_cutoff
 	
@@ -2288,6 +2294,7 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 	mask2D		= model_circle(Tracker["constants"]["radius"],Tracker["constants"]["nnxo"],Tracker["constants"]["nnxo"])
 	shrinkage 	= Tracker["nxinit"]/float(Tracker["constants"]["nnxo"])
 	radius      = int(Tracker["constants"]["radius"] * shrinkage +0.5)
+	compute_noise(Tracker["nxinit"])
 	if Tracker["applybckgnoise"]:
 		oneover = []
 		nnx     = len(Blockdata["bckgnoise"][0])
@@ -3502,9 +3509,9 @@ def update_data_assignment(cdata, rdata, assignment, proc_list, nosmearing, myid
 			rdata[im].set_attr("group", groupids[im])
 			rdata[im].set_attr("previous_group", previous_group) 
 		else:
-			for jm in range(len(rdata[im])):
-				rdata[im][jm].set_attr("previous_group", previous_group)
-				rdata[im][jm].set_attr("group", groupids[im])
+			#for jm in range(len(rdata[im])):
+			rdata[im][0].set_attr("previous_group", previous_group)
+			rdata[im][0].set_attr("group", groupids[im])
 	return
 	
 def update_rdata_assignment(assignment, proc_list, myid, rdata):
@@ -5480,7 +5487,6 @@ def stacksize(since=0.0):
     return _VmB('VmStk:') - since
     
 #####==========-------------------------Functions for post processing
-
 def compute_final_map(work_dir, log_main):
 	global Tracker, Blockdata
 	Tracker["constants"]["orgres"]			 = 0.0
@@ -5657,7 +5663,6 @@ def do3d_sorting_groups_nofsc_final(rdata, parameterstructure, norm_per_particle
 					tvol2 = steptwo_mpi_filter(tvol2, tweight2, treg2,  None,  Tracker["freq_fsc143_cutoff"], 0.01, False, color = index_of_colors) # has to be False!!!
 					del tweight2, treg2
 			mpi_barrier(MPI_COMM_WORLD)
-		
 			for im in range(len(big_loop_colors[iloop])):
 				index_of_group  = big_loop_groups[iloop][im]
 				index_of_colors = big_loop_colors[iloop][im]
@@ -5761,7 +5766,7 @@ def copy_results(log_file, all_gen_stat_list):
 			log_file.add('                     Final results saved in %s'%Tracker["constants"]["masterdir"])
 			log_file.add('----------------------------------------------------------------------------------------------------------------' )
 			nclusters = 0
-			log_file.add( '{:^8} {:>8}   {:^24}  {:>15} {:^22} {:^5} {:^15} {:^20} '.format('Group ID', '    size','determined in generation', 'reproducibility', 'random reproducibility', ' std ', ' selection file', '       map file     '))
+			log_file.add( '{:^8} {:>8}   {:^24}  {:>15} {:^22} {:^5} {:^20} {:^20} '.format('Group ID', '    size','determined in generation', 'reproducibility', 'random reproducibility', ' std ', ' selection file', '       map file     '))
 			clusters  = []
 			NACC      = 0           
 			for ig1, value in list(Tracker["generation"].items()):
@@ -5774,7 +5779,7 @@ def copy_results(log_file, all_gen_stat_list):
 					cluster      = read_text_file(os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%ig, "Cluster_%03d.txt"%ic))
 					cluster_file = "Cluster_%03d.txt"%nclusters
 					vol_file     = "vol_cluster%03d.hdf"%nclusters
-					msg          = '{:>8} {:>8}   {:^24}        {:^6}          {:^6}          {:>5}    {:^15}     {:^20} '.format(nclusters, len(cluster), ig, round(all_gen_stat_list[ig][ic][0],1), round(all_gen_stat_list[ig][ic][1],1), round(all_gen_stat_list[ig][ic][2],1), cluster_file,  vol_file)
+					msg          = '{:>8} {:>8}   {:^24}        {:^6}          {:^6}          {:>5} {:^20} {:^20} '.format(nclusters, len(cluster), ig, round(all_gen_stat_list[ig][ic][0],1), round(all_gen_stat_list[ig][ic][1],1), round(all_gen_stat_list[ig][ic][2],1), cluster_file,  vol_file)
 					nclusters   +=1
 					NACC        +=len(cluster)
 					log_file.add(msg)			
@@ -5784,7 +5789,7 @@ def copy_results(log_file, all_gen_stat_list):
 				copyfile(Unaccounted_file, os.path.join(Tracker["constants"]["masterdir"], "Core_throughout.txt"))
 				cluster_file = "Core_throughout.txt"
 				vol_file     = "vol_core_throughout.hdf"
-				msg          = '{:>8} {:>8}   {:^24}        {:^6}          {:^6}          {:>5}    {:^15}     {:^20} '.format(nclusters, len(cluster), Tracker["current_generation"], 0.0, 0.0, 0.0, cluster_file,  vol_file)
+				msg          = '{:>8} {:>8}   {:^24}        {:^6}          {:^6}          {:>5} {:^20} {:^20} '.format(nclusters, len(cluster), Tracker["current_generation"], 0.0, 0.0, 0.0, cluster_file,  vol_file)
 				log_file.add(msg)
 			except:
 				log_file.add("Core_throughout.txt does not exist")
@@ -5861,7 +5866,6 @@ def print_matching_pairs(pair_list, log_file):
 	log_file.add(' ')
 	log_file.add('                        Two-way matching of sorting results.')
 	log_file.add('M indicates that respective group of P0 sorting (row number) matches respective group of P1 sorting (column number)')
-	
 	msg ='   '
 	for i in range(len(pair_list)):
 		msg += '{:^5d}'.format(i)
@@ -5897,10 +5901,8 @@ def do_random_groups_simulation_mpi(ptp1, ptp2):
 	for i1 in range(len(ptp1)):
 		plist1.append([nsize1, nsize1+ max(int(float(len(ptp1[i1]))/tsize*100.), 1)])
 		nsize1 += max(int(float(len(ptp1[i1]))/tsize*100.), 1)
-		
 	nsize2   = 0
 	plist2   = []
-	
 	for i1 in range(len(ptp2)):
 		plist2.append([nsize2, nsize2 + max(int(float(len(ptp2[i1]))/tsize*100.), 1)])
 		nsize2 += max(int(float(len(ptp2[i1]))/tsize*100.), 1)
@@ -6004,7 +6006,6 @@ def get_group_size_from_iter_assign(iter_assignment):
 		
 def sorting_main_mpi(log_main, depth_order, not_include_unaccounted):
 	global Tracker, Blockdata
-	
 	time_sorting_start = time()
 	read_tracker_mpi(Tracker["constants"]["masterdir"])
 	Tracker["generation"]         =  {}
@@ -6046,7 +6047,6 @@ def sorting_main_mpi(log_main, depth_order, not_include_unaccounted):
 			else: dump_tracker(work_dir)
 			output_list, bad_clustering, stat_list  = depth_clustering(work_dir, depth_order, my_pids, params, previous_params, log_main)
 			all_gen_stat_list.append(stat_list)
-			
 			if bad_clustering !=1:
 				if Blockdata["myid"] == Blockdata["main_node"]:
 					clusters, nclusters, nuacc  = output_clusters(work_dir, output_list[0][0], output_list[0][1], not_include_unaccounted, log_main)
@@ -6069,7 +6069,7 @@ def sorting_main_mpi(log_main, depth_order, not_include_unaccounted):
 					if Blockdata["myid"] == Blockdata["main_node"]:
 						time_of_generation_h,  time_of_generation_m = get_time(time_generation_start)
 						log_main.add('SORT3D generation%d time: %d hours %d minutes.'%(igen, time_of_generation_h, time_of_generation_m))
-					my_pids  = os.path.join( work_dir, 'indexes_next_generation.txt')
+					my_pids = os.path.join( work_dir, 'indexes_next_generation.txt')
 					if Blockdata["myid"] == Blockdata["main_node"]:
 						write_text_file(output_list[0][1], my_pids)
 						write_text_row(stat_list, os.path.join(work_dir, 'gen_rep.txt'))
@@ -6240,7 +6240,7 @@ def main():
 		###=====<--options for advanced users:
 		Tracker["total_number_of_iterations"] = 15
 		Tracker["clean_volumes"]              = True # always true
-	
+		Tracker["compute_fsc"]                = False
 		### -----------Orientation constraints
 		Tracker["tilt1"]                =  0.0
 		Tracker["tilt2"]                = 180.0
@@ -6409,7 +6409,7 @@ def main():
 		###=====<--options for advanced users:
 		Tracker["total_number_of_iterations"] = 15
 		Tracker["clean_volumes"]              = True # always true
-	
+		Tracker["compute_fsc"]                = False
 		### -----------Orientation constraints
 		Tracker["tilt1"]                =  0.0
 		Tracker["tilt2"]                = 180.0
