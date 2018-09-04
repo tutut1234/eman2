@@ -1297,16 +1297,16 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		lpartids = read_text_file(partids, -1)
 		if len(lpartids) == 1:# Not true for sorting
+			iter_assignment = [None for im in range(len(lpartids[0]))]
+			for im in range(len(lpartids[0])):iter_assignment[im] = randint(0,number_of_groups-1)# simple version
+		else:
 			iter_assignment = []
-			for im in range(len(lpartids[0])):iter_assignment.append(randint(0,number_of_groups-1))# simple version
-		else: iter_assignment = lpartids[0]
+			iter_assignment[:] = lpartids[0]
 	else: iter_assignment = 0
-	iter_assignment          = wrap_mpi_bcast(iter_assignment, Blockdata["main_node"]) # initial assignment
-	total_stack              = len(iter_assignment)
-	Tracker["total_stack"]   = total_stack
-	nima                     = len(cdata)
-	image_start, image_end   = MPI_start_end(Tracker["total_stack"], Blockdata["nproc"], Blockdata["myid"])
-	
+	iter_assignment                 = wrap_mpi_bcast(iter_assignment, Blockdata["main_node"]) # initial assignment
+	Tracker["total_stack"]          = len(iter_assignment)
+	nima                            = len(cdata) # local size
+	image_start, image_end          = MPI_start_end(Tracker["total_stack"], Blockdata["nproc"], Blockdata["myid"])
 	Tracker["min_orien_group_size"] = Tracker["number_of_groups"]*Tracker["minimum_ptl_number"]
 	angle_step                      = get_angle_step_from_number_of_orien_groups(Tracker["constants"]["orientation_groups"])
 	ptls_in_orien_groups            = get_angle_step_and_orien_groups_mpi(params, partids, angle_step)
@@ -1324,7 +1324,6 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 		log_main.add(msg)
 			
 	proc_list = [[None, None] for iproc in range(Blockdata["nproc"])]
-	
 	for iproc in range(Blockdata["nproc"]):
 		iproc_image_start, iproc_image_end = MPI_start_end(Tracker["total_stack"], Blockdata["nproc"], iproc)
 		proc_list[iproc] = [iproc_image_start, iproc_image_end]
@@ -1373,14 +1372,10 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 		rest_time  = time()
 		local_peaks = [0.0 for im in range(number_of_groups*nima)]
 		total_im    = 0
-		local_kmeans_peaks = [ -1.0e23 for im in range(nima)]
+		local_kmeans_peaks = [-1.0e23 for im in range(nima)]
 		## compute peaks and save them in 1D list
 		for iref in range(number_of_groups):
 			if(Blockdata["myid"] == Blockdata["last_node"]):
-				try: fsc143 = Tracker["fsc143"][iref]
-				except:	fsc143 = 0.0
-				try: fsc05 = Tracker["fsc05"][iref]
-				except:	fsc05 = 0.0	
 				ref_vol = get_im(os.path.join(Tracker["directory"],"vol_grp%03d_iter%03d.hdf"%(iref, total_iter)))
 				nnn = ref_vol.get_xsize()
 				if(Tracker["nxinit"] != nnn): ref_vol = fdecimate(ref_vol, Tracker["nxinit"], Tracker["nxinit"], Tracker["nxinit"], True, False)
@@ -1416,7 +1411,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 					for im in range(len(local_peaks)): dmatrix[im/iproc_nima][im%iproc_nima + proc_list[iproc][0]] = local_peaks[im]
 		dmatrix = wrap_mpi_bcast(dmatrix, Blockdata["main_node"], MPI_COMM_WORLD)
 		last_iter_assignment = copy.copy(iter_assignment)
-		iter_assignment      = [-1 for iptl in range(Tracker["total_stack"])]
+		iter_assignment = [-1 for iptl in range(Tracker["total_stack"])]
 		for iorien in range(len(ptls_in_orien_groups)):
 			if iorien%Blockdata["nproc"] == Blockdata["myid"]:
 				local_assignment = do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, \
@@ -3363,12 +3358,14 @@ def get_sorting_all_params(data):
 def get_sorting_attr_stack(data_in_core):
 	# get partitioned group ID and xform.projection parameters
 	from utilities import get_params_proj
-	attr_value_list = []
-	for idat in range(len(data_in_core)): attr_value_list.append([data_in_core[idat].get_attr("group"), get_params_proj(data_in_core[idat],xform = "xform.projection")])
+	attr_value_list = [None for im in range(len(data_in_core))]
+	for idat in range(len(data_in_core)): 
+		attr_value_list[idat] = [data_in_core[idat].get_attr("group"), get_params_proj(data_in_core[idat], xform = "xform.projection")]
 	return attr_value_list
 	
 def fill_in_mpi_list(mpi_list, data_list, index_start, index_end):
-	for index in range(index_start, index_end): mpi_list[index] = data_list[index - index_start]
+	for index in range(index_start, index_end):
+		mpi_list[index] = data_list[index-index_start]
 	return mpi_list
 	
 def parsing_sorting_params(partid, sorting_params_list):
