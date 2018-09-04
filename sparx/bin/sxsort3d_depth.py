@@ -2484,6 +2484,7 @@ def compare_two_images_eucd(data, ref_vol, fdata):
 	ref_vol = prep_vol(ref_vol, npad = 2, interpolation_method = 1)
 	ctfs    = EMAN2Ctf()
 	qt = float(Tracker["constants"]["nnxo"]*Tracker["constants"]["nnxo"])
+	m = Util.unrollmask(ny)
 	for im in range(len(data)):
 		current_ctf = data[im].get_attr('ctf')
 		if( not same_ctf(current_ctf,ctfs) ):
@@ -2493,9 +2494,9 @@ def compare_two_images_eucd(data, ref_vol, fdata):
 		if Tracker["constants"]["focus3D"]: rtemp = fft(fft(rtemp)*fdata[im])
 		
 		if Tracker["applybckgnoise"]:
-			peaks[im] = -Util.sqed(data[im], rtemp, ctfs[im], Blockdata["unrolldata"][data[im].get_attr("particle_group")])/qt
+			peaks[im] = -Util.sqed(data[im], rtemp, ctfs, Blockdata["unrolldata"][data[im].get_attr("particle_group")])/qt
 		else:
-			peaks[im] = -Util.sqed(data[im], rtemp, ctfs[im], Blockdata["unrolldata"])/qt
+			peaks[im] = -Util.sqed(data[im], rtemp, ctfs, m)/qt
 	return peaks
 
 def compare_two_images_cross(data, ref_vol):
@@ -3289,7 +3290,7 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	write_text_row(new_index, os.path.join(partition_dir, "Accounted.txt"))
 	write_text_file(unaccounted_list, os.path.join(partition_dir, "Core_throughout.txt"))
 	log_list.append('  The overall reproducibility is %5.1f%%.'%ratio_accounted)
-	log_list.append('  The number of accounted for images: %d.  The number of core through images: %d.'%(len(accounted_list), len(unaccounted_list)))
+	log_list.append('  The number of accounted for images: %d.  The number of core throughout images: %d.'%(len(accounted_list), len(unaccounted_list)))
 	log_list.append('  The current minimum group size: %d and the maximum group size: %d.'%(minimum_group_size, maximum_group_size))
 	log_list.append('----------------------------------------------------------------------------------------------------------------')
 	return minimum_group_size, maximum_group_size, selected_clusters, unaccounted_list, ratio_accounted, len(list_stable), log_list
@@ -3401,15 +3402,12 @@ def convertasi(asig, number_of_groups):
 ### dmatrix and refangles partition			
 def get_angle_step_from_number_of_orien_groups(orien_groups):
 	global Tracker, Blockdata
-	from string import atof
-	sym_class = Blockdata["symclass"]
 	N = orien_groups
-	angle_step = 180.
-	while len(sym_class.even_angles(angle_step))< N:
+	angle_step = 60.
+	while len(Blockdata["symclass"].even_angles(angle_step))< N:
 		angle_step /=2.
-	while len(sym_class.even_angles(angle_step))> N:
+	while len(Blockdata["symclass"].even_angles(angle_step))> N:
 		angle_step +=0.1
-	del sym_class
 	return angle_step
 	
 def parti_oriens(params, angstep, smc):
