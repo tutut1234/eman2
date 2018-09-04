@@ -1329,16 +1329,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 		proc_list[iproc] = [iproc_image_start, iproc_image_end]
 		
 	compute_noise(Tracker["nxinit"])
-	mpi_barrier(MPI_COMM_WORLD)
-	#cdata, rdata, fdata = downsize_data_for_sorting(original_data, preshift = True, npad = 1, norms =norm_per_particle)# pay attentions to shifts!
-	#mpi_barrier(MPI_COMM_WORLD)
-	
-	#srdata = precalculate_shifted_data_for_recons3D(rdata, paramstructure, Tracker["refang"], \
-	#   Tracker["rshifts"], Tracker["delta"], Tracker["avgnorm"], Tracker["nxinit"], \
-	#     Tracker["constants"]["nnxo"], Tracker["nosmearing"], norm_per_particle, Tracker["constants"]["nsmear"])
-	#del rdata
-	#mpi_barrier(MPI_COMM_WORLD)
-	
+	mpi_barrier(MPI_COMM_WORLD)	
 	last_iter_assignment = copy.copy(iter_assignment)
 	best_assignment      = copy.copy(iter_assignment)
 	total_iter           = 0
@@ -1369,7 +1360,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 		acc_rest = time() - rest_time
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			print("recon3d takes  %f minutes"%(acc_rest/60.))
-		rest_time  = time()
+		rest_time   = time()
 		local_peaks = [0.0 for im in range(number_of_groups*nima)]
 		total_im    = 0
 		local_kmeans_peaks = [-1.0e23 for im in range(nima)]
@@ -1411,7 +1402,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 					for im in range(len(local_peaks)): dmatrix[im/iproc_nima][im%iproc_nima + proc_list[iproc][0]] = local_peaks[im]
 		dmatrix = wrap_mpi_bcast(dmatrix, Blockdata["main_node"], MPI_COMM_WORLD)
 		last_iter_assignment = copy.copy(iter_assignment)
-		iter_assignment = [-1 for iptl in range(Tracker["total_stack"])]
+		iter_assignment      = [-1 for iptl in range(Tracker["total_stack"])]
 		for iorien in range(len(ptls_in_orien_groups)):
 			if iorien%Blockdata["nproc"] == Blockdata["myid"]:
 				local_assignment = do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, \
@@ -6275,7 +6266,6 @@ def main():
 		import user_functions
 		from string         import split, atoi, atof
 		#
-	
 		continue_from_interuption = 0
 		continue_from_interuption = create_masterdir()
 		log_main                  = Logger(BaseLogger_Files())
