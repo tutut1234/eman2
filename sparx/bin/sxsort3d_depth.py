@@ -561,14 +561,9 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		#  computation starts,    prepare data
 		original_data, norm_per_particle  = read_data_for_sorting(iter_id_init_file, params, previous_params)
 		
-		if Tracker["nosmearing"]:
-			parameterstructure  = None
-			paramstructure_dict = None
-			paramstructure_dir  = None
+		if Tracker["nosmearing"]: parameterstructure  = None
 		else:
-			paramstructure_dict = Tracker["paramstructure_dict"]
-			paramstructure_dir  = Tracker["paramstructure_dir"]
-			parameterstructure  = read_paramstructure_for_sorting(iter_id_init_file, paramstructure_dict, paramstructure_dir)
+			parameterstructure  = read_paramstructure_for_sorting(iter_id_init_file, Tracker["paramstructure_dict"], Tracker["paramstructure_dir"])
 		mpi_barrier(MPI_COMM_WORLD)
 		
 		Tracker["directory"] = within_box_run_dir
@@ -1377,12 +1372,8 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 		rest_time  = time()
 		# pass to main_node
 		if Blockdata["myid"] == Blockdata["main_node"]:
-			#dmatrix = np.array([[ 0.0 for im in range(Tracker["total_stack"])] for iref in range(number_of_groups)])
-			#for im in range(len(local_peaks)): dmatrix[im//nima][im%nima + image_start] = local_peaks[im]
-			#  Below dmatrix is in single precision.  I am all but certain it is sufficient.
-			#   dmatrix is not set to zero, I am not sure whether it was important in your code.
-			dmatrix = np.ndarray((number_of_groups,Tracker["total_stack"]),dtype='f4',order="C")
-			for im in range(len(local_peaks)): dmatrix[im//nima,im%nima + image_start] = local_peaks[im]
+			dmatrix = np.array([[ 0.0 for im in range(Tracker["total_stack"])] for iref in range(number_of_groups)])
+			for im in range(len(local_peaks)): dmatrix[im//nima][im%nima + image_start] = local_peaks[im]
 		else: dmatrix = 0
 		if Blockdata["myid"] != Blockdata["main_node"]: wrap_mpi_send(local_peaks, Blockdata["main_node"], MPI_COMM_WORLD)
 		else:
@@ -1390,12 +1381,10 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 				if iproc != Blockdata["main_node"]:
 					local_peaks = wrap_mpi_recv(iproc, MPI_COMM_WORLD)
 					iproc_nima  = proc_list[iproc][1] - proc_list[iproc][0]
-					for im in range(len(local_peaks)): dmatrix[im/iproc_nima,im%iproc_nima + proc_list[iproc][0]] = local_peaks[im]
+					for im in range(len(local_peaks)): dmatrix[im/iproc_nima][im%iproc_nima + proc_list[iproc][0]] = local_peaks[im]
 		dmatrix = wrap_mpi_bcast(dmatrix, Blockdata["main_node"], MPI_COMM_WORLD)
 		last_iter_assignment = copy.copy(iter_assignment)
-		#iter_assignment      = np.array([-1 for iptl in range(Tracker["total_stack"])])
-		#  What int length do you need?
-		iter_assignment      = np.full((Tracker["total_stack"]),-1,dtype="int16")
+		iter_assignment      = np.array([-1 for iptl in range(Tracker["total_stack"])])
 		for iorien in range(len(ptls_in_orien_groups)):
 			if iorien%Blockdata["nproc"] == Blockdata["myid"]:
 				local_assignment = do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, \
@@ -1479,11 +1468,10 @@ def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, orien_group
 	results = [[] for i in range(number_of_groups)]
 	nima    = len(orien_group_members)
 	minimum_group_size = int(minimum_group_size_ratio*nima/number_of_groups)
-	submatrix = np.zeros((number_of_groups, nima),dtype='f4',order="C")
+	submatrix = np.zeros((number_of_groups, nima))
 	for i in range(number_of_groups):
 		for j in range(len(orien_group_members)):
-			submatrix[i,j] = -dmatrix[i,orien_group_members[j]]# sort in descending order
-			#submatrix[i][j] = dmatrix[i][orien_group_members[j]]*(-1.)# sort in descending order
+			submatrix[i][j] = dmatrix[i][orien_group_members[j]]*(-1.)# sort in descending order
 	tmp_array = np.argsort(submatrix, axis = 1)
 	rmatrix   = []
 	for i in range(number_of_groups): rmatrix.append(tmp_array[i].tolist())
@@ -1517,8 +1505,7 @@ def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, orien_group
 			shuffle(t)
 			results[max_indexes[t[0]][0]].append(kmeans_ptl_list[iptl])
 		else: results[max_indexes[0][0]].append(kmeans_ptl_list[iptl])
-	#iter_assignment = np.array([-1 for i in range(nima)])
-	iter_assignment = np.full((nima),-1,dtype="in32")
+	iter_assignment = np.array([-1 for i in range(nima)])
 	for i in range(number_of_groups): 
 		results[i].sort()
 		for j in range(len(results[i])): iter_assignment[results[i][j]] = i
@@ -3346,23 +3333,21 @@ def get_sorting_all_params(data):
 	
 def get_sorting_attr_stack(data_in_core):
 	# get partitioned group ID and xform.projection parameters
-	#from utilities import get_params_proj
+	from utilities import get_params_proj
 	import numpy as np
-	#partition    = np.array([-1 for im in range(len(data_in_core))])
-	#partition    = np.full((len(data_in_core)),-1,dtype="int32")
-	#for idat in range(len(data_in_core)):
-	#	partition[idat] = data_in_core[idat].get_attr("group")
-	return np.array([data_in_core[im].get_attr("group") for im in range(len(data_in_core))],dtype="int32")
-	#return partition
+	partition    = np.array([-1 for im in range(len(data_in_core))])
+	for idat in range(len(data_in_core)):
+		partition[idat] = data_in_core[idat].get_attr("group")
+	return partition
 		
 def convertasi(asig, number_of_groups):
-	import numpy as np
+	from numpy import array
 	p = []
 	for k in range(number_of_groups):
 		l = []
 		for i in range(len(asig)):
 			if( asig[i]== k ): l.append(i)
-		l = np.array(l,"int32")
+		l = array(l,"int32")
 		l.sort()
 		p.append(l)
 	return p
@@ -3458,7 +3443,7 @@ def compare_two_iterations(assignment1, assignment2, number_of_groups):
 		a = np.array(assigned_groups2[iref],"int32")
 		a.sort()
 		res2.append(a)
-	del a
+		del a
 	newindeces, list_stable, nb_tot_objs = k_means_match_clusters_asg_new(res1, res2)
 	del res1
 	del res2
@@ -5404,24 +5389,29 @@ def compute_final_map(work_dir, log_main):
 			final_accounted_ptl +=len(class_in)
 			clusters.append(class_in)
 			del class_in
-		try:
-			class_in        = read_text_file(os.path.join(work_dir, "Core_set.txt"))
-			minimum_size    = min(len(class_in), minimum_size)
-			number_of_groups += 1
-			final_accounted_ptl +=len(class_in)
+		try: # check the unaccounted for particles
+			class_in = read_text_file(os.path.join(work_dir, "Core_set.txt"))
 			if Tracker["constants"]["num_core_set"] ==-1:
-				if len(class_in)> max(100, Tracker["constants"]["minimum_grp_size"]):
+				if len(class_in)> max(100, Tracker["constants"]["minimum_grp_size"]): 
+					Tracker["Core_set"]   = True
 					clusters.append(class_in)
-					Tracker["Core_throughout"] = True
-			elif Tracker["constants"]["num_core_set"]>len(class_in):
+					minimum_size      = min(len(class_in), minimum_size)
+					number_of_groups += 1
+					final_accounted_ptl +=len(class_in)
+				else: Tracker["Core_set"] = False
+				
+			elif len(class_in) >Tracker["constants"]["num_core_set"]:
+				Tracker["Core_set"] = True
 				clusters.append(class_in)
-				Tracker["Core_throughout"] = True
-			else:
-				Tracker["Core_throughout"] = False
+				minimum_size = min(len(class_in), minimum_size)
+				number_of_groups += 1
+				final_accounted_ptl +=len(class_in)
+				
+			else: Tracker["Core_set"] = False
 			del class_in
 		except:
 			log_main.add(' Core_set.txt does not exist   ')
-			Tracker["Core_throughout"] = False
+			Tracker["Core_set"] = False
 		Tracker["total_stack"]      = final_accounted_ptl
 		Tracker["number_of_groups"] = number_of_groups
 		Tracker["nxinit"]           = Tracker["nxinit_refinement"]
@@ -5438,14 +5428,9 @@ def compute_final_map(work_dir, log_main):
 	previous_params = Tracker["previous_parstack"]
 	original_data, norm_per_particle  = read_data_for_sorting(parti_file, params, previous_params)
 	
-	if Tracker["nosmearing"]:
-		parameterstructure  = None
-		paramstructure_dict = None
-		paramstructure_dir  = None
+	if Tracker["nosmearing"]: parameterstructure  = None
 	else:
-		paramstructure_dict = Tracker["paramstructure_dict"]
-		paramstructure_dir  = Tracker["paramstructure_dir"]
-		parameterstructure  = read_paramstructure_for_sorting(parti_file, paramstructure_dict, paramstructure_dir)
+		parameterstructure  = read_paramstructure_for_sorting(parti_file,  Tracker["paramstructure_dict"], Tracker["paramstructure_dir"])
 	mpi_barrier(MPI_COMM_WORLD)
 	
 	Tracker["directory"] = work_dir
@@ -5571,7 +5556,7 @@ def do3d_sorting_groups_nofsc_final(rdata, parameterstructure, norm_per_particle
 				elif(Blockdata["myid"] == Blockdata["last_node"]):
 					tag = 7007
 					tvol2    = recv_EMData(sub_main_node_list[index_of_colors], tag, MPI_COMM_WORLD)
-					if Tracker["Core_throughout"]:
+					if Tracker["Core_set"]:
 						if index_of_group !=Tracker["number_of_groups"]-1:
 							tvol2.write_image(os.path.join(Tracker["directory"], "vol_cluster%03d.hdf"%index_of_group))
 						else:
@@ -5598,7 +5583,7 @@ def do3d_sorting_groups_nofsc_final(rdata, parameterstructure, norm_per_particle
 			tvol2 = steptwo_mpi_filter(tvol2, tweight2, treg2, None, Tracker["freq_fsc143_cutoff"], 0.01, False) # has to be False!!!
 			del tweight2, treg2
 			if(Blockdata["myid_on_node"] == 0):
-				if Tracker["Core_throughout"]:
+				if Tracker["Core_set"]:
 					if index_of_group !=Tracker["number_of_groups"]-1:
 						tvol2.write_image(os.path.join(Tracker["directory"], "vol_cluster%03d.hdf"%index_of_group))
 					else:
@@ -5687,14 +5672,14 @@ def copy_results(log_file, all_gen_stat_list):
 				cluster = read_text_file(Unaccounted_file)
 				copyfile(Unaccounted_file, os.path.join(Tracker["constants"]["masterdir"], "Core_set.txt"))
 				cluster_file = "Core_set.txt"
-				vol_file     = "volume_core.hdf"
-				if (Tracker["constants"]["num_core_set"] >len(cluster)) or \
-				     max(Tracker["constants"]["minimum_grp_size"], 100) > len(cluster)): vol_file = "volume_core.hdf"
-				else: vol_file     = "               "
-				msg          = '{:>8} {:>8}   {:^24}        {:^6}          {:^6}          {:>5} {:^20} {:^20} '.format(nclusters, len(cluster), Tracker["current_generation"], 0.0, 0.0, 0.0, cluster_file,  vol_file)
+				if (Tracker["constants"]["num_core_set"]>0) and (len(cluster) > Tracker["constants"]["num_core_set"]): 
+					vol_file = "volume_core.hdf"
+				elif (Tracker["constants"]["num_core_set"]==-1) and (len(cluster) > max(Tracker["constants"]["minimum_grp_size"], 100)): 
+					vol_file = "volume_core.hdf"
+				else: vol_file = "               "
+				msg = '{:>8} {:>8}   {:^24}        {:^6}          {:^6}          {:>5} {:^20} {:^20} '.format(nclusters, len(cluster), Tracker["current_generation"], 0.0, 0.0, 0.0, cluster_file,  vol_file)
 				log_file.add(msg)
-			except:
-				log_file.add("Core_set.txt does not exist")
+			except: log_file.add("Core_set.txt does not exist")
 			NUACC = Tracker["constants"]["total_stack"] - NACC
 			log_file.add('{:^7} {:^8} {:^22} {:^8} {:^24} {:^8} '.format(' Images', Tracker["constants"]["total_stack"], 'accounted for images: ', NACC, 'unaccounted for images: ', NUACC))
 			log_file.add('The unaccounted for images are saved in Core_set.txt')
@@ -6052,8 +6037,8 @@ def main():
 		parser.add_option("--swap_ratio",                        type   ="float",         default =5.0,                    help="Randomness ratio of swapping accounted elements with unaccounted for elemetns per cluster. A float number between 0.0 and 50.0")
 		parser.add_option("--notapplybckgnoise",                 action ="store_true",    default =False,                  help="Do not applynoise")
 		parser.add_option("--do_swap_au",                        action ="store_true",    default =False,                  help="Flag to turn on swapping the accounted for images with the unaccounted for images")
-		parser.add_option("--num_for_core_set_rec3d",              type   ="int",         default =-1,					   help="Number of images for reconstructing core set images. Will not reconstruct core set images if the total number of core set images is less than this")
 		parser.add_option("--random_group_elimination_threshold",  type   ="float",       default =2.0,                    help="Number of random group reproducibility standard deviation for eliminating random groups")
+		parser.add_option("--num_core_set",                        type   ="int",         default =-1,					   help="Number of images for reconstructing core set images. Will not reconstruct core set images if the total number of core set images is less than this")
 		(options, args) = parser.parse_args(sys.argv[1:])
 		from utilities import bcast_number_to_all
 		### Sanity check
@@ -6109,11 +6094,9 @@ def main():
 		Constants["restart_from_generation"]     = -1 #options.restart_from_generation
 	
 		#### options for advanced users
-		Constants["relax_oriens"]                = False 
 		Constants["do_swap_au"]                  = options.do_swap_au
 		Constants["swap_ratio"]                  = options.swap_ratio
 		Constants["not_include_unaccounted"]     = False
-		Constants["final_sharpen"]               = True #options.do_not_combinemaps
 		Constants["nxinit"]                      = -1
 		Constants["box_niter"]                   = 5 
 	
@@ -6128,7 +6111,8 @@ def main():
 		if options.focus:  Constants["comparison_method"] = "cross" # in case of focus3D, cross is used.
 		Constants["fuse_freq"] = 45.  # Now in A, convert to pixels before being used
 		Constants["orientation_groups"]  = options.orientation_groups # orientation constrained angle step
-		Constants["num_core_set"]        = options.num_for_core_set_rec3d
+		Constants["num_core_set"]        = options.num_core_set
+
 		#
 		#
 		# Create and initialize Tracker dictionary with input options  # State Variables	
@@ -6232,8 +6216,7 @@ def main():
 		parser.add_option("--notapplybckgnoise",                 action ="store_true",    default =False,                  help="Flag to turn off background noise")
 		parser.add_option("--do_swap_au",                        action ="store_true",    default =False,                  help="Flag to turn on swapping the accounted for images with the unaccounted for images")
 		parser.add_option("--random_group_elimination_threshold",  type   ="float",       default =2.0,                    help="Number of random group reproducibility standard deviation for eliminating random groups")
-		parser.add_option("--num_for_core_set_rec3d",              type   ="int",         default =-1,					   help="Number of images for reconstructing core set images. Will not reconstruct core set images if the total number of core set images is less than this")
-
+		parser.add_option("--num_core_set",                        type   ="int",         default =-1,					   help="Number of images for reconstructing core set images. Will not reconstruct core set images if the total number of core set images is less than this")
 		(options, args) = parser.parse_args(sys.argv[1:])
 		from utilities import bcast_number_to_all
 		### Sanity check
@@ -6280,11 +6263,9 @@ def main():
 		Constants["restart_from_generation"]     = -1 #options.restart_from_generation
 	
 		#### options for advanced users
-		Constants["relax_oriens"]                = False 
 		Constants["do_swap_au"]                  = options.do_swap_au
 		Constants["swap_ratio"]                  = options.swap_ratio
 		Constants["not_include_unaccounted"]     = False
-		Constants["final_sharpen"]               = True #options.do_not_combinemaps
 		Constants["nxinit"]                      = options.nxinit
 		Constants["box_niter"]                   = 5 
 		
@@ -6299,7 +6280,8 @@ def main():
 		if options.focus:  Constants["comparison_method"] = "cross" # in case of focus3D, cross is used.
 		Constants["fuse_freq"] = 45.  # Now in A, convert to pixels before being used
 		Constants["orientation_groups"]  = options.orientation_groups # orientation constrained angle step
-		Constants["num_core_set"]        = options.num_for_core_set_rec3d
+		Constants["num_core_set"]        = options.num_core_set
+
 		#
 		#
 		# Create and initialize Tracker dictionary with input options  # State Variables	
