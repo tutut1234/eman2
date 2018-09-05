@@ -5405,13 +5405,20 @@ def compute_final_map(work_dir, log_main):
 			clusters.append(class_in)
 			del class_in
 		try:
-			class_in          = read_text_file(os.path.join(work_dir, "Core_set.txt"))
-			minimum_size      = min(len(class_in), minimum_size)
+			class_in        = read_text_file(os.path.join(work_dir, "Core_set.txt"))
+			minimum_size    = min(len(class_in), minimum_size)
 			number_of_groups += 1
 			final_accounted_ptl +=len(class_in)
-			clusters.append(class_in)
+			if Tracker["constants"]["num_core_set"] ==-1:
+				if len(class_in)> max(100, Tracker["constants"]["minimum_grp_size"]):
+					clusters.append(class_in)
+					Tracker["Core_throughout"] = True
+			elif Tracker["constants"]["num_core_set"]>len(class_in):
+				clusters.append(class_in)
+				Tracker["Core_throughout"] = True
+			else:
+				Tracker["Core_throughout"] = False
 			del class_in
-			Tracker["Core_throughout"] = True
 		except:
 			log_main.add(' Core_set.txt does not exist   ')
 			Tracker["Core_throughout"] = False
@@ -5681,6 +5688,9 @@ def copy_results(log_file, all_gen_stat_list):
 				copyfile(Unaccounted_file, os.path.join(Tracker["constants"]["masterdir"], "Core_set.txt"))
 				cluster_file = "Core_set.txt"
 				vol_file     = "volume_core.hdf"
+				if (Tracker["constants"]["num_core_set"] >len(cluster)) or \
+				     max(Tracker["constants"]["minimum_grp_size"], 100) > len(cluster)): vol_file = "volume_core.hdf"
+				else: vol_file     = "               "
 				msg          = '{:>8} {:>8}   {:^24}        {:^6}          {:^6}          {:>5} {:^20} {:^20} '.format(nclusters, len(cluster), Tracker["current_generation"], 0.0, 0.0, 0.0, cluster_file,  vol_file)
 				log_file.add(msg)
 			except:
@@ -6042,6 +6052,7 @@ def main():
 		parser.add_option("--swap_ratio",                        type   ="float",         default =5.0,                    help="Randomness ratio of swapping accounted elements with unaccounted for elemetns per cluster. A float number between 0.0 and 50.0")
 		parser.add_option("--notapplybckgnoise",                 action ="store_true",    default =False,                  help="Do not applynoise")
 		parser.add_option("--do_swap_au",                        action ="store_true",    default =False,                  help="Flag to turn on swapping the accounted for images with the unaccounted for images")
+		parser.add_option("--num_for_core_set_rec3d",              type   ="int",         default =-1,					   help="Number of images for reconstructing core set images. Will not reconstruct core set images if the total number of core set images is less than this")
 		parser.add_option("--random_group_elimination_threshold",  type   ="float",       default =2.0,                    help="Number of random group reproducibility standard deviation for eliminating random groups")
 		(options, args) = parser.parse_args(sys.argv[1:])
 		from utilities import bcast_number_to_all
@@ -6117,6 +6128,7 @@ def main():
 		if options.focus:  Constants["comparison_method"] = "cross" # in case of focus3D, cross is used.
 		Constants["fuse_freq"] = 45.  # Now in A, convert to pixels before being used
 		Constants["orientation_groups"]  = options.orientation_groups # orientation constrained angle step
+		Constants["num_core_set"]        = options.num_for_core_set_rec3d
 		#
 		#
 		# Create and initialize Tracker dictionary with input options  # State Variables	
@@ -6220,6 +6232,8 @@ def main():
 		parser.add_option("--notapplybckgnoise",                 action ="store_true",    default =False,                  help="Flag to turn off background noise")
 		parser.add_option("--do_swap_au",                        action ="store_true",    default =False,                  help="Flag to turn on swapping the accounted for images with the unaccounted for images")
 		parser.add_option("--random_group_elimination_threshold",  type   ="float",       default =2.0,                    help="Number of random group reproducibility standard deviation for eliminating random groups")
+		parser.add_option("--num_for_core_set_rec3d",              type   ="int",         default =-1,					   help="Number of images for reconstructing core set images. Will not reconstruct core set images if the total number of core set images is less than this")
+
 		(options, args) = parser.parse_args(sys.argv[1:])
 		from utilities import bcast_number_to_all
 		### Sanity check
@@ -6285,6 +6299,7 @@ def main():
 		if options.focus:  Constants["comparison_method"] = "cross" # in case of focus3D, cross is used.
 		Constants["fuse_freq"] = 45.  # Now in A, convert to pixels before being used
 		Constants["orientation_groups"]  = options.orientation_groups # orientation constrained angle step
+		Constants["num_core_set"]        = options.num_for_core_set_rec3d
 		#
 		#
 		# Create and initialize Tracker dictionary with input options  # State Variables	
