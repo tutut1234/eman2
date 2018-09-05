@@ -1377,8 +1377,12 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 		rest_time  = time()
 		# pass to main_node
 		if Blockdata["myid"] == Blockdata["main_node"]:
-			dmatrix = np.array([[ 0.0 for im in range(Tracker["total_stack"])] for iref in range(number_of_groups)])
-			for im in range(len(local_peaks)): dmatrix[im//nima][im%nima + image_start] = local_peaks[im]
+			#dmatrix = np.array([[ 0.0 for im in range(Tracker["total_stack"])] for iref in range(number_of_groups)])
+			#for im in range(len(local_peaks)): dmatrix[im//nima][im%nima + image_start] = local_peaks[im]
+			#  Below dmatrix is in single precision.  I am all but certain it is sufficient.
+			#   dmatrix is not set to zero, I am not sure whether it was important in your code.
+			dmatrix = np.ndarray((number_of_groups,Tracker["total_stack"]),dtype='f4',order="C")
+			for im in range(len(local_peaks)): dmatrix[im//nima,im%nima + image_start] = local_peaks[im]
 		else: dmatrix = 0
 		if Blockdata["myid"] != Blockdata["main_node"]: wrap_mpi_send(local_peaks, Blockdata["main_node"], MPI_COMM_WORLD)
 		else:
@@ -1386,10 +1390,12 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 				if iproc != Blockdata["main_node"]:
 					local_peaks = wrap_mpi_recv(iproc, MPI_COMM_WORLD)
 					iproc_nima  = proc_list[iproc][1] - proc_list[iproc][0]
-					for im in range(len(local_peaks)): dmatrix[im/iproc_nima][im%iproc_nima + proc_list[iproc][0]] = local_peaks[im]
+					for im in range(len(local_peaks)): dmatrix[im/iproc_nima,im%iproc_nima + proc_list[iproc][0]] = local_peaks[im]
 		dmatrix = wrap_mpi_bcast(dmatrix, Blockdata["main_node"], MPI_COMM_WORLD)
 		last_iter_assignment = copy.copy(iter_assignment)
-		iter_assignment      = np.array([-1 for iptl in range(Tracker["total_stack"])])
+		#iter_assignment      = np.array([-1 for iptl in range(Tracker["total_stack"])])
+		#  What int length do you need?
+		iter_assignment      = np.full((Tracker["total_stack"]),-1,dtype="int16")
 		for iorien in range(len(ptls_in_orien_groups)):
 			if iorien%Blockdata["nproc"] == Blockdata["myid"]:
 				local_assignment = do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, \
@@ -1473,10 +1479,11 @@ def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, orien_group
 	results = [[] for i in range(number_of_groups)]
 	nima    = len(orien_group_members)
 	minimum_group_size = int(minimum_group_size_ratio*nima/number_of_groups)
-	submatrix = np.zeros((number_of_groups, nima))
+	submatrix = np.zeros((number_of_groups, nima),dtype='f4',order="C")
 	for i in range(number_of_groups):
 		for j in range(len(orien_group_members)):
-			submatrix[i][j] = dmatrix[i][orien_group_members[j]]*(-1.)# sort in descending order
+			submatrix[i,j] = -dmatrix[i,orien_group_members[j]]# sort in descending order
+			#submatrix[i][j] = dmatrix[i][orien_group_members[j]]*(-1.)# sort in descending order
 	tmp_array = np.argsort(submatrix, axis = 1)
 	rmatrix   = []
 	for i in range(number_of_groups): rmatrix.append(tmp_array[i].tolist())
@@ -1510,7 +1517,8 @@ def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, orien_group
 			shuffle(t)
 			results[max_indexes[t[0]][0]].append(kmeans_ptl_list[iptl])
 		else: results[max_indexes[0][0]].append(kmeans_ptl_list[iptl])
-	iter_assignment = np.array([-1 for i in range(nima)])
+	#iter_assignment = np.array([-1 for i in range(nima)])
+	iter_assignment = np.full((nima),-1,dtype="in32")
 	for i in range(number_of_groups): 
 		results[i].sort()
 		for j in range(len(results[i])): iter_assignment[results[i][j]] = i
@@ -3338,21 +3346,23 @@ def get_sorting_all_params(data):
 	
 def get_sorting_attr_stack(data_in_core):
 	# get partitioned group ID and xform.projection parameters
-	from utilities import get_params_proj
+	#from utilities import get_params_proj
 	import numpy as np
-	partition    = np.array([-1 for im in range(len(data_in_core))])
-	for idat in range(len(data_in_core)):
-		partition[idat] = data_in_core[idat].get_attr("group")
-	return partition
+	#partition    = np.array([-1 for im in range(len(data_in_core))])
+	#partition    = np.full((len(data_in_core)),-1,dtype="int32")
+	#for idat in range(len(data_in_core)):
+	#	partition[idat] = data_in_core[idat].get_attr("group")
+	return np.array([data_in_core[im].get_attr("group") for im in range(len(data_in_core))],dtype="int32")
+	#return partition
 		
 def convertasi(asig, number_of_groups):
-	from numpy import array
+	import numpy as np
 	p = []
 	for k in range(number_of_groups):
 		l = []
 		for i in range(len(asig)):
 			if( asig[i]== k ): l.append(i)
-		l = array(l,"int32")
+		l = np.array(l,"int32")
 		l.sort()
 		p.append(l)
 	return p
@@ -3448,7 +3458,7 @@ def compare_two_iterations(assignment1, assignment2, number_of_groups):
 		a = np.array(assigned_groups2[iref],"int32")
 		a.sort()
 		res2.append(a)
-		del a
+	del a
 	newindeces, list_stable, nb_tot_objs = k_means_match_clusters_asg_new(res1, res2)
 	del res1
 	del res2
