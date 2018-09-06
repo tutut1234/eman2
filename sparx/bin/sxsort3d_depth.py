@@ -1239,7 +1239,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 	global Tracker, Blockdata
 	import shutil
 	import numpy as np
-	### data type: 1. assignment np.int32; particle ids np.int32; EMAN2 functions python int;
+	### data type: 1. assignment np.int32; particle ids np.int32; EMAN2 functions python native int;
 	
 	
 	#==========---------- >>>>EQKmeans initialization ==========------------ 
@@ -1278,7 +1278,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		lpartids = read_text_file(partids, -1)
 		if len(lpartids) == 1: iter_assignment = np.random.randint(0, number_of_groups,  size=len(lpartids[0]), dtype=np.int32)
-		else:                  iter_assignment = np.array(lpartids[0],dtype=np.int32)
+		else:                  iter_assignment = np.array(lpartids[0], dtype=np.int32)
 	else: iter_assignment = 0
 	iter_assignment                 = wrap_mpi_bcast(iter_assignment, Blockdata["main_node"]) # initial assignment
 	Tracker["total_stack"]          = iter_assignment.shape[0]
@@ -1316,8 +1316,8 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 		
 	compute_noise(Tracker["nxinit"])
 	mpi_barrier(MPI_COMM_WORLD)	
-	last_iter_assignment = copy.copy(iter_assignment)
-	best_assignment      = copy.copy(iter_assignment)
+	last_iter_assignment = np.copy(iter_assignment)
+	best_assignment      = np.copy(iter_assignment)
 	total_iter           = 0
 	keepgoing            = 1
 	do_partial_rec3d     = 0
@@ -1327,7 +1327,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 		if(Blockdata["myid"] == Blockdata["main_node"]):
 			msg = "Iteration %d particle assignment changed ratio  %f "%(total_iter, changed_nptls)
 			log_main.add(msg)
-			write_text_file(iter_assignment.tolist(), os.path.join(Tracker["directory"], "assignment%03d.txt"%total_iter))
+			write_text_file(np.copy(iter_assignment).tolist(), os.path.join(Tracker["directory"], "assignment%03d.txt"%total_iter))
 			if changed_nptls< 50.0: do_partial_rec3d = 1
 			else:                   do_partial_rec3d = 0
 		else: do_partial_rec3d = 0
@@ -1346,8 +1346,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			print("The entire recon3d takes  %f minutes"%(acc_rest/60.))
 		rest_time   = time()
-		local_peaks = np.array([0.0 for im in range(number_of_groups*nima)])
-		total_im    = 0
+		local_peaks = np.full((number_of_groups, nima), 0.0, dtype = np.float32)
 		## compute peaks and save them in 1D list
 		for iref in range(number_of_groups):
 			if(Blockdata["myid"] == Blockdata["last_node"]):
@@ -1362,20 +1361,20 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 			bcast_EMData_to_all(ref_vol, Blockdata["myid"], Blockdata["last_node"])
 			## Image comparison optimal solution is the larger one	
 			if Tracker["constants"]["comparison_method"] =="cross": ref_peaks = compare_two_images_cross(cdata, ref_vol)
-			else: ref_peaks = compare_two_images_eucd(cdata, ref_vol, fdata)
-			for im in range(nima):
-				local_peaks[total_im] = ref_peaks[im]
-				total_im +=1
+			else:                                                   ref_peaks = compare_two_images_eucd(cdata, ref_vol, fdata)
+			local_peaks[iref] = ref_peaks
 			mpi_barrier(MPI_COMM_WORLD)
+		local_peaks = local_peaks.reshape(number_of_groups*nima)
 		del ref_vol
 		acc_rest = time() - rest_time
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			print("comparison and reference preparation take  %f minutes"%(acc_rest/60.))
 		rest_time  = time()
+		tdmat      = time()
 		# pass to main_node
 		if Blockdata["myid"] == Blockdata["main_node"]:
-			dmatrix = np.array([[ 0.0 for im in range(Tracker["total_stack"])] for iref in range(number_of_groups)])
-			for im in range(len(local_peaks)): dmatrix[im//nima][im%nima + image_start] = local_peaks[im]
+			dmatrix = np.full((number_of_groups, Tracker["total_stack"]), 0.0, dtype=np.float32)
+			for im in range(local_peaks.shape[0]): dmatrix[im//nima][im%nima + image_start] = local_peaks[im]
 		else: dmatrix = 0
 		if Blockdata["myid"] != Blockdata["main_node"]: wrap_mpi_send(local_peaks, Blockdata["main_node"], MPI_COMM_WORLD)
 		else:
@@ -1385,28 +1384,33 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 					iproc_nima  = proc_list[iproc][1] - proc_list[iproc][0]
 					for im in range(len(local_peaks)): dmatrix[im/iproc_nima][im%iproc_nima + proc_list[iproc][0]] = local_peaks[im]
 		dmatrix = wrap_mpi_bcast(dmatrix, Blockdata["main_node"], MPI_COMM_WORLD)
-		last_iter_assignment = copy.copy(iter_assignment)
+		acc_rest = time() - rest_time
+		if Blockdata["myid"] == Blockdata["main_node"]:
+			print("compute dmatrix of various orien groups step1 take  %f minutes"%(acc_rest/60.))
+		rest_time = time()
+		last_iter_assignment = np.copy(iter_assignment)
 		iter_assignment      = np.full(Tracker["total_stack"], -1, dtype=np.int32)
 		for iorien in range(len(ptls_in_orien_groups)):
 			if iorien%Blockdata["nproc"] == Blockdata["myid"]:
-				local_assignment = do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, \
+				iter_assignment[ptls_in_orien_groups[iorien]] = do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, \
 					ptls_in_orien_groups[iorien], Tracker["number_of_groups"], minimum_group_size_ratio)
-				for iptl in range(len(ptls_in_orien_groups[iorien])):
-					iter_assignment[ptls_in_orien_groups[iorien][iptl]] = local_assignment[iptl]
 		mpi_barrier(MPI_COMM_WORLD)
+		acc_rest = time() - rest_time
+		if Blockdata["myid"] == Blockdata["main_node"]:
+			print("compute dmatrix of various orien groups step2 take  %f minutes"%(acc_rest/60.))
+		rest_time = time()
 		if Blockdata["myid"] != Blockdata["main_node"]: 
 			wrap_mpi_send(iter_assignment, Blockdata["main_node"], MPI_COMM_WORLD)
 		else:
 			for iproc in range(Blockdata["nproc"]):
 				if iproc != Blockdata["main_node"]:
 					dummy = wrap_mpi_recv(iproc, MPI_COMM_WORLD)
-					for iptl in range(len(dummy)):
-						if dummy[iptl] !=-1:iter_assignment[iptl] = dummy[iptl]
-						else: pass
+					iter_assignment[np.where(dummy>-1)] = dummy[np.where(dummy>-1)]
 		acc_rest = time() - rest_time
+		td = time() - tdmat
 		if Blockdata["myid"] == Blockdata["main_node"]:
-			print("compute dmatrix of various orien groups take  %f minutes"%(acc_rest/60.))
-		rest_time       = time()		
+			print("compute dmatrix of various orien groups step3 take  %f minutes total %f minutes"%(acc_rest/60., td/60.))
+		rest_time = time()		
 		iter_assignment = wrap_mpi_bcast(iter_assignment, Blockdata["main_node"], MPI_COMM_WORLD)
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			last_score =  changed_nptls
@@ -1417,7 +1421,8 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 					fixed_value = changed_nptls
 					times_around_fixed_value +=1
 				else:
-					if abs(changed_nptls - fixed_value)<1.0: times_around_fixed_value +=1
+					if abs(changed_nptls - fixed_value)<1.0: 
+						times_around_fixed_value +=1
 					else:
 						times_around_fixed_value = 0
 						fixed_value = changed_nptls
@@ -1451,7 +1456,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 		if best_score > Tracker["constants"]["stop_mgskmeans_percentage"]: premature  = 1
 		write_text_file([partition.tolist(), lpartids], os.path.join(Tracker["directory"],"list.txt"))
 		shutil.rmtree(os.path.join(Tracker["directory"], "tempdir"))
-		fplist  = np.array([partition, np.array(lpartids)], dtype=np.int32)
+		fplist  = np.array([partition, np.array(lpartids)])
 	else: fplist = 0
 	fplist     = wrap_mpi_bcast(fplist,         Blockdata["main_node"], MPI_COMM_WORLD)
 	premature  = bcast_number_to_all(premature, Blockdata["main_node"], MPI_COMM_WORLD)
@@ -1462,29 +1467,29 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 					os.remove(os.path.join(Tracker["directory"], "vol_grp%03d_iter%03d.hdf"%(igroup,jter)))	
 	if require_check_setting:
 		if(Blockdata["myid"] == Blockdata["main_node"]): print("Warning: the sorting settings, such as img_per_grp requires a check")
-	fplist = np.array(fplist).transpose().tolist()
-	return fplist, premature
+	return (fplist).transpose().tolist(), premature
 	
 def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, orien_group_members, number_of_groups, minimum_group_size_ratio):
 	import numpy as np
 	results = [[] for i in range(number_of_groups)]
-	nima    = len(orien_group_members)
+	nima               = len(orien_group_members)
 	minimum_group_size = int(minimum_group_size_ratio*nima/number_of_groups)
-	submatrix = np.zeros((number_of_groups, nima))
-	for i in range(number_of_groups):
-		for j in range(len(orien_group_members)):
-			submatrix[i][j] = dmatrix[i][orien_group_members[j]]*(-1.)# sort in descending order
+	auxmatrix          = np.full(nima, -1.0, dtype=np.float32)
+	submatrix          = np.full((number_of_groups, nima),  0.0, dtype=np.float32)
+	for im in range(number_of_groups):
+		submatrix[im] = np.multiply(auxmatrix, dmatrix[im][orien_group_members])# sort in descending order
 	tmp_array = np.argsort(submatrix, axis = 1)
-	rmatrix   = []
-	for i in range(number_of_groups): rmatrix.append(tmp_array[i].tolist())
+	rmatrix   = [ ]
+	for im in range(number_of_groups):rmatrix.append(tmp_array[im].tolist())
 	del tmp_array
 	while len(rmatrix[0])> nima - minimum_group_size*number_of_groups:
-		tarray = []
-		for i in range(number_of_groups): tarray.append(rmatrix[i][0])
-		value_list, index_list = np.unique(np.array(tarray), return_index= True)
+		tarray = [None for im in range(number_of_groups)]
+		for im in range(number_of_groups):
+			tarray[im] = rmatrix[im][0]
+		value_list_tmp, index_list = np.unique(np.array(tarray), return_index= True)
 		duplicate_list = (np.setdiff1d(np.arange(number_of_groups), index_list)).tolist()
 		index_list     = index_list.tolist()
-		value_list     = value_list.tolist()
+		value_list     = value_list_tmp.tolist()
 		if len(value_list)<  number_of_groups:
 			for i in range(len(index_list)):
 				if tarray[index_list[i]] ==  tarray[duplicate_list[0]]: duplicate_list.append(index_list[i])# find all duplicated ones
@@ -1497,7 +1502,8 @@ def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, orien_group
 				rmatrix[duplicate_list[i]][0], rmatrix[duplicate_list[i]][index_column] = rmatrix[duplicate_list[i]][index_column], rmatrix[duplicate_list[i]][0]
 		for i in range(number_of_groups):
 			results[i].append(rmatrix[i][0])
-			for j in range(number_of_groups): rmatrix[i].remove(value_list[j]) # remove K elements from each column
+			for j in range(number_of_groups): 
+				rmatrix[i].remove(value_list[j]) # remove K elements from each column
 	kmeans_ptl_list = (np.delete(np.array(list(range(nima))), np.array(results).ravel())).tolist()# ravel works only for even size
 	del rmatrix
 	for iptl in range(len(kmeans_ptl_list)):
@@ -1510,7 +1516,7 @@ def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, orien_group
 	iter_assignment = np.full(nima, -1, dtype=np.int32)
 	for i in range(number_of_groups): 
 		results[i].sort()
-		for j in range(len(results[i])): iter_assignment[results[i][j]] = np.int32(i)
+		for j in range(len(results[i])): iter_assignment[results[i][j]] = i
 	del results
 	del submatrix
 	return iter_assignment
@@ -3285,7 +3291,7 @@ def split_partition_into_ordered_clusters(partition):
 	llist =np.full(group_id.shape[0], 0, dtype=np.int32)
 	cluster_list = [None for im in range(group_id.shape[0])]
 	for ic in np.nditer(group_id, order='C'):
-		m  = isin(np_cluster_ids, np.int32(ic))
+		m  = isin(np_cluster_ids, ic)
 		l  = np_particle_ids[m].tolist()
 		cluster_list[ic] = l
 		mask_list.append(m)
@@ -3295,9 +3301,9 @@ def split_partition_into_ordered_clusters(partition):
 	new_clusters     = []
 	for ic in range(group_id.shape[0]):
 		new_clusters.append(cluster_list[sort_indx[ic]])
-		np.place(new_clusters_ids, mask_list[sort_indx[ic]], np.int32(ic))
-	partition[0] = new_clusters_ids.tolist()
-	return new_clusters, (np.array(partition).transpose()).tolist()
+		np.place(new_clusters_ids, mask_list[sort_indx[ic]], ic)
+	partition[0] = new_clusters_ids
+	return new_clusters, (np.array(partition, dtype=np.int32).transpose()).tolist()
 
 def merge_classes_into_partition_list(classes_list):
 	import numpy as np
@@ -3309,7 +3315,7 @@ def merge_classes_into_partition_list(classes_list):
 	if len(classes_list) == 1: # rare case, however providing solution here
 		parti_list = sorted(classes_list[0])
 		new_index  = [[0 for im in range(len(parti_list))], parti_list]
-		return parti_list, (np.array(new_index).transpose()).tolist()
+		return parti_list, (np.array(new_index, dtype=np.int32)).transpose().tolist()
 	else:# normal case
 		size_list  = [ None for im in range(len(classes_list))]
 		parti_list = []
@@ -3325,9 +3331,7 @@ def merge_classes_into_partition_list(classes_list):
 		cluster_ids = np.full(parti_list.shape[0], -1, dtype=np.int32)
 		for im in range(len(classes_list)):
 			np.place(cluster_ids, isin(parti_list, np.array(classes_list[indx[im]])), np.int32(im))
-		new_index = (np.array([cluster_ids, parti_list]).transpose()).tolist()
-		parti_list.tolist()
-		return parti_list, new_index
+		return parti_list.tolist(), (np.array([cluster_ids, parti_list],dtype=np.int32 ).transpose()).tolist()
 		
 def get_sorting_all_params(data):
 	global Tracker, Blockdata
@@ -3335,14 +3339,14 @@ def get_sorting_all_params(data):
 	from applications import MPI_start_end
 	import numpy as np
 	if Blockdata["myid"] == Blockdata["main_node"]:
-		total_plist = np.full(Tracker["total_stack"], -1, dtype=np.int32)
-	else: 
-		total_plist = 0
+		total_plist = np.full(Tracker["total_stack"], -1, np.int32)
+	else: total_plist = 0
 	for myproc in range(Blockdata["nproc"]):
 		image_start,image_end = MPI_start_end(Tracker["total_stack"], Blockdata["nproc"], myproc)
 		plist        = 0
-		if Blockdata["myid"] == myproc:plist = get_sorting_attr_stack(data)
-		plist         = wrap_mpi_bcast(plist, myproc)
+		if Blockdata["myid"] == myproc:
+			plist = get_sorting_attr_stack(data)
+		plist = wrap_mpi_bcast(plist, myproc)
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			total_plist[image_start:image_end] = plist
 		mpi_barrier(MPI_COMM_WORLD)
@@ -3352,9 +3356,9 @@ def get_sorting_all_params(data):
 def get_sorting_attr_stack(data_in_core):
 	# get partitioned group ID and xform.projection parameters
 	import numpy as np
-	partition = np.full(len(data_in_core), -1, dtype=np.int32)
+	partition = np.full(len(data_in_core), -1)
 	for idat in range(len(data_in_core)):
-		partition[idat] = np.int32(data_in_core[idat].get_attr("group"))
+		partition[idat] = data_in_core[idat].get_attr("group")
 	return partition
 		
 def convertasi(asig, number_of_groups):
@@ -3467,22 +3471,24 @@ def compare_two_iterations(assignment1, assignment2, number_of_groups):
 	return float(nb_tot_objs)/len(assignment1), newindeces, list_stable
 	
 def update_data_assignment(cdata, rdata, assignment, proc_list, nosmearing, myid):
-	groupids  = assignment[proc_list[myid][0]:proc_list[myid][1]]
+	import numpy as np
+	groupids = np.array(assignment[proc_list[myid][0]:proc_list[myid][1]], dtype=np.int64)
 	for im in range(len(cdata)):
-		try: previous_group = cdata[im].get_attr("group")
+		try:    previous_group = cdata[im].get_attr("group")
 		except: previous_group = -1
-		cdata[im].set_attr("group", int(groupids[im]))
+		cdata[im].set_attr("group", groupids[im])
 		if nosmearing:
-			rdata[im].set_attr("group",          int(groupids[im]))
+			rdata[im].set_attr("group",    groupids[im])
 			rdata[im].set_attr("previous_group", previous_group) 
 		else:
 			rdata[im][0].set_attr("previous_group", previous_group)
-			rdata[im][0].set_attr("group", int(groupids[im]))
+			rdata[im][0].set_attr("group", groupids[im])
 	return
 	
 def update_rdata_assignment(assignment, proc_list, myid, rdata):
-	groupids = assignment[proc_list[myid][0]:proc_list[myid][1]]
-	for im in range(len(rdata)): rdata[im].set_attr("group", int(groupids[im]))
+	import numpy as np
+	groupids = np.array(assignment[proc_list[myid][0]:proc_list[myid][1]], dtype=np.int64)
+	for im in range(len(rdata)): rdata[im].set_attr("group", groupids[im])
 	return
 	
 def MPI_volume_start_end(number_of_groups, ncolor, mycolor):
