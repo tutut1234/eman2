@@ -3296,7 +3296,7 @@ def split_partition_into_ordered_clusters(partition):
 		np.place(new_clusters_ids, mask_list[sort_indx[ic]], ic)
 	partition[0] = new_clusters_ids.tolist()
 	return new_clusters, (np.array(partition).transpose()).tolist()
-			 
+"""	
 def merge_classes_into_partition_list(classes_list):
 	# keep the order of classes
 	group_dict = {}
@@ -3315,7 +3315,37 @@ def merge_classes_into_partition_list(classes_list):
 		data_list = []
 		new_index = [[]]
 	return data_list, new_index
-	
+"""
+def merge_classes_into_partition_list(classes_list):
+	import numpy as np
+	import copy
+	if type(classes_list) is np.ndarray:
+		classes_list.tolist()
+	if len(classes_list) == 0: # Will do nothing if empty
+		return [], [[]]
+	if len(classes_list) == 1: # rare case, however providing solution here
+		parti_list = sorted(classes_list[0])
+		new_index  = [[0 for im in range(len(parti_list))], parti_list]
+		return parti_list, (np.array(new_index).transpose()).tolist()
+	else:# normal case
+		size_list  = [ None for im in range(len(classes_list))]
+		parti_list = []
+		for ic  in range(len(classes_list)):
+			size_list[ic] = -len(classes_list[ic])
+			for im in range(len(classes_list[ic])):
+				parti_list.append(classes_list[ic][im])
+		parti_list = sorted(parti_list) # ptl IDs in descendant order
+		# mask by group ID and replace by group ID
+		parti_list = np.array(parti_list)
+		indx = np.argsort(np.array(size_list)) # GID in ascendent order
+		indx.tolist()
+		cluster_ids = np.full(parti_list.shape[0], -1, dtype=np.int16)
+		for im in range(len(classes_list)):
+			np.place(cluster_ids, isin(parti_list, np.array(classes_list[indx[im]])), im)
+		new_index = (np.array([cluster_ids, parti_list]).transpose()).tolist()
+		parti_list.tolist()
+		return parti_list, new_index
+		
 def get_sorting_all_params(data):
 	global Tracker, Blockdata
 	from utilities    import wrap_mpi_bcast
