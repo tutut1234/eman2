@@ -3261,36 +3261,42 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	log_list.append('----------------------------------------------------------------------------------------------------------------')
 	return minimum_group_size, maximum_group_size, selected_clusters, unaccounted_list, Tracker["current_iter_ratio"], len(list_stable), log_list
 
+def isin(element, test_elements, assume_unique=False, invert=False):
+    import numpy as np
+    element = np.asarray(element)
+    return np.in1d(element, test_elements, assume_unique=assume_unique,
+                invert=invert).reshape(element.shape)
+                           
 def split_partition_into_ordered_clusters(partition):
-	# split groupids from indexes of images
-	# reindex groups
-	clusters   = []
-	cluster_id = []
-	for im in range(len(partition)):
-		if partition[im][0] not in cluster_id:cluster_id.append(partition[im][0])
-	####
-	cluster_dict      = {}
-	group_change_dict = {}
-	new_group_id      = 0
-	for icluster in range(len(cluster_id)):
-		one_cluster = []
-		for a in partition:
-			if a[0]== icluster: 
-				one_cluster.append(a[1])
-				cluster_dict[a[1]] = icluster
-		one_cluster.sort()
-		clusters.append(one_cluster)
-		group_change_dict[icluster] = new_group_id
-		new_group_id +=1
-		
-	# create a partition list:
-	new_partition = [] 
-	for iptl in range(len(partition)):
-		gid = group_change_dict[cluster_dict[partition[iptl][1]]]
-		if gid >-1: new_partition.append([group_change_dict[cluster_dict[partition[iptl][1]]], \
-		     partition[iptl][1]])
-	return clusters, new_partition
-	 
+	# partition column 0 cluster  IDs
+	# partition column 1 particle IDs
+	# re-index partition as consecutive groups if their cluster IDs are not
+	# Extract clusters; sort clusters in ascendent order; transpose partitions
+	import numpy as np
+	partition = (np.array(partition).transpose()).tolist()
+	np_cluster_ids  = np.array(partition[0], dtype=np.int16)
+	np_particle_ids = np.array(partition[1], dtype=np.int16)
+	group_id        = np.unique(np_cluster_ids)
+	cluster_list    = []
+	mask_list       = []
+	N = len(partition[0])
+	llist =np.full(group_id.shape[0], 0, dtype=np.int16)
+	cluster_list = [None for im in range(group_id.shape[0])]
+	for ic in np.nditer(group_id, order='C'):
+		m  = isin(np_cluster_ids, ic)
+		l  = np_particle_ids[m].tolist()
+		cluster_list[ic] = l
+		mask_list.append(m)
+		llist[ic] = -len(l)
+	sort_indx = np.argsort(llist)
+	new_clusters_ids = np.full(N, -1, dtype=np.int16)
+	new_clusters     = []
+	for ic in range(group_id.shape[0]):
+		new_clusters.append(cluster_list[sort_indx[ic]])
+		np.place(new_clusters_ids, mask_list[sort_indx[ic]], ic)
+	partition[0] = new_clusters_ids.tolist()
+	return new_clusters, (np.array(partition).transpose()).tolist()
+			 
 def merge_classes_into_partition_list(classes_list):
 	# keep the order of classes
 	group_dict = {}
@@ -3315,25 +3321,23 @@ def get_sorting_all_params(data):
 	from utilities    import wrap_mpi_bcast
 	from applications import MPI_start_end
 	import numpy as np
-	if Blockdata["myid"] == Blockdata["main_node"]:	
+	if Blockdata["myid"] == Blockdata["main_node"]:
 		total_plist = np.array([-1 for im in range(Tracker["total_stack"])])
 	else: 
 		total_plist = 0
 	for myproc in range(Blockdata["nproc"]):
 		image_start,image_end = MPI_start_end(Tracker["total_stack"], Blockdata["nproc"], myproc)
 		plist        = 0
-		ali3d_params = 0
 		if Blockdata["myid"] == myproc:plist = get_sorting_attr_stack(data)
 		plist         = wrap_mpi_bcast(plist, myproc)
 		if Blockdata["myid"] == Blockdata["main_node"]:
-			total_plist [image_start:image_end] = plist
+			total_plist[image_start:image_end] = plist
 		mpi_barrier(MPI_COMM_WORLD)
 	total_plist = wrap_mpi_bcast(total_plist, Blockdata["main_node"])
 	return total_plist
 	
 def get_sorting_attr_stack(data_in_core):
 	# get partitioned group ID and xform.projection parameters
-	from utilities import get_params_proj
 	import numpy as np
 	partition    = np.array([-1 for im in range(len(data_in_core))])
 	for idat in range(len(data_in_core)):
