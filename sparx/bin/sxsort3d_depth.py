@@ -1275,8 +1275,8 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 	
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		lpartids = read_text_file(partids, -1)
-		if len(lpartids) == 1: iter_assignment = np.random.randint(0, number_of_groups,  size=len(lpartids[0]))
-		else:                  iter_assignment = np.array(lpartids[0])
+		if len(lpartids) == 1: iter_assignment = np.random.randint(0, number_of_groups,  size=len(lpartids[0]), dtype=np.int16)
+		else:                  iter_assignment = np.array(lpartids[0],dtype=np.int16)
 	else: iter_assignment = 0
 	iter_assignment                 = wrap_mpi_bcast(iter_assignment, Blockdata["main_node"]) # initial assignment
 	Tracker["total_stack"]          = iter_assignment.shape[0]
@@ -1384,7 +1384,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 					for im in range(len(local_peaks)): dmatrix[im/iproc_nima][im%iproc_nima + proc_list[iproc][0]] = local_peaks[im]
 		dmatrix = wrap_mpi_bcast(dmatrix, Blockdata["main_node"], MPI_COMM_WORLD)
 		last_iter_assignment = copy.copy(iter_assignment)
-		iter_assignment      = np.array([-1 for iptl in range(Tracker["total_stack"])])
+		iter_assignment      = np.full(Tracker["total_stack"], -1, dtype=np.int16)
 		for iorien in range(len(ptls_in_orien_groups)):
 			if iorien%Blockdata["nproc"] == Blockdata["myid"]:
 				local_assignment = do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, \
@@ -1449,7 +1449,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 		if best_score > Tracker["constants"]["stop_mgskmeans_percentage"]: premature  = 1
 		write_text_file([partition.tolist(), lpartids], os.path.join(Tracker["directory"],"list.txt"))
 		shutil.rmtree(os.path.join(Tracker["directory"], "tempdir"))
-		fplist  = [partition, np.array(lpartids)]
+		fplist  = np.array([partition, np.array(lpartids)], dtype=np.int16)
 	else: fplist = 0
 	fplist     = wrap_mpi_bcast(fplist, Blockdata["main_node"], MPI_COMM_WORLD)
 	premature  = bcast_number_to_all(premature, Blockdata["main_node"], MPI_COMM_WORLD)
@@ -3465,24 +3465,22 @@ def compare_two_iterations(assignment1, assignment2, number_of_groups):
 	return float(nb_tot_objs)/len(assignment1), newindeces, list_stable
 	
 def update_data_assignment(cdata, rdata, assignment, proc_list, nosmearing, myid):
-	nima      = len(cdata)
 	groupids  = assignment[proc_list[myid][0]:proc_list[myid][1]]
-	for im in range(nima):
+	for im in range(len(cdata)):
 		try: previous_group = cdata[im].get_attr("group")
 		except: previous_group = -1
-		cdata[im].set_attr("group", groupids[im])
+		cdata[im].set_attr("group", int(groupids[im]))
 		if nosmearing:
-			rdata[im].set_attr("group",          groupids[im])
+			rdata[im].set_attr("group",          int(groupids[im]))
 			rdata[im].set_attr("previous_group", previous_group) 
 		else:
 			rdata[im][0].set_attr("previous_group", previous_group)
-			rdata[im][0].set_attr("group", groupids[im])
+			rdata[im][0].set_attr("group", int(groupids[im]))
 	return
 	
 def update_rdata_assignment(assignment, proc_list, myid, rdata):
-	nima     = len(rdata)
 	groupids = assignment[proc_list[myid][0]:proc_list[myid][1]]
-	for im in range(nima): rdata[im].set_attr("group", groupids[im])
+	for im in range(len(rdata)): rdata[im].set_attr("group", int(groupids[im]))
 	return
 	
 def MPI_volume_start_end(number_of_groups, ncolor, mycolor):
