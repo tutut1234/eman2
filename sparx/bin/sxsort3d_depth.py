@@ -1239,6 +1239,8 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 	global Tracker, Blockdata
 	import shutil
 	import numpy as np
+	### data type: 1. assignment np.int32; particle ids np.int32; EMAN2 functions python int;
+	
 	
 	#==========---------- >>>>EQKmeans initialization ==========------------ 
 	log_main	             = Logger()
@@ -1275,8 +1277,8 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 	
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		lpartids = read_text_file(partids, -1)
-		if len(lpartids) == 1: iter_assignment = np.random.randint(0, number_of_groups,  size=len(lpartids[0]), dtype=np.int16)
-		else:                  iter_assignment = np.array(lpartids[0],dtype=np.int16)
+		if len(lpartids) == 1: iter_assignment = np.random.randint(0, number_of_groups,  size=len(lpartids[0]), dtype=np.int32)
+		else:                  iter_assignment = np.array(lpartids[0],dtype=np.int32)
 	else: iter_assignment = 0
 	iter_assignment                 = wrap_mpi_bcast(iter_assignment, Blockdata["main_node"]) # initial assignment
 	Tracker["total_stack"]          = iter_assignment.shape[0]
@@ -1384,7 +1386,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 					for im in range(len(local_peaks)): dmatrix[im/iproc_nima][im%iproc_nima + proc_list[iproc][0]] = local_peaks[im]
 		dmatrix = wrap_mpi_bcast(dmatrix, Blockdata["main_node"], MPI_COMM_WORLD)
 		last_iter_assignment = copy.copy(iter_assignment)
-		iter_assignment      = np.full(Tracker["total_stack"], -1, dtype=np.int16)
+		iter_assignment      = np.full(Tracker["total_stack"], -1, dtype=np.int32)
 		for iorien in range(len(ptls_in_orien_groups)):
 			if iorien%Blockdata["nproc"] == Blockdata["myid"]:
 				local_assignment = do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, \
@@ -1449,9 +1451,9 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 		if best_score > Tracker["constants"]["stop_mgskmeans_percentage"]: premature  = 1
 		write_text_file([partition.tolist(), lpartids], os.path.join(Tracker["directory"],"list.txt"))
 		shutil.rmtree(os.path.join(Tracker["directory"], "tempdir"))
-		fplist  = np.array([partition, np.array(lpartids)], dtype=np.int16)
+		fplist  = np.array([partition, np.array(lpartids)], dtype=np.int32)
 	else: fplist = 0
-	fplist     = wrap_mpi_bcast(fplist, Blockdata["main_node"], MPI_COMM_WORLD)
+	fplist     = wrap_mpi_bcast(fplist,         Blockdata["main_node"], MPI_COMM_WORLD)
 	premature  = bcast_number_to_all(premature, Blockdata["main_node"], MPI_COMM_WORLD)
 	if(Blockdata["myid"] == Blockdata["last_node"]):
 		if clean_volumes:# always true unless in debug mode
@@ -1505,10 +1507,10 @@ def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, orien_group
 			shuffle(t)
 			results[max_indexes[t[0]][0]].append(kmeans_ptl_list[iptl])
 		else: results[max_indexes[0][0]].append(kmeans_ptl_list[iptl])
-	iter_assignment = np.array([-1 for i in range(nima)])
+	iter_assignment = np.full(nima, -1, dtype=np.int32)
 	for i in range(number_of_groups): 
 		results[i].sort()
-		for j in range(len(results[i])): iter_assignment[results[i][j]] = i
+		for j in range(len(results[i])): iter_assignment[results[i][j]] = np.int32(i)
 	del results
 	del submatrix
 	return iter_assignment
@@ -3274,26 +3276,26 @@ def split_partition_into_ordered_clusters(partition):
 	# Extract clusters; sort clusters in ascendent order; transpose partitions
 	import numpy as np
 	partition = (np.array(partition).transpose()).tolist()
-	np_cluster_ids  = np.array(partition[0], dtype=np.int16)
-	np_particle_ids = np.array(partition[1], dtype=np.int16)
+	np_cluster_ids  = np.array(partition[0], dtype=np.int32)
+	np_particle_ids = np.array(partition[1], dtype=np.int32)
 	group_id        = np.unique(np_cluster_ids)
 	cluster_list    = []
 	mask_list       = []
 	N = len(partition[0])
-	llist =np.full(group_id.shape[0], 0, dtype=np.int16)
+	llist =np.full(group_id.shape[0], 0, dtype=np.int32)
 	cluster_list = [None for im in range(group_id.shape[0])]
 	for ic in np.nditer(group_id, order='C'):
-		m  = isin(np_cluster_ids, ic)
+		m  = isin(np_cluster_ids, np.int32(ic))
 		l  = np_particle_ids[m].tolist()
 		cluster_list[ic] = l
 		mask_list.append(m)
 		llist[ic] = -len(l)
 	sort_indx = np.argsort(llist)
-	new_clusters_ids = np.full(N, -1, dtype=np.int16)
+	new_clusters_ids = np.full(N, -1, dtype=np.int32)
 	new_clusters     = []
 	for ic in range(group_id.shape[0]):
 		new_clusters.append(cluster_list[sort_indx[ic]])
-		np.place(new_clusters_ids, mask_list[sort_indx[ic]], ic)
+		np.place(new_clusters_ids, mask_list[sort_indx[ic]], np.int32(ic))
 	partition[0] = new_clusters_ids.tolist()
 	return new_clusters, (np.array(partition).transpose()).tolist()
 
@@ -3317,12 +3319,12 @@ def merge_classes_into_partition_list(classes_list):
 				parti_list.append(classes_list[ic][im])
 		parti_list = sorted(parti_list) # ptl IDs in descendant order
 		# mask by group ID and replace by group ID
-		parti_list = np.array(parti_list)
+		parti_list = np.array(parti_list, dtype=np.int32)
 		indx = np.argsort(np.array(size_list)) # GID in ascendent order
 		indx.tolist()
-		cluster_ids = np.full(parti_list.shape[0], -1, dtype=np.int16)
+		cluster_ids = np.full(parti_list.shape[0], -1, dtype=np.int32)
 		for im in range(len(classes_list)):
-			np.place(cluster_ids, isin(parti_list, np.array(classes_list[indx[im]])), im)
+			np.place(cluster_ids, isin(parti_list, np.array(classes_list[indx[im]])), np.int32(im))
 		new_index = (np.array([cluster_ids, parti_list]).transpose()).tolist()
 		parti_list.tolist()
 		return parti_list, new_index
@@ -3333,7 +3335,7 @@ def get_sorting_all_params(data):
 	from applications import MPI_start_end
 	import numpy as np
 	if Blockdata["myid"] == Blockdata["main_node"]:
-		total_plist = np.array([-1 for im in range(Tracker["total_stack"])])
+		total_plist = np.full(Tracker["total_stack"], -1, dtype=np.int32)
 	else: 
 		total_plist = 0
 	for myproc in range(Blockdata["nproc"]):
@@ -3350,9 +3352,9 @@ def get_sorting_all_params(data):
 def get_sorting_attr_stack(data_in_core):
 	# get partitioned group ID and xform.projection parameters
 	import numpy as np
-	partition    = np.array([-1 for im in range(len(data_in_core))])
+	partition = np.full(len(data_in_core), -1, dtype=np.int32)
 	for idat in range(len(data_in_core)):
-		partition[idat] = data_in_core[idat].get_attr("group")
+		partition[idat] = np.int32(data_in_core[idat].get_attr("group"))
 	return partition
 		
 def convertasi(asig, number_of_groups):
