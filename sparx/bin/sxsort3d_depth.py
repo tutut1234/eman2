@@ -3296,26 +3296,7 @@ def split_partition_into_ordered_clusters(partition):
 		np.place(new_clusters_ids, mask_list[sort_indx[ic]], ic)
 	partition[0] = new_clusters_ids.tolist()
 	return new_clusters, (np.array(partition).transpose()).tolist()
-"""	
-def merge_classes_into_partition_list(classes_list):
-	# keep the order of classes
-	group_dict = {}
-	data_list  = []
-	new_index  = []
-	if len(classes_list)>0:
-		for index_of_class in range(len(classes_list)):
-			for index_of_particle in range(len(classes_list[index_of_class])):
-				data_list.append(classes_list[index_of_class][index_of_particle])
-				group_dict[classes_list[index_of_class][index_of_particle]] = index_of_class
-		data_list = sorted(data_list)
-		for index_of_particle in range(len(data_list)):new_index.append([group_dict[data_list[index_of_particle]], \
-		      data_list[index_of_particle]])
-		del group_dict
-	else:
-		data_list = []
-		new_index = [[]]
-	return data_list, new_index
-"""
+
 def merge_classes_into_partition_list(classes_list):
 	import numpy as np
 	import copy
