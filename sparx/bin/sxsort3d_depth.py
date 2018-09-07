@@ -1513,7 +1513,7 @@ def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, orien_group
 			results[max_indexes[t[0]][0]].append(kmeans_ptl_list[iptl])
 		else: results[max_indexes[0][0]].append(kmeans_ptl_list[iptl])
 	iter_assignment = np.full(nima, -1, dtype=np.int32)
-	for im in range(number_of_groups): iter_assignment[sorted(results[im])] = im
+	for im in range(number_of_groups): iter_assignment[results[im]] = im
 	del results
 	del submatrix
 	return iter_assignment
