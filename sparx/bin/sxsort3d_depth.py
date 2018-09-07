@@ -1471,25 +1471,25 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 	
 def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, orien_group_members, number_of_groups, minimum_group_size_ratio):
 	import numpy as np
+	import random
 	results = [[] for i in range(number_of_groups)]
 	nima               = len(orien_group_members)
 	minimum_group_size = int(minimum_group_size_ratio*nima/number_of_groups)
 	auxmatrix          = np.full(nima, -1.0, dtype=np.float32)
-	submatrix          = np.full((number_of_groups, nima),  0.0, dtype=np.float32)
+	submatrix          = np.full((number_of_groups, nima), 0.0, dtype=np.float32)
 	for im in range(number_of_groups):
 		submatrix[im] = np.multiply(auxmatrix, dmatrix[im][orien_group_members])# sort in descending order
 	tmp_array = np.argsort(submatrix, axis = 1)
-	rmatrix   = [ ]
-	for im in range(number_of_groups):rmatrix.append(tmp_array[im].tolist())
+	rmatrix   = []
+	for i in range(number_of_groups): rmatrix.append(tmp_array[i].tolist())
 	del tmp_array
 	while len(rmatrix[0])> nima - minimum_group_size*number_of_groups:
-		tarray = [None for im in range(number_of_groups)]
-		for im in range(number_of_groups):
-			tarray[im] = rmatrix[im][0]
-		value_list_tmp, index_list = np.unique(np.array(tarray), return_index= True)
+		tarray = []
+		for i in range(number_of_groups): tarray.append(rmatrix[i][0])
+		value_list, index_list = np.unique(np.array(tarray), return_index= True)
 		duplicate_list = (np.setdiff1d(np.arange(number_of_groups), index_list)).tolist()
 		index_list     = index_list.tolist()
-		value_list     = value_list_tmp.tolist()
+		value_list     = value_list.tolist()
 		if len(value_list)<  number_of_groups:
 			for i in range(len(index_list)):
 				if tarray[index_list[i]] ==  tarray[duplicate_list[0]]: duplicate_list.append(index_list[i])# find all duplicated ones
@@ -1502,8 +1502,7 @@ def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, orien_group
 				rmatrix[duplicate_list[i]][0], rmatrix[duplicate_list[i]][index_column] = rmatrix[duplicate_list[i]][index_column], rmatrix[duplicate_list[i]][0]
 		for i in range(number_of_groups):
 			results[i].append(rmatrix[i][0])
-			for j in range(number_of_groups): 
-				rmatrix[i].remove(value_list[j]) # remove K elements from each column
+			for j in range(number_of_groups): rmatrix[i].remove(value_list[j]) # remove K elements from each column
 	kmeans_ptl_list = (np.delete(np.array(list(range(nima))), np.array(results).ravel())).tolist()# ravel works only for even size
 	del rmatrix
 	for iptl in range(len(kmeans_ptl_list)):
@@ -1514,9 +1513,7 @@ def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, orien_group
 			results[max_indexes[t[0]][0]].append(kmeans_ptl_list[iptl])
 		else: results[max_indexes[0][0]].append(kmeans_ptl_list[iptl])
 	iter_assignment = np.full(nima, -1, dtype=np.int32)
-	for i in range(number_of_groups): 
-		results[i].sort()
-		for j in range(len(results[i])): iter_assignment[results[i][j]] = i
+	for im in range(number_of_groups): iter_assignment[sorted(results[im])] = im
 	del results
 	del submatrix
 	return iter_assignment
