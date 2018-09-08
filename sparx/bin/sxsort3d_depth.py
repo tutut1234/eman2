@@ -363,8 +363,8 @@ def output_iter_results(box_dir, ncluster, NACC, NUACC, minimum_grp_size, list_o
 			nc       += 1
 			NACC +=len(any)
 		else:
-			for element in any: unaccounted_list.append(element)
-	unaccounted_list.sort()
+			unaccounted_list +=any
+	unaccounted_list = sorted(unaccounted_list)
 	NUACC = len(unaccounted_list)
 	fout  = open(os.path.join(box_dir, "freq_cutoff.json"),'w')
 	json.dump(freq_cutoff_dict, fout)
@@ -1456,7 +1456,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, \
 		if best_score > Tracker["constants"]["stop_mgskmeans_percentage"]: premature  = 1
 		write_text_file([partition.tolist(), lpartids], os.path.join(Tracker["directory"],"list.txt"))
 		shutil.rmtree(os.path.join(Tracker["directory"], "tempdir"))
-		fplist  = np.array([partition, np.array(lpartids)])
+		fplist  = np.array([partition, np.array(lpartids)], dtype = np.int32)
 	else: fplist = 0
 	fplist     = wrap_mpi_bcast(fplist,         Blockdata["main_node"], MPI_COMM_WORLD)
 	premature  = bcast_number_to_all(premature, Blockdata["main_node"], MPI_COMM_WORLD)
@@ -1486,7 +1486,7 @@ def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, orien_group
 	while len(rmatrix[0])> nima - minimum_group_size*number_of_groups:
 		tarray = []
 		for i in range(number_of_groups): tarray.append(rmatrix[i][0])
-		value_list, index_list = np.unique(np.array(tarray), return_index= True)
+		value_list, index_list = np.unique(np.array(tarray, dtype = np.int32), return_index= True)
 		duplicate_list = (np.setdiff1d(np.arange(number_of_groups), index_list)).tolist()
 		index_list     = index_list.tolist()
 		value_list     = value_list.tolist()
@@ -1503,7 +1503,7 @@ def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, orien_group
 		for i in range(number_of_groups):
 			results[i].append(rmatrix[i][0])
 			for j in range(number_of_groups): rmatrix[i].remove(value_list[j]) # remove K elements from each column
-	kmeans_ptl_list = (np.delete(np.array(list(range(nima))), np.array(results).ravel())).tolist()# ravel works only for even size
+	kmeans_ptl_list = (np.delete(np.array(list(range(nima)), dtype = np.int32), np.array(results).ravel())).tolist()# ravel works only for even size
 	del rmatrix
 	for iptl in range(len(kmeans_ptl_list)):
 		max_indexes = np.argwhere(submatrix[:, kmeans_ptl_list[iptl]]<=submatrix[:, kmeans_ptl_list[iptl]][submatrix[:, kmeans_ptl_list[iptl]].argmin()])
@@ -2832,7 +2832,7 @@ def swap_accounted_with_unaccounted_elements_mpi(accounted_file, unaccounted_fil
 	if checking_flag == 0:
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			clusters, npart  = split_partition_into_ordered_clusters(read_text_file(accounted_file, -1), False)
-			unaccounted_list = np.array(read_text_file(unaccounted_file), np.int32)
+			unaccounted_list = np.array(read_text_file(unaccounted_file), dtype = np.int32)
 		else: 
 			clusters = 0
 			unaccounted_list = 0
@@ -2842,14 +2842,14 @@ def swap_accounted_with_unaccounted_elements_mpi(accounted_file, unaccounted_fil
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			dlist, assignment_list = merge_classes_into_partition_list(clusters)
 			converted_assignment_list = [ ]
-			assignment_list = np.array(assignment_list, np.int32).transpose()
+			assignment_list = np.array(assignment_list).transpose()
 			for jm in range(2):converted_assignment_list.append(assignment_list[jm].tolist())
 		else: converted_assignment_list = 0
 		converted_assignment_list = wrap_mpi_bcast(converted_assignment_list, Blockdata["main_node"], MPI_COMM_WORLD)
 	else: # there exits unaccounted
 		assignment_list = create_nrandom_lists(unaccounted_file, number_of_groups, 1)#MPI
 		converted_assignment_list = [ ]
-		assignment_list = np.array(assignment_list[0], np.int32).transpose()
+		assignment_list = np.array(assignment_list[0]).transpose()
 		for jm in range(2):converted_assignment_list.append(assignment_list[jm].tolist())
 	return converted_assignment_list
 	
@@ -2934,7 +2934,7 @@ def do_boxes_two_way_comparison_mpi(nbox, input_box_parti1, input_box_parti2, de
 		msg = 'P1      '
 		for im in range(len(ptp2)): msg +='{:8d} '.format(len(ptp2[im]))
 		log_main.add(msg)
-		full_list  = np.sort(np.array(core1[1], dtype=np.int32))
+		full_list  = np.sort(np.array(core1[1], dtype = np.int32))
 		total_data = full_list.shape[0]
 		minimum_group_size = total_data
 		maximum_group_size = 0
@@ -2998,7 +2998,7 @@ def do_boxes_two_way_comparison_mpi(nbox, input_box_parti1, input_box_parti2, de
 					list_stable.remove(fake_list[0])
 				list_stable = sorted(list_stable, key=len, reverse = True)
 				accounted_list, new_index = merge_classes_into_partition_list(list_stable)
-				unaccounted_list = np.sort(np.setdiff1d(full_list, np.array(accounted_list, dtype=np.int32)))
+				unaccounted_list = np.sort(np.setdiff1d(full_list, np.array(accounted_list, dtype = np.int32)))
 				log_main.add('================================================================================================================\n')
 			else: minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation, stat_list = 0, 0, 0, 0, 0, 0, 0
 			new_index          = wrap_mpi_bcast(new_index,               Blockdata["main_node"], MPI_COMM_WORLD)
@@ -3029,7 +3029,7 @@ def do_boxes_two_way_comparison_mpi(nbox, input_box_parti1, input_box_parti2, de
 		if Blockdata["myid"]==Blockdata["main_node"]:
 			stop_generation  = 1
 			accounted_list, new_index = merge_classes_into_partition_list(new_list)
-			unaccounted_list = np.sort(np.setdiff1d(np.array(full_list, dtype=np.int32), np.array(accounted_list, dtype=np.int32)))
+			unaccounted_list = np.sort(np.setdiff1d(np.array(full_list), np.array(accounted_list, dtype=np.int32)))
 			log_main.add('Only one group found. The program will output it and stop executing the current generation.')
 
 			box1_dir =  os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%Tracker["current_generation"], "layer%d"%Tracker["depth"], "nbox%d"%nbox)
@@ -3392,7 +3392,7 @@ def get_angle_step_and_orien_groups_mpi(params_in, partids_in, angstep):
 	return ptls_in_orien_groups
 
 ##### ================= orientation groups	
-def compare_two_iterations(assignment1, assignment2, number_of_groups):
+def compare_two_iterations(assignment1, assignment2):
 	# compare two assignments during clustering, either iteratively or independently
 	import numpy as np
 	if len(assignment1) !=len(assignment2):
@@ -3401,11 +3401,11 @@ def compare_two_iterations(assignment1, assignment2, number_of_groups):
 		N = len(assignment1)
 		full_list  = np.array(range(N), dtype = np.int32)
 	res1 = []
-	assignment1 = np.array(assignment1)
+	assignment1 = np.array(assignment1,  dtype = np.int32)
 	group1_ids  = np.unique(assignment1)
 	for im in range(group1_ids.shape[0]): res1.append(np.sort(full_list[isin(assignment1, group1_ids[im])]))
 	res2 = []
-	assignment2 = np.array(assignment2)
+	assignment2 = np.array(assignment2, dtype = np.int32)
 	group2_ids  = np.unique(assignment2)
 	for im in range(group2_ids.shape[0]): res2.append(np.sort(full_list[isin(assignment2, group2_ids[im])]))
 	newindeces, list_stable, nb_tot_objs = k_means_match_clusters_asg_new(res1, res2)
@@ -4653,9 +4653,12 @@ def do3d_sorting_groups_nofsc_smearing_iter(srdata, partial_rec3d, current_group
 	from statistics import scale_fsc_datasetsize
 	total_size = sum(current_group_sizes)
 	for igrp in range(len(current_group_sizes)):
-		fsc_groups[igrp] = scale_fsc_datasetsize(Tracker["constants"]["fsc_curve"], \
+		if Tracker["even_scale_fsc"]: 
+			fsc_groups[igrp] = scale_fsc_datasetsize(Tracker["constants"]["fsc_curve"], \
 		     float(Tracker["constants"]["total_stack"]), total_size//len(current_group_sizes))
-		
+		else:
+			fsc_groups[igrp] = scale_fsc_datasetsize(Tracker["constants"]["fsc_curve"], \
+		     float(Tracker["constants"]["total_stack"]), current_group_sizes[igrp])
 	if Blockdata["no_of_groups"]>1:
 	 	# new starts
 	 	rest_time  = time()
@@ -5854,10 +5857,12 @@ def do_random_groups_simulation_mpi(ptp1, ptp2):
 	return gave, gvar
 	
 def get_group_size_from_iter_assign(iter_assignment):
-	ngroups     = max(iter_assignment)
-	group_sizes = [0 for igrp in range(ngroups+1)]
-	for im in range(len(iter_assignment)):
-		group_sizes[iter_assignment[im]] +=1
+	import numpy as np
+	group_sizes  = []
+	my_assign    = np.array(iter_assignment, dtype=np.int32)
+	group_ids    = np.sort(np.unique(my_assign))
+	for im in range(group_ids.shape[0]):
+		group_sizes.append((np.sort(my_assign[isin(my_assign, group_ids[im])])).shape[0])
 	return group_sizes
 		
 def sorting_main_mpi(log_main, depth_order, not_include_unaccounted):
@@ -6115,6 +6120,7 @@ def main():
 		Tracker["nosmearing"]                     = False
 		checking_flag                             = 0 # reset
 		Blockdata["fftwmpi"]                      = True
+		Tracker["even_scale_fsc"]                 = True
 		
 		try : 
 			Blockdata["symclass"] = symclass(Tracker["constants"]["symmetry"])
@@ -6288,6 +6294,7 @@ def main():
 		Tracker["paramstructure_dict"]            = None
 		Tracker["constants"]["selected_iter"]     = -1
 		Tracker["nosmearing"]                     = True
+		Tracker["even_scale_fsc"]                 = True
 		
 		checking_flag                              = 0 # reset
 		Blockdata["fftwmpi"]                       = True
@@ -6297,6 +6304,7 @@ def main():
 		ast = get_angle_step_from_number_of_orien_groups(Tracker["constants"]["orientation_groups"])
 		Blockdata["ncpuspernode"] = Blockdata["no_of_processes_per_group"]
 		Blockdata["nsubset"]      = Blockdata["ncpuspernode"]*Blockdata["no_of_groups"]
+		
 		create_subgroup()
 	
 		# 
