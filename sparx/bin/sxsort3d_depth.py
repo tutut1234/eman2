@@ -1210,7 +1210,7 @@ def AI_MGSKmeans(iter_assignment, last_iter_assignment, best_assignment, keepgoi
 	if is_unicorn_cluster == 0:
 		sum_newindices1 = 0
 		sum_newindices2 = 0
-		ratio, newindices, stable_clusters = compare_two_iterations(iter_assignment, last_iter_assignment, number_of_groups)
+		ratio, newindices, stable_clusters = compare_two_iterations(iter_assignment, last_iter_assignment)
 		for idx in range(len(newindices)):
 			sum_newindices1 += newindices[idx][0]
 			sum_newindices2 += newindices[idx][1]
@@ -2841,19 +2841,16 @@ def swap_accounted_with_unaccounted_elements_mpi(accounted_file, unaccounted_fil
 		clusters = refilling_global_scheme_mpi(clusters, unaccounted_list.tolist(), number_of_groups, log_file, swap_ratio)	
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			dlist, assignment_list = merge_classes_into_partition_list(clusters)
-			converted_assignment_list = [[],[]]
-			for jm in range(2): 
-				for im in range(len(assignment_list)):
-					converted_assignment_list[jm].append(assignment_list[im][jm])
+			converted_assignment_list = [ ]
+			assignment_list = np.array(assignment_list, np.int32).transpose()
+			for jm in range(2):converted_assignment_list.append(assignment_list[jm].tolist())
 		else: converted_assignment_list = 0
 		converted_assignment_list = wrap_mpi_bcast(converted_assignment_list, Blockdata["main_node"], MPI_COMM_WORLD)
 	else: # there exits unaccounted
 		assignment_list = create_nrandom_lists(unaccounted_file, number_of_groups, 1)#MPI
-		assignment_list = assignment_list[0]
-		converted_assignment_list = [[],[]]
-		for jm in range(2):
-			for im in range(len(assignment_list)):
-				converted_assignment_list[jm].append(assignment_list[im][jm])
+		converted_assignment_list = [ ]
+		assignment_list = np.array(assignment_list[0], np.int32).transpose()
+		for jm in range(2):converted_assignment_list.append(assignment_list[jm].tolist())
 	return converted_assignment_list
 	
 def patch_to_do_k_means_match_clusters_asg_new(ptp1, ptp2):
@@ -3157,8 +3154,7 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	log_list.append('                        Two-way matching of sorting results.')
 	log_list.append('M indicates that respective group of P0 sorting (row number) matches respective group of P1 sorting (column number)')
 	msg ='   '
-	for i in range(len(newindeces)):
-		msg += '{:^3d}'.format(i)
+	for i in range(len(newindeces)): msg += '{:^3d}'.format(i)
 	log_list.append(msg)
 	for im in range(len(newindeces)):
 		msg ='{:^3d}'.format(im)
@@ -3170,7 +3166,6 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 					not_found = False
 			if not_found: msg +='{:^3s}'.format('   ')
 		log_list.append(msg)
-	
 	score_list = [ ]
 	nclass     = 0
 	log_list.append('               Post-matching results.')
@@ -3178,7 +3173,6 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	current_MGR = get_MGR_from_two_way_comparison(newindeces, ptp1, ptp2, total_data)
 	stable_clusters   = []
 	selected_clusters = []
-	
 	for index_of_any in range(len(list_stable)):
 		any = np.sort(list_stable[index_of_any])
 		any.tolist()
@@ -3196,17 +3190,16 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 			selected_clusters.append(any)
 		else:
 			log_list.append('{:>8} {:>10d} {:>10d}        {:>8}  {:>8.1f}       '.format(index_of_any, \
-			     len(any), current_MGR[index_of_any], 'rejected', score3))
-			
+			     len(any), current_MGR[index_of_any], 'rejected', score3))		
 	accounted_list, new_index = merge_classes_into_partition_list(selected_clusters)
-	unaccounted_list = np.sort(np.setdiff1d(full_list, np.array(accounted_list, dtype=np.int32)))
+	unaccounted_list = (np.sort(np.setdiff1d(full_list, np.array(accounted_list, dtype=np.int32)))).tolist()
 	write_text_row(new_index, os.path.join(partition_dir, "Accounted.txt"))
-	write_text_file(unaccounted_list.tolist(), os.path.join(partition_dir, "Core_set.txt"))
+	write_text_file(unaccounted_list, os.path.join(partition_dir, "Core_set.txt"))
 	log_list.append('  The overall reproducibility is %5.1f%%.'%Tracker["current_iter_ratio"])
 	log_list.append('  The number of accounted for images: %d.  The number of core throughout images: %d.'%(len(accounted_list), len(unaccounted_list)))
 	log_list.append('  The current minimum group size: %d and the maximum group size: %d.'%(minimum_group_size, maximum_group_size))
 	log_list.append('----------------------------------------------------------------------------------------------------------------')
-	return minimum_group_size, maximum_group_size, selected_clusters, unaccounted_list.tolist(), Tracker["current_iter_ratio"], len(list_stable), log_list
+	return minimum_group_size, maximum_group_size, selected_clusters, unaccounted_list, Tracker["current_iter_ratio"], len(list_stable), log_list
 
 def isin(element, test_elements, assume_unique=False, invert=False):
     import numpy as np
@@ -3218,8 +3211,8 @@ def split_partition_into_ordered_clusters_split_ucluster(partition, input_row_wi
 	# group particles  by their cluster ids; take the last one as unaccounted group
 	import numpy as np
 	clusters   = []
-	partition  = (np.array(partition, dtype=np.int32).transpose())
-	group_id   = np.sort(np.unique(partition[0]))
+	if input_row_wise: partition = (np.array(partition, dtype=np.int32).transpose())
+	group_id = np.sort(np.unique(partition[0]))
 	if group_id.shape[0] >1: 
 		for icluster in range(cluster_id.shape[0]):
 			if icluster <cluster_id.shape[0] -1:
@@ -3235,8 +3228,7 @@ def split_partition_into_ordered_clusters(partition, input_is_row_wise = True):
 	# re-index partition as consecutive groups if their cluster IDs are not
 	# Extract clusters; sort clusters in ascendent order; transpose partitions
 	import numpy as np
-	if input_is_row_wise:
-		partition = (np.array(partition).transpose()).tolist()
+	if input_is_row_wise:partition = (np.array(partition).transpose()).tolist()
 	np_cluster_ids  = np.array(partition[0], dtype=np.int32)
 	np_particle_ids = np.array(partition[1], dtype=np.int32)
 	group_id        = np.unique(np_cluster_ids)
@@ -3403,25 +3395,23 @@ def get_angle_step_and_orien_groups_mpi(params_in, partids_in, angstep):
 def compare_two_iterations(assignment1, assignment2, number_of_groups):
 	# compare two assignments during clustering, either iteratively or independently
 	import numpy as np
-	assigned_groups1 =[[] for i in range(number_of_groups)]
-	for im in range(len(assignment1)):assigned_groups1[assignment1[im]].append(im)
+	if len(assignment1) !=len(assignment2):
+		ERROR("Two assignments don't have the same length", "compare_two_iterations", 0, 0)
+	else:
+		N = len(assignment1)
+		full_list  = np.array(range(N), dtype = np.int32)
 	res1 = []
-	for iref in range(number_of_groups):
-		a = np.array(assigned_groups1[iref],"int32")
-		a.sort()
-		res1.append(a)
-	assigned_groups2 =[[] for i in range(number_of_groups)]
-	for im in range(len(assignment2)): assigned_groups2[assignment2[im]].append(im)
+	assignment1 = np.array(assignment1)
+	group1_ids  = np.unique(assignment1)
+	for im in range(group1_ids.shape[0]): res1.append(np.sort(full_list[isin(assignment1, group1_ids[im])]))
 	res2 = []
-	for iref in range(number_of_groups):
-		a = np.array(assigned_groups2[iref],"int32")
-		a.sort()
-		res2.append(a)
-		del a
+	assignment2 = np.array(assignment2)
+	group2_ids  = np.unique(assignment2)
+	for im in range(group2_ids.shape[0]): res2.append(np.sort(full_list[isin(assignment2, group2_ids[im])]))
 	newindeces, list_stable, nb_tot_objs = k_means_match_clusters_asg_new(res1, res2)
 	del res1
 	del res2
-	return float(nb_tot_objs)/len(assignment1), newindeces, list_stable
+	return float(nb_tot_objs)/N, newindeces, list_stable
 	
 def update_data_assignment(cdata, rdata, assignment, proc_list, nosmearing, myid):
 	import numpy as np
@@ -5754,7 +5744,7 @@ def do_random_groups_simulation_mpi(ptp1, ptp2):
 	# return two lists: group avgs and group stds. The last one of two lists are the total avg and std.
 	if (len(ptp1)>=50) or (len(ptp2)>=50):
 		if(Blockdata["myid"] == Blockdata["main_node"]): print('Warning: too many simulaton groups')
-	Nloop = max(1000//Blockdata["nproc"], 1)
+	Nloop = max(1000//Blockdata["nproc"], 5)
 	NT    = 1000
 	a     = []
 	b     = []
