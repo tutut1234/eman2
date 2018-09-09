@@ -154,15 +154,12 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 	keepchecking   = 1
 	bad_clustering = 0
 	stat_list      = []
-	init_layer_dir = os.path.join(work_dir, "layer0")
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		if not os.path.exists(init_layer_dir): os.mkdir(init_layer_dir)
-	
+		if not os.path.exists(os.path.join(work_dir, "layer0")): os.mkdir(os.path.join(work_dir, "layer0"))	
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		partition_per_box_per_layer_list = []
-		initial_id_list = read_text_file(initial_id_file)
 		for iparti in range(0, 2**(depth_order+1), 2):
-			reassign = [initial_id_list, None]
+			reassign = [read_text_file(initial_id_file), None]
 			partition_per_box_per_layer_list.append(reassign)
 	else: partition_per_box_per_layer_list = 0
 	partition_per_box_per_layer_list = wrap_mpi_bcast(partition_per_box_per_layer_list, Blockdata["main_node"])
@@ -226,13 +223,13 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 			if bad_clustering !=1:
 				partition_per_box_per_layer_list = []
 				stop_generation = 0
-				for nbox in range(0,n_cluster_boxes,2):
+				for nbox in range(0,n_cluster_boxes, 2):
 					input_box_parti1 = os.path.join(depth_dir, "nbox%d"%nbox,     "partition.txt")
 					input_box_parti2 = os.path.join(depth_dir, "nbox%d"%(nbox+1), "partition.txt")
 					minimum_grp_size, maximum_grp_size, accounted_list, unaccounted_list, bad_clustering, stop_generation, stat_list = \
 					do_boxes_two_way_comparison_mpi(nbox, input_box_parti1, input_box_parti2, depth_order - depth, log_main)
 					
-					if( stop_generation == 1):
+					if(stop_generation == 1):
 						partition_per_box_per_layer_list = []
 						partition_per_box_per_layer_list.append([accounted_list, unaccounted_list])
 						break
@@ -272,16 +269,16 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 	return partition_per_box_per_layer_list, bad_clustering, stat_list
 
 def depth_box_initialization(box_dir, input_list1, input_list2, log_file):
+	# input_list1:  accounted partition
+	# input_list2:  unacccounted
 	global Tracker, Blockdata
+	import numpy as np
 	img_per_grp      = Tracker["current_img_per_grp"]
 	minimum_grp_size = Tracker["constants"]["minimum_grp_size"]
-	
 	if input_list2 is not None: #Track 2
 		total_stack = len(input_list1)+ len(input_list2)
-		groups      = []
-		for one in input_list1:
-			if one[0] not in groups: groups.append(one[0]) # safe in speed when the number of groups is not large.
-		number_of_groups = len(groups)
+		groups = np.unique((np.array(input_list1, dtype=np.int32)).transpose()[0])
+		number_of_groups = groups.shape[0]
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			msg = "Number of groups found in initialization: %d, the largest possible number of groups: %d"%(number_of_groups, total_stack//img_per_grp)
 			log_file.add(msg)
@@ -292,7 +289,6 @@ def depth_box_initialization(box_dir, input_list1, input_list2, log_file):
 		if Tracker["constants"]["do_swap_au"]: swap_ratio = Tracker["constants"]["swap_ratio"]
 		else: swap_ratio = 0.0
 		new_assignment   = []
-		
 		for indep in range(2):
 			tmp_assignment = swap_accounted_with_unaccounted_elements_mpi(os.path.join(box_dir, "previous_NACC.txt"), \
 				os.path.join(box_dir, "previous_NUACC.txt"), log_file, number_of_groups, swap_ratio)
@@ -302,8 +298,7 @@ def depth_box_initialization(box_dir, input_list1, input_list2, log_file):
 			for indep in range(2):
 				write_text_file(new_assignment[indep], os.path.join(box_dir, "independent_index_%03d.txt"%indep))
 			new_assignment = []
-			for indep in range(2):
-				new_assignment.append(read_text_row(os.path.join(box_dir,"independent_index_%03d.txt"%indep)))
+			for indep in range(2): new_assignment.append(read_text_row(os.path.join(box_dir,"independent_index_%03d.txt"%indep)))
 			id_list = read_text_file( os.path.join(box_dir, "independent_index_000.txt"), -1)
 			if len(id_list)>1: id_list=id_list[0]
 			total_stack = len(id_list)
@@ -332,13 +327,7 @@ def depth_box_initialization(box_dir, input_list1, input_list2, log_file):
 		      total_stack, number_of_groups, Tracker["constants"]["minimum_grp_size"]))
 	mpi_barrier(MPI_COMM_WORLD)
 	return img_per_grp, number_of_groups, total_stack, minimum_grp_size, new_assignment
-	
-def depth_iter_initialization(run_id_file):
-	id_list          = read_text_file(run_id_file, -1)
-	number_of_groups = max(id_list[0])+1
-	total_stack      = len(id_list[0])
-	return total_stack, number_of_groups
-	
+		
 def output_iter_results(box_dir, ncluster, NACC, NUACC, minimum_grp_size, list_of_stable, unaccounted_list, img_per_grp, log_main):
 	import numpy as np
 	### single node
@@ -363,7 +352,7 @@ def output_iter_results(box_dir, ncluster, NACC, NUACC, minimum_grp_size, list_o
 			nc       += 1
 			NACC +=len(any)
 		else:
-			unaccounted_list +=any
+			for im in range(len(any)):unaccounted_list.append(any[im])
 	unaccounted_list = sorted(unaccounted_list)
 	NUACC = len(unaccounted_list)
 	fout  = open(os.path.join(box_dir, "freq_cutoff.json"),'w')
@@ -386,7 +375,7 @@ def check_state_within_box_run(keepgoing, nruns, unaccounted_list, no_cluster_la
 	return keepgoing, nruns, total_stack, number_of_groups
 	
 def get_box_partition(box_dir, ncluster, unaccounted_list):
-	unaccounted_list.sort()
+	unaccounted_list = sorted(unaccounted_list)
 	if ncluster >=1:
 		clusters_in_box = [read_text_file(os.path.join(box_dir, "Cluster_%03d.txt"%ic)) for ic in range(ncluster)]
 		if len(unaccounted_list)>0: clusters_in_box.append(unaccounted_list)
@@ -409,7 +398,7 @@ def output_clusters(output_dir, partition, unaccounted_list, not_include_unaccou
 			identified_clusters.append(nclasses[ic])
 		else: unaccounted_list +=nclasses[ic]
 	if len(unaccounted_list)>1:
-		unaccounted_list.sort()
+		unaccounted_list = sorted(unaccounted_list)
 		write_text_file(unaccounted_list, os.path.join(output_dir, "Core_set.txt"))
 	nclasses = copy.deepcopy(identified_clusters)
 	del identified_clusters
@@ -489,6 +478,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 	import copy, shutil
 	from   shutil import copyfile
 	from   math   import sqrt
+	import numpy as np
 	box_start      = time()
 	acc_time       = 0.0
 	box_niter      = 5
@@ -533,7 +523,6 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 			for indep in range(2):
 					write_text_row(assignment_list[indep], os.path.join(within_box_run_dir,\
 					 "independent_index_%03d.txt"%indep))
-		run_id_file = os.path.join(within_box_run_dir, "independent_index_000.txt")    
 		#   iter initialization
 		iter                = 0
 		previous_iter_ratio = 0.0
@@ -548,15 +537,14 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		
 		iter_id_init_file = os.path.join(iter_dir, "random_assignment_000.txt")
 		if Blockdata["myid"] == Blockdata["main_node"]:
-			iter_total_stack, iter_number_of_groups = depth_iter_initialization(iter_id_init_file)
+			id_list          = read_text_file(os.path.join(within_box_run_dir, "independent_index_000.txt") , -1)
+			total_stack, current_number_of_groups = len(id_list[0]), int((np.unique(np.array(id_list[0]))).shape[0])
 		else:
-			iter_total_stack      = 0
-			iter_number_of_groups = 0
+			total_stack              = 0
+			current_number_of_groups = 0
 			
-		iter_total_stack          = bcast_number_to_all(iter_total_stack,      Blockdata["main_node"], MPI_COMM_WORLD)
-		iter_number_of_groups     = bcast_number_to_all(iter_number_of_groups, Blockdata["main_node"], MPI_COMM_WORLD)
-		total_stack               = iter_total_stack
-		current_number_of_groups  = iter_number_of_groups
+		total_stack                  = bcast_number_to_all(total_stack,      Blockdata["main_node"], MPI_COMM_WORLD)
+		current_number_of_groups     = bcast_number_to_all(current_number_of_groups, Blockdata["main_node"], MPI_COMM_WORLD)
 			
 		#  computation starts,    prepare data
 		original_data, norm_per_particle  = read_data_for_sorting(iter_id_init_file, params, previous_params)
@@ -818,7 +806,11 @@ def get_sorting_image_size(original_data, partids, number_of_groups, sparamstruc
 	
 		compute_noise(Tracker["nxinit_refinement"])
 		rdata = downsize_data_for_rec3D(original_data, Tracker["nxinit_refinement"], return_real = False, npad = 1)
-		update_rdata_assignment(iter_assignment, proc_list, Blockdata["myid"], rdata)
+		
+		for im in range(len(rdata)):# update rdata
+			rdata[im].set_attr("group", np.array(iter_assignment[proc_list[Blockdata["myid"]][0]:\
+			    proc_list[Blockdata["myid"]][1]], dtype=np.int64)[im])
+
 		Tracker["nxinit"] = Tracker["nxinit_refinement"]
 		compute_noise(Tracker["nxinit"])
 		do3d_sorting_groups_fsc_only_iter(rdata, sparamstructure, snorm_per_particle, iteration = iter)
@@ -2700,6 +2692,7 @@ def refilling_global_scheme_mpi(clusters, unaccounted_list, number_of_clusters, 
 	return sorted_out_clusters
 
 def select_fixed_size_cluster_from_alist(ulist, img_per_grp):
+	from random import shuffle
 	cluster = []
 	shuffle(ulist)
 	cluster += ulist[0:img_per_grp]
@@ -2707,6 +2700,7 @@ def select_fixed_size_cluster_from_alist(ulist, img_per_grp):
 	return cluster, ulist
 
 def swap_clusters_small_NUACC(glist, clusters, swap_ratio):
+	from random import shuffle
 	slist = [None for i in range(len(clusters))]
 	temp_list = []
 	for ic in range(len(clusters)):
@@ -2722,6 +2716,7 @@ def swap_clusters_small_NUACC(glist, clusters, swap_ratio):
 	return temp_list, clusters
 		
 def swap_clusters_large_NUACC(glist, clusters, swap_ratio):
+	from random import shuffle
 	import copy
 	slist = [None for i in range(len(clusters))]
 	temp_list = []
@@ -2742,6 +2737,7 @@ def swap_clusters_large_NUACC(glist, clusters, swap_ratio):
 def even_assignment_alist_to_mclusters(glist, number_of_groups):
 	# evenly assign glist to clusters
 	import copy
+	from random import shuffle
 	if number_of_groups >0:
 		clusters = [[] for i in range(number_of_groups)]
 		ulist = copy.deepcopy(glist)
@@ -2797,6 +2793,7 @@ def assign_unaccounted_inverse_proportion_to_size(glist, clusters, img_per_grp):
 	# assign unaccounted images by group probabilities, single processor version
 	import random
 	import copy
+	from random import shuffle
 	ulist = copy.deepcopy(glist)
 	number_of_groups = len(clusters)
 	slist = []
@@ -3072,7 +3069,7 @@ def do_boxes_two_way_comparison_mpi(nbox, input_box_parti1, input_box_parti2, de
 	else:
 		if Blockdata["myid"]==Blockdata["main_node"]:
 			accounted_list, new_index = merge_classes_into_partition_list(new_list)
-			unaccounted_list = np.sort(np.setdiff1d(np.array(full_list, np.int32), np.array(accounted_list, np.int32)))
+			unaccounted_list = np.sort(np.setdiff1d(np.array(full_list, dtype=np.int32), np.array(accounted_list, dtype=np.int32)))
 			log_main.add(' {} {} {} {}'.format('  The number of accounted for images:', len(accounted_list),'  The number of unaccounted for images:', len(unaccounted_list)))
 			log_main.add('  The current minimum group size: %d and the maximum group size: %d'%(minimum_group_size, maximum_group_size))
 		
@@ -3284,40 +3281,20 @@ def get_sorting_all_params(data):
 	from applications import MPI_start_end
 	import numpy as np
 	if Blockdata["myid"] == Blockdata["main_node"]:
-		total_plist = np.full(Tracker["total_stack"], -1, np.int32)
+		total_plist = np.full(Tracker["total_stack"], -1, dtype=np.int32)
 	else: total_plist = 0
 	for myproc in range(Blockdata["nproc"]):
 		image_start,image_end = MPI_start_end(Tracker["total_stack"], Blockdata["nproc"], myproc)
-		plist        = 0
-		if Blockdata["myid"] == myproc:
-			plist = get_sorting_attr_stack(data)
-		plist = wrap_mpi_bcast(plist, myproc)
-		if Blockdata["myid"] == Blockdata["main_node"]:
-			total_plist[image_start:image_end] = plist
+		plist = 0
+		if Blockdata["myid"] == myproc: 
+			plist = np.full(len(data), -1, dtype=np.int32)
+			for im in range(len(data)): plist[im] = data[im].get_attr("group")
+		plist = wrap_mpi_bcast(plist, myproc, MPI_COMM_WORLD)
+		if Blockdata["myid"] == Blockdata["main_node"]:total_plist[image_start:image_end] = plist
 		mpi_barrier(MPI_COMM_WORLD)
 	total_plist = wrap_mpi_bcast(total_plist, Blockdata["main_node"])
 	return total_plist
-	
-def get_sorting_attr_stack(data_in_core):
-	# get partitioned group ID and xform.projection parameters
-	import numpy as np
-	partition = np.full(len(data_in_core), -1)
-	for idat in range(len(data_in_core)):
-		partition[idat] = data_in_core[idat].get_attr("group")
-	return partition
 		
-def convertasi(asig, number_of_groups):
-	from numpy import array
-	p = []
-	for k in range(number_of_groups):
-		l = []
-		for i in range(len(asig)):
-			if( asig[i]== k ): l.append(i)
-		l = array(l,"int32")
-		l.sort()
-		p.append(l)
-	return p
-				
 ### dmatrix and refangles partition			
 def get_angle_step_from_number_of_orien_groups(orien_groups):
 	global Tracker, Blockdata
@@ -3426,12 +3403,6 @@ def update_data_assignment(cdata, rdata, assignment, proc_list, nosmearing, myid
 		else:
 			rdata[im][0].set_attr("previous_group", previous_group)
 			rdata[im][0].set_attr("group", groupids[im])
-	return
-	
-def update_rdata_assignment(assignment, proc_list, myid, rdata):
-	import numpy as np
-	groupids = np.array(assignment[proc_list[myid][0]:proc_list[myid][1]], dtype=np.int64)
-	for im in range(len(rdata)): rdata[im].set_attr("group", groupids[im])
 	return
 	
 def MPI_volume_start_end(number_of_groups, ncolor, mycolor):
