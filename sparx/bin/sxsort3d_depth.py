@@ -588,7 +588,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 			if not Tracker["constants"]["focus3D"]:	fdata_in_core = 0.0
 			else:                                   fdata_in_core = cdata_in_core
 			ctfdata = cdata_in_core
-			log_main.add( "Precalculated data per node: images for comparison: %6.2f G; shifted images: %6.2f G; focus images: %6.2f G; ctfs: %6.2f G"%\
+			log_main.add( "Precalculated data in core per node; images for comparison: %6.2f GB; shifted images: %6.2f GB; focus images: %6.2f GB; ctfs: %6.2f GB"%\
 			        (cdata_in_core, srdata_in_core, fdata_in_core, ctfdata))	
 		mpi_barrier(MPI_COMM_WORLD)
 		
