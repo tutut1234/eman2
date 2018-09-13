@@ -1935,8 +1935,7 @@ def copy_oldparamstructure_from_meridien_MPI(selected_iteration, log_main):
 		local_lcore = lcore[im_start:im_end]
 		istart_old_proc_id = -1
 		iend_old_proc_id   = -1
-		plist              = []
-		
+		plist              = []	
 		for iproc_old in range(nproc_previous):
 			im_start_old, im_end_old = MPI_start_end(psize, nproc_previous, iproc_old)
 			if (im_start>= im_start_old) and im_start <=im_end_old: istart_old_proc_id = iproc_old
@@ -1944,7 +1943,6 @@ def copy_oldparamstructure_from_meridien_MPI(selected_iteration, log_main):
 			plist.append([im_start_old, im_end_old])
 		ptl_on_this_cpu = im_start
 		nptl_total      = 0
-		
 		for iproc_index_old in range(istart_old_proc_id, iend_old_proc_id+1):
 			fout = open(os.path.join(Tracker["constants"]["refinement_dir"],\
 			   "main%03d"%selected_iteration, "oldparamstructure", \
@@ -1960,7 +1958,6 @@ def copy_oldparamstructure_from_meridien_MPI(selected_iteration, log_main):
 				ptl_on_this_cpu  +=1
 				mlocal_id_on_old +=1
 				nptl_total       +=1
-				
 		del oldparamstructure_on_old_cpu
 		mpi_barrier(MPI_COMM_WORLD)
 	
@@ -1973,7 +1970,6 @@ def copy_oldparamstructure_from_meridien_MPI(selected_iteration, log_main):
 				fout.close()
 				mpi_barrier(MPI_COMM_WORLD)
 		mpi_barrier(MPI_COMM_WORLD)
-		
 	# output number of smearing
 	smearing_dict = {}
 	tchunk        = []
@@ -2015,6 +2011,7 @@ def copy_oldparamstructure_from_meridien_MPI(selected_iteration, log_main):
 		for key, value in list(local_dict.items()):full_dict_list[key] = value
 		Tracker["constants"]["smearing_file"] = os.path.join(Tracker["constants"]["masterdir"], "all_smearing.txt")
 	mpi_barrier(MPI_COMM_WORLD)
+	
 	for icpu in range(Blockdata["nproc"]):
 		if Blockdata["myid"] == icpu and Blockdata["myid"] != Blockdata["main_node"]:
 			wrap_mpi_send(local_dict, Blockdata["main_node"], MPI_COMM_WORLD)
@@ -2024,19 +2021,102 @@ def copy_oldparamstructure_from_meridien_MPI(selected_iteration, log_main):
 				full_dict_list[key] = value
 		else: pass
 		mpi_barrier(MPI_COMM_WORLD)
-	Tracker["paramstructure_dict"] = os.path.join(Tracker["constants"]["masterdir"], "paramstructure_dict.txt")
-	if Blockdata["myid"] == Blockdata["main_node"]: write_text_row(full_dict_list, Tracker["paramstructure_dict"])
+	Tracker["paramstructure_dict"] = \
+	   os.path.join(Tracker["constants"]["masterdir"], "paramstructure_dict.txt")
+	if Blockdata["myid"] == Blockdata["main_node"]: 
+		write_text_row(full_dict_list, Tracker["paramstructure_dict"])
+	mpi_barrier(MPI_COMM_WORLD)
 	return
+
+def get_smearing_info(nproc_previous, selected_iteration, total_stack, my_dir, refinement_dir):
+	global Tracker, Blockdata
+	import numpy as np
+	oldparamstructure    =[[], []]
+	local_dict           = {}
+	for procid in range(2):
+		smearing_list = []
+		if( Blockdata["myid"] == Blockdata["main_node"]): lcore = read_text_file(\
+		   os.path.join(my_dir, "chunk_%d.txt"%procid))
+		else: lcore = 0
+		lcore = wrap_mpi_bcast(lcore, Blockdata["main_node"], MPI_COMM_WORLD)	
+		psize = len(lcore)
+		oldparamstructure[procid] = []
+		im_start, im_end   = MPI_start_end(psize, Blockdata["nproc"], Blockdata["myid"])
+		local_lcore        = lcore[im_start:im_end]
+		istart_old_proc_id = -1
+		iend_old_proc_id   = -1
+		plist              = []	
+		for iproc_old in range(nproc_previous):
+			im_start_old, im_end_old = MPI_start_end(psize, nproc_previous, iproc_old)
+			if (im_start>= im_start_old) and im_start <=im_end_old: istart_old_proc_id = iproc_old
+			if (im_end  >= im_start_old) and im_end <=im_end_old:   iend_old_proc_id   = iproc_old
+			plist.append([im_start_old, im_end_old])
+		ptl_on_this_cpu = im_start
+		nptl_total      = 0
+		for iproc_index_old in range(istart_old_proc_id, iend_old_proc_id+1):
+			fout = open(os.path.join(refinement_dir,\
+			   "main%03d"%selected_iteration, "oldparamstructure", \
+			      "oldparamstructure_%01d_%03d_%03d.json"%(procid, \
+			 iproc_index_old, selected_iteration)),'r')
+			oldparamstructure_on_old_cpu = convert_json_fromunicode(json.load(fout))
+			fout.close()
+			mlocal_id_on_old = ptl_on_this_cpu - plist[iproc_index_old][0]
+			while (mlocal_id_on_old<len(oldparamstructure_on_old_cpu)) and (ptl_on_this_cpu<im_end):
+				oldparamstructure[procid].append(oldparamstructure_on_old_cpu[mlocal_id_on_old])
+				local_dict [local_lcore[nptl_total]] = [Blockdata["myid"], procid, \
+				   selected_iteration, nptl_total, ptl_on_this_cpu]
+				ptl_on_this_cpu  +=1
+				mlocal_id_on_old +=1
+				nptl_total       +=1
+		del oldparamstructure_on_old_cpu
+		mpi_barrier(MPI_COMM_WORLD)
+		
+	# output number of smearing
+	smearing_dict = {}
+	tchunk        = []
+	for procid in range(2):
+		if Blockdata["myid"] == Blockdata["main_node"]:
+			chunk = read_text_file(os.path.join(my_dir, "chunk_%d.txt"%procid))
+			chunk_size = len(chunk)
+			smearing_list =[ None for i in range(chunk_size) ]
+		else: chunk_size  = 0
+		chunk_size = bcast_number_to_all(chunk_size, Blockdata["main_node"], MPI_COMM_WORLD)
+		local_smearing_list = []
+		for im in range(len(oldparamstructure[procid])):local_smearing_list.append(len(oldparamstructure[procid][im][2]))
+			
+		if Blockdata["myid"] == Blockdata["main_node"]:
+			im_start_old, im_end_old = MPI_start_end(chunk_size, Blockdata["nproc"], Blockdata["main_node"])
+			for im in range(len(local_smearing_list)): smearing_list[im_start_old+im] = local_smearing_list[im]
+		mpi_barrier(MPI_COMM_WORLD)
+		if  Blockdata["myid"] != Blockdata["main_node"]:
+			wrap_mpi_send(local_smearing_list, Blockdata["main_node"], MPI_COMM_WORLD)
+		else:
+			for iproc in range(Blockdata["nproc"]):
+				if iproc != Blockdata["main_node"]:
+					im_start_old, im_end_old = MPI_start_end(chunk_size, Blockdata["nproc"], iproc)
+					dummy = wrap_mpi_recv(iproc, MPI_COMM_WORLD)
+					for idum in range(len(dummy)): smearing_list[idum + im_start_old] = dummy[idum]
+				else: pass
+			write_text_file(smearing_list, os.path.join(my_dir, "smearing_%d.txt"%procid))
+			for im in range(len(chunk)): smearing_dict[chunk[im]] =  smearing_list[im]
+			tchunk +=chunk
+		mpi_barrier(MPI_COMM_WORLD)
 	
+	if Blockdata["myid"] == Blockdata["main_node"]:
+		tchunk.sort()
+		all_smearing = np.full(len(tchunk), 0.0, dtype=np.float32)
+		for im in range(len(tchunk)): 
+			all_smearing[im] = smearing_dict[tchunk[im]]
+	else: all_smearing = 0
+	all_smearing = wrap_mpi_bcast(all_smearing, Blockdata["main_node"], MPI_COMM_WORLD)
+	return all_smearing
 ### 8
 def precalculate_shifted_data_for_recons3D(prjlist, paramstructure, refang, rshifts, delta, avgnorms, \
        nxinit, nnxo, nosmearing, norm_per_particle = None, upweighted=False, nsmear =-1):
 	from utilities    import random_string, get_im, findall, info, model_blank
 	from filter	      import filt_table
 	from fundamentals import fshift
-	import types
-	import datetime
-	import copy
+	import types, datetime, copy
 	if norm_per_particle == None: norm_per_particle = len(prjlist)*[1.0]
 	nnx = prjlist[0].get_xsize()
 	nny = prjlist[0].get_ysize()
@@ -2050,17 +2130,12 @@ def precalculate_shifted_data_for_recons3D(prjlist, paramstructure, refang, rshi
 	for im in range(len(prjlist)):
 		bckgn = prjlist[im].get_attr("bckgnoise")
 		ct = prjlist[im].get_attr("ctf")
-		
 		if nosmearing:
-			phi,theta,psi,s2x,s2y = get_params_proj(prjlist[im], xform = "xform.projection")
-			prjlist[im].set_attr_dict( {"bckgnoise":bckgn, "ctf":ct, "wprob": 1.0})
 			prjlist[im].set_attr_dict({"padffted":1, "is_fftpad":1,"is_fftodd":0, "is_complex_ri":1, "is_complex":1})
 			if not upweighted:prjlist[im] = filt_table(prjlist[im], bckgn)
-			set_params_proj(prjlist[im],[ phi, theta, psi, 0.0, 0.0], xform = "xform.projection")
+			prjlist[im].set_attr("wprob", 1.0)
 		else:
 			avgnorm = avgnorms[prjlist[im].get_attr("chunk_id")]
-			#if nsmear <=0.0: numbor = len(paramstructure[im][2])
-			#else:         numbor = 1
 			numbor      = len(paramstructure[im][2])
 			ipsiandiang = [ paramstructure[im][2][i][0]/1000  for i in range(numbor) ]
 			allshifts   = [ paramstructure[im][2][i][0]%1000  for i in range(numbor) ]
@@ -2082,13 +2157,11 @@ def precalculate_shifted_data_for_recons3D(prjlist, paramstructure, refang, rshi
 					Util.add_img(recdata, Util.mult_scalar(data[lpt], probs[lshifts[ki]]/toprab))
 				recdata.set_attr_dict({"padffted":1, "is_fftpad":1,"is_fftodd":0, "is_complex_ri":1, "is_complex":1}) # preset already
 				if not upweighted:recdata = filt_table(recdata, bckgn)
-				recdata.set_attr_dict( {"bckgnoise":bckgn, "ctf":ct})
 				ipsi = tdir[ii]%100000
 				iang = tdir[ii]/100000
-				set_params_proj(recdata,[refang[iang][0],refang[iang][1], \
-				  refang[iang][2]+ipsi*delta, 0.0, 0.0], xform = "xform.projection")
-				recdata.set_attr("wprob", toprab*avgnorm/norm_per_particle[im])
-				#recdata.set_attr("group", group_id)
+				recdata.set_attr_dict({"wprob": toprab*avgnorm/norm_per_particle[im],\
+				   "xform.projection":Transform({"type":"spider", "phi":refang[iang][0],\
+				     "theta":refang[iang][1], "psi":refang[iang][2]+ipsi*delta}), "bckgnoise":bckgn, "ctf":ct})
 				recdata_list[im].append(recdata)
 	if nosmearing:return prjlist
 	else:
@@ -2198,7 +2271,7 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 		cimage.set_attr("npad", npad)
 		if not return_real:	
 			rimage.set_attr("padffted",1)
-			rimage.set_attr("npad", npad)		
+			rimage.set_attr("npad", npad)	
 		t = Transform({"type":"spider","phi":phi,"theta":theta,"psi":psi})
 		t.set_trans(Vec2f(0.0, 0.0))
 		rimage.set_attr_dict({"particle_group":particle_group_id,"chunk_id":chunk_id, "xform.projection": t})
@@ -2223,7 +2296,7 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 			else: ctfs[im] = ctfs[im-1].copy()
 	return cdata, rdata, fdata, ctfs
 ##=====<----for 3D----->>>>
-def downsize_data_for_rec3D(original_data, particle_size, return_real = False, npad = 1):
+def data_for_rec3D(original_data, particle_size, return_real = False, npad = 1):
 	# The function will read from stack a subset of images specified in partids
 	#   and assign to them parameters from partstack with optional CTF application and shifting of the data.
 	# So, the lengths of partids and partstack are the same.	
@@ -3849,6 +3922,9 @@ def do3d_sorting_groups_trl_iter(data, iteration):
 def get_input_from_sparx_ref3d(log_main):# case one
 	# import SPARX results
 	global Tracker, Blockdata
+	from utilities import write_text_file, write_text_row, bcast_number_to_all, get_im, \
+	      bcast_number_to_all
+	import numpy as np
 	import json
 	from  shutil import copyfile
 	from  string import split, atoi
@@ -3893,9 +3969,7 @@ def get_input_from_sparx_ref3d(log_main):# case one
 		mpi_finalize()
 		exit()
 	Tracker_refinement = wrap_mpi_bcast(Tracker_refinement, Blockdata["main_node"], communicator = MPI_COMM_WORLD)
-	
 	# Check orgstack, set correct path
-	
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		refinement_dir_path, refinement_dir_name = os.path.split(Tracker["constants"]["refinement_dir"])	
 		if Tracker_refinement["constants"]["stack"][0:4]=="bdb:":
@@ -4004,7 +4078,7 @@ def get_input_from_sparx_ref3d(log_main):# case one
 		Tracker["avgnorm"]                 = Tracker_refinement["avgvaradj"]
 		if Tracker["constants"]["nxinit"]<0: 
 			Tracker["nxinit_refinement"]    = Tracker_refinement["nxinit"] #Sphire window size
-		else:  Tracker["nxinit_refinement"] = Tracker["constants"]["nxinit"] #User defined window size
+		else: Tracker["nxinit_refinement"] = Tracker["constants"]["nxinit"] #User defined window size
 		
 		try:     sym =  Tracker_refinement["constants"]["sym"]
 		except:  sym =  Tracker_refinement["constants"]["symmetry"]
@@ -4083,6 +4157,54 @@ def get_input_from_sparx_ref3d(log_main):# case one
 		ERROR("User provided img_per_grp is smaller than minimum_grp_size", "get_input_from_sparx_ref3d", 1, Blockdata["myid"])
 	# Now copy oldparamstruture
 	copy_oldparamstructure_from_meridien_MPI(selected_iter, log_main)
+	###
+	if Tracker["constants"]["check_smearing"]:
+		from statistics import scale_fsc_datasetsize
+		number_of_groups = float(Tracker["constants"]["total_stack"])/Tracker["constants"]["img_per_grp"] 
+		avg_fsc = scale_fsc_datasetsize(Tracker["constants"]["fsc_curve"], \
+			 float(Tracker["constants"]["total_stack"]), \
+			 float(Tracker["constants"]["total_stack"])//number_of_groups)
+		fsc143 = len(avg_fsc)
+		for ifreq in range(len(avg_fsc)):
+			if avg_fsc[ifreq] < 0.143:
+				fsc143 = ifreq -1
+				break
+		if fsc143 !=0: 
+			nxinit = min((int(fsc143)+ max(int(Tracker["constants"]["nnxo"]*0.03), 5))*2, Tracker["constants"]["nnxo"])
+		nxinit = smallprime(nxinit + 5)
+		cdata_in_core =(Tracker["constants"]["total_stack"]*nxinit*nxinit*4.0)/1.e9/Blockdata["no_of_groups"]
+		if not Tracker["constants"]["focus3D"]:fdata_in_core = 0.0
+		else: fdata_in_core = cdata_in_core
+		ctfdata = cdata_in_core
+		refvol_size = (Tracker["nxinit"]*Tracker["nxinit"]*Tracker["nxinit"]*4.0*2)/1.e9 # including the 3D mask
+		iterations = 2
+		if(Blockdata["myid"] == Blockdata["main_node"]):
+			while os.path.exists(os.path.join(Tracker["constants"]["refinement_dir"], "main%03d"%iterations)):
+				iterations +=1
+			log_main.add("---------->>> Smearing summary of %s  <<<----------"%Tracker["constants"]["refinement_dir"])
+			log_main.add("Iter   average smearing    precalculated data/node     Percents of memory/node")
+		else: iterations = 0
+		iterations = bcast_number_to_all(iterations, Blockdata["main_node"], MPI_COMM_WORLD)
+		if Tracker["constants"]["memory_per_node"] ==-1.:
+			try:
+				mem_bytes = os.sysconf('SC_PAGE_SIZE')*os.sysconf('SC_PHYS_PAGES')# e.g. 4015976448
+				memory_per_node = mem_bytes/(1024.**3) # e.g. 3.74
+			except: memory_per_node = 32.
+		else: memory_per_node = Tracker["constants"]["memory_per_node"]
+		smearing_all_iters = []
+		for iteration in range(2, iterations):
+			iter_smearings = get_smearing_info(Blockdata["nproc_previous"], iteration, Tracker["constants"]["total_stack"], \
+			   Tracker["constants"]["masterdir"], Tracker["constants"]["refinement_dir"])
+			savg = np.sum(iter_smearings)/Tracker["constants"]["total_stack"]
+			srdata_in_core = (nxinit*nxinit*np.sum(iter_smearings)*4.)/1.e9/Blockdata["no_of_groups"]
+			tdata = cdata_in_core+srdata_in_core+ctfdata+refvol_size
+			percnt = tdata/memory_per_node*100.
+			smearing_all_iters.append([iteration, savg, tdata, percnt])
+			if(Blockdata["myid"] == Blockdata["main_node"]):
+				log_main.add("%5d        %5.1f             %7.1f GB                  %7.1f "%(iteration, savg, tdata, percnt))
+		if(Blockdata["myid"] == Blockdata["main_node"]):
+			log_main.add('================================================================================================================')
+			write_text_row(smearing_all_iters, os.path.join(Tracker["constants"]["masterdir"], "smearing_all.txt"))
 	return import_from_sparx_refinement
 		
 def get_input_from_datastack(log_main):# Case three
@@ -4852,7 +4974,6 @@ def recons3d_trl_struct_group_MPI(myid, main_node, prjlist, random_subset, group
 		if prjlist[im].get_attr("group") == group_ID:
 			if random_subset == 2:
 				if nosmearing:
-					#[phi, theta, psi, s2x, s2y] = get_params_proj(prjlist[im], xform = "xform.projection")
 					r.insert_slice(prjlist[im], prjlist[im].get_attr("xform.projection"), 1.0)
 				else:
 					if Tracker["constants"]["nsmear"]<=0.0: numbor = len(paramstructure[im][2])
@@ -4890,9 +5011,6 @@ def recons3d_trl_struct_group_MPI(myid, main_node, prjlist, random_subset, group
 			else:
 				if	prjlist[im].get_attr("chunk_id") == random_subset:
 					if nosmearing:
-						bckgn = prjlist[im].get_attr("bckgnoise")
-						ct    = prjlist[im].get_attr("ctf")
-						prjlist[im].set_attr_dict({"bckgnoise":bckgn, "ctf":ct})
 						r.insert_slice(prjlist[im], prjlist[im].get_attr("xform.projection"), 1.0)
 					else:
 						if Tracker["constants"]["nsmear"]<=0.0: numbor = len(paramstructure[im][2])
@@ -5100,11 +5218,7 @@ def recons3d_4nnsorting_group_fsc_MPI(myid, main_node, prjlist, fsc_half, random
 			else: avgnorm =  Tracker["avgnorm"][prjlist[im].get_attr("chunk_id")]#
 			if nc %2 == fsc_half:
 				if Tracker["nosmearing"]:
-					#ct    = prjlist[im].get_attr("ctf")
-					bckgn = prjlist[im].get_attr("bckgnoise")
-					if not upweighted: prjlist[im] = filt_table(prjlist[im], bckgn)
-					prjlist[im].set_attr_dict( {"bckgnoise":bckgn, "ctf":ct})
-					#phi,theta,psi,s2x,s2y = get_params_proj(prjlist[im], xform = "xform.projection")
+					if not upweighted: prjlist[im] = filt_table(prjlist[im], prjlist[im].get_attr("bckgnoise"))
 					r.insert_slice(prjlist[im], prjlist[im].get_attr("xform.projection"), 1.0)
 				else:
 					if Tracker["constants"]["nsmear"]<=0.0: numbor = len(paramstructure[im][2])
@@ -5113,9 +5227,9 @@ def recons3d_4nnsorting_group_fsc_MPI(myid, main_node, prjlist, fsc_half, random
 					allshifts   = [paramstructure[im][2][i][0]%1000  for i in range(numbor)]
 					probs       = [paramstructure[im][2][i][1] for i in range(numbor)]
 					#  Find unique projection directions
-					tdir = list(set(ipsiandiang))
+					tdir  = list(set(ipsiandiang))
 					bckgn = prjlist[im].get_attr("bckgnoise")
-					ct = prjlist[im].get_attr("ctf")
+					ct    = prjlist[im].get_attr("ctf")
 					#  For each unique projection direction:
 					data = [None]*nshifts
 					for ii in range(len(tdir)):
@@ -5897,6 +6011,7 @@ def main():
 		parser.add_option("--do_swap_au",                        action ="store_true",    default =False,                  help="Flag to turn on swapping the accounted for images with the unaccounted for images")
 		parser.add_option("--random_group_elimination_threshold",  type   ="float",       default =2.0,                    help="Number of random group reproducibility standard deviation for eliminating random groups")
 		parser.add_option("--num_core_set",                        type   ="int",         default =-1,					   help="Number of images for reconstructing core set images. Will not reconstruct core set images if the total number of core set images is less than this")
+		parser.add_option("--check_smearing",                    action ="store_true",    default =False,                  help="Check the smearing per iteration and estimate the precalculated data")
 		(options, args) = parser.parse_args(sys.argv[1:])
 		from utilities import bcast_number_to_all
 		### Sanity check
@@ -5973,6 +6088,7 @@ def main():
 		Constants["fuse_freq"] = 45.  # Now in A, convert to pixels before being used
 		Constants["orientation_groups"]  = options.orientation_groups # orientation constrained angle step
 		Constants["num_core_set"]        = options.num_core_set
+		Constants["check_smearing"]      = options.check_smearing
 
 		#
 		#
