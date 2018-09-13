@@ -155,7 +155,8 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 	bad_clustering = 0
 	stat_list      = []
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		if not os.path.exists(os.path.join(work_dir, "layer0")): os.mkdir(os.path.join(work_dir, "layer0"))	
+		if not os.path.exists(os.path.join(work_dir, "layer0")):
+			os.mkdir(os.path.join(work_dir, "layer0"))	
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		partition_per_box_per_layer_list = []
 		for iparti in range(0, 2**(depth_order+1), 2):
@@ -211,8 +212,10 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 				checkingbox = bcast_number_to_all(checkingbox, Blockdata["main_node"], MPI_COMM_WORLD)
 				# Code structure of the box
 				if checkingbox == 0:
-					bad_box = depth_clustering_box(nbox_dir, input_accounted_file, input_unaccounted_file, params, previous_params, nbox, log_main)
-					if(Blockdata["myid"] == Blockdata["main_node"]): mark_sorting_state(nbox_dir, True, log_main)
+					bad_box = depth_clustering_box(nbox_dir, input_accounted_file, input_unaccounted_file, \
+					    params, previous_params, nbox, log_main)
+					if(Blockdata["myid"] == Blockdata["main_node"]):
+						mark_sorting_state(nbox_dir, True, log_main)
 				else: continue
 				if bad_box == 1: bad_clustering = 1
 				time_box_finish = (time() - time_box_start)//60.
@@ -296,11 +299,13 @@ def depth_box_initialization(box_dir, input_list1, input_list2, log_file):
 			for indep in range(2):
 				write_text_file(new_assignment[indep], os.path.join(box_dir, "independent_index_%03d.txt"%indep))
 			new_assignment = []
-			for indep in range(2): new_assignment.append(read_text_row(os.path.join(box_dir,"independent_index_%03d.txt"%indep)))
+			for indep in range(2):
+				new_assignment.append(read_text_row(os.path.join(box_dir,"independent_index_%03d.txt"%indep)))
 			id_list = read_text_file( os.path.join(box_dir, "independent_index_000.txt"), -1)
 			if len(id_list)>1: id_list=id_list[0]
 			total_stack = len(id_list)
-			number_of_groups = max(id_list)+1 # assume K be 0, ...,number_of_groups-1
+			group_id = np.sort(np.unique(np.array(id_list, dtype=np.int32)))
+			number_of_groups = group_id.shape[0] # assume K be 0, ...,number_of_groups-1
 		else:
 			number_of_groups = 0
 			total_stack      = 0
@@ -1887,7 +1892,7 @@ def read_paramstructure_for_sorting(partids, paramstructure_dict_file, paramstru
 			mpi_barrier(MPI_COMM_WORLD)
 	return oldparamstructure
 	
-###7 copy oldparamstructures from meridien
+###7 copy oldparamstructures from meridien regardless the previous number of cpus 
 def copy_oldparamstructure_from_meridien_MPI(selected_iteration, log_main):
 	global Tracker, Blockdata
 	from utilities    import read_text_row, write_text_row, read_text_file,wrap_mpi_bcast
@@ -2031,6 +2036,7 @@ def copy_oldparamstructure_from_meridien_MPI(selected_iteration, log_main):
 def get_smearing_info(nproc_previous, selected_iteration, total_stack, my_dir, refinement_dir):
 	global Tracker, Blockdata
 	import numpy as np
+	# Do not alter any values in Tracker and Blockdata
 	oldparamstructure    =[[], []]
 	local_dict           = {}
 	for procid in range(2):
@@ -2082,8 +2088,8 @@ def get_smearing_info(nproc_previous, selected_iteration, total_stack, my_dir, r
 		else: chunk_size  = 0
 		chunk_size = bcast_number_to_all(chunk_size, Blockdata["main_node"], MPI_COMM_WORLD)
 		local_smearing_list = []
-		for im in range(len(oldparamstructure[procid])):local_smearing_list.append(len(oldparamstructure[procid][im][2]))
-			
+		for im in range(len(oldparamstructure[procid])):
+			local_smearing_list.append(len(oldparamstructure[procid][im][2]))
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			im_start_old, im_end_old = MPI_start_end(chunk_size, Blockdata["nproc"], Blockdata["main_node"])
 			for im in range(len(local_smearing_list)): smearing_list[im_start_old+im] = local_smearing_list[im]
@@ -2296,7 +2302,7 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 			else: ctfs[im] = ctfs[im-1].copy()
 	return cdata, rdata, fdata, ctfs
 ##=====<----for 3D----->>>>
-def data_for_rec3D(original_data, particle_size, return_real = False, npad = 1):
+def downsize_data_for_rec3D(original_data, particle_size, return_real = False, npad = 1):
 	# The function will read from stack a subset of images specified in partids
 	#   and assign to them parameters from partstack with optional CTF application and shifting of the data.
 	# So, the lengths of partids and partstack are the same.	
