@@ -576,9 +576,9 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		cdata, rdata, fdata, ctf_images = downsize_data_for_sorting(original_data, preshift = True, \
 		              npad = 1, norms =norm_per_particle)# pay attentions to shifts!
 		del original_data
-		# compute data statistics
+		# Compute data statistics
 		if Blockdata["myid"] == Blockdata["main_node"]:
-			smearing_list = np.array(read_text_file(Tracker["constants"]["smearing_file"]), dtype=np.int16)
+			smearing_list = np.array(read_text_file(Tracker["constants"]["smearing_file"]), dtype=np.int32)
 			indx_list     = read_text_file(iter_id_init_file, -1)
 			if len(indx_list) ==1: indx_list= indx_list[0]
 			else:                  indx_list= indx_list[1]
@@ -593,9 +593,23 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 			log_main.add( "Precalculated data (GB) in core per node (available memory per node: %6.2f):"%Tracker["constants"]["memory_per_node"])
 			log_main.add( "Images for comparison: %6.2f GB; shifted images: %6.2f GB; focus images: %6.2f GB; ctfs: %6.2f GB"%\
 			        (cdata_in_core, srdata_in_core, fdata_in_core, ctfdata))
-			tdata = cdata_in_core+srdata_in_core+ctfdata+refvol_size
+			tdata = cdata_in_core+srdata_in_core+ctfdata+refvol_size+fdata_in_core
 			log_main.add("The data to be in core for sorting occupies %7.3f percents of memory;  average smearing is %5.1f"%\
 			    (tdata/Tracker["constants"]["memory_per_node"]*100., avg_smear))
+			log_main.add("Consumed memory in sorting on individual nodes:")
+			smearings_on_nodes = np.full(Blockdata["no_of_groups"], 0.0, dtype=np.float32)
+			for iproc in range(Blockdata["nproc"]):
+				image_start, image_end = MPI_start_end(smearing_list.shape[0], Blockdata["nproc"],iproc)
+				smearings_on_nodes[iproc//Blockdata["no_of_processes_per_group"]] += \
+				    np.sum(smearing_list[image_start:image_end])*(Tracker["nxinit"]*Tracker["nxinit"]*4.)/1.e9
+			msg = ""
+			for icolor in range(Blockdata["no_of_groups"]):
+				tdata = cdata_in_core + ctfdata + refvol_size + smearings_on_nodes[icolor]+fdata_in_core
+				msg += "Node %5d :  Mem %7.2f GB  "%(icolor, tdata)+"; "
+				if (icolor%3==2):
+					log_main.add(msg)
+					msg =""
+			if Blockdata["no_of_groups"]%3!=0:log_main.add(msg)
 		mpi_barrier(MPI_COMM_WORLD)
 		srdata = precalculate_shifted_data_for_recons3D(rdata, parameterstructure, Tracker["refang"], \
 	      Tracker["rshifts"], Tracker["delta"], Tracker["avgnorm"], Tracker["nxinit"], \
