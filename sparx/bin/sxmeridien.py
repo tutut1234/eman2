@@ -1548,7 +1548,7 @@ def steptwo_mpi(tvol, tweight, treg, cfsc = None, regularized = True, color = 0)
 		if( Tracker["constants"]["symmetry"] != "c1" ):
 			tvol    = tvol.symfvol(Tracker["constants"]["symmetry"], limitres)
 			tweight = tweight.symfvol(Tracker["constants"]["symmetry"], limitres)
-
+		if(n_iter<0):  Util.divclreal(tvol, tweight, 1.0e-5)
 	else:
 		tvol = model_blank(1)
 		tweight = model_blank(1)
@@ -1562,12 +1562,13 @@ def steptwo_mpi(tvol, tweight, treg, cfsc = None, regularized = True, color = 0)
 	nz = bcast_number_to_all(nz, source_node = 0, mpi_comm = Blockdata["shared_comm"])
 	maxr2 = bcast_number_to_all(maxr2, source_node = 0, mpi_comm = Blockdata["shared_comm"])
 
-	vol_data = get_image_data(tvol)
-	we_data = get_image_data(tweight)
-	#  tvol is overwritten, meaning it is also an output
-	ifi = mpi_iterefa( vol_data.__array_interface__['data'][0] ,  we_data.__array_interface__['data'][0] , nx, ny, nz, maxr2, \
-			Tracker["constants"]["nnxo"], Blockdata["myid_on_node"], color, Blockdata["no_of_processes_per_group"],  Blockdata["shared_comm"], n_iter)
-	#Util.iterefa(tvol, tweight, maxr2, Tracker["constants"]["nnxo"])
+	if(n_iter>=0):
+		vol_data = get_image_data(tvol)
+		we_data = get_image_data(tweight)
+		#  tvol is overwritten, meaning it is also an output
+		ifi = mpi_iterefa( vol_data.__array_interface__['data'][0] ,  we_data.__array_interface__['data'][0] , nx, ny, nz, maxr2, \
+				Tracker["constants"]["nnxo"], Blockdata["myid_on_node"], color, Blockdata["no_of_processes_per_group"],  Blockdata["shared_comm"], n_iter)
+		#Util.iterefa(tvol, tweight, maxr2, Tracker["constants"]["nnxo"])
 
 	if( Blockdata["myid_on_node"] == 0 ):
 		#  Either pad or window in F space to 2*nnxo
