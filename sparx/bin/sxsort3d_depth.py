@@ -10,16 +10,35 @@ from builtins import range
 """
 There are two ways to run the program:
 
-1.Import data from a meridien refinement.
-mpirun -np 64 --hostfile four_nodes.txt  sxsort3d_depth.py  --refinemet_dir=meridien_run --niter_for_sorting=28  --memory_per_node=100. --img_per_grp=80000  --minimum_grp_size=15000   --stop_mgskmeans_percentage=8. --output_dir=SORT3D
+1.a Import data from a meridien refinement. Data are precomputed and save in the memory.
+mpirun -np 64 --hostfile four_nodes.txt  sxsort3d_depth.py  --refinemet_dir=meridien_run --niter_for_sorting=28 \
+      --memory_per_node=100. --img_per_grp=80000  --minimum_grp_size=15000   \
+      --stop_mgskmeans_percentage=8. --output_dir=SORT3D
 
-2.Import data from a given data stack.
-mpirun  -np 48  --hostfile ./node012.txt  sxsort3d_depth.py --stop_mgskmeans_percentage=15. --orientation_groups=40  --do_swap_au  --swap_ratio=5. --output_dir=sorting_bmask04 --sym=c1   --radius=30  --minimum_grp_size=2000   --img_per_grp=2800    --instack=bdb:data  >sorting_bmask04/printout &
+1.b Import data from a meridien refinement and handles large number of smearing.
+
+mpirun -np 64 --hostfile four_nodes.txt  sxsort3d_depth.py  --refinemet_dir=meridien_run 
+   --niter_for_sorting=28  --memory_per_node=100. --img_per_grp=80000  --minimum_grp_size=15000  \
+   --stop_mgskmeans_percentage=8. --output_dir=SORT3D   --check_smearing  --compute_on_the_fly
+
+2. Import data from a given data stack.
+mpirun  -np 48  --hostfile ./node012.txt  sxsort3d_depth.py --stop_mgskmeans_percentage=15. \
+     --orientation_groups=40  --do_swap_au  --swap_ratio=5. --output_dir=sorting_bmask04 --sym=c1  \
+     --radius=30  --minimum_grp_size=2000   --img_per_grp=2800    --instack=bdb:data  >sorting_bmask04/printout &
+
+3. Run the program on a single node work station.
+
+mpirun  -np 16  --hostfile ./node0.txt  sxsort3d_depth.py --stop_mgskmeans_percentage=15. \
+    --orientation_groups=40  --do_swap_au  --swap_ratio=5. --output_dir=sorting_bmask04 --sym=c1  \
+    --radius=30  --minimum_grp_size=2000   --img_per_grp=2800    --instack=bdb:data  >sorting_bmask04/printout &
 
 Notices on options:
 
 a. --do_swap_au  --swap_ratio=5.   : Ratio of the elements of determined clusters that are exchanged with the unaccounted elements.
 b. --stop_mgskmeans_percentage=15. : criterion to stop Kmeans run.
+c. --check_smearing : program prints out the averaged number of smearings in each iteration of meridien refinement
+d. --compute_on_the_fly: it enables sorting done on iterations with large number of smearing. The shifted data are computed on the fly.
+
 
 Nomenclatures in sorting intermediate results:
 
