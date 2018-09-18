@@ -2714,24 +2714,25 @@ def select_fixed_size_cluster_from_alist(ulist, img_per_grp):
 		
 def swap_clusters_small_NUACC(glist, clusters, swap_ratio):
 	from random import shuffle
-	slist = [None for i in range(len(clusters))]
+	slist     = [None for im in range(len(clusters))]
 	temp_list = []
+	ulist = copy.deepcopy(glist)
 	for ic in range(len(clusters)):
 		slist[ic] = int(swap_ratio*len(clusters[ic]))
 		shuffle(clusters[ic])
 		temp_list +=clusters[ic][0:slist[ic]]
 		del clusters[ic][0:slist[ic]]
-	temp_list +=glist
+	ulist +=temp_list
 	for ic in range(len(clusters)):
-		shuffle(temp_list)
-		clusters[ic] +=temp_list[0:slist[ic]]
-		del temp_list[0:slist[ic]]
-	return temp_list, clusters
+		shuffle(ulist)
+		clusters[ic] +=ulist[0:slist[ic]]
+		del ulist[0:slist[ic]]
+	return ulist, clusters
 		
 def swap_clusters_large_NUACC(glist, clusters, swap_ratio):
 	from random import shuffle
 	import copy
-	slist = [None for i in range(len(clusters))]
+	slist     = [None for im in range(len(clusters))]
 	temp_list = []
 	ulist = copy.deepcopy(glist)
 	for ic in range(len(clusters)):
@@ -5378,7 +5379,7 @@ def recons3d_4nnsorting_group_fsc_MPI(myid, main_node, prjlist, fsc_half, random
 	import copy
 	if mpi_comm == None: mpi_comm = MPI_COMM_WORLD
 	imgsize = prjlist[0].get_ysize()  # It can be Fourier, so take y-size
-	refvol = model_blank(target_size)
+	refvol  = model_blank(target_size)
 	refvol.set_attr("fudge", 1.0)
 	if CTF: do_ctf = 1
 	else:   do_ctf = 0
@@ -5390,7 +5391,7 @@ def recons3d_4nnsorting_group_fsc_MPI(myid, main_node, prjlist, fsc_half, random
 	   "symmetry":"c1", "refvol":refvol, "fftvol":fftvol, "weight":weight, "do_ctf": do_ctf}
 	r = Reconstructors.get( "nn4_ctfw", params )
 	r.setup()
-	if norm_per_particle == None: norm_per_particle = len(prjlist)*[1.0]
+	if norm_per_particle == None: norm_per_particle = [1.0 for im in range(len(prjlist))]
 	# Definitions for smearing ,all copied from refinement
 	if not Tracker["nosmearing"]:
 		delta           = Tracker["delta"]
@@ -5405,7 +5406,7 @@ def recons3d_4nnsorting_group_fsc_MPI(myid, main_node, prjlist, fsc_half, random
 	for im in range(len(prjlist)):
 		if prjlist[im].get_attr("group") == group_ID and prjlist[im].get_attr("chunk_id") == random_subset:
 			if Tracker["nosmearing"]: avgnorm = 1.0
-			else: avgnorm =  Tracker["avgnorm"][prjlist[im].get_attr("chunk_id")]#
+			else: avgnorm = Tracker["avgnorm"][prjlist[im].get_attr("chunk_id")]#
 			if nc %2 == fsc_half:
 				if Tracker["nosmearing"]:
 					if not upweighted: prjlist[im] = filt_table(prjlist[im], prjlist[im].get_attr("bckgnoise"))
@@ -5456,14 +5457,17 @@ def recons3d_4nnsorting_group_fsc_MPI(myid, main_node, prjlist, fsc_half, random
 def do3d_sorting_group_insertion_smearing(sdata, sparamstructure, snorm_per_particle, randomset=2):
 	global Tracker, Blockdata
 	if(Blockdata["myid"] == Blockdata["nodes"][0]):
-		if not os.path.exists(os.path.join(Tracker["directory"], "tempdir")):os.mkdir(os.path.join(Tracker["directory"], "tempdir"))
+		if not os.path.exists(os.path.join(Tracker["directory"], "tempdir")):
+			os.mkdir(os.path.join(Tracker["directory"], "tempdir"))
 	if randomset ==1:
 		for index_of_groups in range(Tracker["number_of_groups"]):
 			for procid in range(2, 3):
-				tvol, tweight, trol = recons3d_trl_struct_group_MPI(myid = Blockdata["myid"], main_node = Blockdata["nodes"][procid//2],\
-				  prjlist = sdata,  random_subset = procid, group_ID = index_of_groups, paramstructure = sparamstructure, \
-				      norm_per_particle = snorm_per_particle, CTF = Tracker["constants"]["CTF"],\
-					mpi_comm = None, upweighted = False, target_size = (2*Tracker["nxinit"]+3), nosmearing = Tracker["nosmearing"])
+				tvol, tweight, trol = recons3d_trl_struct_group_MPI(myid = \
+				  Blockdata["myid"], main_node = Blockdata["nodes"][procid//2],prjlist = sdata, \
+				  random_subset = procid, group_ID = index_of_groups, paramstructure = sparamstructure, \
+				  norm_per_particle = snorm_per_particle, CTF = Tracker["constants"]["CTF"],\
+				  mpi_comm = None, upweighted = False, target_size = (2*Tracker["nxinit"]+3), \
+				  nosmearing = Tracker["nosmearing"])
 				if(Blockdata["myid"] == Blockdata["nodes"][procid//2]):
 					tvol.set_attr("is_complex",0)
 					tvol.write_image(os.path.join(Tracker["directory"], "tempdir", "tvol_%d_%d.hdf"%(procid, index_of_groups)))
@@ -5476,10 +5480,12 @@ def do3d_sorting_group_insertion_smearing(sdata, sparamstructure, snorm_per_part
 	else:
 		for index_of_groups in range(Tracker["number_of_groups"]):
 			for procid in range(3):
-				tvol, tweight, trol = recons3d_trl_struct_group_MPI(myid = Blockdata["myid"], main_node = Blockdata["nodes"][procid//2],\
-				  prjlist = sdata,  random_subset = procid, group_ID = index_of_groups, paramstructure = sparamstructure, \
-				   norm_per_particle = snorm_per_particle, CTF = Tracker["constants"]["CTF"],\
-					mpi_comm= None, upweighted = False, target_size = (2*Tracker["nxinit"]+3), nosmearing = Tracker["nosmearing"])
+				tvol, tweight, trol = recons3d_trl_struct_group_MPI(myid = \
+				    Blockdata["myid"], main_node = Blockdata["nodes"][procid//2],\
+				    prjlist = sdata,  random_subset = procid, group_ID = index_of_groups, \
+				    paramstructure = sparamstructure, norm_per_particle = snorm_per_particle, \
+				    CTF = Tracker["constants"]["CTF"],mpi_comm= None, upweighted = False, \
+				    target_size = (2*Tracker["nxinit"]+3), nosmearing = Tracker["nosmearing"])
 				if(Blockdata["myid"] == Blockdata["nodes"][procid//2]):
 					tvol.set_attr("is_complex",0)
 					tvol.write_image(os.path.join(   Tracker["directory"], "tempdir", "tvol_%d_%d.hdf"%(procid,    index_of_groups)))
@@ -6129,7 +6135,8 @@ def sorting_main_mpi(log_main, depth_order, not_include_unaccounted):
 		else: # restart run
 			read_tracker_mpi(work_dir)
 			my_pids  = os.path.join( work_dir, 'indexes_next_generation.txt') 
-			if Blockdata["myid"] == Blockdata["main_node"]: stat_list = read_text_row( os.path.join(work_dir, 'gen_rep.txt'))
+			if Blockdata["myid"] == Blockdata["main_node"]: 
+				stat_list = read_text_row( os.path.join(work_dir, 'gen_rep.txt'))
 			else: stat_list = 0
 			stat_list = wrap_mpi_bcast(stat_list, Blockdata["main_node"], MPI_COMM_WORLD)
 			all_gen_stat_list.append(stat_list)
@@ -6318,6 +6325,7 @@ def main():
 		Blockdata["fftwmpi"]                      = True
 		Tracker["even_scale_fsc"]                 = True
 		Tracker["minimum_img_per_cpu"]            =   5 # User can adjust it to other number
+		
 		ndict = {}
 		for im in range(Blockdata["nproc"]):ndict[im] = -1
 		Tracker["num_on_the_fly"] = ndict
@@ -6507,6 +6515,7 @@ def main():
 		Blockdata["fftwmpi"]                       = True
 		Blockdata["symclass"]                      = symclass(Tracker["constants"]["symmetry"])
 		Tracker["constants"]["orientation_groups"] = max(4, Tracker["constants"]["orientation_groups"]//Blockdata["symclass"].nsym)
+		
 		ndict = {}
 		for im in range(Blockdata["nproc"]): ndict[im] = -1
 		Tracker["num_on_the_fly"]      = ndict
