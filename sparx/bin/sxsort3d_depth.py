@@ -7,6 +7,7 @@
 from __future__ import print_function
 
 from builtins import range
+
 """
 There are two ways to run the program:
 
@@ -26,18 +27,19 @@ mpirun  -np 48  --hostfile ./node012.txt  sxsort3d_depth.py --stop_mgskmeans_per
      --orientation_groups=40  --do_swap_au  --swap_ratio=5. --output_dir=sorting_bmask04 --sym=c1  \
      --radius=30  --minimum_grp_size=2000   --img_per_grp=2800    --instack=bdb:data  >sorting_bmask04/printout &
 
-3. Run the program on a single node work station.
+3. Run the program on a single node workstation. The minimum requirement for a successful run is
+    the 2D data size is less than the memory of the workstation. 
 
-mpirun  -np 16  --hostfile ./node0.txt  sxsort3d_depth.py --stop_mgskmeans_percentage=15. \
+mpirun  -np 8  --hostfile ./node0.txt  sxsort3d_depth.py --stop_mgskmeans_percentage=15. \
     --orientation_groups=40  --do_swap_au  --swap_ratio=5. --output_dir=sorting_bmask04 --sym=c1  \
     --radius=30  --minimum_grp_size=2000   --img_per_grp=2800    --instack=bdb:data  >sorting_bmask04/printout &
 
 Notices on options:
 
-a. --do_swap_au  --swap_ratio=5.   : Ratio of the elements of determined clusters that are exchanged with the unaccounted elements.
+a. --do_swap_au  --swap_ratio=5.   : ratio of the elements of determined clusters that are exchanged with the unaccounted elements.
 b. --stop_mgskmeans_percentage=15. : criterion to stop Kmeans run.
 c. --check_smearing : program prints out the averaged number of smearings in each iteration of meridien refinement
-d. --compute_on_the_fly: it enables sorting done on iterations with large number of smearing. The shifted data are computed on the fly.
+d. --compute_on_the_fly: it enables sorting done with iterations with large number of smearing. The shifted data are computed on the fly.
 
 
 Nomenclatures in sorting intermediate results:
@@ -47,7 +49,6 @@ NUACC: number of unaccounted
 MGU:   user defined minimum_grp_size  
 MGR:   random group size
 K:     number of groups
-
 """
 
 import  os
@@ -645,10 +646,8 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		else:
 			total_stack              = 0
 			current_number_of_groups = 0
-			
-		total_stack                  = bcast_number_to_all(total_stack,      Blockdata["main_node"], MPI_COMM_WORLD)
+		total_stack                  = bcast_number_to_all(total_stack, Blockdata["main_node"], MPI_COMM_WORLD)
 		current_number_of_groups     = bcast_number_to_all(current_number_of_groups, Blockdata["main_node"], MPI_COMM_WORLD)
-			
 		# read raw data
 		original_data, norm_per_particle  = read_data_for_sorting(iter_id_init_file, params, previous_params)
 		if Tracker["nosmearing"]: parameterstructure  = None
@@ -694,6 +693,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		del rdata
 		mpi_barrier(MPI_COMM_WORLD) # uneven smearing requires
 		while((iter < box_niter) and (converged == 0)):
+			max_iter = 0
 			for indep_run_iter in range(2):
 				Tracker["directory"] = os.path.join(iter_dir, "MGSKmeans_%03d"%indep_run_iter)
 				MGSKmeans_index_file = os.path.join(iter_dir, "random_assignment_%03d.txt"%indep_run_iter)
@@ -702,10 +702,10 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 					os.mkdir(Tracker["directory"])
 					os.mkdir(os.path.join(Tracker["directory"], "tempdir"))
 				mpi_barrier(MPI_COMM_WORLD)
-				tmp_final_list, premature =  Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, ctf_images, \
+				tmp_final_list, premature, kmeans_iterations =  Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, ctf_images, \
 					parameterstructure, norm_per_particle, \
 				     MGSKmeans_index_file, params, minimum_grp_size, clean_volumes= Tracker["clean_volumes"] )
-					   
+				max_iter = max(max_iter, kmeans_iterations)	   
 				if Blockdata["myid"] == Blockdata["main_node"]:
 					write_text_row(tmp_final_list, os.path.join(iter_dir, "partition_%03d.txt"%indep_run_iter))
 			mpi_barrier(MPI_COMM_WORLD)
@@ -726,8 +726,9 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 			unaccounted_file  = os.path.join(iter_dir, "Core_set.txt")
 			if Blockdata["myid"] == Blockdata["main_node"]:
 				if abs(iter_current_iter_ratio - iter_previous_iter_ratio< 1.0) and \
-				   iter_current_iter_ratio > 90.: converged = 1
+				   iter_current_iter_ratio > 90.:converged = 1
 				else: converged = 0
+				if max_iter <=2: converged = 1 # Kmeans goes for only one step.
 			else: converged = 0
 			converged = bcast_number_to_all(converged, Blockdata["main_node"], MPI_COMM_WORLD)
 			if (converged == 0) and (iter < box_niter):
@@ -751,7 +752,6 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		del ctf_images
 		if not Tracker["nosmearing"]: del parameterstructure
 		del assignment_list
-		
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			ncluster, NACC, NUACC, unaccounted_list, new_clusters = \
 			  output_iter_results(work_dir, ncluster, NACC, NUACC, Tracker["current_img_per_grp"],\
@@ -771,7 +771,6 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		NUACC            = bcast_number_to_all(NUACC,         Blockdata["main_node"], MPI_COMM_WORLD)
 		unaccounted_list = wrap_mpi_bcast(unaccounted_list,   Blockdata["main_node"], MPI_COMM_WORLD)
 		Tracker          = wrap_mpi_bcast(Tracker,            Blockdata["main_node"], MPI_COMM_WORLD)
-		
 		if new_clusters >0: 
 			no_cluster     = False
 			no_groups_runs = 0
@@ -816,24 +815,35 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 
 def check_mpi_settings(log_main):
 	global Tracker, Blockdata
-	from   utilities import wrap_mpi_bcast, read_text_file, bcast_number_to_all
+	from utilities    import wrap_mpi_bcast, read_text_file, bcast_number_to_all
+	from fundamentals import smallprime
+	from statistics   import scale_fsc_datasetsize
 	import os
-	current_mpi_settings_is_bad = 0
-	
-	if(Blockdata["myid"] == Blockdata["main_node"]):
-		fsc_refinement = read_text_file(os.path.join(Tracker["constants"]["masterdir"], "fsc_global.txt"))
-		q = float(Tracker["constants"]["img_per_grp"])/float(Tracker["constants"]["total_stack"])
-		for ifreq in range(len(fsc_refinement)): fsc_refinement[ifreq] = fsc_refinement[ifreq]*q/(1.-fsc_refinement[ifreq]*(1.-q))
-		res = 0.0
-		for ifreq in range(len(fsc_refinement)):
-			if fsc_refinement[ifreq]<0.143: break
-		res = float(ifreq)/2./float(len(fsc_refinement))
-		nxinit = int(2.*res*Tracker["constants"]["nnxo"])
-		del fsc_refinement
-	else: nxinit =0
-	nxinit = bcast_number_to_all(nxinit, Blockdata["main_node"], MPI_COMM_WORLD)	
-	sys_required_mem = 1.0*Blockdata["no_of_processes_per_group"]
-	
+	import numpy as np
+	number_of_groups = float(Tracker["constants"]["total_stack"])/float(Tracker["constants"]["img_per_grp"])
+	avg_fsc = scale_fsc_datasetsize(Tracker["constants"]["fsc_curve"], \
+	   float(Tracker["constants"]["total_stack"]), \
+	   float(Tracker["constants"]["total_stack"])//number_of_groups)
+	fsc143 = len(avg_fsc)
+	for ifreq in range(len(avg_fsc)):
+		if avg_fsc[ifreq] < 0.143:
+			fsc143 = ifreq -1
+			break
+	if fsc143 !=0: 
+		nxinit = smallprime(min((int(fsc143)+ max(int(Tracker["constants"]["nnxo"]*0.03), 5))*2, \
+		     Tracker["constants"]["nnxo"]))
+		nxinit = smallprime(nxinit-nxinit%2)
+		nxinit = nxinit - nxinit%2
+	else: ERROR("Incorrect fsc143", "check_mpi_settings", 1, Blockdata["myid"])
+	### pre-calculated 2D data: 
+	#1. Cdata(data for comparison)
+	#2. Rdata(data for rec3D) # smearing could dramatically increase data size
+	#3. fdata (focus projection); 
+	#4. 2D CTFs 
+	# other large data
+	#1. reference volumes
+	#2. rec3D volumes 2 times padded  
+	sys_required_mem = 0.3*Blockdata["no_of_processes_per_group"]# Overhead
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		log_main.add('\n')
 		log_main.add('----------------------------------------------------------------------------------------------------------------' )
@@ -846,17 +856,23 @@ def check_mpi_settings(log_main):
 		ratio                      = float(nxinit)/float(image_org_size)
 		raw_data_size              = float(Tracker["constants"]["total_stack"]*image_org_size*image_org_size)*4.0/1.e9
 		raw_data_size_per_node     = float(Tracker["constants"]["total_stack"]*image_org_size*image_org_size)*4.0/1.e9/Blockdata["no_of_groups"]
-		sorting_data_size_per_node = raw_data_size_per_node + 2.*raw_data_size_per_node*ratio**2
-		volume_size_per_node       = (4.*image_in_core_size**3*8.)*Blockdata["no_of_processes_per_group"]/1.e9
-	except:  current_mpi_settings_is_bad = 1
-	if current_mpi_settings_is_bad == 1:   ERROR("Initial info is not provided", "check_mpi_settings", 1, Blockdata["myid"])
+		data_for_comparison        = raw_data_size_per_node*ratio**2
+		data_for_rec3d             = raw_data_size_per_node*ratio**2
+		data_ctf                   = raw_data_size_per_node*ratio**2
+		if Tracker["constants"]["focus3D"]:focusdata = raw_data_size_per_node*ratio**2
+		else:                              focusdata = 0.0
+		sorting_data_size_per_node = data_for_comparison + data_for_rec3d + data_ctf + focusdata
+		volume_size_per_node = (4.*image_in_core_size**3*8.)*Blockdata["no_of_processes_per_group"]/1.e9
+		sorting_data_size_per_node += volume_size_per_node # memory peak 
+	except:
+		ERROR("Initial info is not provided", "check_mpi_settings", 1, Blockdata["myid"])
 	try:
 		mem_bytes = os.sysconf('SC_PAGE_SIZE')*os.sysconf('SC_PHYS_PAGES')# e.g. 4015976448
-		mem_gib = mem_bytes/(1024.**3) # e.g. 3.74
+		mem_gib   = mem_bytes/(1024.**3) # e.g. 3.74
 		if( Blockdata["myid"] == Blockdata["main_node"]):
 			log_main.add("Available memory information provided by the operating system: %5.1f GB"%mem_gib)
-	except:
-		mem_gib = None
+	except: mem_gib = None
+	
 	if Tracker["constants"]["memory_per_node"] == -1.:
 		if mem_gib: total_memory = mem_gib
 		else:
@@ -868,25 +884,49 @@ def check_mpi_settings(log_main):
 		total_memory =  Tracker["constants"]["memory_per_node"]
 		if( Blockdata["myid"] == Blockdata["main_node"]):
 			log_main.add("Memory per node: %f"%Tracker["constants"]["memory_per_node"])
+			
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		log_main.add("Total number of images: %d.  Number of images per group: %d."%(Tracker["constants"]["total_stack"], Tracker["constants"]["img_per_grp"]))
+		log_main.add("Total number of images: %d.  Number of images per group: %d."%\
+		   (Tracker["constants"]["total_stack"], Tracker["constants"]["img_per_grp"]))
 		
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		log_main.add("The total available memory:  %5.1f GB"%total_memory)
-		log_main.add("The size of input 2D stack: %5.1f GB"%(raw_data_size))
+		log_main.add("The total available memory per node:  %5.1f GB"%total_memory)
+		log_main.add("The size of total input 2D stack: %5.1f GB"%(raw_data_size))
 		log_main.add("The per-node amount of memory 2D data will occupy: %5.1f GB"%(raw_data_size_per_node))
+		log_main.add("Precalculated 2D data (no smearing) for sorting: %5.1f GB"%(sorting_data_size_per_node))
+		log_main.add("Reserved memory for overhead loading per node: %6.3f GB"%sys_required_mem)
 		
-	if (total_memory - sys_required_mem - raw_data_size_per_node - volume_size_per_node - sorting_data_size_per_node - 5.0) <0.0: 
-		current_mpi_settings_is_bad = 1
-		new_nproc =  raw_data_size*(2.*ratio**2+1.)*Blockdata["no_of_processes_per_group"]/(total_memory - 5. - sys_required_mem - volume_size_per_node)
-		new_nproc =  int(new_nproc)
-		ERROR("Insufficient memory", "Suggestion: set number of processes to: %d"%new_nproc, 1, Blockdata["myid"])
+	if (total_memory - sys_required_mem - sorting_data_size_per_node ) <0.0:
+		ERROR("Insufficient memory to pass the sorting processs. Increase a node", "check_mpi_settings", 1, Blockdata["myid"])
 		
+	if (total_memory - sys_required_mem - raw_data_size_per_node - 2*raw_data_size_per_node*ratio**2 ) <0.0: 
+		ERROR("Insufficient memory to read in the raw data to produce downsized data. Increase a node", \
+		   "check_mpi_settings", 1, Blockdata["myid"])
+			
 	images_per_cpu = int(float(Tracker["constants"]["total_stack"])/Blockdata["nproc"])
 	images_per_cpu_for_unaccounted_data  = Tracker["constants"]["img_per_grp"]*1.5/float(Blockdata["nproc"])
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		log_main.add("Number of images per processor: %d "%images_per_cpu )
-	if( images_per_cpu < 5) : ERROR("Number of images per processor is less than 5", "one may want to consider decreasing the number of processors used in MPI setting", 0, Blockdata["myid"])
+	if( images_per_cpu < 5):
+		ERROR("Number of images per processor is less than 5", \
+		   "one may want to consider decreasing the number of processors used in MPI setting", \
+		   0, Blockdata["myid"])
+		   
+	if(Blockdata["myid"] == Blockdata["main_node"]):
+		avg_smearing_on_node = sum(read_text_file(Tracker["constants"]["smearing_file"]))//Blockdata["no_of_groups"]
+	else: avg_smearing_on_node = 0
+	avg_smearing_on_node  = bcast_number_to_all(avg_smearing_on_node, Blockdata["main_node"], MPI_COMM_WORLD)
+	avg_images_on_node    = Tracker["constants"]["total_stack"]//Blockdata["no_of_groups"]
+	precalculated_2D_data = raw_data_size_per_node*ratio**2*(max(avg_smearing_on_node/avg_images_on_node,1.) + 3.)
+	if ((precalculated_2D_data - sys_required_mem)>total_memory) and (not Tracker["constants"]["compute_on_the_fly"]):
+		ERROR("The size of precalculated shifted 2D data is too large. Turn on the option compute_on_the_fly", \
+		  "check_mpi_settings", 1, Blockdata["myid"])
+	else:
+		if(Blockdata["myid"] == Blockdata["main_node"]):
+			log_main.add("Percentage of memory occupied by precalculated shifted 2D data: %6.2f%%"%\
+			  (precalculated_2D_data/total_memory*100.))
+			if Tracker["constants"]["compute_on_the_fly"]:
+				log_main.add("The compute_on_the_fly option is on and 2D data is precacluated till 90 percent memory is filled up")
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		log_main.add('----------------------------------------------------------------------------------------------------------------\n')
 	return
@@ -1439,14 +1479,14 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, ctf_images,\
 	do_partial_rec3d     = 0
 	partial_rec3d        = False
 	### share memory preparation
-	#disp_unit  = np.dtype("f4").itemsize
-	#refvolsize = Tracker["nxinit"]*Tracker["nxinit"]*Tracker["nxinit"]
-	#emnumpy1   = EMNumPy()
-	#win_vol, base_vol = mpi_win_allocate_shared(refvolsize*disp_unit, disp_unit, \
-	#   MPI_INFO_NULL, Blockdata["shared_comm"])
-	#if(Blockdata["myid_on_node"]!= 0): base_vol, = mpi_win_shared_query(win_vol, MPI_PROC_NULL)
-	#volbuf = np.frombuffer(np.core.multiarray.int_asbuffer(base_vol, refvolsize*disp_unit), dtype = 'f4')
-	#volbuf = volbuf.reshape(Tracker["nxinit"], Tracker["nxinit"], Tracker["nxinit"])
+	disp_unit  = np.dtype("f4").itemsize
+	refvolsize = Tracker["nxinit"]*Tracker["nxinit"]*Tracker["nxinit"]
+	emnumpy1   = EMNumPy()
+	win_vol, base_vol = mpi_win_allocate_shared(refvolsize*disp_unit, disp_unit, \
+	   MPI_INFO_NULL, Blockdata["shared_comm"])
+	if(Blockdata["myid_on_node"]!= 0): base_vol, = mpi_win_shared_query(win_vol, MPI_PROC_NULL)
+	volbuf = np.frombuffer(np.core.multiarray.int_asbuffer(base_vol, refvolsize*disp_unit), dtype = 'f4')
+	volbuf = volbuf.reshape(Tracker["nxinit"], Tracker["nxinit"], Tracker["nxinit"])
 	#### ---end of shared memory
 	while total_iter < max_iter:
 		rest_time  = time()
@@ -1477,7 +1517,6 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, ctf_images,\
 		local_peaks = np.full((number_of_groups, nima), -1.0, dtype = np.float32)
 		## compute peaks and save them in 1D list
 		### shared memor
-		"""
 		for iref in range(number_of_groups):
 			if(Blockdata["myid"] == Blockdata["last_node"]):
 				tag =7007
@@ -1527,6 +1566,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, ctf_images,\
 			else:                                                   ref_peaks = compare_two_images_eucd(cdata, ref_vol, fdata, ctf_images)
 			local_peaks[iref] = ref_peaks
 			mpi_barrier(MPI_COMM_WORLD)
+		"""
 		local_peaks = local_peaks.reshape(number_of_groups*nima)
 		acc_rest = time() - rest_time
 		if Blockdata["myid"] == Blockdata["main_node"]:
@@ -1615,9 +1655,9 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, ctf_images,\
 	del iter_assignment
 	del last_iter_assignment
 	del best_assignment
-	#mpi_win_free(win_vol)
-	#emnumpy1.unregister_numpy_from_emdata()
-	#del emnumpy1
+	mpi_win_free(win_vol)
+	emnumpy1.unregister_numpy_from_emdata()
+	del emnumpy1
 	if mask3D: del mask3D
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		lpartids = read_text_file(partids, -1)
@@ -1635,7 +1675,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, ctf_images,\
 			for jter in range(total_iter):
 				for igroup in range(Tracker["number_of_groups"]): 
 					os.remove(os.path.join(Tracker["directory"], "vol_grp%03d_iter%03d.hdf"%(igroup,jter)))	
-	return (fplist).transpose().tolist(), premature
+	return (fplist).transpose().tolist(), premature, total_iter
 	
 def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, \
       orien_group_members, number_of_groups, minimum_group_size_ratio):
@@ -4329,7 +4369,7 @@ def get_input_from_sparx_ref3d(log_main):# case one
 			percnt = tdata/memory_per_node*100.
 			smearing_all_iters.append([iteration, savg, tdata, percnt])
 			if(Blockdata["myid"] == Blockdata["main_node"]):
-				log_main.add("%5d        %5.1f             %7.1f GB                  %7.1f "%(iteration, savg, tdata, percnt))
+				log_main.add("%5d        %5.1f             %7.1f GB                  %7.1f%% "%(iteration, savg, tdata, percnt))
 		if(Blockdata["myid"] == Blockdata["main_node"]):
 			log_main.add('================================================================================================================')
 			write_text_row(smearing_all_iters, os.path.join(Tracker["constants"]["masterdir"], "smearing_all.txt"))
