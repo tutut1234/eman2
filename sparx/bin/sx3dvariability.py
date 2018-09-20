@@ -550,7 +550,7 @@ def main():
 					log_main.add("Current setting can afford var3D reconstruction with image decimate %6.3f"%recons3d_decimate_ratio)
 				else:
 					log_main.add("Current setting can afford var3D reconstruction without image decimation") 
-				log_main.add("Begin to read images on processor ")
+				log_main.add("Begin to read images on processor. Wait... ")
 			mpi_barrier(MPI_COMM_WORLD)
 			ttt = time()
 			#imgdata = EMData.read_images(stack, all_proj)			
@@ -564,8 +564,6 @@ def main():
 				imgdata.append(window2d(resample(get_im(stack, all_proj[index_of_proj]), options.decimate), nx, ny))
 				if myid == head_load_myid and index_of_proj%100 ==0:
 					log_main.add(" %6.2f%% data are read in core. "%(index_of_proj/float(len(all_proj))*100.))
-			if myid == head_load_myid:
-				log_main.add("Wait till data-reading on all CPUs done...")
 			mpi_barrier(MPI_COMM_WORLD)
 			#if myid ==0 : print(imgdata[0].get_attr_dict())
 			#if options.VERBOSE: # all nodes info
@@ -587,7 +585,7 @@ def main():
 			from applications import prepare_2d_forPCA
 			from utilities    import model_blank
 			if myid == main_node:
-				log_main.add("Start to compute 2D ave and var...")
+				log_main.add("Start to compute 2D ave and var. Wait...")
 			for i in range(len(proj_list)):
 				ki = proj_angles[proj_list[i][0]][3]
 				if ki >= symbaselen:  continue
