@@ -41,7 +41,8 @@ from	EMAN2 		import EMUtil
 import	os
 import	sys
 from 	time		import	time
-	
+from mpi import *
+
 def main():
 
 	def params_3D_2D_NEW(phi, theta, psi, s2x, s2y, mirror):
@@ -83,11 +84,13 @@ def main():
 	#parser.add_option("--SND",			action="store_true",	default=False,				help="compute squared normalized differences (Default False)")
 	parser.add_option("--nvec",			type="int"         ,	default=0    ,				help="number of eigenvectors, default = 0 meaning no PCA calculated")
 	parser.add_option("--symmetrize",	action="store_true",	default=False,				help="Prepare input stack for handling symmetry (Default False)")
-	
+	parser.add_option("--memory_per_node", type="float",        default= -1.0,              help="Available memory per node")
+
 	(options,args) = parser.parse_args()
 	#####
 	from mpi import mpi_init, mpi_comm_rank, mpi_comm_size, mpi_recv, MPI_COMM_WORLD
 	from mpi import mpi_barrier, mpi_reduce, mpi_bcast, mpi_send, MPI_FLOAT, MPI_SUM, MPI_INT, MPI_MAX
+	#from mpi import *
 	from applications   import MPI_start_end
 	from reconstruction import recons3d_em, recons3d_em_MPI
 	from reconstruction	import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
@@ -198,7 +201,17 @@ def main():
 		myid           = mpi_comm_rank(MPI_COMM_WORLD)
 		number_of_proc = mpi_comm_size(MPI_COMM_WORLD)
 		main_node      = 0
+		shared_comm = mpi_comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED,  0, MPI_INFO_NULL)
+		myid_on_node                   = mpi_comm_rank(shared_comm)
+		no_of_processes_per_group      = mpi_comm_size(shared_comm)
+		masters_from_groups_vs_everything_else_comm = mpi_comm_split(MPI_COMM_WORLD, main_node == myid_on_node, myid_on_node)
+		color, no_of_groups, balanced_processor_load_on_nodes = get_colors_and_subsets(main_node, MPI_COMM_WORLD, myid, \
+		    shared_comm, myid_on_node, masters_from_groups_vs_everything_else_comm)
+		overhead_loading = 0.3*no_of_processes_per_group
+		memory_per_node = options.memory_per_node
+		if memory_per_node == -1.: memory_per_node = 2.*no_of_processes_per_group
 		keepgoing      = 1
+		
 		if len(args) == 1: stack = args[0]
 		else:
 			print(( "usage: " + usage))
@@ -260,13 +273,12 @@ def main():
 		img_per_grp = options.img_per_grp
 		nvec        = options.nvec
 		radiuspca   = options.radiuspca
-		
+		from logger import Logger,BaseLogger_Files
+		#if os.path.exists(os.path.join(options.output_dir, "log.txt")): os.remove(os.path.join(options.output_dir, "log.txt"))
+		log_main=Logger(BaseLogger_Files())
+		log_main.prefix = os.path.join(options.output_dir, "./")
+
 		if myid == main_node:
-		
-			from logger import Logger,BaseLogger_Files
-			#if os.path.exists(os.path.join(options.output_dir, "log.txt")): os.remove(os.path.join(options.output_dir, "log.txt"))
-			log_main=Logger(BaseLogger_Files())
-			log_main.prefix = os.path.join(options.output_dir, "./")
 			line = ""
 			for a in sys.argv: line +=" "+a
 			log_main.add(line)
@@ -300,6 +312,7 @@ def main():
 			org_nx = nx
 			org_ny = nx
 			org_nz = nx
+			nnxo = org_nx
 			if options.sym != "c1" :
 				imgdata = get_im(stack)
 				try:
@@ -318,10 +331,12 @@ def main():
 			nima = 0
 			nx = 0
 			ny = 0
+			nnxo = 0
 		nima    = bcast_number_to_all(nima)
 		nx      = bcast_number_to_all(nx)
 		ny      = bcast_number_to_all(ny)
-		Tracker ={}
+		nnxo    = bcast_number_to_all(nnxo)
+		Tracker = {}
 		Tracker["total_stack"] = nima
 		if options.window > max(nx, ny):
 			ERROR("Window size is larger than the original image size", "sx3dvariability", 1)
@@ -399,7 +414,8 @@ def main():
 			from morphology		import threshold, square_root
 			from projection 	import project, prep_vol, prgs
 			from sets		    import Set
-
+			from utilities      import wrap_mpi_recv, wrap_mpi_bcast, wrap_mpi_send
+			import numpy as np
 			if myid == main_node:
 				t1          = time()
 				proj_angles = []
@@ -442,14 +458,11 @@ def main():
 					all_proj.add(proj_angles[jm][3])
 
 			all_proj = list(all_proj)
-			
 			if options.VERBOSE: # all nodes info
 				print("On node %2d, number of images needed to be read = %5d"%(myid, len(all_proj)))
-
 			index = {}
 			for i in range(len(all_proj)): index[all_proj[i]] = i
 			mpi_barrier(MPI_COMM_WORLD)
-
 			if myid == main_node:
 				log_main.add("%-70s:  %.2f\n"%("Finding neighboring projections lasted [s]", time()-t2))
 				log_main.add("%-70s:  %d\n"%("Number of groups processed on the main node", len(proj_list)))
@@ -462,18 +475,86 @@ def main():
 				log_main.add("...... Calculating the stack of 2D variances \n")
 				if options.VERBOSE:
 					log_main.add("Now calculating the stack of 2D variances")
-
+			# Memory estimation. There are two memory consumption peaks
+			# peak 1. Compute ave, var; 
+			# peak 2. Var volume reconstruction;
 			proj_params = [0.0]*(nima*5)
 			aveList = []
 			varList = []				
-			if nvec > 0:
-				eigList = [[] for i in range(nvec)]
-
-			if options.VERBOSE: 	print("Begin to read images on processor %d"%(myid)) # all nodes info
+			if nvec > 0: eigList = [[] for i in range(nvec)]
+			dnumber  = len(all_proj)# all neighborhood set for assigned to myid
+			pnumber  = len(proj_list)*2. +img_per_grp # ave and var 
+			tnumber  = dnumber+pnumber
+			vol_size2 =  Tracker["nx"]**3*4.*8/1.e9
+			vol_size1 =  nnxo**3*4.*8/1.e9
+			proj_size = nnxo*nnxo*len(proj_list)*4./1.e9
+			orig_data_size    = nnxo*nnxo*4.*tnumber/1.e9
+			reduced_data_size = Tracker["nx"]*Tracker["nx"]*4.*tnumber/1.e9
+			full_data = np.full((number_of_proc, 2), -1., dtype=np.float16)
+			full_data[myid] = orig_data_size, reduced_data_size
+			if myid != main_node: 
+				wrap_mpi_send(full_data, main_node, MPI_COMM_WORLD)
+			if myid == main_node:
+				for iproc in range(number_of_proc):
+					if iproc != main_node:
+						dummy = wrap_mpi_recv(iproc, MPI_COMM_WORLD)
+						full_data[np.where(dummy>-1)] = dummy[np.where(dummy>-1)]
+			mpi_barrier(MPI_COMM_WORLD)
+			full_data = wrap_mpi_bcast(full_data, main_node, MPI_COMM_WORLD)
+			# find the CPU with heaviest load
+			minindx = np.argsort(full_data, 0)
+			head_load_myid = minindx[-1][1]
+			if myid == main_node:
+				log_main.add("Number of images computed on each CPU:")
+				log_main.add("CPU    orig size     reduced size")
+				msg =""
+				mem_on_node_orig    = np.full(no_of_groups, 0.0, dtype=np.float16)
+				mem_on_node_current = np.full(no_of_groups, 0.0, dtype=np.float16)
+				for iproc in range(number_of_proc):
+					msg += "%5d   %8.3f GB  %8.3f GB"%(iproc, full_data[iproc][0], full_data[iproc][1])+"; "
+					if (iproc%3 == 2):
+						log_main.add(msg)
+						msg =""
+					mem_on_node_orig[iproc//no_of_processes_per_group]    += full_data[iproc][0]
+					mem_on_node_current[iproc//no_of_processes_per_group] += full_data[iproc][1]
+				if number_of_proc%3 !=0:log_main.add(msg)
+				try:
+					mem_bytes = os.sysconf('SC_PAGE_SIZE')*os.sysconf('SC_PHYS_PAGES')# e.g. 4015976448
+					mem_gib   = mem_bytes/(1024.**3)
+					log_main.add("Available memory information provided by the operating system: %5.1f GB"%mem_gib)
+					if mem_gib >memory_per_node: memory_per_node = mem_gib
+				except: 
+					mem_gib= None
+				log_main.add("Estimated memory to be used per node:")
+				msg = ""
+				run_with_current_setting = True
+				for inode in range(no_of_groups):
+					msg += "%5d   %8.3f GB  %8.3f GB"%(inode, mem_on_node_orig[inode], mem_on_node_current[inode])+";"
+					if mem_on_node_current[inode] > (memory_per_node -overhead_loading): run_with_current_setting = False
+					if (inode%3 == 2):
+						log_main.add(msg)
+						msg =""
+				if no_of_groups%3 !=0:log_main.add(msg)
+				## Estimate maximum decimate ratio:
+				mem_on_node_orig = np.divide(mem_on_node_orig,(memory_per_node - overhead_loading))
+				max_decimate = 1./np.amax(mem_on_node_orig)
+				from math import sqrt
+				max_decimate = sqrt(max_decimate)
+				if max_decimate>1.0:log_main.add("Current memory setting can afford 2D ave and var computation without image decimation")
+				else:log_main.add("Current memory setting can afford the largest image decimate for 2D ave and var is %6.3f "%max_decimate)
+				if not run_with_current_setting:
+					log_main.add("Warning: the used image decimation is larger than the estimated image decimation")
+				recons3d_decimate_ratio =(memory_per_node - overhead_loading)/\
+				     ((vol_size1 + proj_size)*no_of_processes_per_group)
+				if recons3d_decimate_ratio<1.:
+					log_main.add("Current setting can afford var3D reconstruction with image decimate %6.3f"%recons3d_decimate_ratio)
+				else:
+					log_main.add("Current setting can afford var3D reconstruction without image decimation") 
+				log_main.add("Begin to read images on processor ")
+			mpi_barrier(MPI_COMM_WORLD)
 			ttt = time()
-			#imgdata = EMData.read_images(stack, all_proj)
+			#imgdata = EMData.read_images(stack, all_proj)			
 			imgdata = []
-			
 			#if myid==0: print(get_im(stack, 0).get_attr_dict())
 			for index_of_proj in range(len(all_proj)):
 				#img     = EMData()
@@ -481,13 +562,13 @@ def main():
 				#dmg = image_decimate_window_xform_ctf(get_im(stack, all_proj[index_of_proj]), options.decimate, options.window, options.CTF)
 				#print dmg.get_xsize(), "init"
 				imgdata.append(window2d(resample(get_im(stack, all_proj[index_of_proj]), options.decimate), nx, ny))
-			
-			#if myid ==0 : print(imgdata[0].get_attr_dict())
-			if options.VERBOSE: # all nodes info
-				print("Reading images on processor %d done, time = %.2f"%(myid, time()-ttt))
-				print("On processor %d, we got %d images"%(myid, len(imgdata)))
+				if myid == head_load_myid and index_of_proj%100 ==0:
+					log_main.add(" %6.2f%% data are read in core. "%(index_of_proj/float(len(all_proj))*100.))
+			if myid == head_load_myid:
+				log_main.add("Wait till data-reading on all CPUs done...")
 			mpi_barrier(MPI_COMM_WORLD)
-
+			#if myid ==0 : print(imgdata[0].get_attr_dict())
+			#if options.VERBOSE: # all nodes info
 			'''	
 			imgdata2 = EMData.read_images(stack, range(img_begin, img_end))
 			if options.fl > 0.0:
@@ -505,6 +586,8 @@ def main():
 			'''
 			from applications import prepare_2d_forPCA
 			from utilities    import model_blank
+			if myid == main_node:
+				log_main.add("Start to compute 2D ave and var...")
 			for i in range(len(proj_list)):
 				ki = proj_angles[proj_list[i][0]][3]
 				if ki >= symbaselen:  continue
@@ -558,7 +641,7 @@ def main():
 					if options.CTF:
 						from utilities import pad
 						for k in range(img_per_grp):
-							grp_imgdata[k] = window2d( fft( filt_ctf(fft(pad(grp_imgdata[k], nx2, ny2, 1,0.0)), grp_imgdata[k].get_attr("ctf"), binary=1) ) , nx,ny)
+							grp_imgdata[k] = window2d(fft(filt_ctf(fft(pad(grp_imgdata[k], nx2, ny2, 1,0.0)), grp_imgdata[k].get_attr("ctf"), binary=1) ) , nx,ny)
 							#grp_imgdata[k] = window2d(fft( filt_table( filt_tanl( filt_ctf(fft(pad(grp_imgdata[k], nx2, ny2, 1,0.0)), grp_imgdata[k].get_attr("ctf"), binary=1), options.fl, options.aa), fifi) ),nx,ny)
 							#grp_imgdata[k] = filt_tanl(grp_imgdata[k], options.fl, options.aa)
 
@@ -610,13 +693,15 @@ def main():
 						for k in xrange(nvec):
 							eig[k].write_image("eig.hdf", k)
 					"""
-
+				if (myid == head_load_myid) and (i%100 == 0):
+					log_main.add(" %6.2f%% ave and var are computed "%(i/float(len(proj_list))*100.))		
 			del imgdata
 			#  To this point, all averages, variances, and eigenvectors are computed
-
+			mpi_barrier(MPI_COMM_WORLD) # synchronize all cpus
 			if options.ave2D:
 				from fundamentals import fpol
 				if myid == main_node:
+					log_main.add("Compute ave2D ... ")
 					km = 0
 					for i in range(number_of_proc):
 						if i == main_node :
@@ -659,6 +744,8 @@ def main():
 						"""
 
 			if options.ave3D:
+				if myid == main_node:
+					log_main.add("Compute ave3D... ")
 				from fundamentals import fpol
 				if options.VERBOSE and myid == main_node: log_main.add("Reconstructing 3D average volume")
 				ave3D = recons3d_4nn_MPI(myid, aveList, symmetry=options.sym, npad=options.npad)
@@ -716,6 +803,7 @@ def main():
 			if options.var2D:
 				from fundamentals import fpol 
 				if myid == main_node:
+					log_main.add("Compute var2D...")
 					km = 0
 					for i in range(number_of_proc):
 						if i == main_node :
@@ -738,7 +826,7 @@ def main():
 			mpi_barrier(MPI_COMM_WORLD)
 
 		if  options.var3D:
-			if myid == main_node and options.VERBOSE: log_main.add("Reconstructing 3D variability volume")
+			if myid == main_node: log_main.add("Reconstructing 3D variability volume")
 			t6 = time()
 			# radiusvar = options.radius
 			# if( radiusvar < 0 ):  radiusvar = nx//2 -3
@@ -752,7 +840,7 @@ def main():
 				set_pixel_size(res, 1.0)
 				res.write_image(os.path.join(options.output_dir, options.var3D))
 				log_main.add("%-70s:  %.2f\n"%("Reconstructing 3D variability took [s]", time()-t6))
-				log_main.add("%-70s:  %.2f\n"%("Total time for these computations [s]", time()-t0))
+				log_main.add("%-70s:  %.2f\n"%("Total time for these computations [m]", (time()-t0)/60.))
 				log_main.add("sx3dvariability finishes")	
 		from mpi import mpi_finalize
 		mpi_finalize()
