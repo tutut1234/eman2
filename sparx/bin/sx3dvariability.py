@@ -564,6 +564,8 @@ def main():
 				imgdata.append(window2d(resample(get_im(stack, all_proj[index_of_proj]), options.decimate), nx, ny))
 				if myid == head_load_myid and index_of_proj%100 ==0:
 					log_main.add(" %6.2f%% data are read in core. "%(index_of_proj/float(len(all_proj))*100.))
+			if myid == head_load_myid:
+				log_main.add("Wait till reading jobs on all cpu done...")
 			mpi_barrier(MPI_COMM_WORLD)
 			#if myid ==0 : print(imgdata[0].get_attr_dict())
 			#if options.VERBOSE: # all nodes info
