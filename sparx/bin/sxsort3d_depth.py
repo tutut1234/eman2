@@ -1479,14 +1479,14 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, ctf_images,\
 	do_partial_rec3d     = 0
 	partial_rec3d        = False
 	### share memory preparation
-	disp_unit  = np.dtype("f4").itemsize
-	refvolsize = Tracker["nxinit"]*Tracker["nxinit"]*Tracker["nxinit"]
-	emnumpy1   = EMNumPy()
-	win_vol, base_vol = mpi_win_allocate_shared(refvolsize*disp_unit, disp_unit, \
-	   MPI_INFO_NULL, Blockdata["shared_comm"])
-	if(Blockdata["myid_on_node"]!= 0): base_vol, = mpi_win_shared_query(win_vol, MPI_PROC_NULL)
-	volbuf = np.frombuffer(np.core.multiarray.int_asbuffer(base_vol, refvolsize*disp_unit), dtype = 'f4')
-	volbuf = volbuf.reshape(Tracker["nxinit"], Tracker["nxinit"], Tracker["nxinit"])
+	#disp_unit  = np.dtype("f4").itemsize
+	#refvolsize = Tracker["nxinit"]*Tracker["nxinit"]*Tracker["nxinit"]
+	#emnumpy1   = EMNumPy()
+	#win_vol, base_vol = mpi_win_allocate_shared(refvolsize*disp_unit, disp_unit, \
+	#   MPI_INFO_NULL, Blockdata["shared_comm"])
+	#if(Blockdata["myid_on_node"]!= 0): base_vol, = mpi_win_shared_query(win_vol, MPI_PROC_NULL)
+	#volbuf = np.frombuffer(np.core.multiarray.int_asbuffer(base_vol, refvolsize*disp_unit), dtype = 'f4')
+	#volbuf = volbuf.reshape(Tracker["nxinit"], Tracker["nxinit"], Tracker["nxinit"])
 	#### ---end of shared memory
 	while total_iter < max_iter:
 		rest_time  = time()
@@ -1517,6 +1517,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, ctf_images,\
 		local_peaks = np.full((number_of_groups, nima), -1.0, dtype = np.float32)
 		## compute peaks and save them in 1D list
 		### shared memor
+		"""
 		for iref in range(number_of_groups):
 			if(Blockdata["myid"] == Blockdata["last_node"]):
 				tag =7007
@@ -1549,7 +1550,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, ctf_images,\
 			local_peaks[iref] = ref_peaks
 			del ref_vol
 			mpi_barrier(MPI_COMM_WORLD)
-		"""
+			"""
 		for iref in range(number_of_groups):
 			if(Blockdata["myid"] == Blockdata["last_node"]):
 				ref_vol = get_im(os.path.join(Tracker["directory"],"vol_grp%03d_iter%03d.hdf"%(iref, total_iter)))
@@ -1566,7 +1567,6 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, ctf_images,\
 			else:                                                   ref_peaks = compare_two_images_eucd(cdata, ref_vol, fdata, ctf_images)
 			local_peaks[iref] = ref_peaks
 			mpi_barrier(MPI_COMM_WORLD)
-		"""
 		local_peaks = local_peaks.reshape(number_of_groups*nima)
 		acc_rest = time() - rest_time
 		if Blockdata["myid"] == Blockdata["main_node"]:
@@ -1595,7 +1595,7 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, ctf_images,\
 		rest_time = time()
 		last_iter_assignment = np.copy(iter_assignment)
 		iter_assignment      = np.full(Tracker["total_stack"], -1, dtype=np.int32)
-		for iorien in range(len(ptls_in_orien_groups)):
+	 	for iorien in range(len(ptls_in_orien_groups)):
 			if iorien%Blockdata["nproc"] == Blockdata["myid"]:
 				iter_assignment[ptls_in_orien_groups[iorien]] = \
 				do_assignment_by_dmatrix_orien_group_minimum_group_size(\
@@ -1655,9 +1655,9 @@ def Kmeans_minimum_group_size_orien_groups(cdata, fdata, srdata, ctf_images,\
 	del iter_assignment
 	del last_iter_assignment
 	del best_assignment
-	mpi_win_free(win_vol)
-	emnumpy1.unregister_numpy_from_emdata()
-	del emnumpy1
+	#mpi_win_free(win_vol)
+	#emnumpy1.unregister_numpy_from_emdata()
+	#del emnumpy1
 	if mask3D: del mask3D
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		lpartids = read_text_file(partids, -1)
