@@ -53,6 +53,7 @@ nohup mpirun -np  64   --hostfile ./node4567.txt  sx3dvariability.py bdb:data/da
    rate is small and this can significantly speed up computation.
  2. Check the decimated image size. It is better that the targeted decimation image size
     consists of smallprimes, 2, 3, 5...
+ 3. The program estimates the possible largest decimation rate.
 """
 def main():
 
