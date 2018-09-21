@@ -552,7 +552,7 @@ def main():
 			mpi_barrier(MPI_COMM_WORLD)
 			if myid == heavy_load_myid:
 				log_main.add("Begin reading and preprocessing images on processor. Wait... ")
-			ttt = time()
+				ttt = time()
 			#imgdata = EMData.read_images(stack, all_proj)			
 			imgdata = []
 			#if myid==0: print(get_im(stack, 0).get_attr_dict())
@@ -573,8 +573,9 @@ def main():
 				if reg: imgdata.append(subsample(image.get_clip(reg), options.decimate))
 				else:   imgdata.append(subsample(image, options.decimate))
 				if myid == heavy_load_myid and index_of_proj%100 ==0:
-					log_main.add(" %6.2f%% data are read in core. "%(index_of_proj/float(len(all_proj))*100.))
+					log_main.add(" %6.2f%% all_proj data are read in core. "%(index_of_proj/float(len(all_proj))*100.))
 			if myid == heavy_load_myid:
+				log_main.add("All_proj data reading and preprocessing cost %7.2f m"%((time()-ttt)/60.))
 				log_main.add("Wait till reading jobs on all cpu done...")
 			del image
 			if reg: del reg
@@ -599,8 +600,6 @@ def main():
 			from applications import prepare_2d_forPCA
 			from utilities    import model_blank
 			from EMAN2        import Transform
-			if myid == main_node:
-				log_main.add("Start to compute 2D ave and var. Wait...")
 			if not options.no_norm: 
 				mask = model_circle(nx/2-2, nx, nx)
 			nx2 = 2*nx
@@ -612,6 +611,9 @@ def main():
 				from utilities import pad
 				from filter import filt_ctf
 			from filter import filt_tanl
+			if myid == heavy_load_myid:
+				log_main.add("Start computing 2D aveList and varList. Wait...")
+				ttt = time()
 			for i in range(len(proj_list)):
 				ki = proj_angles[proj_list[i][0]][3]
 				if ki >= symbaselen:  continue
@@ -705,6 +707,8 @@ def main():
 			if not options.no_norm: del mask
 			if myid == main_node: del tab
 			#  To this point, all averages, variances, and eigenvectors are computed
+			if (myid == heavy_load_myid):
+				log_main.add("Computing aveList and varList cost %7.2f m"%((time()-ttt)/60.))
 			mpi_barrier(MPI_COMM_WORLD) # synchronize all cpus
 			if options.ave2D:
 				from fundamentals import fpol
