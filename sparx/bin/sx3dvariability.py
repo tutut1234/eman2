@@ -48,7 +48,9 @@ Instruction:
 nohup mpirun -np  64   --hostfile ./node4567.txt  sx3dvariability.py bdb:data/data \
   --output_dir=var3d  --window=300 --var3D=var.hdf --img_per_grp=100 \
       --CTF>var3d/printout &
- 1. Always use small decimation rate in the first run if one has no clue about the 3D variability of the data;
+ 1. Always use small decimation rate in the first run if one has no clue about the 3D \
+   variability of the data. In addition, one can skip low pass filteration when decimation \
+   rate is small and this can significantly speed up computation.
  2. Check the decimated image size. It is better that the targeted decimation image size
     consists of smallprimes, 2, 3, 5...
 """
