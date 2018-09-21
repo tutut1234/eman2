@@ -350,7 +350,7 @@ def main():
 		if options.window > max(nx, ny):
 			ERROR("Window size is larger than the original image size", "sx3dvariability", 1)
 		
-		if options.decimate==1.:
+		if options.decimate == 1.:
 			if options.window !=0:
 				nx = options.window
 				ny = options.window
@@ -362,8 +362,14 @@ def main():
 				nx = int(options.window*options.decimate+0.5)
 				ny = nx
 		symbaselen     = bcast_number_to_all(symbaselen)
+		if myid == main_node:
+			log_main.add("The targeted image size:    %5d"%nx)
+			from fundamentals import smallprime
+			if nx !=smallprime(nx):
+				log_main.add("The target image size does not consist of small prime numbers")
+			else:
+				log_main.add("The targeted image size consists of small prime numbers")
 		if radiuspca == -1: radiuspca = nx/2-2
-
 		if myid == main_node: log_main.add("%-70s:  %d\n"%("Number of projection", nima))
 		img_begin, img_end = MPI_start_end(nima, number_of_proc, myid)
 		
