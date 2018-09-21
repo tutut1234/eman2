@@ -43,6 +43,15 @@ import	sys
 from 	time		import	time
 from mpi import *
 
+"""
+Instruction:
+nohup mpirun -np  64   --hostfile ./node4567.txt  sx3dvariability.py bdb:data/data \
+  --output_dir=var3d  --window=300 --var3D=var.hdf --img_per_grp=100 \
+      --CTF>var3d/printout &
+ 1. Always use small decimation rate in the first run if one has no clue about the 3D variability of the data;
+ 2. Check the decimated image size. It is better that the targeted decimation image size
+    consists of smallprimes, 2, 3, 5...
+"""
 def main():
 
 	def params_3D_2D_NEW(phi, theta, psi, s2x, s2y, mirror):
@@ -56,35 +65,34 @@ def main():
 		return  alpha, sx, sy, m
 	
 	progname = os.path.basename(sys.argv[0])
-	usage = progname + " prj_stack  --ave2D= --var2D=  --ave3D= --var3D= --img_per_grp= --fl=15. --aa=0.01  --sym=symmetry --CTF"
+	usage = progname + " prj_stack  --ave2D= --var2D=  --ave3D= --var3D= --img_per_grp= --fl=  --aa=   --sym=symmetry --CTF"
 	parser = OptionParser(usage, version=SPARXVERSION)
 	
-	parser.add_option("--output_dir",   type="string"	   ,	default="./",				help="output directory")
-	parser.add_option("--ave2D",		type="string"	   ,	default=False,				help="write to the disk a stack of 2D averages")
-	parser.add_option("--var2D",		type="string"	   ,	default=False,				help="write to the disk a stack of 2D variances")
-	parser.add_option("--ave3D",		type="string"	   ,	default=False,				help="write to the disk reconstructed 3D average")
-	parser.add_option("--var3D",		type="string"	   ,	default=False,				help="compute 3D variability (time consuming!)")
-	parser.add_option("--img_per_grp",	type="int"         ,	default=10   ,				help="number of neighbouring projections")
-	parser.add_option("--no_norm",		action="store_true",	default=False,				help="do not use normalization")
+	parser.add_option("--output_dir",   type="string"	   ,	default="./",				help="Output directory")
+	parser.add_option("--ave2D",		type="string"	   ,	default=False,				help="Write to the disk a stack of 2D averages")
+	parser.add_option("--var2D",		type="string"	   ,	default=False,				help="Write to the disk a stack of 2D variances")
+	parser.add_option("--ave3D",		type="string"	   ,	default=False,				help="Write to the disk reconstructed 3D average")
+	parser.add_option("--var3D",		type="string"	   ,	default=False,				help="Compute 3D variability (time consuming!)")
+	parser.add_option("--img_per_grp",	type="int"         ,	default=100,	     	    help="Number of neighbouring projections.(Default is 100)")
+	parser.add_option("--no_norm",		action="store_true",	default=False,				help="Do not use normalization.(Default is to apply normalization)")
 	#parser.add_option("--radius", 	    type="int"         ,	default=-1   ,				help="radius for 3D variability" )
-	parser.add_option("--npad",			type="int"         ,	default=2    ,				help="number of time to pad the original images")
-	parser.add_option("--sym" , 		type="string"      ,	default="c1" ,				help="symmetry")
-	parser.add_option("--fl",			type="float"       ,	default=0.0  ,				help="low pass filter cutoff in absolute frequency (0.0-0.5) and is applied after decimation. (Default - no filtration)")
-	parser.add_option("--aa",			type="float"       ,	default=0.01 ,				help="fall off of the filter. Put 0.01 if user has no clue about falloff (Default - no filtration)")
-	parser.add_option("--CTF",			action="store_true",	default=False,				help="use CFT correction")
-	parser.add_option("--VERBOSE",		action="store_true",	default=False,				help="Long output for debugging")
+	parser.add_option("--npad",			type="int"         ,	default=2    ,				help="Number of time to pad the original images.(Default is 2 times padding)")
+	parser.add_option("--sym" , 		type="string"      ,	default="c1",				help="Symmetry. (Default is no symmetry)")
+	parser.add_option("--fl",			type="float"       ,	default=0.0,				help="Low pass filter cutoff in absolute frequency (0.0 - 0.5) and is applied to decimated image. (Default - no filtration)")
+	parser.add_option("--aa",			type="float"       ,	default=0.02 ,				help="Fall off of the filter. Use default value if user has no clue about falloff (Default value is 0.02)")
+	parser.add_option("--CTF",			action="store_true",	default=False,				help="Use CFT correction.(Default is no CTF correction)")
 	#parser.add_option("--MPI" , 		action="store_true",	default=False,				help="use MPI version")
 	#parser.add_option("--radiuspca", 	type="int"         ,	default=-1   ,				help="radius for PCA" )
 	#parser.add_option("--iter", 		type="int"         ,	default=40   ,				help="maximum number of iterations (stop criterion of reconstruction process)" )
 	#parser.add_option("--abs", 		type="float"   ,        default=0.0  ,				help="minimum average absolute change of voxels' values (stop criterion of reconstruction process)" )
 	#parser.add_option("--squ", 		type="float"   ,	    default=0.0  ,				help="minimum average squared change of voxels' values (stop criterion of reconstruction process)" )
-	parser.add_option("--VAR" , 		action="store_true",	default=False,				help="stack of input consists of 2D variances (Default False)")
-	parser.add_option("--decimate",     type="float",           default= 1.0,               help="image decimate rate, a number less than 1. default is 1")
-	parser.add_option("--window",       type="int",             default= 0,                 help="target image size relative to original image size. Default value is zero.")
+	parser.add_option("--VAR" , 		action="store_true",	default=False,				help="Stack of input consists of 2D variances (Default False)")
+	parser.add_option("--decimate",     type="float",           default=0.25,               help="Image decimate rate, a number less than 1. (Default is 0.25)")
+	parser.add_option("--window",       type="int",             default=0,                  help="Target image size relative to original image size. (Default value is zero.)")
 	#parser.add_option("--SND",			action="store_true",	default=False,				help="compute squared normalized differences (Default False)")
-	parser.add_option("--nvec",			type="int"         ,	default=0    ,				help="number of eigenvectors, default = 0 meaning no PCA calculated")
+	parser.add_option("--nvec",			type="int"         ,	default=0    ,				help="Number of eigenvectors, (Default = 0 meaning no PCA calculated)")
 	parser.add_option("--symmetrize",	action="store_true",	default=False,				help="Prepare input stack for handling symmetry (Default False)")
-	parser.add_option("--memory_per_node", type="float",        default= -1.0,              help="Available memory per node")
+	parser.add_option("--memory_per_node", type="float",        default=-1.0,               help="Available memory per node, (Default value is -1. Program will assign 2 GB for each CPU)")
 
 	(options,args) = parser.parse_args()
 	#####
@@ -432,9 +440,8 @@ def main():
 				t2 = time()
 				log_main.add( "%-70s:  %d\n"%("Number of neighboring projections", img_per_grp))
 				log_main.add("...... Finding neighboring projections\n")
-				if options.VERBOSE:
-					log_main.add( "Number of images per group: %d"%img_per_grp)
-					log_main.add( "Now grouping projections")
+				log_main.add( "Number of images per group: %d"%img_per_grp)
+				log_main.add( "Now grouping projections")
 				proj_angles.sort()
 				proj_angles_list = np.full((nima, 4), 0.0, dtype=np.float32)	
 				for i in range(nima):
@@ -454,23 +461,19 @@ def main():
 				for jm in im:
 					all_proj.add(proj_angles[jm][3])
 			all_proj = list(all_proj)
-			if options.VERBOSE: # all nodes info
-				print("On node %2d, number of images needed to be read = %5d"%(myid, len(all_proj)))
 			index = {}
 			for i in range(len(all_proj)): index[all_proj[i]] = i
 			mpi_barrier(MPI_COMM_WORLD)
 			if myid == main_node:
 				log_main.add("%-70s:  %.2f\n"%("Finding neighboring projections lasted [s]", time()-t2))
 				log_main.add("%-70s:  %d\n"%("Number of groups processed on the main node", len(proj_list)))
-				if options.VERBOSE:
-					log_main.add("Grouping projections took: ", (time()-t2)/60	, "[min]")
-					log_main.add("Number of groups on main node: ", len(proj_list))
+				log_main.add("Grouping projections took: ", (time()-t2)/60	, "[min]")
+				log_main.add("Number of groups on main node: ", len(proj_list))
 			mpi_barrier(MPI_COMM_WORLD)
 
 			if myid == main_node:
 				log_main.add("...... Calculating the stack of 2D variances \n")
-				if options.VERBOSE:
-					log_main.add("Now calculating the stack of 2D variances")
+				log_main.add("Now calculating the stack of 2D variances")
 			# Memory estimation. There are two memory consumption peaks
 			# peak 1. Compute ave, var; 
 			# peak 2. Var volume reconstruction;
@@ -580,8 +583,6 @@ def main():
 			del image
 			if reg: del reg
 			mpi_barrier(MPI_COMM_WORLD)
-			#if myid ==0 : print(imgdata[0].get_attr_dict())
-			#if options.VERBOSE: # all nodes info
 			'''	
 			imgdata2 = EMData.read_images(stack, range(img_begin, img_end))
 			if options.fl > 0.0:
@@ -759,7 +760,7 @@ def main():
 				if myid == main_node:
 					log_main.add("Compute ave3D... ")
 				from fundamentals import fpol
-				if options.VERBOSE and myid == main_node: log_main.add("Reconstructing 3D average volume")
+				if myid == main_node: log_main.add("Reconstructing 3D average volume")
 				ave3D = recons3d_4nn_MPI(myid, aveList, symmetry=options.sym, npad=options.npad)
 				bcast_EMData_to_all(ave3D, myid)
 				if myid == main_node:
@@ -769,7 +770,7 @@ def main():
 			del ave, var, proj_list, stack, alpha, sx, sy, mirror, aveList
 			if nvec > 0:
 				for k in range(nvec):
-					if options.VERBOSE and myid == main_node:log_main.add("Reconstruction eigenvolumes", k)
+					if myid == main_node:log_main.add("Reconstruction eigenvolumes", k)
 					cont = True
 					ITER = 0
 					mask2d = model_circle(radiuspca, nx, nx)
