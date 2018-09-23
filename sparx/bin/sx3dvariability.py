@@ -585,7 +585,7 @@ def main():
 				if reg: imgdata.append(subsample(image.get_clip(reg), options.decimate))
 				else:   imgdata.append(subsample(image, options.decimate))
 				if myid == heavy_load_myid and index_of_proj%100 ==0:
-					log_main.add(" %6.2f%% all_proj data are read in core. "%(index_of_proj/float(len(all_proj))*100.))
+					log_main.add(" ...... %6.2f%% "%(index_of_proj/float(len(all_proj))*100.))
 			if myid == heavy_load_myid:
 				log_main.add("All_proj data reading and preprocessing cost %7.2f m"%((time()-ttt)/60.))
 				log_main.add("Wait till reading jobs on all cpu done...")
@@ -711,7 +711,7 @@ def main():
 							eig[k].write_image("eig.hdf", k)
 					"""
 				if (myid == heavy_load_myid) and (i%100 == 0):
-					log_main.add(" %6.2f%% ave and var are computed "%(i/float(len(proj_list))*100.))		
+					log_main.add(" ......%6.2f%%  "%(i/float(len(proj_list))*100.))		
 			del imgdata, grp_imgdata, cpar, dpar, all_proj, proj_angles, index, reg1
 			if options.CTF: del cimage
 			if not options.no_norm: del mask
