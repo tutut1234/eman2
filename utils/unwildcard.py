@@ -294,7 +294,7 @@ for file_name in python_files:
             if stop:
                 break
         if no_match:
-            pref = '('
+            pref = '(.+'
             for suff in suffixes:
                 original = r'{0}{1}{2})'.format(pref, entry[1], suff)
                 new = '{0}{1}.{2}{3}'.format(pref, entry[2][0], entry[1], suff)
