@@ -153,7 +153,6 @@ def amoeba(var, scale, func, ftolerance=1.e-4, xtolerance=1.e-4, itmax=500, data
 
 	   Example:
 
-	       pass#IMPORTIMPORTIMPORT import amoeba
 	       def afunc(var,data=None): return 1.0-var[0]*var[0]-var[1]*var[1]
 	       print amoeba.amoeba([0.25,0.25],[0.5,0.5],afunc)
 
@@ -263,7 +262,6 @@ def amoeba_multi_level(var, scale, func, ftolerance=1.e-4, xtolerance=1.e-4, itm
 	of lower level refinement.
 	"""
 	#print " ENTER AMOEBA MULTI LEVEL"
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_rank, MPI_COMM_WORLD
 	
 	nvar = len(var)       # number of variables in the minimization
 	nsimplex = nvar + 1   # number of vertices in the simplex
@@ -369,7 +367,6 @@ def golden(func, args=(), brack=None, tol=1.e-4, full_output=0):
 
 	Uses analog of bisection method to decrease the bracketed interval.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import bracketing
 	if brack is None:
 		xa,xb,xc,fa,fb,fc,funcalls = bracketing(func, args=args)
 	elif len(brack) == 2:
@@ -511,9 +508,6 @@ def center_2D(image_to_be_centered, center_method = 1, searching_range = -1, Gau
 		7. binarize at ave+sigma and cross-correlate with a circle
 	        The function will return centered_image, and shifts
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities    import peak_search
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   fundamentals import fshift
-	pass#IMPORTIMPORTIMPORT import types
 	if type(image_to_be_centered) == bytes: image_to_be_centered = get_im(image_to_be_centered)
 	if    center_method == 0 :  return  image_to_be_centered,0.,0.
 	elif  center_method == 1 :
@@ -524,10 +518,6 @@ def center_2D(image_to_be_centered, center_method = 1, searching_range = -1, Gau
 		return fundamentals.fshift(image_to_be_centered, -cs[0], -cs[1]), cs[0], cs[1]
 
 	elif center_method == 7:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import ccf, cyclic_shift
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology   import binarize
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import model_blank
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2        import rsconvolution
 		p = EMAN2_cppwrap.Util.infomask(image_to_be_centered,None,True)
 		cc = morphology.binarize(EMAN2_cppwrap.rsconvolution(morphology.binarize(image_to_be_centered,p[0]+p[1]),model_blank(5,5,1,1.0/(5.0*5.0))),0.5)
 		c = fundamentals.ccf(cc, self_defined_reference)
@@ -553,8 +543,6 @@ def center_2D(image_to_be_centered, center_method = 1, searching_range = -1, Gau
 		return fundamentals.cyclic_shift(image_to_be_centered, -shiftx, -shifty), shiftx, shifty
 
 	elif center_method == 5:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_avg_image,ccf
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 		not_centered = True
 		tmp_image = image_to_be_centered.copy()
 		shiftx = 0
@@ -572,7 +560,6 @@ def center_2D(image_to_be_centered, center_method = 1, searching_range = -1, Gau
 		return centered_image, shiftx, shifty
 
 	elif center_method == 6:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import threshold_to_minval
 		nx = image_to_be_centered.get_xsize()
 		ny = image_to_be_centered.get_ysize()
 		r = nx//2-2
@@ -588,7 +575,6 @@ def center_2D(image_to_be_centered, center_method = 1, searching_range = -1, Gau
 	else :
 		nx = image_to_be_centered.get_xsize()
 		ny = image_to_be_centered.get_ysize()
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import ccf
 		if center_method == 2 :
 			reference = model_gauss(Gauss_radius_inner, nx, ny)
 		if center_method == 3 :
@@ -612,7 +598,6 @@ def common_line_in3D(phiA,thetaA,phiB,thetaB):
 	   Notice you don't need to enter psi's; they are irrelevant
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, sqrt, cos, sin, asin, atan2
 
 	piOver=numpy.pi/180.0;
 	ph1 = phiA*piOver;
@@ -728,7 +713,6 @@ def inverse_transform3(phi, theta=0.0, psi=0.0, tx=0.0, ty=0.0, tz=0.0, mirror =
 def create_spider_doc(fname,spiderdoc):
 	"""Convert a text file that is composed of columns of numbers into spider doc file
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string import atoi,atof
 	infile = open(fname,"r")
 	lines  = infile.readlines()
 	infile.close()
@@ -780,7 +764,6 @@ def drop_spider_doc(filename, data, comment = None):
 	         and is written as a line into the doc file.
 	"""
 	outf = open(filename, "w")
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from datetime import datetime
 	outf.write(" ;   %s   %s   %s\n" % (datetime.datetime.now().ctime(), filename, comment))
 	count = 1  # start key from 1; otherwise, it is confusing...
 	for dat in data:
@@ -828,9 +811,6 @@ def even_angles(delta = 15.0, theta1=0.0, theta2=90.0, phi1=0.0, phi2=359.99, \
 		        it to generate cushion projections within an/2 of the border of unique zone
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math      import pi, sqrt, cos, acos, tan, sin
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import even_angles_cd
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string    import lower,split
 	angles = []
 	symmetryLower = symmetry.lower()
 	symmetry_string = numpy.split(symmetry)[0]
@@ -912,7 +892,6 @@ def even_angles(delta = 15.0, theta1=0.0, theta2=90.0, phi1=0.0, phi2=359.99, \
 		global_def.ERROR("even_angles","Symmetry not supported: "+symmetry_string,0)
 	'''
 	elif(symmetry_string[0]  == "o"):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import parsesym
 		if(method.lower() == "s"):  met = "saff"
 		elif(method.lower() == "p"): met = "even"
 		if(theta2 == 180.0):  inc_mirror = 1
@@ -1034,7 +1013,6 @@ def even_angles_cd(delta, theta1=0.0, theta2=90.0, phi1=0.0, phi2=359.99, method
 			  'S' assumes phi1<phi2 and phi2-phi1>> delta ;
 	   phiEQpsi  - set this to 'Minus', if you want psi=-phi;
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, sqrt, cos, acos
 	angles = []
 	if (method == 'P'):
 		temp = EMAN2_cppwrap.Util.even_angles(delta, theta1, theta2, phi1, phi2)
@@ -1067,7 +1045,6 @@ def eigen_images_get(stack, eigenstack, mask, num, avg):
 		and Get eigen images
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_image
 
 	a = EMAN2_cppwrap.Analyzers.get('pca_large')
 	e = EMAN2_cppwrap.EMData()
@@ -1138,8 +1115,6 @@ def gauss_edge(sharp_edge_image, kernel_size = 7, gauss_standard_dev =3):
 		1. The sharp-edge image is convoluted with a gassian kernel
 		2. The convolution normalized
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_gauss
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import rsconvolution
 	nz = sharp_edge_image.get_ndim()
 	if(nz == 3):   kern = model_gauss(gauss_standard_dev, kernel_size , kernel_size, kernel_size)
 	elif(nz == 2):  kern = model_gauss(gauss_standard_dev, kernel_size , kernel_size)
@@ -1188,14 +1163,12 @@ def get_image_data(img):
 		so if the NumPy array is altered then the image is altered
 		as well (and vice versa).
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import EMNumPy
 	return EMAN2_cppwrap.EMNumPy.em2numpy(img)
 
 def get_sym(symmetry):
 	"""
 	get a list of point-group symmetry angles, symmetry="c3"
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import symclass
 	scl = fundamentals.symclass(symmetry)
 	return scl.symangles
 
@@ -1203,7 +1176,6 @@ def get_symt(symmetry):
 	"""
 	get a list of point-group symmetry transformations, symmetry="c3"
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import symclass
 	scl = fundamentals.symclass(symmetry)
 	trans = []
 	for q in scl.symangles:
@@ -1219,7 +1191,6 @@ def get_textimage(fname):
 		and val is the floating point value of that point.  All points
 		not explicitly listed are set to zero.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string import atoi,atof
 	infile = open(fname)
 	lines = infile.readlines()
 	infile.close()
@@ -1243,7 +1214,6 @@ def get_input_from_string(str_input):
 	"""
 		Extract input numbers from a given string
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from re import split
 	qq = numpy.split(" |,",str_input)
 	for i in range(len(qq)-1, -1, -1):
 		if(qq[i] == ""):  del qq[i]
@@ -1288,9 +1258,6 @@ def info(image, mask=None, Comment=""):
 	return mean, sigma, imin, imax, nx, ny, nz
 
 def image_decimate(img, decimation=2, fit_to_fft=1,frequency_low=0, frequency_high=0):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_btwl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import smallprime, window2d
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_image
 	"""
 		Window image to FFT-friendly size, apply Butterworth low pass filter,
 		and decimate 2D image
@@ -1382,7 +1349,6 @@ def model_blank(nx, ny=1, nz=1, bckg = 0.0):
 	return e
 
 def set_seed(sde):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import seed
 	random.seed(int(sde))
 	e = EMAN2_cppwrap.EMData()
 	e.set_size(1,1,1)
@@ -1719,10 +1685,6 @@ def print_image_slice_3d(input, num=0,direction="z"):
 
 
 def print_list_format(m, narray = 0):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string 	import split
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math 	import sqrt
-	pass#IMPORTIMPORTIMPORT import string
-	pass#IMPORTIMPORTIMPORT import types
 	"""
 		Print formated elements in a list to screen
 		The screen output is in the form of narray*int(len(m)/narray)
@@ -1757,7 +1719,6 @@ def print_list_format(m, narray = 0):
 		print('%6d '%(i+1),plist[i])
 
 def pad(image_to_be_padded, new_nx, new_ny = 1,	new_nz = 1, background = "average", off_center_nx = 0, off_center_ny = 0, off_center_nz = 0):
-	pass#IMPORTIMPORTIMPORT import types
 	if type(background) != bytes: background = str(background)
 	if   background == "average"       :     image_padded = EMAN2_cppwrap.Util.pad(image_to_be_padded, new_nx, new_ny, new_nz, off_center_nx, off_center_ny, off_center_nz, "average")
 	elif background == "circumference" :     image_padded = EMAN2_cppwrap.Util.pad(image_to_be_padded, new_nx, new_ny, new_nz, off_center_nx, off_center_ny, off_center_nz, "circumference")
@@ -1765,7 +1726,6 @@ def pad(image_to_be_padded, new_nx, new_ny = 1,	new_nz = 1, background = "averag
 	return  image_padded
 
 def read_spider_doc(fnam):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string import atof, atoi
 	"""
 		spider doc file format:
 		key nrec record ...
@@ -1822,7 +1782,6 @@ def read_text_row(fnam, format="", skip=";"):
 	    	len(data)/nc : number of lines (rows)
 	    	data: List of numbers from the doc file
  	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string import split
 
 	inf  = open(fnam, "r")
 	strg = inf.readline()
@@ -1866,7 +1825,6 @@ def write_text_row(data, file_name):
 	         First list will be written as a first line, second as a second, and so on...
 		 If only one list is given, the file will contain one line
 	"""
-	pass#IMPORTIMPORTIMPORT import types
 	outf = open(file_name, "w")
 	if (type(data[0]) == list):
 		# It is a list of lists
@@ -1902,7 +1860,6 @@ def read_text_file(file_name, ncol = 0):
 		if ncol >= 0, just read the (ncol)-th column.
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string import split
 	inf = open(file_name, "r")
 	line = inf.readline()
 	data = []
@@ -1945,7 +1902,6 @@ def write_text_file(data, file_name):
 		outf.close()
 		return
 
-	pass#IMPORTIMPORTIMPORT import types
 	outf = open(file_name, "w")
 	if (type(data[0]) == list):
 		# It is a list of lists
@@ -1974,7 +1930,6 @@ def write_text_file(data, file_name):
 	outf.close()
 
 def reconstitute_mask(image_mask_applied_file, new_mask_file, save_file_on_disk = True, saved_file_name = "image_in_reconstituted_mask.hdf"):
-	pass#IMPORTIMPORTIMPORT import types
 	"""
 		Substitute masked area value with image average
 	"""
@@ -2033,7 +1988,6 @@ def rotate_about_center(alpha, cx, cy):
 def rotate_shift_params(paramsin, transf):
 	# moved from sxprocess.py
 	if len(paramsin[0])>3 :
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
 		t = EMAN2_cppwrap.Transform({"type":"spider","phi":transf[0],"theta":transf[1],"psi":transf[2],"tx":transf[3],"ty":transf[4],"tz":transf[5],"mirror":0,"scale":1.0})
 		t = t.inverse()
 		cpar = []
@@ -2090,10 +2044,6 @@ def reshape_1d(input_object, length_current=0, length_interpolated=0, Pixel_size
 	return interpolated
 
 def estimate_3D_center(data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import cos, sin, radians
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import matrix
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import linalg
-	pass#IMPORTIMPORTIMPORT import types
 	if(type(data[0]) is list):
 		ali_params = data
 	else:
@@ -2126,12 +2076,6 @@ def estimate_3D_center(data):
 
 
 def estimate_3D_center_MPI(data, nima, myid, number_of_proc, main_node, mpi_comm=None):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import cos, sin, radians
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import matrix
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import linalg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_recv, mpi_send, MPI_FLOAT
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
 
 	if mpi_comm == None:
 		mpi_comm = mpi.MPI_COMM_WORLD
@@ -2222,24 +2166,19 @@ def get_arb_params(img, par_str):
 ###------------------------------------------------------------------------------------------
 
 def start_time():
-	pass#IMPORTIMPORTIMPORT import time
 	start_time = time.time()
 	return start_time
 
 def finish_time(start_time):
-	pass#IMPORTIMPORTIMPORT import time
 	finish_time = time.time()
 	print(("Running time is"), finish_time-start_time)
 	return finish_time
 
 def ttime():
-	pass#IMPORTIMPORTIMPORT import time
 	now = time.localtime(time.time())
 	return time.asctime(now)
 
 def running_time(start_time):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
 	time_run = int(time.time() - start_time)
 	time_h   = time_run / 3600
 	time_m   = (time_run % 3600) / 60
@@ -2247,7 +2186,6 @@ def running_time(start_time):
 	print_msg('\nRunning time is: %s h %s min %s s\n\n' % (str(time_h).rjust(2, '0'), str(time_m).rjust(2, '0'), str(time_s).rjust(2, '0')))
 
 def running_time_txt(start_time):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
 	time_run = int(time.time() - start_time)
 	time_h   = time_run / 3600
 	time_m   = (time_run % 3600) / 60
@@ -2256,8 +2194,6 @@ def running_time_txt(start_time):
 
 '''
 def reduce_array_to_root(data, myid, main_node = 0, comm = -1):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import array, shape, reshape
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD, mpi_reduce, mpi_barrier
 
 	if comm == -1:  comm = MPI_COMM_WORLD
 	n = shape(data)
@@ -2278,8 +2214,6 @@ def reduce_array_to_root(data, myid, main_node = 0, comm = -1):
 '''
 
 def reduce_EMData_to_root(data, myid, main_node = 0, comm = -1):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import shape, reshape
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi   import mpi_reduce, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD, mpi_barrier
 
 	if comm == -1 or comm == None:  comm = mpi.MPI_COMM_WORLD
 
@@ -2312,11 +2246,6 @@ def bcast_compacted_EMData_all_to_all(list_of_em_objects, myid, comm=-1):
 	header.
 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import EMNumPy
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import concatenate, shape, array, split
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_size, mpi_bcast, MPI_FLOAT, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import reshape
 
 	if comm == -1 or comm == None: comm = mpi.MPI_COMM_WORLD
 
@@ -2409,11 +2338,6 @@ def bcast_compacted_EMData_all_to_all___original(list_of_em_objects, myid, comm=
 	header.
 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import EMNumPy
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import concatenate, shape, array, split
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_size, mpi_bcast, MPI_FLOAT, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import reshape
 
 	if comm == -1 or comm == None: comm = mpi.MPI_COMM_WORLD
 
@@ -2509,11 +2433,6 @@ def gather_compacted_EMData_to_root_with_header_info_for_each_image(number_of_al
 	header.
 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import EMNumPy
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import concatenate, shape, array, split
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_size, mpi_bcast, MPI_FLOAT, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import reshape
 
 	if comm == -1 or comm == None: comm = mpi.MPI_COMM_WORLD
 
@@ -2582,7 +2501,6 @@ def gather_compacted_EMData_to_root_with_header_info_for_each_image(number_of_al
 
 		sender_size_of_refrings = (sender_ref_end - sender_ref_start)*size_of_one_refring_assumed_common_to_all
 
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_recv, mpi_send, mpi_barrier
 		if myid == 0:
 			# print "root, receiving from ", sender_id, "  sender_size_of_refrings = ", sender_size_of_refrings
 			str_to_receive = wrap_mpi_recv(sender_id)
@@ -2644,12 +2562,6 @@ def gather_compacted_EMData_to_root(number_of_all_em_objects_distributed_across_
 	header.
 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import EMNumPy
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import concatenate, shape, array, split
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_size, mpi_bcast, MPI_FLOAT, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import reshape
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_recv, mpi_send, mpi_barrier
 
 	if comm == -1 or comm == None: comm = mpi.MPI_COMM_WORLD
 
@@ -2743,9 +2655,6 @@ def gather_compacted_EMData_to_root(number_of_all_em_objects_distributed_across_
 
 
 def bcast_EMData_to_all(tavg, myid, source_node = 0, comm = -1):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import EMNumPy
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import array, shape, reshape
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi   import mpi_bcast, MPI_FLOAT, MPI_COMM_WORLD
 
 	if comm == -1 or comm == None: comm = mpi.MPI_COMM_WORLD
 	tavg_data = EMAN2_cppwrap.EMNumPy.em2numpy(tavg)
@@ -2774,8 +2683,6 @@ def bcast_EMData_to_all(img, myid, main_node = 0, comm = -1):
 	# need to broadcast the size of EMData() and two attributes: is_complex and is_ri.
 	# For all other attributes, you are on your own.
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import reshape
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_bcast, MPI_INT, MPI_FLOAT, MPI_COMM_WORLD
 
 	if comm == -1: comm = MPI_COMM_WORLD
 
@@ -2820,8 +2727,6 @@ def reduce_EMData_to_root(img, myid, main_node = 0, comm = -1):
 	# 	reduce_EMData_to_root(img, myid, main_node, comm)
 	# The latter is inconsistent with mpi_bcast() and difficult to implement efficiently
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import reshape
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi   import mpi_reduce, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD
 
 	if comm == -1: comm = MPI_COMM_WORLD
 
@@ -2852,7 +2757,6 @@ def reduce_EMData_to_root(img, myid, main_node = 0, comm = -1):
 '''
 
 def send_EMData(img, dst, tag, comm=-1):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_send, MPI_INT, MPI_FLOAT, MPI_COMM_WORLD
 
 	if comm == -1: comm = mpi.MPI_COMM_WORLD
 	img_head = []
@@ -2891,9 +2795,6 @@ def send_EMData(img, dst, tag, comm=-1):
 	'''
 
 def recv_EMData(src, tag, comm=-1):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_recv, MPI_INT, MPI_FLOAT, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import reshape
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import EMNumPy
 
 
 	if comm==-1: comm = mpi.MPI_COMM_WORLD
@@ -2963,8 +2864,6 @@ def gather_EMData(data, number_of_proc, myid, main_node):
 	Gather the a list of EMData on all nodes to the main node, we assume the list has the same length on each node.
 											It is a dangerous assumption, it will have to be changed  07/10/2015
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, MPI_INT
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_send, mpi_recv
 
 	l = len(data)
 	gathered_data = []
@@ -2991,7 +2890,6 @@ def gather_EMData(data, number_of_proc, myid, main_node):
 	return gathered_data
 
 def send_string_to_all(str_to_send, source_node = 0):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, MPI_INT, MPI_CHAR, mpi_bcast, mpi_comm_rank
 
 	myid = mpi.mpi_comm_rank(mpi.MPI_COMM_WORLD)
 	str_to_send_len  = len(str_to_send)*int(myid == source_node)
@@ -3004,8 +2902,6 @@ def bcast_number_to_all(number_to_send, source_node = 0, mpi_comm = -1):
 	"""
 		number_to_send has to be pre-defined in each node
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_bcast, MPI_INT, MPI_COMM_WORLD, MPI_FLOAT
-	pass#IMPORTIMPORTIMPORT import types
 	if mpi_comm == -1:  mpi_comm = mpi.MPI_COMM_WORLD
 	if    type(number_to_send) is int:
 		TMP = mpi.mpi_bcast(number_to_send, 1, mpi.MPI_INT,   source_node, mpi_comm)
@@ -3023,8 +2919,6 @@ def bcast_number_to_all(number_to_send, source_node = 0, mpi_comm = -1):
 		print(" ERROR in bcast_number_to_all")
 
 def bcast_list_to_all(list_to_send, myid, source_node = 0, mpi_comm = -1):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_bcast, MPI_COMM_WORLD, MPI_FLOAT, MPI_INT
-	pass#IMPORTIMPORTIMPORT import   types
 	if mpi_comm == -1:  mpi_comm = mpi.MPI_COMM_WORLD
 	if(myid == source_node):
 		n = len(list_to_send)
@@ -3049,10 +2943,6 @@ def bcast_list_to_all(list_to_send, myid, source_node = 0, mpi_comm = -1):
 
 
 def recv_attr_dict(main_node, stack, data, list_params, image_start, image_end, number_of_proc, comm = -1):
-	pass#IMPORTIMPORTIMPORT import types
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from  utilities import  get_arb_params, set_arb_params
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from  mpi 	import mpi_recv
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from  mpi 	import MPI_FLOAT, MPI_INT, MPI_COMM_WORLD
 
 	#   hdf version!
 	# This is done on the main node, so for images from the main node, simply write headers
@@ -3123,10 +3013,6 @@ def recv_attr_dict(main_node, stack, data, list_params, image_start, image_end, 
 			dummy.write_image(stack, dummy.get_attr_default('ID', im), EMAN2_cppwrap.EMUtil.ImageType.IMAGE_HDF, True)
 
 def send_attr_dict(main_node, data, list_params, image_start, image_end, comm = -1):
-	pass#IMPORTIMPORTIMPORT import types
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_arb_params
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi 	   import mpi_send
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi 	   import MPI_FLOAT, MPI_INT, MPI_COMM_WORLD
 
 	#  This function is called from a node other than the main node
 
@@ -3146,11 +3032,6 @@ def send_attr_dict(main_node, data, list_params, image_start, image_end, comm = 
 	mpi.mpi_send(nvalue, len(nvalue), mpi.MPI_FLOAT, main_node, global_def.SPARX_MPI_TAG_UNIVERSAL, comm)
 
 def recv_attr_dict_bdb(main_node, stack, data, list_params, image_start, image_end, number_of_proc, comm = -1):
-	pass#IMPORTIMPORTIMPORT import types
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from  utilities import  get_arb_params, set_arb_params
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from  mpi 	import mpi_recv
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from  mpi 	import MPI_FLOAT, MPI_INT, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2db import db_open_dict
 	#  bdb version!
 	# This is done on the main node, so for images from the main node, simply write headers
 
@@ -3216,7 +3097,6 @@ def recv_attr_dict_bdb(main_node, stack, data, list_params, image_start, image_e
 	DB.close()
 
 def check_attr(ima, num, params, default_value, action="Warning"):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
 	attr_list = ima.get_attr_dict()
 	if (params in attr_list) == False:
 		if action=="Warning":
@@ -3229,7 +3109,6 @@ def check_attr(ima, num, params, default_value, action="Warning"):
 	else: return True
 
 def print_begin_msg(program_name, onscreen=False):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import localtime, strftime
 	t = 100
 	stars = '*'*t
 	string = "Beginning of the program " + program_name + ": " + time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
@@ -3245,7 +3124,6 @@ def print_begin_msg(program_name, onscreen=False):
 		print_msg(stars+"\n")
 
 def print_end_msg(program_name, onscreen=False):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import localtime, strftime
 	t = 100
 	stars = '*'*t
 	string = "End of the program " + program_name + ": " + time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
@@ -3261,8 +3139,6 @@ def print_end_msg(program_name, onscreen=False):
 		print_msg(stars+"\n")
 
 def print_msg(msg):
-	pass#IMPORTIMPORTIMPORT import sys
-	pass#IMPORTIMPORTIMPORT import global_def
 	if (global_def.IS_LOGFILE_OPEN == False):
 		global_def.LOGFILE_HANDLE = open(global_def.LOGFILE,"w")
 		global_def.IS_LOGFILE_OPEN = True
@@ -3274,7 +3150,6 @@ def print_msg(msg):
 	global_def.LOGFILE_HANDLE.flush()
 
 def read_fsc( filename ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string import split, atof
 	f = open( filename, 'r' )
 	fscc = None
 	line = f.readline()
@@ -3294,8 +3169,6 @@ def read_fsc( filename ):
 """
 #  This would not work on windows
 def memory_usage():
-	pass#IMPORTIMPORTIMPORT import os
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string import split
 	return 0
 	file = "/proc/%d/status" % os.getpid()
 	f = open(file, 'r')
@@ -3335,8 +3208,6 @@ def write_headers(filename, data, lima):
 	    i.e., header from data[k] will be written into file number lima[k]
 	  WARNING: this function will open and close DB library!
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import file_type
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2db import db_open_dict
 
 	ftp = file_type(filename)
 	if ftp == "bdb":
@@ -3361,8 +3232,6 @@ def write_header(filename, data, lima):
 	    i.e., header from data will be written into file number lima
 	  WARNING: this function assums DB library is opened and will NOT close it!
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import file_type
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2db import db_open_dict
 
 	ftp = file_type(filename)
 	if ftp == "bdb":
@@ -3424,7 +3293,6 @@ def set_params_proj(ima, p, xform = "xform.projection"):
 	  set projection alignment parameters in the header
 	  phi  theta  psi  s2x  s2y
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
 	t = EMAN2_cppwrap.Transform({"type":"spider","phi":p[0],"theta":p[1],"psi":p[2]})
 	t.set_trans(EMAN2_cppwrap.Vec2f(-p[3], -p[4]))
 	ima.set_attr(xform, t)
@@ -3436,7 +3304,6 @@ def get_ctf(ima):
 	  order of returned parameters:
         [defocus, cs, voltage, apix, bfactor, ampcont, astigmatism amplitude, astigmatism angle]
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import EMAN2Ctf
 	ctf_params = ima.get_attr("ctf")
 	return ctf_params.defocus, ctf_params.cs, ctf_params.voltage, ctf_params.apix, ctf_params.bfactor, ctf_params.ampcont, ctf_params.dfdiff, ctf_params.dfang
 
@@ -3453,7 +3320,6 @@ def generate_ctf(p):
         [defocus, cs, voltage, apix, bfactor, ampcont, astigmatism_amplitude, astigmatism_angle]
 	    [ microns, mm, kV, Angstroms, A^2, microns, microns, radians]
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import EMAN2Ctf
 
 	defocus      = p[0]
 	cs           = p[1]
@@ -3481,23 +3347,19 @@ def set_ctf(ima, p):
 	  order of parameters:
         [defocus, cs, voltage, apix, bfactor, ampcont, astigmatism amplitude, astigmatism angle]
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
 	ima.set_attr( "ctf", generate_ctf( p ) )
 
 def delete_bdb(name):
 	"""
 	  Delete bdb stack
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2db import db_open_dict, db_remove_dict
 	a = EMAN2db.db_open_dict(name)
 	EMAN2db.db_remove_dict(name)
 
 def disable_bdb_cache():
-	pass#IMPORTIMPORTIMPORT import EMAN2db
 	EMAN2db.BDB_CACHE_DISABLE = True
 
 def enable_bdb_cache():
-	pass#IMPORTIMPORTIMPORT import EMAN2db
 	EMAN2db.BDB_CACHE_DISABLE = False
 
 
@@ -3542,21 +3404,18 @@ def getang(n):
 	"""
 	get angle from a 2D normal vector
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import atan2, acos, degrees
 	return numpy.degrees(math.atan2(n[1],n[0]))%360.0, numpy.degrees(math.acos(n[2]))%360.0
 
 #  The other one is better written
 """
 getang3 = angle_between_projections_directions
 def getang3(p1,p2):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getfvec, lacos
 	n1 = getfvec(p1[0],p1[1])
 	n2 = getfvec(p2[0],p2[1])
 	return lacos(n1[0]*n2[0]+n1[1]*n2[1]+n1[2]*n2[2])
 """
 
 def getvec( phi, tht ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians,cos,sin
 
 	if tht > 180.0:
 		tht -= 180.0
@@ -3578,7 +3437,6 @@ def getvec( phi, tht ):
 	return (x,y,z)
 
 def getfvec( phi, tht ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians,cos,sin
 	qt = numpy.radians(tht)
 	qp = numpy.radians(phi)
 	qs = numpy.sin(qt)
@@ -3592,12 +3450,10 @@ def nearest_fang( vecs, phi, tht ):
 	"""
 		vecs = [ [x0,y0,z0], [x1,y1,z1], ...]
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getfvec
 	vec = getfvec( phi, tht )
 	return  EMAN2_cppwrap.Util.nearest_fang(vecs, vec[0],vec[1],vec[2])[0]
 
 def nearest_ang( vecs, phi, tht ) :
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getvec
 	vec = getvec( phi, tht )
 	return  EMAN2_cppwrap.Util.nearest_ang(vecs, vec[0],vec[1],vec[2])
 	"""
@@ -3640,7 +3496,6 @@ def assign_projangles_slow(projangles, refangles):
 
 def nearest_many_full_k_projangles(reference_normals, angles, howmany = 1, sym_class=None):
 	# 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getfvec, angles_to_normals
 	#refnormal = normals[:]
 	assignments = [-1]*len(angles)
 	if( sym_class.sym[:2] == "c1"):
@@ -3657,10 +3512,8 @@ def nearest_many_full_k_projangles(reference_normals, angles, howmany = 1, sym_c
 
 def nearestk_projangles(projangles, whichone = 0, howmany = 1, sym="c1"):
 	# In both cases mirrored should be treated the same way as straight as they carry the same structural information
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getfvec, getvec
 	lookup = list(range(len(projangles)))
 	if( sym == "c1"):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getvec
 		refnormal = [None]*(len(projangles)*3)
 		for i in range(len(projangles)):
 			ref = getvec(projangles[i][0], projangles[i][1])
@@ -3680,8 +3533,6 @@ def nearestk_projangles(projangles, whichone = 0, howmany = 1, sym="c1"):
 			del lookup[k]
 
 	elif( sym[:1] == "d" ):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_symt, getvec
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Transform
 		t = get_symt(sym)
 		phir = 360.0/int(sym[1:])
 		for i in range(len(t)):  t[i] = t[i].inverse()
@@ -3718,8 +3569,6 @@ def nearestk_projangles(projangles, whichone = 0, howmany = 1, sym="c1"):
 			del tempan[best_j], lookup[best_j]
 
 	elif( sym[:1] == "c" ):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_symt, getvec
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Transform
 		t = get_symt(sym)
 		#phir = 360.0/int(sym[1:])
 
@@ -3758,7 +3607,6 @@ def nearestk_projangles(projangles, whichone = 0, howmany = 1, sym="c1"):
 
 def nearest_full_k_projangles(reference_ang, angles, howmany = 1, sym_class=None):
 	# We assume angles can be on the list of normals
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getfvec, angles_to_normals
 	reference_normals = angles_to_normals(reference_ang)
 
 	if( sym_class == None or sym_class.sym[:2] == "c1"):
@@ -3889,8 +3737,6 @@ def assign_projdirs_f(projdirs, refdirs, neighbors):
 
 
 def cone_ang( projangles, phi, tht, ant, symmetry = 'c1'):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getvec, getfvec
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import cos, pi, degrees, radians
 
 	cone = numpy.cos(numpy.radians(ant))
 	la = []
@@ -3940,8 +3786,6 @@ def cone_ang( projangles, phi, tht, ant, symmetry = 'c1'):
 
 #  Push to C.  PAP  11/25/2016
 def cone_ang_f( projangles, phi, tht, ant, symmetry = 'c1'):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getfvec
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import cos, pi, degrees, radians
 
 	cone = numpy.cos(numpy.radians(ant))
 	la = []
@@ -3997,7 +3841,6 @@ Util.cone_dirs_f(projdirs, ancordir, ant)
 Returns a list of projdirs indexes that are within ant degrees of ancordir
 ant in degrees
 def cone_dirs_f( projdirs, ancordir, ant):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import cos, pi, degrees, radians
 	#  ancordir contains a list of symmetry neighbors
 	#  Returns a list of projdirs indexes that are within ant degrees of ancordir
 	cone = cos(radians(ant))
@@ -4013,8 +3856,6 @@ def cone_dirs_f( projdirs, ancordir, ant):
 
 """
 def cone_ang_f_with_index( projangles, phi, tht, ant ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getvec
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import cos, pi, degrees, radians
 	# vec = getvec( phi, tht )
 	vec = getfvec( phi, tht )
 
@@ -4032,8 +3873,6 @@ def cone_ang_f_with_index( projangles, phi, tht, ant ):
 """
 
 def cone_ang_with_index( projangles, phi, tht, ant ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getvec
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import cos, pi, degrees, radians
 	# vec = getvec( phi, tht )
 	vec = getfvec( phi, tht )
 
@@ -4052,8 +3891,6 @@ def cone_ang_with_index( projangles, phi, tht, ant ):
 	return la, index
 '''
 def cone_vectors( normvectors, phi, tht, ant ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getvec
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import cos, pi, degrees, radians
 	vec = getvec( phi, tht )
 
 	cone = cos(radians(ant))
@@ -4077,7 +3914,6 @@ def symmetry_related(angles, symmetry):  # replace by s.symmetry_related
 		nt = len(temp)/3
 		return [[temp[l*3+i] for i in xrange(3)] for l in xrange(nt) ]
 	else:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Transform
 		neighbors = []
 		junk = Transform({"type":"spider","phi":angles[0],"theta":angles[1],"psi":angles[2]})
 		junk = junk.get_sym_proj(symmetry)
@@ -4087,7 +3923,6 @@ def symmetry_related(angles, symmetry):  # replace by s.symmetry_related
 		return neighbors
 
 def symmetry_related_normals(angles, symmetry):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Transform
 	neighbors = []
 	junk = Transform({"type":"spider","phi":angles[0],"theta":angles[1],"psi":angles[2]})
 	junk = junk.get_sym_proj(symmetry)
@@ -4097,8 +3932,6 @@ def symmetry_related_normals(angles, symmetry):
 """
 
 def angular_occupancy(params, angstep = 15., sym= "c1", method='S'):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import symclass
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import nearest_fang, angles_to_normals
 
 	smc  = fundamentals.symclass(sym)
 	eah  = smc.even_angles(angstep, inc_mirror=0, method=method)
@@ -4152,12 +3985,10 @@ def angular_histogram(params, angstep = 15., sym= "c1", method='S'):
 	return  [len(q) for q in occupancy], eah
 
 def balance_angular_distribution(params, max_occupy = -1, angstep = 15., sym= "c1"):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import symclass
 	occupancy,eah = angular_occupancy(params, angstep, sym, method='S')
 
 	if(max_occupy > 0):
 		outo = []
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import shuffle
 		for l,q in enumerate(occupancy):
 			random.shuffle(q)
 			q = q[:max_occupy]
@@ -4197,9 +4028,6 @@ def rotation_between_anglesets(agls1, agls2):
 	  Note: all angles have to be in spider convention.
 	  For details see: Appendix in Penczek, P., Marko, M., Buttle, K. and Frank, J.:  Double-tilt electron tomography.  Ultramicroscopy 60:393-410, 1995.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math  import sin, cos, pi, sqrt, atan2, acos, atan, radians
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import array, linalg, matrix
-	pass#IMPORTIMPORTIMPORT import types
 
 	def ori2xyz(ori):
 		if(type(ori) == list):
@@ -4256,7 +4084,6 @@ def rotation_between_anglesets(agls1, agls2):
 		[2*(qz*qy+q0*qx),                 2*(qz*qx-q0*qy),          q0*q0-qx*qx-qy*qy+qz*qz],
 		]
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import recmat
 	return  fundamentals.recmat(r)
 
 def angle_between_projections_directions(proj1, proj2):
@@ -4265,8 +4092,6 @@ def angle_between_projections_directions(proj1, proj2):
 	  INPUT: two lists: [phi1, theta1] , [phi2, theta2]
 	  OUTPUT: angle (in degrees)
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sin, cos, acos, radians, degrees
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import lacos
 	theta1 = numpy.radians(proj1[1])
 	theta2 = numpy.radians(proj2[1])
 	cp1cp2_sp1sp2 = numpy.cos(numpy.radians(proj1[0]) - numpy.radians(proj2[0]))
@@ -4286,8 +4111,6 @@ def angles_between_anglesets(angleset1, angleset2, indexes=None):
 	  OUTPUT: list of floats - angles in degrees (the n-th element of the list equals the angle between n-th projections directions from the anglesets)
 	  The third parameter (indexes) is optional and may be set to list of indexes. In that case only elements from given list are taken into account.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rotate_params
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import rotation_between_anglesets, angle_between_projections_directions
 
 	if indexes != None:
 		new_ang1 = []
@@ -4305,7 +4128,6 @@ def angles_between_anglesets(angleset1, angleset2, indexes=None):
 """
 Not used and possibly incorrect
 def phi_theta_to_xyz(ang):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sin, cos, pi, radians
 	phi   = radians( ang[0] )
 	theta = radians( ang[1] )
 	z = cos(theta)
@@ -4315,7 +4137,6 @@ def phi_theta_to_xyz(ang):
 
 
 def xyz_to_phi_theta(xyz):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, acos, sqrt, degrees, atan2
 	theta = acos(xyz[2])
 	phi   = atan2(xyz[1], xyz[0])
 	return [ degrees(phi), degrees(theta), 0.0]
@@ -4323,7 +4144,6 @@ def xyz_to_phi_theta(xyz):
 # input: list of triplets (phi, theta, psi)
 # output: average triplet: (phi, theta, psi)
 def average_angles(angles):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	# convert to x, y, z
 	ex = 0.0
 	ey = 0.0
@@ -4383,8 +4203,6 @@ def set_pixel_size(img, pixel_size):
 		img.set_attr("ctf", cc)
 
 def group_proj_by_phitheta_slow(proj_ang, symmetry = "c1", img_per_grp = 100, verbose = False):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import exp, pi
 
 	def get_ref_ang_list(delta, sym):
 		ref_ang = even_angles(delta, symmetry=sym)
@@ -4397,7 +4215,6 @@ def group_proj_by_phitheta_slow(proj_ang, symmetry = "c1", img_per_grp = 100, ve
 	def ang_diff(v1, v2):
 		# The first return value is the angle between two vectors
 		# The second return value is whether we need to mirror one of them (0 - no need, 1 - need)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import lacos
 
 		v = v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2]
 		if v >= 0: return lacos(v), 0
@@ -4568,12 +4385,10 @@ def group_proj_by_phitheta_slow(proj_ang, symmetry = "c1", img_per_grp = 100, ve
 	return proj_list, angles_list
 
 def group_proj_by_phitheta(proj_ang, symmetry = "c1", img_per_grp = 100, verbose = False):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import exp, pi
 
 	def ang_diff(v1, v2):
 		# The first return value is the angle between two vectors
 		# The second return value is whether we need to mirror one of them (0 - no need, 1 - need)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import lacos
 
 		v = v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2]
 		if v >= 0: return lacos(v), 0
@@ -4652,24 +4467,16 @@ def lacos(x):
 	"""
 		compute acos(x) in degrees after enforcing -1<=x<=1
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import degrees, acos
 	return  numpy.degrees(math.acos(max(-1.0,min(1.0,x))))
 
 def mulvec(v1,v2):
 	return v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2]
 
 def nearest_proj(proj_ang, img_per_grp=100, List=[]):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getfvec
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import exp, pi
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sets import Set
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import randint
 
 	def ang_diff(v1, v2):
 		# The first return value is the angle between two vectors
 		# The second return value is whether we need to mirror one of them (0 - no need, 1 - need)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import acos, degrees
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import lacos
 
 		v = v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2]
 		if v >= 0: return lacos(v), 0
@@ -4934,7 +4741,6 @@ def groups_assignments(groups, n = -1):
 
 # parameters: list of integers, number of processors
 def chunks_distribution(chunks, procs):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from heapq import heappush, heappop
 
 	# sort chunks in descending order
 	chunks.sort(reverse=True)
@@ -5032,9 +4838,6 @@ class iterImagesStack(object):
 		return (self.position >= 0)
 
 
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pickle import dumps,loads
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from zlib import compress,decompress
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from struct import pack,unpack
 
 def pack_message(data):
 	"""Convert data for transmission efficiently"""
@@ -5066,7 +4869,6 @@ def update_tag(communicator, target_rank):   # TODO - it doesn't work when commu
 	return 123456
 	global statistics_send_recv
 	if communicator not in statistics_send_recv:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_size
 		statistics_send_recv[communicator] = [0] * mpi.mpi_comm_size(communicator)
 	statistics_send_recv[communicator][target_rank] += 1
 	return statistics_send_recv[communicator][target_rank]
@@ -5074,7 +4876,6 @@ def update_tag(communicator, target_rank):   # TODO - it doesn't work when commu
 # ===================================== WRAPPER FOR MPI
 
 def wrap_mpi_send(data, destination, communicator = None):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_send, MPI_COMM_WORLD, MPI_CHAR
 
 	if communicator == None:
 		communicator = mpi.MPI_COMM_WORLD
@@ -5087,7 +4888,6 @@ def wrap_mpi_send(data, destination, communicator = None):
 
 
 def wrap_mpi_recv(source, communicator = None):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_recv, MPI_COMM_WORLD, MPI_CHAR, mpi_probe, mpi_get_count
 
 	if communicator == None:
 		communicator = mpi.MPI_COMM_WORLD
@@ -5102,7 +4902,6 @@ def wrap_mpi_recv(source, communicator = None):
 
 
 def wrap_mpi_bcast(data, root, communicator = None):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_bcast, MPI_COMM_WORLD, mpi_comm_rank, MPI_CHAR
 
 	if communicator == None:
 		communicator = mpi.MPI_COMM_WORLD
@@ -5124,7 +4923,6 @@ def wrap_mpi_bcast(data, root, communicator = None):
 
 # data must be a python list (numpy array also should be implemented)
 def wrap_mpi_gatherv(data, root, communicator = None):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
 
 	if communicator == None:
 		communicator = mpi.MPI_COMM_WORLD
@@ -5152,9 +4950,6 @@ def wrap_mpi_gatherv(data, root, communicator = None):
 # def rearrange_ranks_of_processors_to_fit_round_robin_assignment():
 def rearrange_ranks_of_processors(mode):
 	
-	pass#IMPORTIMPORTIMPORT import socket
-	pass#IMPORTIMPORTIMPORT import mpi
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from inspect import currentframe, getframeinfo
 	
 	mpi.mpi_init(0, [])
 	
@@ -5224,7 +5019,6 @@ def get_colors_and_subsets(main_node, mpi_comm, my_rank, shared_comm, sh_my_rank
 	masters_from_groups_vs_everything_else_comm = mpi_comm_split(mpi_comm, sh_my_rank == main_node, my_rank)
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier
 
 	sh_my_ranks = [my_rank]
 	sh_my_ranks = wrap_mpi_gatherv(sh_my_ranks, main_node, shared_comm)
@@ -5256,9 +5050,6 @@ def get_colors_and_subsets(main_node, mpi_comm, my_rank, shared_comm, sh_my_rank
 
 
 def wrap_mpi_split_shared_memory(mpi_comm):
-	pass#IMPORTIMPORTIMPORT import socket
-	pass#IMPORTIMPORTIMPORT import os
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_rank, mpi_comm_size, mpi_comm_split
 
 	hostname = socket.gethostname()
 
@@ -5310,7 +5101,6 @@ def wrap_mpi_split(comm, no_of_groups):
 	Consecutive global process ids have consecutive subgroup process ids.
 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_size, mpi_comm_rank, mpi_comm_split
 	nproc = mpi.mpi_comm_size(comm)
 	myid = mpi.mpi_comm_rank(comm)
 
@@ -5322,7 +5112,6 @@ def wrap_mpi_split(comm, no_of_groups):
 	
 
 def get_dist(c1, c2):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	d = numpy.sqrt((c1[0] - c2[0])**2 + (c1[1] - c2[1])**2)
 	return d
 
@@ -5333,7 +5122,6 @@ def eliminate_moons(my_volume, moon_elimination_params):
 	moon_elimination_params[1] - pixel size in A
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import binarize
 	histogram_threshold  =  my_volume.find_3d_threshold(moon_elimination_params[0], moon_elimination_params[1])*1.1
 	# clean11 88x88,  4.84 px/A 750 kDa
 
@@ -5348,7 +5136,6 @@ def eliminate_moons(my_volume, moon_elimination_params):
 		volume_difference.get_value_at(volume_difference.calc_min_index()) == 0:
 		return my_volume
 	else:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import gauss_edge
 		return gauss_edge(my_volume_binarized_with_no_moons) * my_volume
 
 		# from utilities   import model_blank
@@ -5357,13 +5144,9 @@ def eliminate_moons(my_volume, moon_elimination_params):
 	# this is only in master
 
 def combinations_of_n_taken_by_k(n, k):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fractions import Fraction
 	return int(reduce(lambda x, y: x * y, (fractions.Fraction(n-i, i+1) for i in range(k)), 1))
 
 def cmdexecute(cmd, printing_on_success = True):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   time import localtime, strftime
-	pass#IMPORTIMPORTIMPORT import subprocess
-	pass#IMPORTIMPORTIMPORT import os
 	#outcome = subprocess.call(cmd, shell=True)
 	outcome = os.system(cmd)
 	line = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime()) + " =>"
@@ -5375,7 +5158,6 @@ def cmdexecute(cmd, printing_on_success = True):
 		return 1
 
 def string_found_in_file(myregex, filename):
-	pass#IMPORTIMPORTIMPORT import re
 	pattern = re.compile(myregex)
 	for line in open(filename):
 		if re.findall(pattern, line) != []:
@@ -5383,7 +5165,6 @@ def string_found_in_file(myregex, filename):
 	return False
 
 def random_string(length_of_randomstring = 16):
-	pass#IMPORTIMPORTIMPORT import random
 	chars=list(map(chr, list(range(97, 123)))) # a..z
 	chars.extend(list(map(chr, list(range(65, 91))))) # A..Z
 	chars.extend(list(map(chr, list(range(48, 58))))) # 0..9
@@ -5393,7 +5174,6 @@ def random_string(length_of_randomstring = 16):
 	return random_string
 
 def get_latest_directory_increment_value(directory_location, directory_name, start_value = 1, myformat = "%03d"):
-	pass#IMPORTIMPORTIMPORT import os
 	dir_count = start_value
 	while os.path.isdir(directory_location + directory_name + myformat%(dir_count)):
 		dir_count += 1
@@ -5402,20 +5182,16 @@ def get_latest_directory_increment_value(directory_location, directory_name, sta
 	return dir_count - 1
 
 def get_nonexistent_directory_increment_value(directory_location, directory_name, start_value = 1, myformat = "%03d"):
-	pass#IMPORTIMPORTIMPORT import os
 	dir_count = start_value
 	while os.path.isdir(directory_location + directory_name + myformat%(dir_count)):
 		dir_count += 1
 	return dir_count
 
 def print_with_time_info(msg):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import localtime, strftime
 	line = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime()) + " =>" + msg
 	print(line)
 
 def if_error_then_all_processes_exit_program(error_status):
-	pass#IMPORTIMPORTIMPORT import sys, os
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import print_msg
 
 	# if "OMPI_COMM_WORLD_SIZE" not in os.environ:
 	if len({"OMPI_COMM_WORLD_SIZE", "PMI_RANK", "PMI_ID", "SLURM_PROCID", "LAMRANK", "MPI_RANKID", "MP_CHILD", "MP_CHILD", "MP_CHILD"}.intersection(set(os.environ))) == 0:
@@ -5426,7 +5202,11 @@ def if_error_then_all_processes_exit_program(error_status):
 			return None
 		MPI_INT, MPI_COMM_WORLD = 0, 0
 	else:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_rank, mpi_bcast, mpi_finalize, MPI_INT, MPI_COMM_WORLD
+		mpi_comm_rank = mpi.mpi_comm_rank
+		mpi_bcast = mpi.mpi_bcast
+		mpi_finalize = mpi.mpi_finalize
+		MPI_INT = mpi.MPI_INT
+		MPI_COMM_WORLD = mpi.MPI_COMM_WORLD
 
 	myid = mpi_comm_rank(MPI_COMM_WORLD)
 	if error_status != None and error_status != 0:
@@ -5450,7 +5230,7 @@ def if_error_then_all_processes_exit_program(error_status):
 					print_msg("***********************************\n")
 		sys.stdout.flush()
 		mpi_finalize()
-		exit() # sys.exit(1)
+		sys.exit(1) # sys.exit(1)
 
 def get_shrink_data_huang(Tracker, nxinit, partids, partstack, myid, main_node, nproc, preshift = False):
 	# The function will read from stack a subset of images specified in partids
@@ -5460,9 +5240,6 @@ def get_shrink_data_huang(Tracker, nxinit, partids, partstack, myid, main_node, 
 	# 10142015 --- preshift is set to True when doing 3-D sorting.
 	# chunk_id are set when data is read in
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import resample, fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
 
 	'''
 	if( myid == main_node ):
@@ -5506,7 +5283,6 @@ def get_shrink_data_huang(Tracker, nxinit, partids, partstack, myid, main_node, 
 		if im ==0:
 			if data[im].get_xsize() > Tracker["constants"]["nnxo"]:
 				window_particle =True
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Region
 			else:
 				window_particle =False
 		phi,theta,psi,sx,sy = partstack[lpartids[im]][0], partstack[lpartids[im]][1], partstack[lpartids[im]][2], partstack[lpartids[im]][3], partstack[lpartids[im]][4]
@@ -5562,11 +5338,6 @@ def get_shrink_data(Tracker, nxinit, partids, partstack, bckgdata = None, myid =
 
 	"""
 	#from fundamentals import resample
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fdecimate, fshift, fft
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import filt_ctf, filt_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import sqrt
 
 
 	if( myid == main_node ):
@@ -5667,7 +5438,6 @@ def get_shrink_data(Tracker, nxinit, partids, partstack, bckgdata = None, myid =
 				st = Util.infomask(bckg, mask2D, False)
 				bckg -= st[0]
 				bckg /= st[1]
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import cosinemask
 				data[im] = cosinemask(data[im],radius = Tracker["constants"]["radius"], bckg = bckg)
 		else:
 			#  if no bckgnoise, do simple masking instead
@@ -5706,7 +5476,6 @@ def getindexdata(stack, partids, partstack, myid, nproc):
 	# So, the lengths of partids and partstack are the same.
 	#  The read data is properly distributed among MPI threads.
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
 
 	lpartids = read_text_file(partids)
 	ndata = len(lpartids)
@@ -5733,7 +5502,6 @@ def getindexdata(stack, partids, partstack, myid, nproc):
 def store_value_of_simple_vars_in_json_file(filename, local_vars, exclude_list_of_vars = [], write_or_append = "w",
 	vars_that_will_show_only_size = []):
 
-	pass#IMPORTIMPORTIMPORT import json, types, collections
 
 	allowed_types = [type(None), bool, int, int, float, complex,
 					 str, bytes]
@@ -5766,9 +5534,6 @@ def store_value_of_simple_vars_in_json_file(filename, local_vars, exclude_list_o
 
 def print_program_start_information():
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_comm_rank, mpi_comm_size, mpi_barrier
-	pass#IMPORTIMPORTIMPORT import os
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from socket import gethostname
 
 	myid = mpi.mpi_comm_rank(mpi.MPI_COMM_WORLD)
 	mpi_size = mpi.mpi_comm_size(mpi.MPI_COMM_WORLD)	# Total number of processes, passed by --np option.
@@ -5781,13 +5546,11 @@ def print_program_start_information():
 
 
 def store_program_state(filename, state, stack):
-	pass#IMPORTIMPORTIMPORT import json
 	with open(filename, "w") as fp:
 		json.dump(list(zip(stack, state)), fp, indent = 2)
 	fp.close()
 
 def restore_program_stack_and_state(file_name_of_saved_state):
-	pass#IMPORTIMPORTIMPORT import json
 	f = open(file_name_of_saved_state, 'r')
 	saved_state_and_stack = json.load(f)
 	f.close()
@@ -5798,8 +5561,6 @@ def program_state_stack(full_current_state, frameinfo, file_name_of_saved_state=
 
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT When used it needs: from inspect import currentframe, getframeinfo
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT Also: from utilities import program_state_stack
 
 	This function is used for restarting time consuming data processing programs/steps from the last saved point.
 
@@ -5828,10 +5589,6 @@ def program_state_stack(full_current_state, frameinfo, file_name_of_saved_state=
 
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from traceback import extract_stack
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_rank, mpi_bcast, MPI_COMM_WORLD, MPI_INT
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import if_error_then_all_processes_exit_program
-	pass#IMPORTIMPORTIMPORT import os
 
 	def get_current_stack_info():
 		return [[x[0], x[2]] for x in traceback.extract_stack()[:-2]]
@@ -5957,7 +5714,6 @@ def qw(s):
 	return tuple(s.split())
 
 def list_prod(list_whose_elements_are_going_to_be_multiplied):
-	pass#IMPORTIMPORTIMPORT import operator
 	return reduce(operator.mul, list_whose_elements_are_going_to_be_multiplied)
 
 def calculate_space_size(x_half_size, y_half_size, psi_half_size):
@@ -5965,8 +5721,6 @@ def calculate_space_size(x_half_size, y_half_size, psi_half_size):
 
 
 def convert_json_fromunicode(data):
-	pass#IMPORTIMPORTIMPORT import  collections
-	pass#IMPORTIMPORTIMPORT import six
 	if isinstance(data, six.string_types):
 		return str(data)
 	elif isinstance(data, collections.Mapping):
@@ -5978,9 +5732,6 @@ def convert_json_fromunicode(data):
 
 """
 def debug_mpi_barrier(comm):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, mpi_comm_rank, mpi_bcast
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from traceback import extract_stack
-	pass#IMPORTIMPORTIMPORT import sys
 
 
 	# if mpi_comm_rank(comm) in range(4):
@@ -5992,9 +5743,6 @@ def debug_mpi_barrier(comm):
 
 
 def debug_mpi_bcast(newv, s, t, m, comm):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_rank, mpi_bcast
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from traceback import extract_stack
-	pass#IMPORTIMPORTIMPORT import sys
 
 
 	rrr = mpi_bcast(newv, s, t, m, comm)
@@ -6009,9 +5757,6 @@ def debug_mpi_bcast(newv, s, t, m, comm):
 """
 
 def print_from_process(process_rank, message):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_comm_rank, mpi_comm_size, mpi_barrier
-	pass#IMPORTIMPORTIMPORT import os, sys
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from socket import gethostname
 
 	myid = mpi.mpi_comm_rank(mpi.MPI_COMM_WORLD)
 	mpi_size = mpi.mpi_comm_size(mpi.MPI_COMM_WORLD)	# Total number of processes, passed by --np option.
@@ -6022,8 +5767,6 @@ def print_from_process(process_rank, message):
 	sys.stdout.flush()
 
 def mpi_exit():
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
-	pass#IMPORTIMPORTIMPORT import sys
 
 	mpi.mpi_finalize()
 	sys.stdout.flush()
@@ -6039,7 +5782,6 @@ def get_attr_stack(data_stack,attr_string):
 	return attr_value_list
 
 def get_sorting_attr_stack(data_stack):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params_proj
 	attr_value_list = []
 	for idat in range(len(data_stack)):
 		group                 = data_stack[idat].get_attr("group")
@@ -6048,9 +5790,6 @@ def get_sorting_attr_stack(data_stack):
 	return attr_value_list
 
 def get_sorting_params(Tracker,data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_row,wrap_mpi_bcast,even_angles
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
 	myid      = Tracker["constants"]["myid"]
 	main_node = Tracker["constants"]["main_node"]
 	nproc     = Tracker["constants"]["nproc"]
@@ -6073,9 +5812,6 @@ def get_sorting_params(Tracker,data):
 	return total_attr_value_list
 
 def get_sorting_params_refine(Tracker,data,ndata):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_row,wrap_mpi_bcast,even_angles
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
 	myid       = Tracker["constants"]["myid"]
 	main_node  = Tracker["constants"]["main_node"]
 	nproc      = Tracker["constants"]["nproc"]
@@ -6192,7 +5928,6 @@ def print_a_line_with_timestamp(string_to_be_printed ):
 	return string_to_be_printed
 
 def convertasi(asig,K):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import array
 	p = []
 	for k in range(K):
 		l = []
@@ -6227,11 +5962,6 @@ def print_dict(dict,theme):
 def get_resolution_mrk01(vol, radi, nnxo, fscoutputdir, mask_option):
 	# this function is single processor
 	#  Get updated FSC curves, user can also provide a mask using radi variable
-	pass#IMPORTIMPORTIMPORT import types
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import fsc
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle, get_im
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import fit_tanh1
-	pass#IMPORTIMPORTIMPORT import os
 	if(type(radi) == int):
 		if(mask_option is None):  mask = model_circle(radi,nnxo,nnxo,nnxo)
 		else:                     mask = get_im(mask_option)
@@ -6291,8 +6021,6 @@ def merge_groups(stable_members_list):
 	return alist
 
 def save_alist(Tracker,name_of_the_text_file,alist):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
-	pass#IMPORTIMPORTIMPORT import os
 	log       =Tracker["constants"]["log_main"]
 	myid      =Tracker["constants"]["myid"]
 	main_node =Tracker["constants"]["main_node"]
@@ -6303,7 +6031,6 @@ def save_alist(Tracker,name_of_the_text_file,alist):
 
 def margin_of_error(P, size_of_this_sampling):
 	# margin of an error, or radius of an error for a percentage
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	return numpy.sqrt(P*(1.-P)/size_of_this_sampling)
 
 def get_margin_of_error(this_group_of_data,Tracker):
@@ -6312,10 +6039,6 @@ def get_margin_of_error(this_group_of_data,Tracker):
 	return abs(rate1-Tracker["P_chunk0"]),ratio,abs(rate2-Tracker["P_chunk1"]),ratio
 
 def do_two_way_comparison(Tracker):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_file,write_text_file
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import k_means_match_clusters_asg_new
-	pass#IMPORTIMPORTIMPORT import os
 	######
 	myid              = Tracker["constants"]["myid"]
 	main_node         = Tracker["constants"]["main_node"]
@@ -6331,8 +6054,6 @@ def do_two_way_comparison(Tracker):
 	if( Tracker["constants"]["indep_runs"]<2 ):
 		if myid ==main_node:
 			log_main.add(" Error! One single run cannot make two-way comparison")
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
 		mpi.mpi_finalize()
 		exit()
 	else:
@@ -6435,7 +6156,6 @@ def do_two_way_comparison(Tracker):
 		if myid==main_node:
 			log_main.add(" Selected indepedent runs      %5d and  %5d"%(run1,run2))
 			log_main.add(" Their pair-wise averaged rates are %5.2f  and %5.2f "%(rate1,rate2))
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 		avg_two_ways        = avg_two_ways/total_pop
 		two_ways_std        = numpy.sqrt(avg_two_ways_square/total_pop-avg_two_ways**2)
 		net_rate            = avg_two_ways-1./number_of_groups*100.
@@ -6479,7 +6199,6 @@ def select_two_runs(summed_scores,two_way_dict):
 	return run1, run2, rate1, rate2
 
 def get_ali3d_params(ali3d_old_text_file,shuffled_list):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_row
 	ali3d_old = read_text_row(ali3d_old_text_file)
 	ali3d_new = []
 	for iptl in range(len(shuffled_list)):
@@ -6487,13 +6206,11 @@ def get_ali3d_params(ali3d_old_text_file,shuffled_list):
 	return ali3d_new
 
 def counting_projections(delta, ali3d_params, image_start):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import even_angles,angle_between_projections_directions
 	sampled_directions = {}
 	angles=even_angles(delta,0,180)
 	for a in angles:
 		[phi0, theta0, psi0]=a
 		sampled_directions[(phi0,theta0)]=[]
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	for i in range(len(ali3d_params)):
 		[phi, theta, psi, s2x, s2y] = ali3d_params[i]
 		dis_min    = 9999.
@@ -6533,9 +6250,6 @@ def load_dict(dict_angle_main_node, unloaded_dict_angles):
 	return dict_angle_main_node
 
 def get_stat_proj(Tracker,delta,this_ali3d):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_row,wrap_mpi_bcast,even_angles
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
 	myid      = Tracker["constants"]["myid"]
 	main_node = Tracker["constants"]["main_node"]
 	nproc     = Tracker["constants"]["nproc"]
@@ -6564,9 +6278,6 @@ def get_stat_proj(Tracker,delta,this_ali3d):
 	return sampled
 
 def create_random_list(Tracker):
-	pass#IMPORTIMPORTIMPORT import copy
-	pass#IMPORTIMPORTIMPORT import random
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import wrap_mpi_bcast
 
 	myid        = Tracker["constants"]["myid"]
 	main_node   = Tracker["constants"]["main_node"]
@@ -6592,11 +6303,6 @@ def get_number_of_groups(total_particles,number_of_images_per_group, round_off=.
 	return number_of_groups
 
 def recons_mref(Tracker):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT import os
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import sleep
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from reconstruction import recons3d_4nn_ctf_MPI
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_shrink_data_huang
 	myid             = Tracker["constants"]["myid"]
 	main_node        = Tracker["constants"]["main_node"]
 	nproc            = Tracker["constants"]["nproc"]
@@ -6611,7 +6317,6 @@ def recons_mref(Tracker):
 		a_group_list = particle_list[(total_data*igrp)//number_of_groups:(total_data*(igrp+1))//number_of_groups]
 		a_group_list.sort()
 		Tracker["this_data_list"] = a_group_list
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
 		particle_list_file = os.path.join(Tracker["this_dir"], "iclass%d.txt"%igrp)
 		if myid ==main_node:
 			write_text_file(Tracker["this_data_list"],particle_list_file)
@@ -6628,7 +6333,6 @@ def recons_mref(Tracker):
 	return ref_list
 
 def apply_low_pass_filter(refvol,Tracker):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_tanl
 	for iref in range(len(refvol)):
 		refvol[iref]=filter.filt_tanl(refvol[iref],Tracker["low_pass_filter"],.1)
 	return refvol
@@ -6722,8 +6426,6 @@ def set_filter_parameters_from_adjusted_fsc(n1,n2,Tracker):
 ##### from RSORT
 
 def get_class_members(sort3d_dir):
-	pass#IMPORTIMPORTIMPORT import os
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_file
 	maximum_generations = 100
 	maximum_groups      = 100
 	class_list = []
@@ -6767,9 +6469,6 @@ def get_stable_members_from_two_runs(SORT3D_rootdirs, ad_hoc_number, log_main):
 	#SORT3D_rootdirs                       =sys.argv[1]
 	# ad_hoc_number would be a number larger than the id simply for handling two_way comparison of non-equal number of groups from two partitions.
 	########
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string import split
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import k_means_match_clusters_asg_new
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import array
 
 	sort3d_rootdir_list = numpy.split(SORT3D_rootdirs)
 	dict1              = []
@@ -6838,9 +6537,6 @@ def get_stable_members_from_two_runs(SORT3D_rootdirs, ad_hoc_number, log_main):
 
 def two_way_comparison_single(partition_A, partition_B,Tracker):
 	###############
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import k_means_match_clusters_asg_new
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import count_chunk_members, margin_of_error
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import array
 	#two_way_comparison_single
 	total_stack = Tracker["constants"]["total_stack"]
 	log_main    = Tracker["constants"]["log_main"]
@@ -6923,13 +6619,6 @@ def get_leftover_from_stable(stable_list, N_total, smallest_group):
 	return leftover_list, new_stable
 
 def Kmeans_exhaustive_run(ref_vol_list,Tracker):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali3d_mref_Kmeans_MPI
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from reconstruction import rec3D_two_chunks_MPI
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import get_shrink_3dmask
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import wrap_mpi_bcast
-	pass#IMPORTIMPORTIMPORT import os
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_barrier
 	# npad 2 ---------------------------------------
 	npad                  = 2
 	myid                  = Tracker["constants"]["myid"]
@@ -7010,20 +6699,12 @@ def print_a_line_with_timestamp(string_to_be_printed ):
 
 def split_a_group(workdir,list_of_a_group,Tracker):
 	### Using EQ-Kmeans and Kmeans to split a group
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import wrap_mpi_bcast
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import shuffle
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_barrier
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_shrink_data_huang
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from reconstructions import recons3d_4nn_ctf_MPI
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import mref_ali3d_EQ_Kmeans
 	################
 	myid        = Tracker["constants"]["myid"]
 	main_node   = Tracker["constants"]["main_node"]
 	nproc       = Tracker["constants"]["nproc"]
 	total_stack = len(list_of_a_group)
 	################
-	pass#IMPORTIMPORTIMPORT import copy
 	data_list = list_of_a_group[:]
 	update_full_dict(data_list,Tracker)
 	this_particle_text_file = os.os.path.join(workdir,"full_class.txt")
@@ -7102,7 +6783,6 @@ def search_lowpass(fsc):
 def angular_distribution(inputfile, options, output):
 	global_def.ERROR("Code disabled, please use sxplot_projs_distrib.py instead","angular_distribution",1)
 	"""
-	pass#IMPORTIMPORTIMPORT import numpy
 
 	#print('Loading data')
 	# Import data
@@ -7114,8 +6794,6 @@ def angular_distribution(inputfile, options, output):
 	# The following two lines are in case there is no symmetry option in sxprocess, to be simiplified
 	try: sym = options.symmetry
 	except: sym = "c1"
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import symclass
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_row
 	if( sym == "c0" ):
 		angs = read_text_row(inputfile)
 	else:
@@ -7276,6 +6954,5 @@ def convert_to_float(value):
 	std::cout << goo<<std::endl;
 	return ival, and then in python covert it to float
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from struct import unpack
 	return struct.unpack("!f", hex(value)[2:].zfill(8).decode('hex'))[0]
 

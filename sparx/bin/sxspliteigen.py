@@ -48,7 +48,6 @@ from builtins import range
 
 def main():
 
-	pass#IMPORTIMPORTIMPORT import sys
 
 	arglist = []
 	for arg in sys.argv:
@@ -64,7 +63,6 @@ def main():
 		print("usage: " + usage)
 		return None
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	nimage = EMAN2_cppwrap.EMUtil.get_image_count( args[0] )
 
 	for i in range(nimage) :

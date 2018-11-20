@@ -71,12 +71,6 @@ stacks into one stack.
 '''
 
 def main():
-	pass#IMPORTIMPORTIMPORT import	global_def
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from	optparse 	import OptionParser
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from	EMAN2 		import EMUtil
-	pass#IMPORTIMPORTIMPORT import	os
-	pass#IMPORTIMPORTIMPORT import	sys
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
 
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + " proj_stack output_averages --MPI"
@@ -99,13 +93,6 @@ def main():
 
 	(options,args) = parser.parse_args()
 	
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi          import mpi_init, mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi          import mpi_barrier, mpi_send, mpi_recv, mpi_bcast, MPI_INT, mpi_finalize, MPI_FLOAT
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end, within_group_refinement, ali2d_ras
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error  import multi_align_stability
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import send_EMData, recv_EMData
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_image, bcast_number_to_all, set_params2D, get_params2D
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import group_proj_by_phitheta, model_circle, get_input_from_string
 
 	sys.argv = mpi.mpi_init(len(sys.argv), sys.argv)
 	myid = mpi.mpi_comm_rank(mpi.MPI_COMM_WORLD)
@@ -123,7 +110,6 @@ def main():
 		exit()		 
 
 	if global_def.CACHE_DISABLE:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
 		utilities.disable_bdb_cache()
 	global_def.BATCH = True
 
@@ -216,7 +202,6 @@ def main():
 	#   Compute stability per projection projection direction, equal number assigned, thus overlaps
 	elif options.grouping == "GEV":
 		if options.delta == -1.0: global_def.ERROR("Angular step for reference projections is required for GEV method","sxproj_stability",1)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import even_angles, nearestk_to_refdir, getvec
 		refproj = utilities.even_angles(options.delta)
 		img_begin, img_end = applications.MPI_start_end(len(refproj), number_of_proc, myid)
 		# Now each processor keeps its own share of reference projections
@@ -268,27 +253,23 @@ def main():
 			proj_params.append([phi, theta, psi, s2x, s2y])
 		img_begin, img_end = applications.MPI_start_end(nima, number_of_proc, myid)
 		print("  C  ",myid,"  ",time.time()-st)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import nearest_proj
 		proj_list, mirror_list = utilities.nearest_proj(proj_params, img_per_grp, list(range(img_begin, img_begin+1)))#range(img_begin, img_end))
 		refprojdir = proj_params[img_begin: img_end]
 		del proj_params, mirror_list
 		print("  D  ",myid,"  ",time.time()-st)
 	else:  global_def.ERROR("Incorrect projection grouping option","sxproj_stability",1)
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
 	for i in xrange(len(proj_list)):
 		write_text_file(proj_list[i],"projlist%06d_%04d"%(i,myid))
 	"""
 
 	###########################################################################################################
 	# Begin stability test
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params_proj, read_text_file
 	#if myid == 0:
 	#	from utilities import read_text_file
 	#	proj_list[0] = map(int, read_text_file("lggrpp0.txt"))
 
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank
 	aveList = [utilities.model_blank(nx,ny)]*len(proj_list)
 	if options.grouping == "GRP":  refprojdir = [[0.0,0.0,-1.0]]*len(proj_list)
 	for i in range(len(proj_list)):
@@ -296,7 +277,6 @@ def main():
 		class_data = EMAN2_cppwrap.EMData.read_images(stack, proj_list[i])
 		#print "  R  ",myid,"  ",time()-st
 		if options.CTF :
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_ctf
 			for im in range(len(class_data)):  #  MEM LEAK!!
 				atemp = class_data[im].copy()
 				btemp = filter.filt_ctf(atemp, atemp.get_attr("ctf"), binary=1)
@@ -348,7 +328,6 @@ def main():
 				members.append(proj_list[i][s[1]])
 				pix_err.append(s[0])
 			# Then put the unstable members into attr 'members' and 'pix_err'
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift2D
 			avet.to_zero()
 			if options.grouping == "GRP":
 				aphi = 0.0
@@ -382,7 +361,6 @@ def main():
 					atht /= l
 					vphi = (vphi - l*aphi*aphi)/l
 					vtht = (vtht - l*atht*atht)/l
-					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 					refprojdir[i] = [aphi, atht, (numpy.sqrt(max(vphi,0.0))+numpy.sqrt(max(vtht,0.0)))/2.0]
 
 			# Here more information has to be stored, PARTICULARLY WHAT IS THE REFERENCE DIRECTION
@@ -436,7 +414,6 @@ def main():
 
 	global_def.BATCH = False
 	mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
 	mpi.mpi_finalize()
 
 if __name__=="__main__":

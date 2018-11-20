@@ -100,7 +100,6 @@ def get_cmd_line():
 # Get suffix of current time stamp
 # ----------------------------------------------------------------------------------------
 def get_time_stamp_suffix():
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import strftime, localtime
 	time_stamp_suffix = time.strftime("%Y%m%d_%H%M%S", time.localtime())
 	return time_stamp_suffix
 
@@ -183,8 +182,6 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 	
 	main_mpi_proc = 0
 	if RUNNING_UNDER_MPI:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_comm_rank, mpi_comm_size, mpi_barrier, mpi_reduce, MPI_INT, MPI_SUM
 		
 		mpi.mpi_init(0, [])
 		my_mpi_proc_id = mpi.mpi_comm_rank(mpi.MPI_COMM_WORLD)
@@ -197,7 +194,6 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 	# Set up SPHIRE global definitions
 	# ------------------------------------------------------------------------------------
 	if global_def.CACHE_DISABLE:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
 		utilities.disable_bdb_cache()
 	
 	# Change the name log file for error message
@@ -1220,7 +1216,6 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 			
 			n_bins = 10
 			if len(abs_ctf_limit_histogram) >= n_bins:
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import hist_list
 				cutoff_region, cutoff_counts = statistics.hist_list(abs_ctf_limit_histogram, n_bins)
 				print("Histogram of CTF limit absolute frequency used for the filtering:")
 				print("      CTF limit       counts")
@@ -1311,7 +1306,6 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 	# ------------------------------------------------------------------------------------
 	if RUNNING_UNDER_MPI:
 		mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
 		mpi.mpi_finalize()
 	
 	sys.stdout.flush()

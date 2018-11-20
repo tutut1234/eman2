@@ -31,7 +31,6 @@ from builtins import range
 
 
 def main():
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from logger import Logger, BaseLogger_Files
 	arglist = []
 	i = 0
 	while( i < len(sys.argv) ):
@@ -93,19 +92,13 @@ def main():
 		masterdir                       =args[1]
 		global_def.BATCH = True
 		#---initialize MPI related variables
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init, mpi_comm_size, MPI_COMM_WORLD, mpi_comm_rank,mpi_barrier,mpi_bcast, mpi_bcast, MPI_INT,MPI_CHAR
 		sys.argv = mpi.mpi_init(len(sys.argv),sys.argv)
 		nproc    = mpi.mpi_comm_size(mpi.MPI_COMM_WORLD)
 		myid     = mpi.mpi_comm_rank(mpi.MPI_COMM_WORLD)
 		mpi_comm = mpi.MPI_COMM_WORLD
 		main_node= 0
 		# import some utilities
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im,bcast_number_to_all, cmdexecute, write_text_file,read_text_file,wrap_mpi_bcast, get_params_proj, write_text_row
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import recons3d_n_MPI, mref_ali3d_MPI, Kmref_ali3d_MPI
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import k_means_match_clusters_asg_new,k_means_stab_bbenum
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import mref_ali3d_EQ_Kmeans, ali3d_mref_Kmeans_MPI
 		# Create the main log file
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from logger import Logger,BaseLogger_Files
 		if myid ==main_node:
 			log_main=logger.Logger(logger.BaseLogger_Files())
 			log_main.prefix = masterdir+"/"
@@ -199,16 +192,9 @@ def main():
 		Tracker["orgstack"]        = orgstack
 		#--------------------------------------------------------------------
 		# import from utilities
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import sample_down_1D_curve,get_initial_ID,remove_small_groups,print_upper_triangular_matrix,print_a_line_with_timestamp
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import print_dict,get_resolution_mrk01,partition_to_groups,partition_independent_runs,get_outliers
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import merge_groups, save_alist, margin_of_error, get_margin_of_error, do_two_way_comparison, select_two_runs, get_ali3d_params
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import counting_projections, unload_dict, load_dict, get_stat_proj, create_random_list, get_number_of_groups, recons_mref
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import apply_low_pass_filter, get_groups_from_partition, get_number_of_groups, get_complementary_elements_total, update_full_dict
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import count_chunk_members, set_filter_parameters_from_adjusted_fsc, get_two_chunks_from_stack
 		####------------------------------------------------------------------
 		#
 		# Get the pixel size; if none, set to 1.0, and the original image size
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_shrink_data_huang
 		if(myid == main_node):
 			line = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime()) + " =>"
 			print((line+"Initialization of 3-D sorting"))
@@ -263,7 +249,6 @@ def main():
 		li = mpi.mpi_bcast(li,1,mpi.MPI_INT,main_node,mpi.MPI_COMM_WORLD)[0]
 		if li>0:
 			masterdir = mpi.mpi_bcast(masterdir,li,mpi.MPI_CHAR,main_node,mpi.MPI_COMM_WORLD)
-			pass#IMPORTIMPORTIMPORT import string
 			masterdir = string.join(masterdir,"")
 		if myid ==main_node:
 			utilities.print_dict(Tracker["constants"],"Permanent settings of 3-D sorting program")
@@ -279,7 +264,6 @@ def main():
 			total_stack = 0
 		total_stack = utilities.bcast_number_to_all(total_stack, source_node = main_node)
 		mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import sleep
 		while not os.path.exists(masterdir):
 				print("Node ",myid,"  waiting...")
 				time.sleep(5)
@@ -290,10 +274,8 @@ def main():
 		#####
 		###----------------------------------------------------------------------------------
 		# Initial data analysis and handle two chunk files
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import shuffle
 		# Compute the resolution 
 		#### make chunkdir dictionary for computing margin of error
-		pass#IMPORTIMPORTIMPORT import user_functions
 		user_func  = user_functions.factory[Tracker["constants"]["user_func"]]
 		chunk_dict = {}
 		chunk_list = []
@@ -395,7 +377,6 @@ def main():
 		if myid == main_node:
 			log_main.add("number of cpus used in this run is %d"%Tracker["constants"]["nproc"])
 			log_main.add("**********************************************************")
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_tanl
 		### START 3-D sorting
 		if myid ==main_node:
 			log_main.add("----------3-D sorting  program------- ")
@@ -406,10 +387,8 @@ def main():
 			for index in range(2):
 				filter.filt_tanl(utilities.get_im(os.path.join(masterdir,"vol%01d.hdf"%index)), Tracker["low_pass_filter"],Tracker["falloff"]).write_image(os.path.join(masterdir, "volf%01d.hdf"%index))
 		mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_input_from_string
 		delta       = utilities.get_input_from_string(Tracker["constants"]["delta"])
 		delta       = delta[0]
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import even_angles
 		n_angles    = utilities.even_angles(delta, 0, 180)
 		this_ali3d  = Tracker["constants"]["ali3d"]
 		sampled     = utilities.get_stat_proj(Tracker,delta,this_ali3d)
@@ -467,7 +446,6 @@ def main():
 		utilities.do_two_way_comparison(Tracker)
 		###############################
 		ref_vol_list = []
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import sleep
 		number_of_ref_class = []
 		for igrp in range(len(Tracker["two_way_stable_member"])):
 			Tracker["this_data_list"]      = Tracker["two_way_stable_member"][igrp]
@@ -654,7 +632,6 @@ def main():
 		# Finish program
 		if myid ==main_node: log_main.add("sxsort3d finishes")
 		mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
 		mpi.mpi_finalize()
 		exit()
 if __name__ == "__main__":

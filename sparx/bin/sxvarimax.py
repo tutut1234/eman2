@@ -59,7 +59,6 @@ def main():
         print("usage: " + usage)
         print("Please run '" + progname + " -h' for details")
     else:
-        pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string import atoi
         input_stack  = args[0]
         imgstart     = string.atoi( args[1] )
         imgend       = string.atoi( args[2] ) +1
@@ -68,9 +67,7 @@ def main():
         else:               mask = None
 
     if global_def.CACHE_DISABLE:
-        pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
         utilities.disable_bdb_cache()
-    pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import varimax
     global_def.BATCH = True
     applications.varimax(input_stack, list(range(imgstart, imgend)), output_stack, mask, options.rad, options.verbose)
     global_def.BATCH = False

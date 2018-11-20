@@ -535,7 +535,6 @@ def fitfcr(fcr1, R, B):
 
 def red(angle):
 	# reduces angle to the interval [-180,180]
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import floor
 	return angle-360*numpy.floor((angle+180)/360)
 
 

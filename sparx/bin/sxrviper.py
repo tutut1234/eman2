@@ -53,10 +53,8 @@ DIR_DELIM = os.sep
 def calculate_list_of_independent_viper_run_indices_used_for_outlier_elimination(no_of_viper_runs_analyzed_together, 
 	no_of_viper_runs_analyzed_together_from_user_options, masterdir, rviper_iter, criterion_name, symc):
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import combinations_of_n_taken_by_k
 
 	# generate all possible combinations of (no_of_viper_runs_analyzed_together - 1) taken (3 - 1) at a time
-	pass#IMPORTIMPORTIMPORT import itertools
 
 	number_of_additional_combinations_for_this_viper_iteration = utilities.combinations_of_n_taken_by_k(no_of_viper_runs_analyzed_together - 1,
 																		  no_of_viper_runs_analyzed_together_from_user_options - 1)
@@ -98,7 +96,6 @@ def calculate_list_of_independent_viper_run_indices_used_for_outlier_elimination
 			if not pass_criterion:
 				list_of_viper_run_indices_for_the_current_rrr_viper_iteration = [EMPTY_VIPER_RUN_INDICES_LIST]
 
-		pass#IMPORTIMPORTIMPORT import json
 		f = open(mainoutputdir + "list_of_viper_runs_included_in_outlier_elimination.json", 'w')
 		json.dump(list_of_viper_run_indices_for_the_current_rrr_viper_iteration[1:],f); f.close()
 
@@ -121,7 +118,6 @@ def identify_outliers(myid, main_node, rviper_iter, no_of_viper_runs_analyzed_to
 		mainoutputdir = masterdir + DIR_DELIM + NAME_OF_MAIN_DIR + ("%03d" + DIR_DELIM) % (rviper_iter)
 		if(os.path.exists(mainoutputdir + DIR_DELIM + "list_of_viper_runs_included_in_outlier_elimination.json")):
 			# list_of_independent_viper_run_indices_used_for_outlier_elimination = map(int, read_text_file(mainoutputdir + DIR_DELIM + "list_of_viper_runs_included_in_outlier_elimination.txt"))
-			pass#IMPORTIMPORTIMPORT import json
 			f = open(mainoutputdir + "list_of_viper_runs_included_in_outlier_elimination.json", 'r')
 			list_of_independent_viper_run_indices_used_for_outlier_elimination  = json.load(f); f.close()
 			do_calculation = 0
@@ -169,9 +165,6 @@ def identify_outliers(myid, main_node, rviper_iter, no_of_viper_runs_analyzed_to
 	return no_of_viper_runs_analyzed_together_must_be_incremented
 
 def plot_errors_between_any_number_of_projections(masterdir, rviper_iter, list_of_projection_indices, error_value, symc):
-	pass#IMPORTIMPORTIMPORT import matplotlib
-#	pass#IMPORTIMPORTIMPORT matplotlib.use('agg')
-	pass#IMPORTIMPORTIMPORT import matplotlib.pyplot as plt
 
 	# # for debugging purposes
 	# if "counter" not in plot_errors_between_any_number_of_projections.__dict__:
@@ -200,8 +193,6 @@ def plot_errors_between_any_number_of_projections(masterdir, rviper_iter, list_o
 	plt.ylabel('Error')
 	plt.xlabel('Image index')
 	plt.title("Sorted errors between projections")
-	pass#IMPORTIMPORTIMPORT import io
-	pass#IMPORTIMPORTIMPORT import six
 	which_projections = io.StringIO()
 	which_projections.write(six.u("_" + "%.6f"%error_value))
 	for p_i in list_of_projection_indices: which_projections.write(six.u("_" + "%03d"%p_i))
@@ -214,10 +205,6 @@ def plot_errors_between_any_number_of_projections(masterdir, rviper_iter, list_o
 def find_index_of_discontinuity_in_derivative(error_curve_func, list_of_projection_indices, mainoutputdir,
 	outlier_percentile):
 	
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT import matplotlib
-#	pass#IMPORTIMPORTIMPORT matplotlib.use('agg')
-	pass#IMPORTIMPORTIMPORT import matplotlib.pyplot as plt
 
 	resolution = 100
 	split_point_resolution = 29
@@ -261,8 +248,6 @@ def find_index_of_discontinuity_in_derivative(error_curve_func, list_of_projecti
 		second_line_z = np.poly1d( np.polyfit(second_line_x, second_line_y, degree_of_the_fitting_polynomial) )
 		plt.plot(second_line_x,second_line_z(second_line_x))
 
-		pass#IMPORTIMPORTIMPORT import io
-		pass#IMPORTIMPORTIMPORT import six
 		which_projections = io.StringIO()
 		which_projections.write(six.u("_" + "%.03f__%.6f"%(split_point, goodness_of_fit_for_both_lines)))
 		for p_i in list_of_projection_indices: which_projections.write(six.u("_" + "%03d"%p_i))
@@ -286,8 +271,6 @@ def find_index_of_discontinuity_in_derivative(error_curve_func, list_of_projecti
 	second_line_z = np.poly1d( np.polyfit(second_line_x, second_line_y, degree_of_the_fitting_polynomial) )
 	plt.plot(second_line_x,second_line_z(second_line_x))
 
-	pass#IMPORTIMPORTIMPORT import io
-	pass#IMPORTIMPORTIMPORT import six
 	which_projections = io.StringIO()
 	which_projections.write(six.u("_" + "%.03f"%split_point))
 	for p_i in list_of_projection_indices: which_projections.write(six.u("_" + "%03d"%p_i))
@@ -344,7 +327,6 @@ def found_outliers(list_of_projection_indices, outlier_percentile, rviper_iter, 
 	outlier_index_threshold_method, angle_threshold, symc):
 	
 	# sxheader.py bdb:nj  --consecutive  --params=OID
-	pass#IMPORTIMPORTIMPORT import numpy as np
 
 	mainoutputdir = masterdir + DIR_DELIM + NAME_OF_MAIN_DIR + ("%03d" + DIR_DELIM) %(rviper_iter)
 
@@ -388,7 +370,6 @@ def found_outliers(list_of_projection_indices, outlier_percentile, rviper_iter, 
 	print("error_values_and_indices: ", error_values_and_indices)
 	print("index_outliers: ", index_outliers)
 
-	pass#IMPORTIMPORTIMPORT import copy
 	reversed_sorted_index_outliers = copy.deepcopy(index_outliers)
 	reversed_sorted_index_outliers.sort(reverse=True)
 
@@ -437,7 +418,6 @@ def calculate_volumes_after_rotation_and_save_them(ali3d_options, rviper_iter, m
 	mainoutputdir = masterdir + DIR_DELIM + NAME_OF_MAIN_DIR + ("%03d" + DIR_DELIM) %(rviper_iter)
 
 	# list_of_projection_indices_used_for_outlier_elimination = map(int, read_text_file(mainoutputdir + DIR_DELIM + "list_of_viper_runs_included_in_outlier_elimination.txt"))
-	pass#IMPORTIMPORTIMPORT import json
 	f = open(mainoutputdir + "list_of_viper_runs_included_in_outlier_elimination.json", 'r')
 	list_of_independent_viper_run_indices_used_for_outlier_elimination  = json.load(f); f.close()
 
@@ -504,9 +484,6 @@ def calculate_volumes_after_rotation_and_save_them(ali3d_options, rviper_iter, m
 
 	if( mpi_rank == 0):
 		# Align all rotated volumes, calculate their average and save as an overall result
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params3D, set_params3D, get_im, model_circle
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import ave_var
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali_vol
 		# vls = [None]*no_of_viper_runs_analyzed_together
 		vls = [None]*len(list_of_independent_viper_run_indices_used_for_outlier_elimination)
 		# for i in xrange(no_of_viper_runs_analyzed_together):
@@ -541,7 +518,6 @@ def calculate_volumes_after_rotation_and_save_them(ali3d_options, rviper_iter, m
 
 def get_already_processed_viper_runs(run_get_already_processed_viper_runs):
 
-	pass#IMPORTIMPORTIMPORT import random
 
 	if run_get_already_processed_viper_runs:
 		location_location = "/Users/hvoicu/Analysis/rrviper/particle__PIC_ISAC_g1_clean/0001__sim_r_viper_pool_001/"
@@ -553,7 +529,6 @@ def get_already_processed_viper_runs(run_get_already_processed_viper_runs):
 	
 			path, dirs, files = next(os.walk(location_location))
 			# dirs = filter(lambda x:'run' in x, dirs)
-			pass#IMPORTIMPORTIMPORT import re
 			dirs = [x for x in dirs if re.search('run\d\d\d$', x)]
 			get_already_processed_viper_runs.r_permutation = list(range(len(dirs)))
 			random.shuffle(get_already_processed_viper_runs.r_permutation)
@@ -573,11 +548,6 @@ def get_already_processed_viper_runs(run_get_already_processed_viper_runs):
 
 def main():
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from logger import Logger, BaseLogger_Files
-	pass#IMPORTIMPORTIMPORT import user_functions
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser, SUPPRESS_HELP
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import SPARXVERSION
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import EMData
 
 	main_node = 0
 	mpi.mpi_init(0, [])
@@ -693,7 +663,6 @@ output_directory: directory name into which the output files will be written.  I
 	run_get_already_processed_viper_runs = options.run_get_already_processed_viper_runs
 	get_already_processed_viper_runs(run_get_already_processed_viper_runs)
 
-	pass#IMPORTIMPORTIMPORT import random
 	random.seed(my_random_seed)
 
 	if len(args) < 1 or len(args) > 3:
@@ -723,7 +692,6 @@ output_directory: directory name into which the output files will be written.  I
 	elif len(args) == 1:
 		if use_latest_master_directory:
 			all_dirs = [d for d in os.listdir(".") if os.path.isdir(d)]
-			pass#IMPORTIMPORTIMPORT import re;
 			r = re.compile("^master.*$")
 			all_dirs = list(filter(r.match, all_dirs))
 			if len(all_dirs)>0:
@@ -766,7 +734,6 @@ output_directory: directory name into which the output files will be written.  I
 				cmd = "{} {} {}".format("e2bdb.py", org_stack_location,"--makevstack=" + bdb_stack_location + "_000")
 				junk = utilities.cmdexecute(cmd)
 
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import header
 				try:
 					applications.header(bdb_stack_location + "_000", params='original_image_index', fprint=True)
 					print("Images were already indexed!")
@@ -780,7 +747,6 @@ output_directory: directory name into which the output files will be written.  I
 				cmd = "{} {} {}".format("sxcpy.py  ", args[0], bdb_stack_location + "_000")
 				junk = utilities.cmdexecute(cmd)
 
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import header
 				try:
 					applications.header(bdb_stack_location + "_000", params='original_image_index', fprint=True)
 					print("Images were already indexed!")
@@ -829,7 +795,6 @@ output_directory: directory name into which the output files will be written.  I
 
 	utilities.if_error_then_all_processes_exit_program(error_status)
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import symclass
 	symc = fundamentals.symclass(options.sym)
 	
 

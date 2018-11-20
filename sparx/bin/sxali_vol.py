@@ -50,7 +50,6 @@ def main():
 	(options, args) = parser.parse_args()    	
 
 	if global_def.CACHE_DISABLE:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
 		utilities.disable_bdb_cache()
 
 	if len(args) != 2:
@@ -58,27 +57,22 @@ def main():
 		print("Please run '" + progname + " -h' for detailed options")
 		exit(1)
 	elif(options.ang_scale != None and options.shift_scale != None and options.mag_scale != None):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications  import ali_vol_scale
 		global_def.BATCH = True
 		applications.ali_vol_scale(args[0], args[1], options.ang_scale, options.shift_scale, options.mag_scale, options.r, options.discrepancy)
 		global_def.BATCH = False
 	elif(options.ang_scale is None and options.shift_scale is None and options.mag_scale != None):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications  import ali_vol_only_scale
 		global_def.BATCH = True
 		applications.ali_vol_only_scale(args[0], args[1], options.mag_scale, options.r, options.discrepancy)
 		global_def.BATCH = False
 	elif(options.ang_scale is None and options.shift_scale != None and options.mag_scale is None):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications  import ali_vol_shift
 		global_def.BATCH = True
 		applications.ali_vol_shift(args[0], args[1], options.shift_scale, options.r, options.discrepancy)
 		global_def.BATCH = False
 	elif(options.ang_scale != None and options.shift_scale != None and options.mag_scale is None):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications  import ali_vol
 		global_def.BATCH = True
 		applications.ali_vol(args[0], args[1], options.ang_scale, options.shift_scale, options.r, options.discrepancy)
 		global_def.BATCH = False
 	elif(options.ang_scale != None and options.shift_scale is None and options.mag_scale is None):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications  import ali_vol_rotate
 		global_def.BATCH = True
 		applications.ali_vol_rotate(args[0], args[1], options.ang_scale, options.r, options.discrepancy)
 		global_def.BATCH = False

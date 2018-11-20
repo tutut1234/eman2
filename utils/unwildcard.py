@@ -396,7 +396,7 @@ while True:
                 pass
             elif line.startswith("class") or line.startswith('def'):
                 if not first_1 and not first_2:
-                    break
+                    pass
             if '#IMPORTIMPORTIMPORT' in line:
                 remove_indices.append(idx)
 

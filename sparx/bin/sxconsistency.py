@@ -80,7 +80,6 @@ Rotations pair-wise
 #  data = [[alpha1,sx1,sy1], [alpha2,sx2,sy2], ...]
 def average2dtransform(data, return_avg_pixel_error=False):
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, sin, cos, radians, degrees
 
 	L = len(data)
 
@@ -121,7 +120,6 @@ def rotate_angles(angleset1, angleset2, rot, indexes=None):
 	  OUTPUT: list of floats - angles in degrees (the n-th element of the list equals the angle between n-th projections directions from the anglesets)
 	  The third parameter (indexes) is optional and may be set to list of indexes. In that case only elements from given list are taken into account.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Transform, Vec2f
 	
 	"""
 	if indexes != None:
@@ -149,7 +147,6 @@ def rotate_angles(angleset1, angleset2, rot, indexes=None):
 '''
 
 def apply_rotation(angleset1, qrot):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Transform, Vec2f
 
 	"""
 	if indexes != None:
@@ -161,7 +158,6 @@ def apply_rotation(angleset1, qrot):
 		angleset1 = new_ang1
 		angleset2 = new_ang2
 	"""
-	pass#IMPORTIMPORTIMPORT import types
 	if(type(qrot) == list): rot = EMAN2_cppwrap.Transform({"type":"spider","phi":qrot[0],"theta":qrot[1],"psi":qrot[2]})
 	else:                             rot = qrot
 	for i in range(len(angleset1)):
@@ -172,8 +168,6 @@ def apply_rotation(angleset1, qrot):
 		angleset1[i] = [d["phi"], d["theta"], d["psi"], -d["tx"], -d["ty"]]
 
 def apply_rotation_gaps(angleset1, qrot):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Transform, Vec2f
-	pass#IMPORTIMPORTIMPORT import types
 	if(type(qrot) == list): rot = EMAN2_cppwrap.Transform({"type":"spider","phi":qrot[0],"theta":qrot[1],"psi":qrot[2]})
 	else:                             rot = qrot
 	for i in range(len(angleset1)):
@@ -262,9 +256,6 @@ def errors_per_image(params, avgtrans, thresherr=1.0, radius = 1.0):
 
 def average_trans(params):
 	#  Compute average projection params and pixel errors
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getfvec
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt, degrees, radians, acos
 	nn = lem(params[0])
 	avgtrans = [None]*nn
 	pixer   = [0.0]*nn

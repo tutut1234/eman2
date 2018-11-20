@@ -93,17 +93,14 @@ def main():
 		else:
 			mask = args[3]
 		if options.MPI:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init, mpi_finalize
 			sys.argv = mpi.mpi_init(len(sys.argv), sys.argv)
 
 		if global_def.CACHE_DISABLE:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
 			utilities.disable_bdb_cache()
 		#  centering permanently disabled due to the way new polar searches are done
 		center = 0
 		if(options.ns):
 			global_def.BATCH = True
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from development import  ali3d_saturn
 			ali3d_saturn(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 				options.yr, options.ts, options.delta, options.an, options.apsi, options.deltapsi, options.startpsi,
 				center, options.maxit, options.CTF, options.snr, options.ref_a, options.sym,
@@ -111,7 +108,6 @@ def main():
 			global_def.BATCH = False
 		elif(options.ns2):
 			global_def.BATCH = True
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from development import  ali3d_saturn2
 			ali3d_saturn2(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 				options.yr, options.ts, options.delta, options.an, options.apsi, options.deltapsi, options.startpsi,
 				center, options.maxit, options.CTF, options.snr, options.ref_a, options.sym,
@@ -123,33 +119,27 @@ def main():
 			else:
 				global_def.BATCH = True
 				if(options.nsoft == 1):
-					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali3d_shcMPI
 					applications.ali3d_shcMPI(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 					options.yr, options.ts, options.delta, options.an, options.apsi, options.deltapsi, options.startpsi,
 					center, options.maxit, options.CTF, options.snr, options.ref_a, options.sym,
 					options.function, options.Fourvar, options.npad, options.debug, options.stoprnct, gamma=options.gamma)
 				elif(options.nsoft == 0):
-					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali3d_shc0MPI
 					ali3d_shc0MPI(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 					options.yr, options.ts, options.delta, options.an, options.apsi, options.deltapsi, options.startpsi,
 					center, options.maxit, options.CTF, options.snr, options.ref_a, options.sym,
 					options.function, options.Fourvar, options.npad, options.debug, options.stoprnct, gamma=options.gamma)
 				else:
-					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from multi_shc import ali3d_multishc_soft
-					pass#IMPORTIMPORTIMPORT import user_functions
 					options.user_func = user_functions.factory[options.function]
 					multi_shc.ali3d_multishc_soft(args[0], args[1], options, mpi_comm = None, log = None, nsoft = options.nsoft )
 				global_def.BATCH = False
 		elif(options.nh2):
 			global_def.BATCH = True
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from development import ali3d_shc2
 			ali3d_shc2(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 				options.yr, options.ts, options.delta, options.an, options.apsi, options.deltapsi, options.startpsi,
 				center, options.maxit, options.CTF, options.snr, options.ref_a, options.sym,
 				options.function, options.Fourvar, options.npad, options.debug, options.MPI, options.stoprnct)
 			global_def.BATCH = False
 		elif options.searchpsi:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali3dpsi_MPI
 			global_def.BATCH = True
 			applications.ali3dpsi_MPI(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 			options.yr, options.ts, options.delta, options.an, options.apsi, options.deltapsi, options.startpsi,
@@ -158,7 +148,6 @@ def main():
 			global_def.BATCH = False
 		else:
 			if options.rantest:
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from development import ali3d_rantest
 				global_def.BATCH = True
 				ali3d_rantest(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 				options.yr, options.ts, options.delta, options.an, options.deltapsi, options.startpsi,
@@ -166,7 +155,6 @@ def main():
 				options.function, options.Fourvar, options.npad, options.debug, options.stoprnct)
 				global_def.BATCH = False
 			else:
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali3d
 				global_def.BATCH = True
 				applications.ali3d(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 				options.yr, options.ts, options.delta, options.an, options.apsi, options.deltapsi, options.startpsi,

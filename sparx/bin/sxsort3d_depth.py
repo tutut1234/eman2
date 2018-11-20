@@ -190,7 +190,6 @@ def create_zero_group():
 ######### ================>>>  depth clustering functions <<<==================================
 def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_params, log_main):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	##-----------------------------------------------------------------------------------------
 	keys_to_be_saved = [ "current_img_per_grp", "mu", "number_of_groups", "rand_index", "nruns"]
 	###----------------
@@ -333,11 +332,6 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 def depth_clustering_box(work_dir, input_accounted_file, \
      input_unaccounted_file, params, previous_params, nbox, log_main):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import read_text_file, wrap_mpi_bcast, write_text_file, write_text_row
-	pass#IMPORTIMPORTIMPORT import copy, shutil
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   shutil import copyfile
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   math   import sqrt
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	# parameters  When nbox = 0, program does K training;
 	#---------------------------------------------
 	iter_converge_ratio      = 90.  # percentage
@@ -803,7 +797,6 @@ def depth_box_initialization(box_dir, input_list1, input_list2, nbox, log_file):
 	# input_list1:  accounted partition
 	# input_list2:  unaccounted
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	#---------->>>> parameters<<<<--------------------------------------------------------
 	learning_start_rindex  = 0.85 # 
 	do_recompute           = 0
@@ -995,7 +988,6 @@ def get_box_partition(box_dir, ncluster, unaccounted_list):
 	return plist
 						
 def check_sorting_state(current_dir, keepchecking, log_file):
-	pass#IMPORTIMPORTIMPORT import json
 	try:
 		with open(os.path.join(current_dir, "state.json"),'r') as fout:
 			current_state = utilities.convert_json_fromunicode(json.load(fout))
@@ -1007,7 +999,6 @@ def check_sorting_state(current_dir, keepchecking, log_file):
 
 def mark_sorting_state(current_dir, sorting_done, dict = None):
 	# single processor job
-	pass#IMPORTIMPORTIMPORT import json
 	with open(os.path.join(current_dir, "state.json"),'w') as fout:
 		if dict is None: dict = {}
 		if sorting_done: dict["done"] = True
@@ -1054,7 +1045,6 @@ def read_tracker_mpi(current_dir):
 ###---------------------------------------------------------------------------------------
 def check_sorting(total_data, keepsorting, log_file):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import json
 	########## add some code to check current settings
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		if not Tracker["search_mode"]:
@@ -1162,11 +1152,6 @@ def get_time(time_start):
 ###===================>>> Image processing utilities <<<<<<===============================	
 def get_sorting_image_size(original_data, partids, number_of_groups, log_main):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import wrap_mpi_bcast, read_text_file, write_text_file
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import smallprime
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import scale_fsc_datasetsize
 	
 	if Tracker["fixed_sorting_size"]:
 		if Tracker["search_mode"]:
@@ -1203,8 +1188,6 @@ def get_sorting_image_size(original_data, partids, number_of_groups, log_main):
 	
 def compute_noise(image_size):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_im, model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
 	if Tracker["applybckgnoise"]: # from SPARX refinement only
 		if(Blockdata["myid"] == Blockdata["main_node"]):
 			tsd = utilities.get_im(Tracker["bckgnoise"]) # inverted power spectrum
@@ -1261,9 +1244,7 @@ def check_3dmask(log_main):
 	return
 	
 def estimate_tanhl_params(cutoff, taa, image_size):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	def tanhfl(x, cutoff, taa):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, tanh
 		omega = cutoff
 		cnst  = numpy.pi/(2.0*omega*taa)
 		v1    = (cnst*(x + omega))
@@ -1327,10 +1308,6 @@ def get_params_for_analysis(orgstack, ali3d_params, smearing_file, smearing_numb
 
 def do_one_way_anova_scipy(clusters, value_list, name_of_variable="variable", log_main = None):
 	# single cpu program
-	pass#IMPORTIMPORTIMPORT import copy
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math   import sqrt
-	pass#IMPORTIMPORTIMPORT import scipy
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from scipy import stats
 	NMAX = 30
 	log_main.add('================================================================================================================')
 	log_main.add('                                       ANOVA analysis')
@@ -1482,7 +1459,6 @@ def do_one_way_anova_scipy(clusters, value_list, name_of_variable="variable", lo
 	log_main.add('ANOVA:  %s mean of all clusters: %f'%(name_of_variable, round(global_mean/(float(nsamples)), 4)))
 	log_main.add('ANOVA:  Group averages')
 	log_main.add('{:5} {:^7} {:^8} {:^12} {:^12} '.format('ANOVA', 'GID', 'N',  'mean',   'std'))
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	for i in range(K):
 		log_main.add('{:5} {:^7d} {:^8d} {:12.4f} {:12.4f}'.format('ANOVA', i, len(replicas[i]), res_table_stat[i][0], numpy.sqrt(res_table_stat[i][1])))
 	log_main.add(' ')
@@ -1497,7 +1473,6 @@ def do_one_way_anova_scipy(clusters, value_list, name_of_variable="variable", lo
 	return res[0], res[1]
 ####============================== FCM related functions =================================
 def assignment_to_umat(iter_assignment):
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	group_dict = np.sort(np.unique(iter_assignment))
 	umat = np.full((len(iter_assignment), group_dict.shape[0]), 0.0, dtype = np.float64)
 	for im in range(len(iter_assignment)): 
@@ -1505,8 +1480,6 @@ def assignment_to_umat(iter_assignment):
 	return umat
 	
 def mix_assignment(umat, ngroups, iter_assignment, scale = 1.0, shake_rate = 0.1):
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	rlist = np.random.random(len(iter_assignment))
 	for im in range(len(iter_assignment)):
 		tmp = np.multiply(umat[im], scale)
@@ -1519,8 +1492,6 @@ def mix_assignment(umat, ngroups, iter_assignment, scale = 1.0, shake_rate = 0.1
 	return umat
 	
 def compute_umat_cross(dmat, m =2.):
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   math import sqrt, exp
 	(ndata, ngroups) = dmat.shape
 	umat = np.zeros((ndata, ngroups))
 	for k in xrange(ndata):
@@ -1536,8 +1507,6 @@ def compute_umat_cross(dmat, m =2.):
 	return umat
 
 def dmat_to_umat(dmat, m =1):
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	(ndat, ngrp)= dmat.shape
 	umat = np.full((ndat,ngrp), 0.0, dtype = np.float64)
 	for im in range(ndat):
@@ -1549,7 +1518,6 @@ def dmat_to_umat(dmat, m =1):
 	return umat
 
 def fuzzy_to_hard(umat_arrays, cutoff= 0.8):
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	(ndat, ngroups) = np.shape(umat_arrays)
 	for i in range(ndat):
 		if np.max(umat_arrays[i])>cutoff:
@@ -1560,8 +1528,6 @@ def fuzzy_to_hard(umat_arrays, cutoff= 0.8):
 	return umat_arrays
 	
 def get_PE(umat):
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import log
 	(ndata, ngroups) = np.shape(umat)
 	pe = 0.0
 	for i in xrange(ndata):
@@ -1571,8 +1537,6 @@ def get_PE(umat):
 	return pe
 
 def compute_umat_from_assignment(new_assign, old_assign, ngrps):
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	# 3:2
 	umat = np.full((new_assign.shape[0],  ngrps), 0.0, dtype=np.float64)
 	for im in range(new_assign.shape[0]):
@@ -1622,7 +1586,6 @@ def do3d_fcm_groups_nofsc_smearing_iter(srdata, paramstructure, norm_per_particl
 			print("insertion  take  %f minutes "%(acc_rest/60.))
 	Tracker["maxfrad"] = Tracker["nxinit"]//2
 	fsc_groups = [None for im in range(len(current_group_sizes))]
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import scale_fsc_datasetsize
 	total_size = sum(current_group_sizes)
 	for igrp in range(len(current_group_sizes)):
 		if Tracker["even_scale_fsc"]: 
@@ -1754,13 +1717,6 @@ def recons3d_trl_struct_group_nofsc_shifted_data_fcm_MPI(myid, main_node,\
 	  rec3d for pre-shifted data list
 	  reconstructor nn4_ctfw
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import reduce_EMData_to_root, random_string, get_im, findall, info, model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2        import Reconstructors
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter	      import filt_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi          import MPI_COMM_WORLD, mpi_barrier
-	pass#IMPORTIMPORTIMPORT import types
-	pass#IMPORTIMPORTIMPORT import datetime
 	if mpi_comm == None: mpi_comm = mpi.MPI_COMM_WORLD
 	refvol = utilities.model_blank(target_size)
 	refvol.set_attr("fudge", 1.0)
@@ -1839,10 +1795,6 @@ def Kmeans_minimum_group_size_orien_groups(nbox, iter_mstep, run_iter, cdata, fd
        ctf_images,paramstructure, norm_per_particle, partids, params, \
          minimum_group_size_init, freeze_changes, indep_iter, clean_volumes = True):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import shutil
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   math import sqrt
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import scale_fsc_datasetsize
 	##-----------------------------------------------
 	### 1. assignment np.int32; 
 	### 2. particle ids np.int32; 
@@ -2256,9 +2208,6 @@ def AI_MGSKmeans(total_iters, iter_assignment, last_iter_assignment, best_assign
              global_total, do_move_one_up, mdict, mlist, freeze_changes, search_mode, \
                freeze_groups, decrease_last_iter, log_file):
 	#------------ Single cpu function ----------------------------------------------------
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import scale_fsc_datasetsize
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	#---------->>> Empirical parameters <<<-----------
 	large_cluster_scale    = 2.
 	stopercnt_scale        = 2.0
@@ -2411,8 +2360,6 @@ def AI_MGSKmeans(total_iters, iter_assignment, last_iter_assignment, best_assign
 ###------------------------------------------------------------------------ end of AI	
 def do_assignment_by_dmatrix_orien_group_minimum_group_size(dmatrix, \
       orien_group_members, number_of_groups, minimum_group_size_ratio):
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT import random
 	###---------------------------------------------------------------------
 	results = [[] for i in range(number_of_groups)]
 	nima               = len(orien_group_members)
@@ -2476,11 +2423,6 @@ def get_shrink_data_sorting(partids, partstack, return_real = False, preshift = 
 	# 10142015 --- preshift is set to True when doing 3-D sorting.
 	# chunk_id are set when data is read in
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import wrap_mpi_bcast, read_text_row
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals	import resample, fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter			import filt_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications	import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2          import Region, Vec2f
 	mask2D		= utilities.model_circle(Tracker["constants"]["radius"],Tracker["constants"]["nnxo"],Tracker["constants"]["nnxo"])
 	shrinkage 	= Tracker["nxinit"]/float(Tracker["constants"]["nnxo"])
 	radius 		= int(Tracker["constants"]["radius"] * shrinkage +0.5)	
@@ -2577,11 +2519,6 @@ def get_shrink_data_final(nxinit, procid, original_data = None, oldparams = None
 	
 	"""
 	#from fundamentals import resample
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fdecimate, fshift, fft
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import filt_ctf, filt_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import sqrt
 	
 	mask2D  	= utilities.model_circle(Tracker["constants"]["radius"],Tracker["constants"]["nnxo"],Tracker["constants"]["nnxo"])
 	nima 		= len(original_data)
@@ -2676,12 +2613,6 @@ def read_data_for_sorting(partids, partstack, previous_partstack):
 	# and assign to them parameters from partstack with optional CTF application and shifting of the data.
 	# So, the lengths of partids and partstack are the same.
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals	import resample, fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter			import filt_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications	import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2          import Region, Vec2f
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import wrap_mpi_bcast, read_text_row, get_im, set_params_proj
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	# functions:
 	# read in data
 	if( Blockdata["myid"] == Blockdata["main_node"]):
@@ -2736,8 +2667,6 @@ def read_data_for_sorting(partids, partstack, previous_partstack):
 ###6 read paramstructure
 def read_paramstructure_for_sorting(partids, paramstructure_dict_file, paramstructure_dir):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import read_text_row, read_text_file, wrap_mpi_bcast
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
 	if( Blockdata["myid"] == Blockdata["main_node"]):lcore = utilities.read_text_file(partids, -1)
 	else: lcore = 0
 	lcore   = utilities.wrap_mpi_bcast(lcore, Blockdata["main_node"])
@@ -2777,9 +2706,6 @@ def read_paramstructure_for_sorting(partids, paramstructure_dict_file, paramstru
 ###7 copy oldparamstructures from meridien regardless the previous number of cpus 
 def copy_oldparamstructure_from_meridien_MPI(selected_iteration):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import read_text_row, write_text_row, read_text_file,wrap_mpi_bcast
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT import json
 	Tracker["directory"]          = os.path.join(Tracker["constants"]["masterdir"], "main%03d"%selected_iteration)
 	Tracker["paramstructure_dir"] = os.path.join(Tracker["directory"], "oldparamstructure")
 	old_refinement_iter_directory = os.path.join(Tracker["constants"]["refinement_dir"], "main%03d"%selected_iteration)
@@ -2928,7 +2854,6 @@ def copy_oldparamstructure_from_meridien_MPI(selected_iteration):
 
 def get_smearing_info(nproc_previous, selected_iteration, total_stack, my_dir, refinement_dir):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	# Do not alter any values in Tracker and Blockdata
 	oldparamstructure =[[], []]
 	local_dict        = {}
@@ -3011,10 +2936,6 @@ def get_smearing_info(nproc_previous, selected_iteration, total_stack, my_dir, r
 ### 8
 def precalculate_shifted_data_for_recons3D(prjlist, paramstructure, refang, rshifts, delta, avgnorms, \
        nxinit, nnxo, nosmearing, norm_per_particle = None, upweighted=False, nsmear =-1):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import random_string, get_im, findall, info, model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter	      import filt_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fshift
-	pass#IMPORTIMPORTIMPORT import types, datetime, copy
 	nny = prjlist[0].get_ysize()
 	if nosmearing:
 		for im in range(len(prjlist)):
@@ -3075,11 +2996,6 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 	#   and assign to them parameters from partstack with optional CTF application and shifting of the data.
 	# So, the lengths of partids and partstack are the same.
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals	import resample, fshift, cyclic_shift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter			import filt_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications	import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2          import Region, Vec2f
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import same_ctf
 	# functions:
 	# read in data
 	# apply mask, and prepare focus projection if focus3D is specified
@@ -3202,10 +3118,6 @@ def downsize_data_for_rec3D(original_data, particle_size, return_real = False, n
 	#   and assign to them parameters from partstack with optional CTF application and shifting of the data.
 	# So, the lengths of partids and partstack are the same.	
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals	import resample, fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter			import filt_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications	import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2          import Region, Vec2f
 	# functions:
 	# read in data
 	# apply mask, and prepare focus projection if focus3D is specified
@@ -3262,7 +3174,6 @@ def downsize_data_for_rec3D(original_data, particle_size, return_real = False, n
 ###==========================>>> Distance comparison <<<==============================================
 def compare_two_images_eucd(data, ref_vol, fdata, ctfimgs):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	peaks = np.zeros(shape = len(data), dtype=float)
 	ny      = data[0].get_ysize()
 	ref_vol = projection.prep_vol(ref_vol, npad = 2, interpolation_method = 1)
@@ -3285,8 +3196,6 @@ def compare_two_images_eucd(data, ref_vol, fdata, ctfimgs):
 
 def compare_two_images_cross(data, ref_vol, ctfimgs):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import same_ctf
 	ny    = data[0].get_ysize()
 	m     = EMAN2_cppwrap.Util.unrollmask(ny)
 	peaks = np.zeros(shape = len(data), dtype=float)
@@ -3314,14 +3223,12 @@ def compare_two_images_cross(data, ref_vol, ctfimgs):
 	return peaks		
 #####==========>>>  clustering assignment utilities  <<<=====================
 def isin(element, test_elements, assume_unique=False, invert=False):
-    pass#IMPORTIMPORTIMPORT import numpy as np
     element = np.asarray(element)
     return np.in1d(element, test_elements, assume_unique=assume_unique, \
         invert=invert).reshape(element.shape)
 
 def split_partition_into_ordered_clusters_split_ucluster(partition_in, input_row_wise = True):
 	# group particles  by their cluster ids; take the last one as unaccounted group
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	clusters   = []
 	if input_row_wise: partition = np.array(partition_in, dtype=np.int32).transpose()
 	else:              partition = np.array(partition_in)
@@ -3344,7 +3251,6 @@ def split_partition_into_ordered_clusters(partition_in, input_is_row_wise = True
 	# partition column 1 particle IDs
 	# re-index partition as consecutive groups if their cluster IDs are not
 	# Extract clusters; sort clusters in size-ascendent order; transpose partitions
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	if input_is_row_wise:
 		partition   = (np.array(partition_in).transpose()).tolist()
 	else: partition = np.array(partition_in, dtype=np.int32)
@@ -3371,8 +3277,6 @@ def split_partition_into_ordered_clusters(partition_in, input_is_row_wise = True
 	return new_clusters, (np.array(partition, dtype=np.int32).transpose()).tolist()
 
 def merge_classes_into_partition_list(classes_list):
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT import copy
 	if type(classes_list) is np.ndarray: classes_list.tolist()
 	if len(classes_list) == 0: return [], [[]] # Will do nothing if empty
 	if len(classes_list) == 1: # rare case, however providing solution here
@@ -3400,9 +3304,6 @@ def merge_classes_into_partition_list(classes_list):
 		
 def get_sorting_parti_from_stack(data):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import wrap_mpi_bcast
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	#data: a subset on a CPU
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		total_plist = np.full(Tracker["total_stack"], -1, dtype=np.int32)
@@ -3425,9 +3326,6 @@ def create_nrandom_lists(partids, number_of_groups, number_of_runs):
 	# the second column denotes orignal particle IDs
 	# the first column is randomized group ID 
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import copy
-	pass#IMPORTIMPORTIMPORT import random
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import wrap_mpi_bcast, read_text_file, write_text_file
 	
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		random_assignment = []
@@ -3463,9 +3361,6 @@ def create_nrandom_lists_from_given_pids(work_dir, partids, number_of_groups, nu
 	# the second column denotes orignal particle IDs
 	# the first column is randomized group ID 
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import copy
-	pass#IMPORTIMPORTIMPORT import random
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import wrap_mpi_bcast, read_text_file, write_text_file
 	
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		random_assignment = []
@@ -3510,8 +3405,6 @@ def assign_unaccounted_elements_mpi(glist, clusters, img_per_grp):
 	# assign unaccounted images by group probabilities
 	# It has better behavior in randomizing ulist than the one below.
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import random
-	pass#IMPORTIMPORTIMPORT import copy
 	icut = int(1.5*img_per_grp)
 	if Blockdata["myid"]== Blockdata["main_node"]:
 		for ic in range(len(clusters)):
@@ -3580,9 +3473,6 @@ def assign_unaccounted_elements_mpi(glist, clusters, img_per_grp):
 def assign_unaccounted_elements_mpi(glist_in, clusters_in, img_per_grp):
 	# assign unaccounted images by group probabilities
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import random
-	pass#IMPORTIMPORTIMPORT import copy
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	icut = int(1.5*img_per_grp)
 	if Blockdata["myid"]== Blockdata["main_node"]:
 		glist    = copy.copy(glist_in)
@@ -3599,7 +3489,6 @@ def assign_unaccounted_elements_mpi(glist_in, clusters_in, img_per_grp):
 	return clusters
 
 def fill_clusters(clusters, ulist):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import shuffle
 	nuacc = len(ulist)
 	shuffle(ulist)
 	if nuacc>len(clusters):# deserves proceeding
@@ -3701,7 +3590,6 @@ def select_fixed_size_cluster_from_alist(ulist, img_per_grp):
 	return cluster, ulist
 		
 def swap_clusters_small_NUACC(glist, clusters, swap_ratio):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import shuffle
 	slist     = [None for im in range(len(clusters))]
 	temp_list = []
 	ulist = numpy.copy.deepcopy(glist)
@@ -3718,8 +3606,6 @@ def swap_clusters_small_NUACC(glist, clusters, swap_ratio):
 	return ulist, clusters
 		
 def swap_clusters_large_NUACC(glist, clusters, swap_ratio):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import shuffle
-	pass#IMPORTIMPORTIMPORT import copy
 	slist     = [None for im in range(len(clusters))]
 	temp_list = []
 	ulist = copy.deepcopy(glist)
@@ -3738,8 +3624,6 @@ def swap_clusters_large_NUACC(glist, clusters, swap_ratio):
 
 def even_assignment_alist_to_mclusters(glist, number_of_groups):
 	# evenly assign glist to clusters
-	pass#IMPORTIMPORTIMPORT import copy
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import shuffle
 	if number_of_groups >0:
 		clusters = [[] for i in range(number_of_groups)]
 		ulist = copy.deepcopy(glist)
@@ -3756,7 +3640,6 @@ def even_assignment_alist_to_mclusters(glist, number_of_groups):
 def fill_no_large_groups_and_unaccounted_to_m_and_rcluster_mpi(\
 		unaccounted_list, empty_clusters, clusters, NUACC, NACC):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	N = NUACC + NACC
 	m = len(empty_clusters)
 	number_of_groups = m + len(clusters)
@@ -3794,9 +3677,6 @@ def fill_no_large_groups_and_unaccounted_to_m_and_rcluster_mpi(\
 
 def assign_unaccounted_inverse_proportion_to_size(glist, clusters, img_per_grp):
 	# assign unaccounted images by group probabilities, single processor version
-	pass#IMPORTIMPORTIMPORT import random
-	pass#IMPORTIMPORTIMPORT import copy
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import shuffle
 	ulist = copy.deepcopy(glist)
 	number_of_groups = len(clusters)
 	slist = []
@@ -3823,9 +3703,6 @@ def assign_unaccounted_inverse_proportion_to_size(glist, clusters, img_per_grp):
 def swap_accounted_with_unaccounted_elements_mpi(accounted_file, \
        unaccounted_file, log_file, number_of_groups, swap_ratio):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT import random
-	pass#IMPORTIMPORTIMPORT import copy
 	checking_flag = 0
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		if len(utilities.read_text_row(accounted_file)) <= 1:checking_flag = 1
@@ -3857,8 +3734,6 @@ def swap_accounted_with_unaccounted_elements_mpi(accounted_file, \
 	return converted_assignment_list
 	
 def patch_to_do_k_means_match_clusters_asg_new(ptp1, ptp2):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import k_means_match_clusters_asg_new
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	# input are clusters
 	# patch ad hoc elements to make equal number of classes for two partitions and thus two_way comparison becomes feasible
 	patch_elements = []
@@ -3901,8 +3776,6 @@ def patch_to_do_k_means_match_clusters_asg_new(ptp1, ptp2):
 def do_boxes_two_way_comparison_mpi(nbox, input_box_parti1,\
           input_box_parti2, depth, log_main):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import json
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	NT = 1000
 	if (Blockdata["myid"] == Blockdata["main_node"]):
 		stop_generation  = 0
@@ -3960,7 +3833,6 @@ def do_boxes_two_way_comparison_mpi(nbox, input_box_parti1,\
 		  'Group', '    size',  ' status ',   'reproducibility', 'random reproducibility', ' std '))
 		log_main.add("-------------------------------------------------------------")
 		
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 		number_of_groups = Tracker["number_of_groups"]
 		ares143          = get_res143(statistics.scale_fsc_datasetsize(Tracker["constants"]["fsc_curve"], \
 		   Tracker["constants"]["total_stack"], Tracker["total_stack"]//number_of_groups))
@@ -4183,8 +4055,6 @@ def do_boxes_two_way_comparison_mpi(nbox, input_box_parti1,\
 #### ------------------- >>>   within-box comparison <<< ---------------------------------
 def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import scale_fsc_datasetsize
 	###------------------ adjustable local parameters --------------
 	iter_start_removing = 2
 	cutoff_small        = 0.333
@@ -4381,7 +4251,6 @@ def compute_rand_index_mpi(inassign_in1, inassign_in2):
 	# rand_index should be between [0, 1]; 
 	# =0; two partitions different; =1; two partitions identical
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	assign1 = np.array(inassign_in1, dtype=np.int8)
 	assign2 = np.array(inassign_in2, dtype=np.int8)
 	num_in_both     = 0
@@ -4435,7 +4304,6 @@ def get_MGR_from_two_way_comparison(newindeces, clusters1, clusters2, N):
 ### -------->>>  between boxes  <<<-------------------------
 def do_random_groups_simulation_mpi(ptp1, ptp2):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	# return two lists: group avgs and group stds. The last one of two lists are the total avg and std.
 	if (len(ptp1)>= 50) or (len(ptp2)>= 50):
 		if(Blockdata["myid"] == Blockdata["main_node"]):
@@ -4533,7 +4401,6 @@ def do_random_groups_simulation_mpi(ptp1, ptp2):
 			for im  in  range(len(dummy)): gave[im]+=dummy[im]
 		mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		svar = numpy.sqrt(max(svar, 0.0)/float(Blockdata["nproc"]*Nloop))
 		save = save/float(Blockdata["nproc"]*Nloop)
@@ -4551,7 +4418,6 @@ def do_random_groups_simulation_mpi(ptp1, ptp2):
 ###------------------------------------------------
 def compare_two_iterations(assignment1, assignment2):
 	# compare two assignments during clustering, either iteratively or independently
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	if len(assignment1) !=len(assignment2):
 		global_def.ERROR("Two assignments don't have the same length", "compare_two_iterations", 0, 0)
 	else:
@@ -4573,7 +4439,6 @@ def compare_two_iterations(assignment1, assignment2):
 	return float(nb_tot_objs)/N, newindeces, list_stable
 	
 def update_data_assignment(cdata, rdata, assignment, proc_list, nosmearing, myid):
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	groupids = np.array(assignment[proc_list[myid][0]:proc_list[myid][1]], dtype=np.int64)
 	if nosmearing:
 		for im in range(len(cdata)):
@@ -4634,10 +4499,6 @@ def parti_oriens(params, angstep, smc):
 	
 def get_angle_step_and_orien_groups_mpi(params_in, partids_in, angstep):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import wrap_mpi_recv, wrap_mpi_bcast, wrap_mpi_send, \
-#pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #	     pass#IMPORTIMPORTIMPORT bcast_number_to_all, read_text_row, read_text_file
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import symclass
 	if Blockdata["main_node"] == Blockdata["myid"]:
 		params  = utilities.read_text_row(params_in)
 		partids = utilities.read_text_file(partids_in, -1)
@@ -4652,8 +4513,6 @@ def get_angle_step_and_orien_groups_mpi(params_in, partids_in, angstep):
 		for l,q in enumerate(occu):
 			if len(q)<Tracker["min_orien_group_size"]: reassign_list +=q
 			else:      ptls_in_orien_groups.append(q)
-		pass#IMPORTIMPORTIMPORT import random
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   random import shuffle
 		random.shuffle(reassign_list)
 		for a in reassign_list:
 			img = random.randint(0, len(ptls_in_orien_groups) - 1)
@@ -4820,7 +4679,6 @@ def steptwo_mpi_reg(tvol, tweight, treg, cfsc = None, cutoff_freq = 0.45, aa = 0
 	if( Blockdata["myid_on_node"] == 0 ):
 		at = time.time()
 		#print(" iterefa  ",Blockdata["myid"],"   ",strftime("%a, %d %b %Y %H:%M:%S", localtime()),"   ",(time()-at)/60.0)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import  filt_tanl
 		#  Either pad or window in F space to 2*nnxo
 		if not cfsc: tvol = filter.filt_tanl(tvol, cutoff_freq2, aa)
 		nx = tvol.get_ysize()
@@ -4853,16 +4711,6 @@ def recons3d_4nnsorting_MPI(myid, main_node, prjlist, random_subset, CTF = True,
 		Input
 			list_of_prjlist: list of lists of projections to be included in the reconstruction
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities		import reduce_EMData_to_root, random_string, get_im, findall, \
-#pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #	     pass#IMPORTIMPORTIMPORT model_blank, info, get_params_proj
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter			import filt_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from reconstruction import insert_slices_pdf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals	import fft
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics	    import fsc
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2			import Reconstructors
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi			import MPI_COMM_WORLD, mpi_barrier
-	pass#IMPORTIMPORTIMPORT import types
-	pass#IMPORTIMPORTIMPORT import datetime
 	if mpi_comm == None: mpi_comm = mpi.MPI_COMM_WORLD
 	imgsize = prjlist[0].get_ysize()  # It can be Fourier, so take y-size
 	refvol  = utilities.model_blank(target_size)
@@ -4909,15 +4757,6 @@ def recons3d_4nnsorting_group_MPI(myid, main_node, prjlist, random_subset, group
 		Input
 			list_of_prjlist: list of lists of projections to be included in the reconstruction
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import reduce_EMData_to_root, random_string, get_im, findall
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2          import Reconstructors
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import model_blank, info
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter		    import filt_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi            import MPI_COMM_WORLD, mpi_barrier
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics     import fsc
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from reconstruction import insert_slices_pdf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fft
-	pass#IMPORTIMPORTIMPORT import datetime, types
 	if mpi_comm == None: mpi_comm = mpi.MPI_COMM_WORLD
 	imgsize = prjlist[0].get_ysize()  # It can be Fourier, so take y-size
 	refvol = utilities.model_blank(target_size)
@@ -5050,7 +4889,6 @@ def do3d_sorting_group_insertion(data, randomset=2):
 	
 def do3d_sorting_groups_trl_iter(data, iteration):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im, write_text_row, bcast_number_to_all, wrap_mpi_bcast
 	keepgoing = 1
 	if(Blockdata["myid"] == Blockdata["last_node"]):
 		if not os.path.exists(os.path.join(Tracker["directory"], "tempdir")):
@@ -5260,12 +5098,6 @@ def import_data(log_main):
 def get_input_from_sparx_ref3d(log_main):# case one
 	# import SPARX results
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file, write_text_row, bcast_number_to_all, get_im, \
-#pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #	      pass#IMPORTIMPORTIMPORT bcast_number_to_all
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT import json
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from  shutil import copyfile
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from  string import split, atoi
 	###-------------------------------
 	import_from_sparx_refinement = 1
 	selected_iter                = 0
@@ -5305,7 +5137,6 @@ def get_input_from_sparx_ref3d(log_main):# case one
 	import_from_sparx_refinement = utilities.bcast_number_to_all(import_from_sparx_refinement, source_node = Blockdata["main_node"])
 	if import_from_sparx_refinement == 0:
 		global_def.ERROR("The best solution is not found","get_input_from_sparx_ref3d", 1, Blockdata["myid"])
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
 		mpi.mpi_finalize()
 		exit()
 	Tracker_refinement = utilities.wrap_mpi_bcast(Tracker_refinement, Blockdata["main_node"], communicator = mpi.MPI_COMM_WORLD)
@@ -5497,12 +5328,10 @@ def get_input_from_sparx_ref3d(log_main):# case one
 	total_stack          = Tracker["constants"]["total_stack"]
 	Tracker["bckgnoise"] =  os.path.join(Tracker["constants"]["masterdir"], "bckgnoise.hdf")
 	###
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string import atoi
 	# ------- Now copy oldparamstruture -------------------
 	copy_oldparamstructure_from_meridien_MPI(selected_iter)
 	###
 	if Tracker["constants"]["check_smearing"]:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import scale_fsc_datasetsize
 		if not Tracker["search_mode"]:
 			number_of_groups  = Tracker["constants"]["total_stack"]//Tracker["constants"]["img_per_grp"]
 		else: number_of_groups = Tracker["constants"]["init_K"]
@@ -5555,13 +5384,7 @@ def get_input_from_sparx_ref3d(log_main):# case one
 		
 def get_input_from_datastack(log_main):# Case three
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file, write_text_row, wrap_mpi_bcast
-	pass#IMPORTIMPORTIMPORT import json
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   string import split, atoi
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   random import shuffle
 	import_from_data_stack = 1
-	pass#IMPORTIMPORTIMPORT import copy
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		image = utilities.get_im(Tracker["constants"]["orgstack"], 0)
 		Tracker["constants"]["nnxo"] = image.get_xsize()		
@@ -5723,7 +5546,6 @@ def get_input_from_datastack(log_main):# Case three
 def do3d(procid, data, newparams, refang, rshifts, norm_per_particle, myid, mpi_comm = -1):
 	global Tracker, Blockdata
 	#  Without filtration
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from reconstruction import recons3d_trl_struct_MPI
 	if (mpi_comm < -1): mpi_comm = mpi.MPI_COMM_WORLD
 	if (Blockdata["subgroup_myid"]== Blockdata["main_node"]):
 		if( procid == 0 ):
@@ -5745,7 +5567,6 @@ def do3d(procid, data, newparams, refang, rshifts, norm_per_particle, myid, mpi_
 #######--------------------------------------------------------
 def do3d_sorting_groups_rec3d(iteration, masterdir, log_main):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im
 	# reconstruct final unfiltered volumes from sorted clusters
 	keepgoing = 1
 	### ====
@@ -5990,7 +5811,6 @@ def do3d_sorting_groups_nofsc_smearing_iter(srdata, paramstructure, norm_per_par
 			print("insertion  take  %f minutes "%(acc_rest/60.))
 	Tracker["maxfrad"] = Tracker["nxinit"]//2
 	fsc_groups = [None for im in range(len(current_group_sizes))]
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import scale_fsc_datasetsize
 	total_size = sum(current_group_sizes)
 	for igrp in range(len(current_group_sizes)):
 		if Tracker["even_scale_fsc"]: 
@@ -6127,13 +5947,6 @@ def recons3d_trl_struct_group_nofsc_shifted_data_partial_MPI(myid, main_node, np
 		partial rec3d for re-assigned images
 		reconstructor nn4_ctfws
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import reduce_EMData_to_root, random_string, get_im, findall, info, model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2        import Reconstructors
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter	      import filt_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi          import MPI_COMM_WORLD, mpi_barrier
-	pass#IMPORTIMPORTIMPORT import types
-	pass#IMPORTIMPORTIMPORT import datetime
 	if mpi_comm == None: mpi_comm = mpi.MPI_COMM_WORLD
 	if CTF: do_ctf = 1
 	else:   do_ctf = 0
@@ -6282,13 +6095,6 @@ def recons3d_trl_struct_group_nofsc_shifted_data_MPI(myid, main_node,\
 	  rec3d for pre-shifted data list
 	  reconstructor nn4_ctfw
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import reduce_EMData_to_root, random_string, get_im, findall, info, model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2        import Reconstructors
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter	      import filt_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi          import MPI_COMM_WORLD, mpi_barrier
-	pass#IMPORTIMPORTIMPORT import types
-	pass#IMPORTIMPORTIMPORT import datetime
 	if mpi_comm == None: mpi_comm = mpi.MPI_COMM_WORLD
 	refvol = utilities.model_blank(target_size)
 	refvol.set_attr("fudge", 1.0)
@@ -6371,14 +6177,6 @@ def recons3d_trl_struct_group_MPI(myid, main_node, prjlist, random_subset, group
 			list_of_prjlist: list of lists of projections to be included in the reconstruction
 	"""
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import reduce_EMData_to_root, random_string, get_im, findall, model_blank, info
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2        import Reconstructors
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter	      import filt_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi          import MPI_COMM_WORLD, mpi_barrier
-	pass#IMPORTIMPORTIMPORT import types
-	pass#IMPORTIMPORTIMPORT import datetime
-	pass#IMPORTIMPORTIMPORT import copy
 	if mpi_comm == None: mpi_comm = mpi.MPI_COMM_WORLD
 	
 	refvol = utilities.model_blank(target_size)
@@ -6780,11 +6578,6 @@ def sorting_main_mpi(log_main, not_include_unaccounted):
 ###---------------------------------------------------------------------------------------
 def check_mpi_settings(log_main):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import wrap_mpi_bcast, read_text_file, bcast_number_to_all
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import smallprime
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics   import scale_fsc_datasetsize
-	pass#IMPORTIMPORTIMPORT import os
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	####-------------------->>>>>Parameters <<<------------
 	largest_K = 30
 	#####---------------------------------------------------------------------------------
@@ -6913,7 +6706,6 @@ def check_mpi_settings(log_main):
 #####-------------------------------------------------------------------------------------
 def set_sorting_global_variables_mpi(log_file):
 	global Tracker, Blockdata 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import scale_fsc_datasetsize
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		###=====<--options for advanced users:
 		log_file.add("---------------------------------------------------------------------------------------------------")
@@ -7005,9 +6797,6 @@ def set_sorting_global_variables_mpi(log_file):
 ###---------------------------------------------------------------------------------------
 def mem_calc_and_output_info(smearing_file, nxinit, iter_id_init_file, log_main):
 	global Blockdata, Tracker
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import read_text_file
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	# single CPU ; no info update
 	log_main.add( "-------------------------------------------------------------")
 	log_main.add( "              Precalculated images info                      ")
@@ -7089,9 +6878,6 @@ def mem_calc_and_output_info(smearing_file, nxinit, iter_id_init_file, log_main)
 ##-------------------------------------- Final -------------------------------------------
 def copy_results(log_file, all_gen_stat_list):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import json
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   shutil import copyfile
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   string import atoi
 	nsgen = 0
 	for i in range(len(all_gen_stat_list)): nsgen += len(all_gen_stat_list[i])
 	if nsgen >0:	
@@ -7152,7 +6938,6 @@ def copy_results(log_file, all_gen_stat_list):
 def output_clusters(output_dir, partition, unaccounted_list, \
     not_include_unaccounted, log_main):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import copy
 	### Single cpu function per generation  -------------------
 	nclasses, npart = split_partition_into_ordered_clusters(partition)
 	if (not Tracker["no_cluster_generation"]):
@@ -7180,7 +6965,6 @@ def output_clusters(output_dir, partition, unaccounted_list, \
 			if (not not_include_unaccounted):
 				utilities.write_text_file(unaccounted_list, os.path.join(output_dir,"Cluster_%03d.txt"%nc))
 		if not not_include_unaccounted: 
-			pass#IMPORTIMPORTIMPORT import copy
 			unclasses = copy.deepcopy(nclasses)
 			unclasses.append(unaccounted_list)
 			alist, partition = merge_classes_into_partition_list(unclasses)
@@ -7198,7 +6982,6 @@ def output_clusters(output_dir, partition, unaccounted_list, \
 ###-----------------------------------------------------
 def compute_final_map(work_dir, log_main):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT import shutil
 	###
 	Tracker["constants"]["orgres"]			 = 0.0
 	Tracker["constants"]["refinement_delta"] = 0.0
@@ -7285,7 +7068,6 @@ def compute_final_map(work_dir, log_main):
 ####--------------------------------------------------------------------------------------
 def output_iter_results(box_dir, ncluster, NACC, NUACC, \
     minimum_grp_size, list_of_stable, unaccounted_list, log_main):
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	### Single node
 	new_list    = []
 	nc          = 0
@@ -7314,7 +7096,6 @@ def output_iter_results(box_dir, ncluster, NACC, NUACC, \
 
 #######================>>> FSC and group size related functions <<<=========================	
 def get_group_size_from_iter_assign(iter_assignment):
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	group_sizes  = []
 	my_assign    = np.array(iter_assignment, dtype=np.int32)
 	group_ids    = np.sort(np.unique(my_assign))
@@ -7324,7 +7105,6 @@ def get_group_size_from_iter_assign(iter_assignment):
 
 def set_minimum_group_size(log_main, printing_dres_table = True):
 	global Tracker, Blockdata
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import scale_fsc_datasetsize
 	#------------>>> Empirical parameters <<<---------------
 	# Guiding rule: high should be large, low should be small
 	min_size_low_bound1  = 0.2
@@ -7442,7 +7222,6 @@ def find_bounds(global_fsc, total_num, group_size):
 	return res0, int(low_bound), min(int(high_bound), total_num)
 
 def get_current_max_diff(fsc_curve, org_total, NT, K):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import scale_fsc_datasetsize
 	min_size   = NT//K
 	max_size   = NT//K
 	step       = max(min_size//1000, 5)
@@ -7546,7 +7325,6 @@ def AI_freeze_groups(min_size, groups):
 		return [Kmeans_size[0], 0.0, Kmeans_size[0], Kmeans_size[0]], Kmeans_size
 ###---------------------------------------------------------------------------------------
 def AI_within_box(dtable, cutoff_ratio, cutoff_size, cutoff_mu):
-	pass#IMPORTIMPORTIMPORT import numpy as np
 	dtable = np.array(dtable, dtype=np.float64)
 	(ntp, nsize) = dtable.shape
 	# size, rep, cres, size ratio
@@ -7590,12 +7368,6 @@ def AI_split_groups(group_size):
 	return glist, coid
 ###======================================================================================= 
 def main():
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse   import OptionParser
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import SPARXVERSION
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2      import EMData
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from logger     import Logger, BaseLogger_Files
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import ERROR
-	pass#IMPORTIMPORTIMPORT import sys, os, time, shutil
 	global Tracker, Blockdata
 	
 	progname = os.path.basename(sys.argv[0])
@@ -7647,7 +7419,6 @@ def main():
 		parser.add_option("--use_umat",                    action ="store_true",    default =False,     help="Use fuzzy membership to stabalize sorting")
 
 		(options, args) = parser.parse_args(sys.argv[1:])
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import bcast_number_to_all
 		### Sanity check
 	
 		checking_flag = 0
@@ -7764,15 +7535,6 @@ def main():
 		create_subgroup()
 		create_zero_group()		
 		#
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics 	import k_means_match_clusters_asg_new,k_means_stab_bbenum
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter			import filt_tanl
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from logger         import Logger,BaseLogger_Files
-		pass#IMPORTIMPORTIMPORT import user_functions
-		pass#IMPORTIMPORTIMPORT import string
-		pass#IMPORTIMPORTIMPORT import json
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string         import split, atoi, atof
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities 		import get_im,bcast_number_to_all, write_text_file,\
-#pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #		  pass#IMPORTIMPORTIMPORT read_text_file, wrap_mpi_bcast, get_params_proj, write_text_row
 		#
 		continue_from_interuption = 0
 		continue_from_interuption = create_masterdir()
@@ -7791,7 +7553,6 @@ def main():
 			keepsorting = sort3d_init("Initialization", log_main)
 			dump_tracker(Tracker["constants"]["masterdir"])
 			if keepsorting == 0:
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
 				mpi.mpi_finalize()
 				exit()				 
 		sorting_main_mpi(log_main, options.not_include_unaccounted)
@@ -7799,7 +7560,6 @@ def main():
 			log_main.add('----------------------------------------------------------------------------------------------------------------' )
 			log_main.add('                                 SORT3D MULTI-LAYER finished')
 			log_main.add('----------------------------------------------------------------------------------------------------------------' )
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
 		mpi.mpi_finalize()
 		exit()
 			
@@ -7824,7 +7584,6 @@ def main():
 		
 
 		(options, args) = parser.parse_args(sys.argv[1:])
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import bcast_number_to_all
 		### Sanity check
 		
 		checking_flag = 0
@@ -7936,16 +7695,6 @@ def main():
 		create_subgroup()
 		create_zero_group()
 		# 
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics 	import k_means_match_clusters_asg_new,k_means_stab_bbenum
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter			import filt_tanl
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from logger         import Logger,BaseLogger_Files
-		pass#IMPORTIMPORTIMPORT import user_functions
-		pass#IMPORTIMPORTIMPORT import string
-		pass#IMPORTIMPORTIMPORT import json
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string     import split, atoi, atof
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi        import mpi_finalize
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities 	import get_im,bcast_number_to_all, write_text_file,\
-#pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #		   pass#IMPORTIMPORTIMPORT read_text_file, wrap_mpi_bcast, get_params_proj, write_text_row
 		
 		continue_from_interuption = 0
 		continue_from_interuption = create_masterdir()

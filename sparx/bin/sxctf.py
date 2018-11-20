@@ -105,7 +105,6 @@ images far from focus."""
 	if len(args)<1 : parser.error("Input image required")
 	
 	if global_def.CACHE_DISABLE:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
 		utilities.disable_bdb_cache()
 
 	if options.auto_fit:
@@ -837,7 +836,6 @@ def ctf_env_points(im_1d,bg_1d,ctf) :
 try:
 	from PyQt4 import QtCore, QtGui, QtOpenGL
 	from PyQt4.QtCore import Qt
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.valslider import ValSlider
 except:
 	print("Warning: PyQt4 must be installed to use the --gui option")
 	class dummy(object):
@@ -854,17 +852,6 @@ class GUIctf(QtGui.QWidget):
 		"""Implements the CTF fitting dialog using various EMImage and EMPlot2D widgets
 		'data' is a list of (filename,ctf,im_1d,bg_1d,im_2d,bg_2d)
 		"""
-		try:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emimage2d import EMImage2DWidget
-		except:
-			print("Cannot import EMAN image GUI objects (EMImage2DWidget)")
-			sys.exit(1)
-		try: 
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emplot2d import EMPlot2DWidget
-		except:
-			print("Cannot import EMAN plot GUI objects (is matplotlib installed?)")
-			sys.exit(1)
-		
 		self.app = weakref.ref(application)
 		
 		QtGui.QWidget.__init__(self,None)
@@ -1010,7 +997,6 @@ class GUIctf(QtGui.QWidget):
 #	def get_output_params(self):
 	
 	def on_output(self):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emsprworkflow import E2CTFOutputTaskGeneral
 		self.form = emsprworkflow.E2CTFOutputTaskGeneral()
 		self.form.run_form()
 	

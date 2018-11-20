@@ -5381,7 +5381,6 @@ class SXMainWindow(QMainWindow): # class SXMainWindow(QWidget):
 # ========================================================================================
 
 def main():
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser
 	
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + """ 
