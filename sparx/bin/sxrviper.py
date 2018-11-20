@@ -81,7 +81,8 @@ def calculate_list_of_independent_viper_run_indices_used_for_outlier_elimination
 			if not pass_criterion:
 				list_of_viper_run_indices_for_the_current_rrr_viper_iteration = [EMPTY_VIPER_RUN_INDICES_LIST]
 
-		import json; f = open(mainoutputdir + "list_of_viper_runs_included_in_outlier_elimination.json", 'w')
+		import json
+		f = open(mainoutputdir + "list_of_viper_runs_included_in_outlier_elimination.json", 'w')
 		json.dump(list_of_viper_run_indices_for_the_current_rrr_viper_iteration[1:],f); f.close()
 
 		mpi_barrier(MPI_COMM_WORLD)
@@ -103,7 +104,8 @@ def identify_outliers(myid, main_node, rviper_iter, no_of_viper_runs_analyzed_to
 		mainoutputdir = masterdir + DIR_DELIM + NAME_OF_MAIN_DIR + ("%03d" + DIR_DELIM) % (rviper_iter)
 		if(os.path.exists(mainoutputdir + DIR_DELIM + "list_of_viper_runs_included_in_outlier_elimination.json")):
 			# list_of_independent_viper_run_indices_used_for_outlier_elimination = map(int, read_text_file(mainoutputdir + DIR_DELIM + "list_of_viper_runs_included_in_outlier_elimination.txt"))
-			import json; f = open(mainoutputdir + "list_of_viper_runs_included_in_outlier_elimination.json", 'r')
+			import json
+			f = open(mainoutputdir + "list_of_viper_runs_included_in_outlier_elimination.json", 'r')
 			list_of_independent_viper_run_indices_used_for_outlier_elimination  = json.load(f); f.close()
 			do_calculation = 0
 		do_calculation = mpi_bcast(do_calculation, 1, MPI_INT, 0, MPI_COMM_WORLD)[0]
@@ -418,7 +420,8 @@ def calculate_volumes_after_rotation_and_save_them(ali3d_options, rviper_iter, m
 	mainoutputdir = masterdir + DIR_DELIM + NAME_OF_MAIN_DIR + ("%03d" + DIR_DELIM) %(rviper_iter)
 
 	# list_of_projection_indices_used_for_outlier_elimination = map(int, read_text_file(mainoutputdir + DIR_DELIM + "list_of_viper_runs_included_in_outlier_elimination.txt"))
-	import json; f = open(mainoutputdir + "list_of_viper_runs_included_in_outlier_elimination.json", 'r')
+	import json
+	f = open(mainoutputdir + "list_of_viper_runs_included_in_outlier_elimination.json", 'r')
 	list_of_independent_viper_run_indices_used_for_outlier_elimination  = json.load(f); f.close()
 
 	if len(list_of_independent_viper_run_indices_used_for_outlier_elimination)==0:
