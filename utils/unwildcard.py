@@ -177,7 +177,9 @@ while True:
         no_import_lines = lines[:]
 
         for idx, string in bad_index:
-            if lines[idx].strip().startswith('#'):
+            if '#IMPORTIMPORTIMPORT' in lines[idx]:
+                continue
+            elif lines[idx].strip().startswith('#'):
                 no_from_import_lines[idx] = '#{0}pass#IMPORTIMPORTIMPORT {1}\n'.format(string, lines[idx].strip())
                 no_import_lines[idx] = '#{0}pass#IMPORTIMPORTIMPORT {1}\n'.format(string, lines[idx].strip())
             else:
@@ -185,14 +187,19 @@ while True:
                 no_import_lines[idx] = '{0}pass#IMPORTIMPORTIMPORT {1}\n'.format(string, lines[idx].strip())
 
         for idx in no_index:
-            string = IMPORT_LEADING_RE.match(lines[idx]).group(1)
-            no_from_import_lines[idx] = '#{0}pass#IMPORTIMPORTIMPORT {1}\n'.format(string, lines[idx].strip())
-            no_import_lines[idx] = '#{0}pass#IMPORTIMPORTIMPORT {1}\n'.format(string, lines[idx].strip())
+            if '#IMPORTIMPORTIMPORT' in lines[idx]:
+                continue
+            else:
+                string = IMPORT_LEADING_RE.match(lines[idx]).group(1)
+                no_from_import_lines[idx] = '#{0}pass#IMPORTIMPORTIMPORT {1}\n'.format(string, lines[idx].strip())
+                no_import_lines[idx] = '#{0}pass#IMPORTIMPORTIMPORT {1}\n'.format(string, lines[idx].strip())
 
         correct_imports = []
         for idx, string, module in file_modules:
             correct_imports.extend(module)
-            if lines[idx].strip().startswith('#'):
+            if '#IMPORTIMPORTIMPORT' in lines[idx]:
+                continue
+            elif lines[idx].strip().startswith('#'):
                 no_import_lines[idx] = '#{0}pass#IMPORTIMPORTIMPORT {1}\n'.format(string, lines[idx].strip())
             else:
                 no_import_lines[idx] = '{0}pass#IMPORTIMPORTIMPORT {1}\n'.format(string, lines[idx].strip())
@@ -372,6 +379,8 @@ while True:
         no_import_lines.insert(index, imports)
 
         remove_indices = []
+        first_1 = False
+        first_2 = False
         for idx, line in enumerate(no_import_lines[2:], 2):
             if line.startswith("'''"):
                 if first_1:
@@ -383,7 +392,7 @@ while True:
                     first_2 = False
                 else:
                     first_2 = True
-            elif line.startswith('#') and not first_1 and not first_2:
+            elif line.startswith('#'):
                 pass
             elif line.startswith("class") or line.startswith('def'):
                 if not first_1 and not first_2:
