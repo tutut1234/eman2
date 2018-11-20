@@ -5751,8 +5751,10 @@ def store_program_state(filename, state, stack):
 	fp.close()
 
 def restore_program_stack_and_state(file_name_of_saved_state):
-	import json; f = open(file_name_of_saved_state, 'r')
-	saved_state_and_stack = json.load(f); f.close()
+	import json
+	f = open(file_name_of_saved_state, 'r')
+	saved_state_and_stack = json.load(f)
+	f.close()
 	return list(zip(*saved_state_and_stack)[0]), list(zip(*saved_state_and_stack)[1])
 
 
