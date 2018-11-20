@@ -814,7 +814,8 @@ output_directory: directory name into which the output files will be written.  I
 	elif len(args) == 1:
 		if use_latest_master_directory:
 			all_dirs = [d for d in os.listdir(".") if os.path.isdir(d)]
-			pass#IMPORTIMPORTIMPORT import re; r = re.compile("^master.*$")
+			pass#IMPORTIMPORTIMPORT import re;
+			r = re.compile("^master.*$")
 			all_dirs = list(filter(r.match, all_dirs))
 			if len(all_dirs)>0:
 				# all_dirs = max(all_dirs, key=os.path.getctime)
