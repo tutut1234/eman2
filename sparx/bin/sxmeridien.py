@@ -8891,7 +8891,7 @@ def recons3d_trl_struct_MPI_nosmearing(myid, main_node, prjlist, parameters, CTF
 	else:   do_ctf = 0
 	fftvol = EMAN2_cppwrap.EMData()
 	weight = EMAN2_cppwrap.EMData()
-	try:    qt = projlist[0].get_attr("qt")
+	try:    qt = prjlist[0].get_attr("qt")
 	except: qt = 1.0
 	params = {"size":target_size, "npad":2, "snr":1.0, "sign":1, "symmetry":"c1", "refvol":refvol, "fftvol":fftvol, "weight":weight, "do_ctf": do_ctf}
 	r = EMAN2_cppwrap.Reconstructors.get( "nn4_ctfw", params )
