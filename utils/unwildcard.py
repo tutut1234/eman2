@@ -81,6 +81,7 @@ external_modules = [
     'random',
     'mpi',
     'sys',
+    'traceback',
     'time',
     'numpy',
     'math',
