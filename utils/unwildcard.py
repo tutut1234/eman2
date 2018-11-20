@@ -118,7 +118,7 @@ Checker.report = my_report
 Checker.okidoki = []
 
 
-python_files = glob.glob('../sparx/libpy/applications.py')
+#python_files = glob.glob('../sparx/libpy/applications.py')
 for file_name in python_files:
     print(file_name)
     Checker.okidoki = []
@@ -288,7 +288,6 @@ for file_name in python_files:
                 if match:
                     original = match.group(1)
                     new = '{0}.{1}'.format(entry[2][0], entry[1]).join(original.split(entry[1]))
-                    print(original, new)
                     stop = True
                     no_match = False
                     break
@@ -303,7 +302,6 @@ for file_name in python_files:
                 if match:
                     original = match.group(1)
                     new = '{0}.{1}'.format(entry[2][0], entry[1]).join(original.split(entry[1]))
-                    print(original, new)
                     stop = True
                     no_match = False
                     break
