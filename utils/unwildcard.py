@@ -118,7 +118,7 @@ Checker.report = my_report
 Checker.okidoki = []
 
 
-python_files = glob.glob('../sparx/libpy/global_def.py')
+#python_files = glob.glob('../sparx/libpy/global_def.py')
 for file_name in python_files:
     print(file_name)
     Checker.okidoki = []
