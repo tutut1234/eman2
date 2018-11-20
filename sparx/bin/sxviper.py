@@ -2,36 +2,24 @@
 from __future__ import print_function
 
 from builtins import range
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import os
-
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT from global_def import *
-
-import EMAN2
-import EMAN2_cppwrap
-import applications
-import global_def
-import logger
-import mpi
-import multi_shc
-import optparse
-import os
 import sys
-import user_functions
-import utilities
+import os
+
+import global_def
+from global_def import *
+
 def main(args):
-	pass#IMPORTIMPORTIMPORT from utilities import if_error_then_all_processes_exit_program, write_text_row, drop_image, model_gauss_noise, get_im, set_params_proj, wrap_mpi_bcast, model_circle, bcast_number_to_all
-	pass#IMPORTIMPORTIMPORT from logger import Logger, BaseLogger_Files
-	pass#IMPORTIMPORTIMPORT from mpi import mpi_init, mpi_finalize, MPI_COMM_WORLD, mpi_comm_rank, mpi_comm_size, mpi_barrier
-	pass#IMPORTIMPORTIMPORT import user_functions
-	pass#IMPORTIMPORTIMPORT import sys
-	pass#IMPORTIMPORTIMPORT import os
-	pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT from optparse import OptionParser, SUPPRESS_HELP
-	pass#IMPORTIMPORTIMPORT from global_def import SPARXVERSION
-	pass#IMPORTIMPORTIMPORT from EMAN2 import EMData
-	pass#IMPORTIMPORTIMPORT from multi_shc import multi_shc
+	from utilities import if_error_then_all_processes_exit_program, write_text_row, drop_image, model_gauss_noise, get_im, set_params_proj, wrap_mpi_bcast, model_circle, bcast_number_to_all
+	from logger import Logger, BaseLogger_Files
+	from mpi import mpi_init, mpi_finalize, MPI_COMM_WORLD, mpi_comm_rank, mpi_comm_size, mpi_barrier
+	import user_functions
+	import sys
+	import os
+	from applications import MPI_start_end
+	from optparse import OptionParser, SUPPRESS_HELP
+	from global_def import SPARXVERSION
+	from EMAN2 import EMData
+	from multi_shc import multi_shc
 
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + " stack  [output_directory] --ir=inner_radius --rs=ring_step --xr=x_range --yr=y_range  --ts=translational_search_step  --delta=angular_step --center=center_type --maxit1=max_iter1 --maxit2=max_iter2 --L2threshold=0.1 --ref_a=S --sym=c1"
@@ -41,7 +29,7 @@ stack			2D images in a stack file: (default required string)
 directory		output directory name: into which the results will be written (if it does not exist, it will be created, if it does exist, the results will be written possibly overwriting previous results) (default required string)
 """
 	
-	parser = optparse.OptionParser(usage,version=global_def.SPARXVERSION)
+	parser = OptionParser(usage,version=SPARXVERSION)
 	parser.add_option("--radius",                type="int",           default=29,         help="radius of the particle: has to be less than < int(nx/2)-1 (default 29)")
 
 	parser.add_option("--xr",                    type="string",        default='0',        help="range for translation search in x direction: search is +/xr in pixels (default '0')")
@@ -53,7 +41,7 @@ directory		output directory name: into which the results will be written (if it 
 	# 'radius' and 'ou' are the same as per Pawel's request; 'ou' is hidden from the user
 	# the 'ou' variable is not changed to 'radius' in the 'sparx' program. This change is at interface level only for sxviper.
 	##### XXXXXXXXXXXXXXXXXXXXXX option does not exist in docs XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-	parser.add_option("--ou",                    type="int",           default=-1,         help=optparse.SUPPRESS_HELP)
+	parser.add_option("--ou",                    type="int",           default=-1,         help=SUPPRESS_HELP)
 	parser.add_option("--rs",                    type="int",           default=1,          help="step between rings in rotational search: >0 (default 1)")
 	parser.add_option("--ts",                    type="string",        default='1.0',      help="step size of the translation search in x-y directions: search is -xr, -xr+ts, 0, xr-ts, xr, can be fractional (default '1.0')")
 	parser.add_option("--delta",                 type="string",        default='2.0',      help="angular step of reference projections: (default '2.0')")
@@ -66,7 +54,7 @@ directory		output directory name: into which the results will be written (if it 
 	
 	# parser.add_option("--function", type="string", default="ref_ali3d",         help="name of the reference preparation function (ref_ali3d by default)")
 	##### XXXXXXXXXXXXXXXXXXXXXX option does not exist in docs XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-	parser.add_option("--function", type="string", default="ref_ali3d",         help= optparse.SUPPRESS_HELP)
+	parser.add_option("--function", type="string", default="ref_ali3d",         help= SUPPRESS_HELP)
 	
 	parser.add_option("--nruns",                 type="int",           default=6,          help="GA population: aka number of quasi-independent volumes (default 6)")
 	parser.add_option("--doga",                  type="float",         default=0.1,        help="do GA when fraction of orientation changes less than 1.0 degrees is at least doga: (default 0.1)")
@@ -78,7 +66,7 @@ directory		output directory name: into which the results will be written (if it 
 	parser.add_option("--debug",                 action="store_true",  default=False,      help="debug info printout: (default False)")
 	
 	##### XXXXXXXXXXXXXXXXXXXXXX option does not exist in docs XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-	parser.add_option("--return_options", action="store_true", dest="return_options", default=False, help = optparse.SUPPRESS_HELP)	
+	parser.add_option("--return_options", action="store_true", dest="return_options", default=False, help = SUPPRESS_HELP)	
 	
 	#parser.add_option("--an",       type="string", default= "-1",               help="NOT USED angular neighborhood for local searches (phi and theta)")
 	#parser.add_option("--CTF",      action="store_true", default=False,         help="NOT USED Consider CTF correction during the alignment ")
@@ -112,19 +100,19 @@ directory		output directory name: into which the results will be written (if it 
 		print("Please run '" + progname + " -h' for detailed options")
 		return 1
 
-	mpi.mpi_init(0, [])
+	mpi_init(0, [])
 
-	log = logger.Logger(logger.BaseLogger_Files())
+	log = Logger(BaseLogger_Files())
 
 	# 'radius' and 'ou' are the same as per Pawel's request; 'ou' is hidden from the user
 	# the 'ou' variable is not changed to 'radius' in the 'sparx' program. This change is at interface level only for sxviper.
 	options.ou = options.radius 
 	runs_count = options.nruns
-	mpi_rank = mpi.mpi_comm_rank(mpi.MPI_COMM_WORLD)
-	mpi_size = mpi.mpi_comm_size(mpi.MPI_COMM_WORLD)	# Total number of processes, passed by --np option.
+	mpi_rank = mpi_comm_rank(MPI_COMM_WORLD)
+	mpi_size = mpi_comm_size(MPI_COMM_WORLD)	# Total number of processes, passed by --np option.
 	
 	if mpi_rank == 0:
-		all_projs = EMAN2_cppwrap.EMData.read_images(args[0])
+		all_projs = EMData.read_images(args[0])
 		subset = list(range(len(all_projs)))
 		# if mpi_size > len(all_projs):
 		# 	ERROR('Number of processes supplied by --np needs to be less than or equal to %d (total number of images) ' % len(all_projs), 'sxviper', 1)
@@ -138,21 +126,21 @@ directory		output directory name: into which the results will be written (if it 
 	error = 0
 	if mpi_rank == 0:
 		if mpi_size % options.nruns != 0:
-			global_def.ERROR('Number of processes needs to be a multiple of total number of runs. Total runs by default are 3, you can change it by specifying --nruns option.', 'sxviper', 0)
+			ERROR('Number of processes needs to be a multiple of total number of runs. Total runs by default are 3, you can change it by specifying --nruns option.', 'sxviper', 0)
 			error = 1
 
 		if os.path.exists(outdir):
-			global_def.ERROR('Output directory %s   exists, please change the name and restart the program'%outdir, "sxviper", 0)
+			ERROR('Output directory %s   exists, please change the name and restart the program'%outdir, "sxviper", 0)
 			error = 1
-		pass#IMPORTIMPORTIMPORT import global_def
+		import global_def
 		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
 
 
 
-	mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
-	error = utilities.bcast_number_to_all(error, source_node = 0, mpi_comm = mpi.MPI_COMM_WORLD)
+	mpi_barrier(MPI_COMM_WORLD)
+	error = bcast_number_to_all(error, source_node = 0, mpi_comm = MPI_COMM_WORLD)
 	if error == 1 :
-		mpi.mpi_finalize()
+		mpi_finalize()
 		return
 
 	if mpi_rank == 0:
@@ -172,10 +160,10 @@ directory		output directory name: into which the results will be written (if it 
 	options.CTF = False
 	options.snr =  1.0
 	options.an  = -1.0
-	pass#IMPORTIMPORTIMPORT from multi_shc import multi_shc
-	out_params, out_vol, out_peaks = multi_shc.multi_shc(all_projs, subset, runs_count, options, mpi_comm=mpi.MPI_COMM_WORLD, log=log)
+	from multi_shc import multi_shc
+	out_params, out_vol, out_peaks = multi_shc(all_projs, subset, runs_count, options, mpi_comm=MPI_COMM_WORLD, log=log)
 
-	mpi.mpi_finalize()
+	mpi_finalize()
 
 if __name__=="__main__":
 	main(sys.argv[1:])

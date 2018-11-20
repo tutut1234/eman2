@@ -32,39 +32,19 @@ from __future__ import print_function
 #
 #
 
-import EMAN2
-import EMAN2_cppwrap
-import EMAN2_meta
-import EMAN2db
-import eman2_gui.emapplication as emapplication
-import eman2_gui.emimage2d as emimage2d
-import eman2_gui.emselector as emselector
-import eman2_gui.emshape as emshape
-import filter
-import fundamentals
-import math
-import morphology
-import numpy
-import os
-import pixel_error
-import statistics
-import subprocess
-import sxhelixboxer
-import sys
-import utilities
 from builtins import range
-pass#IMPORTIMPORTIMPORT from EMAN2 import get_image_directory, Transform, Region, EMANVERSION, EMData, E2init, E2end, EMArgumentParser
-pass#IMPORTIMPORTIMPORT from EMAN2db import db_open_dict, db_check_dict, db_close_dict
-pass#IMPORTIMPORTIMPORT from math import *
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import os
+from EMAN2 import get_image_directory, Transform, Region, EMANVERSION, EMData, E2init, E2end, EMArgumentParser
+from EMAN2db import db_open_dict, db_check_dict, db_close_dict
+from math import *
+import sys
+import os
 
 try:
 	from PyQt4 import QtGui, QtCore
-	pass#IMPORTIMPORTIMPORT from eman2_gui.emapplication import EMApp, get_application
-	pass#IMPORTIMPORTIMPORT from eman2_gui.emimage2d import EMImage2DWidget
-	pass#IMPORTIMPORTIMPORT from eman2_gui.emselector import EMSelectorDialog
-	pass#IMPORTIMPORTIMPORT from eman2_gui.emshape import EMShape, EMShapeDict
+	from eman2_gui.emapplication import EMApp, get_application
+	from eman2_gui.emimage2d import EMImage2DWidget
+	from eman2_gui.emselector import EMSelectorDialog
+	from eman2_gui.emshape import EMShape, EMShapeDict
 	
 	ENABLE_GUI = True
 	
@@ -92,7 +72,7 @@ def main():
 	sxhelixboxer.py <outdir> --window --dirid=mic --micid=mymic --micsuffix=hdf --invert_contrast --apix=1.84 --boxsize='200,45' --hcoords_suffix=_boxes.txt --ptcl-dst=30 --rmax=92.0 --importctf=ctfestimates.txt
 
 	"""
-	parser = EMAN2.EMArgumentParser(usage=usage,version=EMAN2_meta.EMANVERSION)
+	parser = EMArgumentParser(usage=usage,version=EMANVERSION)
 	parser.add_argument("--gui", action="store_true", help="Start the graphic user interface for boxing helices.")
 
 	parser.add_argument("--helix-coords", "-X", type=str, help="Save coordinates for helices to the file specified, which will have the EMAN1 *.box format:\t\t\tx1-w/2        y1-w/2        w        w        -1                    x2-w/2        y2-w/2        w        w        -2")
@@ -179,21 +159,21 @@ def main():
 	else:
 		px_dst = options.ptcl_dst	
 	
-	logid=EMAN2.E2init(sys.argv)
+	logid=E2init(sys.argv)
 
 	if options.gui:
 		if ENABLE_GUI:
-			logid=EMAN2.E2init(sys.argv,options.ppid)
-			app = emapplication.EMApp()
+			logid=E2init(sys.argv,options.ppid)
+			app = EMApp()
 			helixboxer = EMHelixBoxerWidget(args, app, options.helix_width,options.save_ext, options.invert_contrast)
 			helixboxer.show()
 			app.execute()
-			EMAN2.E2end(logid)
+			E2end(logid)
 		else:
 			return
 	else:
 		if len(args) == 1:
-			logid=EMAN2.E2init(sys.argv)
+			logid=E2init(sys.argv)
 			micrograph_filepath = args[0]
 			if options.db_add_hcoords:
 				db_load_helix_coords(micrograph_filepath, options.db_add_hcoords, True, helix_width)
@@ -208,7 +188,7 @@ def main():
 			if options.ptcl_images:
 				db_save_particles(micrograph_filepath, options.ptcl_images, px_dst, px_length, px_width, not options.ptcl_not_rotated, options.ptcl_norm_edge_mean, options.gridding, options.ptcl_images_stack_mode)
 				
-			EMAN2.E2end(logid)
+			E2end(logid)
 		elif len(args) == 0:
 			print('You must specify a micrograph file or use the "--gui" option.')
 			return
@@ -241,27 +221,27 @@ def get_helix_from_coords(micrograph, x1, y1, x2, y2, width):
 	rot_angle = get_helix_rotation_angle(x1, y1, x2, y2, width)     ## rot_angle   @ming
 	centroid = ( (x1+x2)/2.0,(y1+y2)/2.0 )
 	l_vect = (x2-x1, y2-y1)
-	length = numpy.sqrt(l_vect[0]**2+l_vect[1]**2)
-	tr = EMAN2_cppwrap.Transform()
+	length = sqrt(l_vect[0]**2+l_vect[1]**2)
+	tr = Transform()
 	tr.set_trans(centroid)
 	tr.set_rotation({"type":"2d", "alpha":rot_angle})
 	helix_dimensions = ( int(round(width)), int(round(length)), 1 )
 	helix = micrograph.get_rotated_clip( tr, helix_dimensions )
 	helix["ptcl_helix_coords"] = (x1, y1, x2, y2, width)
-	helix["xform.align2d"]     = EMAN2_cppwrap.Transform()
-	helix["xform.projection"]  = EMAN2_cppwrap.Transform()   
+	helix["xform.align2d"]     = Transform()
+	helix["xform.projection"]  = Transform()   
 	helix["astig_jiao"]        = rot_angle                ##  add the rotation angle to astigmatism angle @ming
 	return helix
 
 def get_helix_rotation_angle(x1, y1, x2, y2, width):
 	l_vect = (x2-x1, y2-y1)
-	length = numpy.sqrt(l_vect[0]**2+l_vect[1]**2)
+	length = sqrt(l_vect[0]**2+l_vect[1]**2)
 	assert length != 0
 	l_uvect = (l_vect[0]/length, l_vect[1]/length)
 	
 	#Rotate so that the length is parallel to the y-axis
 	#Angle between l_uvect and y-axis: l_uvect (dot) j_hat = cos (rot_angle)
-	rot_angle = numpy.degrees(math.acos( l_uvect[1]))       #180/pi*math.acos( l_uvect[1] )                  ## positive angle for counterclockwise rotation @ming
+	rot_angle = degrees(acos( l_uvect[1]))       #180/pi*acos( l_uvect[1] )                  ## positive angle for counterclockwise rotation @ming
 	#Whether we rotate clockwise or counterclockwise depends on the sign of l_uvect[0] (the x-component)
 	if l_uvect[0] < 0:
 		rot_angle *= -1 #rotate the box clockwise
@@ -278,7 +258,7 @@ def get_particle_centroids(helix_coords, px_overlap, px_length, px_width, is_rot
 	"""
 	(x1,y1,x2,y2,w) = helix_coords
 	l_vect = (x2-x1,y2-y1)
-	helix_length = numpy.sqrt(l_vect[0]**2+l_vect[1]**2)
+	helix_length = sqrt(l_vect[0]**2+l_vect[1]**2)
 	l_uvect = (l_vect[0]/helix_length, l_vect[1]/helix_length)
 	w_uvect = (-l_uvect[1],l_uvect[0])
 	
@@ -313,13 +293,13 @@ def get_rotated_particles( micrograph, helix_coords, px_dst = None, px_length = 
 	"""
 	(x1,y1,x2,y2,w) = helix_coords
 	l_vect = (x2-x1, y2-y1)
-	length = numpy.sqrt(l_vect[0]**2+l_vect[1]**2)
+	length = sqrt(l_vect[0]**2+l_vect[1]**2)
 	assert length != 0
 	l_uvect = (l_vect[0]/length, l_vect[1]/length)
 		
 	#Rotate so that the length is parallel to the y-axis
 	#Angle between l_uvect and y-axis: l_uvect (dot) j_hat = cos (rot_angle)
-	rot_angle = 180/numpy.pi*math.acos( l_uvect[1] )
+	rot_angle = 180/pi*acos( l_uvect[1] )
 	#Whether we rotate clockwise or counterclockwise depends on the sign of l_uvect[0] (the x-component)
 	if l_uvect[0] < 0: rot_angle *= -1 #rotate the box clockwise
 	
@@ -347,27 +327,27 @@ def get_rotated_particles( micrograph, helix_coords, px_dst = None, px_length = 
 
 		# liner interpolation for rotation
 		if gridding == False:
-			tr = EMAN2_cppwrap.Transform()
+			tr = Transform()
 			tr.set_trans(centroid)
 			tr.set_rotation({"type":"2d", "alpha":rot_angle})
 			ptcl = micrograph.get_rotated_clip( tr, ptcl_dimensions )
 			ptcl["ptcl_helix_coords"] = tuple(helix_coords)
 			ptcl["ptcl_source_coord"] = tuple(centroid)
-			ptcl["xform.align2d"]     = EMAN2_cppwrap.Transform()
-			ptcl["xform.projection"]  = EMAN2_cppwrap.Transform()
+			ptcl["xform.align2d"]     = Transform()
+			ptcl["xform.projection"]  = Transform()
 			ptcl["ptcl_source_image"] = mic_name
 			particles.append(ptcl)
 
 		else:
 			try:
-				pass#IMPORTIMPORTIMPORT from EMAN2 import Util
-				pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift2D
-				ptcl = EMAN2_cppwrap.Util.window( micrograph, sidepadded, sidepadded, 1, int(round(centroid[0] - nxc)), int(round(centroid[1] - nyc)), 0) 
-				ptcl = EMAN2_cppwrap.Util.window( fundamentals.rot_shift2D(ptcl, -rot_angle, interpolation_method="gridding"), side1, side1, 1, 0, 0, 0)
+				from EMAN2 import Util
+				from fundamentals import rot_shift2D
+				ptcl = Util.window( micrograph, sidepadded, sidepadded, 1, int(round(centroid[0] - nxc)), int(round(centroid[1] - nyc)), 0) 
+				ptcl = Util.window( rot_shift2D(ptcl, -rot_angle, interpolation_method="gridding"), side1, side1, 1, 0, 0, 0)
 				ptcl["ptcl_helix_coords"] = tuple(helix_coords)
 				ptcl["ptcl_source_coord"] = tuple(centroid)
-				ptcl["xform.align2d"]     = EMAN2_cppwrap.Transform()
-				ptcl["xform.projection"]  = EMAN2_cppwrap.Transform()
+				ptcl["xform.align2d"]     = Transform()
+				ptcl["xform.projection"]  = Transform()
 				ptcl["ptcl_source_image"] = mic_name
 				particles.append(ptcl)
 			except:
@@ -404,11 +384,11 @@ def get_unrotated_particles(micrograph, helix_coords, px_dst = None, px_length =
 	rot_angle = get_helix_rotation_angle(*helix_coords)
 	#tr = Transform({"type":"eman","alt":90,"phi":rot_angle}) #How to rotate a cylinder that is oriented along the z-axis to align it along the boxed helix
 	for centroid in centroids:
-		ptcl= micrograph.get_clip( EMAN2_cppwrap.Region(centroid[0]-side/2.0, centroid[1]-side/2.0, side, side) )
+		ptcl= micrograph.get_clip( Region(centroid[0]-side/2.0, centroid[1]-side/2.0, side, side) )
 		ptcl["ptcl_helix_coords"] = tuple(helix_coords)
 		ptcl["ptcl_source_coord"] = tuple(centroid)
-		ptcl["xform.projection"]  = EMAN2_cppwrap.Transform()
-		ptcl["xform.align2d"]     = EMAN2_cppwrap.Transform()
+		ptcl["xform.projection"]  = Transform()
+		ptcl["xform.align2d"]     = Transform()
 		ptcl["ptcl_source_image"] = mic_name
 		particles.append(ptcl)
 	return particles
@@ -530,7 +510,7 @@ def save_particles(particles, ptcl_filepath, do_edge_norm=False, stack_file_mode
 	#Testing file writing support
 	#If file type doesn't support writing, use HDF instead
 	#If file type doesn't support stack files, store each particle individually regardless of stack_file_mode
-	testdata = EMAN2_cppwrap.EMData(100,100)
+	testdata = EMData(100,100)
 	testdata.to_value(1)
 	testfilename = ".HelixBoxerTestFile%s" % ext    
 	try:
@@ -585,9 +565,9 @@ def db_get_item(micrograph_filepath, key):
 	gets the value stored in the sxhelixboxer database for the specified micrograph and key 
 	"""
 	db_name = SXHELIXBOXER_DB + key
-	db = EMAN2db.db_open_dict(db_name)
+	db = db_open_dict(db_name)
 	val = db[micrograph_filepath]
-	EMAN2db.db_close_dict(db_name)
+	db_close_dict(db_name)
 	return val
 
 def db_set_item(micrograph_filepath, key, value):
@@ -595,9 +575,9 @@ def db_set_item(micrograph_filepath, key, value):
 	sets the value stored in the sxhelixboxer database for the specified micrograph and key 
 	"""
 	db_name = SXHELIXBOXER_DB + key
-	db = EMAN2db.db_open_dict(db_name)
+	db = db_open_dict(db_name)
 	db[micrograph_filepath] = value
-	EMAN2db.db_close_dict(db_name)
+	db_close_dict(db_name)
 
 def db_get_helices_dict(micrograph_filepath, helix_width = None):
 	"""
@@ -606,8 +586,8 @@ def db_get_helices_dict(micrograph_filepath, helix_width = None):
 	@param helix_width: if specified, it replaces the widths in the database as the width for each helix
 	@return: a dictionary formed like {(x1, y1, x2, y2, width): particle_EMData_object, ...}
 	"""
-	micrograph = EMAN2_cppwrap.EMData(micrograph_filepath)
-	db = EMAN2db.db_open_dict(SXHELIXBOXER_DB + "helixboxes")
+	micrograph = EMData(micrograph_filepath)
+	db = db_open_dict(SXHELIXBOXER_DB + "helixboxes")
 	box_coords_list = db[micrograph_filepath]
 	if not box_coords_list:
 		return {}
@@ -627,8 +607,8 @@ def win_get_helices_dict(micrograph_filepath, helix_width = None):     #new func
 	@param helix_width: if specified, it replaces the widths in the database as the width for each helix
 	@return: a dictionary formed like {(x1, y1, x2, y2, width): particle_EMData_object, ...}
 	"""
-	micrograph = EMAN2_cppwrap.EMData(micrograph_filepath)
-	db = EMAN2db.db_open_dict(SXHELIXBOXER_DB + "helixboxes")
+	micrograph = EMData(micrograph_filepath)
+	db = db_open_dict(SXHELIXBOXER_DB + "helixboxes")
 	box_coords_list = db[micrograph_filepath]
 	if not box_coords_list:
 		return {}
@@ -675,7 +655,7 @@ def db_save_helix_coords(micrograph_filepath, output_filepath=None, helix_width 
 	micrograph_name = os.path.splitext( micrograph_filename )[0]
 	if not output_filepath:
 		output_filepath = os.getcwd() + micrograph_name + "_boxes.txt"
-	db = EMAN2db.db_open_dict(SXHELIXBOXER_DB + "helixboxes")
+	db = db_open_dict(SXHELIXBOXER_DB + "helixboxes")
 	box_coords_list = db[micrograph_filepath]
 	save_helix_coords(box_coords_list, output_filepath, helix_width)
 
@@ -717,7 +697,7 @@ def db_save_particle_coords(micrograph_filepath, output_filepath = None, px_dst 
 	save_particle_coords(helix_particle_coords_dict, output_filepath, micrograph_filepath, px_length, px_width)
 	
 def db_save_particles(micrograph_filepath, ptcl_filepath = None, px_dst = None, px_length = None, px_width = None, rotated = True, do_edge_norm = False, gridding = False, stack_file_mode = "multiple", do_filt = True, filt_freq = -1):
-	pass#IMPORTIMPORTIMPORT from filter 		import filt_gaussh
+	from filter 		import filt_gaussh
 	
 	micrograph_filename = os.path.basename(micrograph_filepath)
 	micrograph_name = os.path.splitext( micrograph_filename )[0]
@@ -727,11 +707,11 @@ def db_save_particles(micrograph_filepath, ptcl_filepath = None, px_dst = None, 
 	helices_dict = db_get_helices_dict(micrograph_filepath)
 	
 	all_particles = []
-	micrograph = EMAN2_cppwrap.EMData(micrograph_filepath)
+	micrograph = EMData(micrograph_filepath)
 	if do_filt:
 		if filt_freq <= 0:
 			filt_freq = 1.0/px_length
-		micrograph = filter.filt_gaussh(micrograph, filt_freq)		
+		micrograph = filt_gaussh(micrograph, filt_freq)		
 	nhelix = 0
 	for coords in helices_dict:
 		helix = helices_dict[coords]
@@ -1076,7 +1056,7 @@ if ENABLE_GUI:
 
 			self.saveext=saveext
 			self.app = app
-			self.setWindowIcon(QtGui.QIcon(EMAN2.get_image_directory() +"green_boxes.png"))
+			self.setWindowIcon(QtGui.QIcon(get_image_directory() +"green_boxes.png"))
 			self.setWindowTitle("sxhelixboxer")
 
 			self.main_image = None #Will be an EMImage2DWidget instance
@@ -1318,13 +1298,13 @@ if ENABLE_GUI:
 		def calc_ctf_cter(self):
 			# calculate ctf of ORIGINAL micrograph using cter in gui mode
 			# this must mean cter is being calculated on a single micrograph!
-			pass#IMPORTIMPORTIMPORT from utilities import get_im
+			from utilities import get_im
 			
 			print("starting cter")
 			
 			# get the current micrograph
 			image_name = self.micrograph_filepath
-			img = utilities.get_im(image_name)
+			img = get_im(image_name)
 			
 			try:
 				ctf_window_size  = int(self.ctf_window_size.text())
@@ -1354,7 +1334,7 @@ if ENABLE_GUI:
 				print("Please remove or rename %s and or %s"%(outpwrot,outpartres))
 				return
 			
-			pass#IMPORTIMPORTIMPORT from morphology import cter
+			from morphology import cter
 			defocus, ast_amp, ast_agl, error_defocus, error_astamp, error_astagl = cter(None, outpwrot, outpartres, None, None, ctf_window_size, voltage=ctf_volt, Pixel_size=input_pixel_size, Cs = ctf_cs, wgh=ctf_ampcont, kboot=ctf_kboot, MPI=False, DEBug= False, overlap_x = ctf_overlap_size, overlap_y = ctf_overlap_size, edge_x = ctf_edge_size, edge_y = ctf_edge_size, guimic=image_name)
 		
 			self.estdef.setText(str(defocus))
@@ -1377,8 +1357,8 @@ if ENABLE_GUI:
 			
 			# XXX: wgh?? amp_cont static to 0?
 			# set image properties, in order to save ctf values
-			pass#IMPORTIMPORTIMPORT from utilities import set_ctf
-			utilities.set_ctf(img, [defocus, ctf_cs, ctf_volt, input_pixel_size, 0, ctf_ampcont, ast_amp, ast_agl])
+			from utilities import set_ctf
+			set_ctf(img, [defocus, ctf_cs, ctf_volt, input_pixel_size, 0, ctf_ampcont, ast_amp, ast_agl])
 			# and rewrite image 
 			img.write_image(image_name)
 			print([defocus, ctf_cs, ctf_volt, input_pixel_size, 0, ctf_ampcont, ast_amp, ast_agl])
@@ -1408,14 +1388,14 @@ if ENABLE_GUI:
 			"""
 			self.color_boxes()
 			if not self.helix_viewer:
-				self.helix_viewer = emimage2d.EMImage2DWidget(application=emapplication.get_application())
+				self.helix_viewer = EMImage2DWidget(application=get_application())
 				#self.helix_viewer.setWindowTitle("Current Helix")
 				self.helix_viewer.resize(300,800)
 				self.helix_viewer.set_scale(1)
 			self.helix_viewer.module_closed.connect(self.helix_viewer_closed)
 			self.helix_viewer.set_data(helix_emdata)
 			self.helix_viewer.setWindowTitle("Current Helix: %d x %d pixels" % (helix_emdata["nx"], helix_emdata["ny"]) )
-			emapplication.get_application().show_specific(self.helix_viewer)
+			get_application().show_specific(self.helix_viewer)
 			self.helix_viewer.updateGL()
 		def closeEvent(self, event):
 			"""
@@ -1461,14 +1441,14 @@ if ENABLE_GUI:
 				keep_current_boxes = keep_boxes_msgbox.exec_()
 		
 				if keep_current_boxes == QtGui.QMessageBox.No:
-					self.main_image.shapes = emshape.EMShapeDict()
+					self.main_image.shapes = EMShapeDict()
 					self.set_db_item("helixboxes", [])
 					self.helices_dict = {}
 					if self.helix_viewer:
-						self.display_helix(EMAN2_cppwrap.EMData(10,10))
+						self.display_helix(EMData(10,10))
 			
 			for coords in coords_list:
-				emshape = emshape.EMShape(["rectline", self.color[0], self.color[1], self.color[2], coords[0], coords[1], coords[2], coords[3], coords[4], 2])
+				emshape = EMShape(["rectline", self.color[0], self.color[1], self.color[2], coords[0], coords[1], coords[2], coords[3], coords[4], 2])
 				key = self.generate_emshape_key()
 				self.main_image.add_shape(key, emshape)
 				helix = get_helix_from_coords(self.main_image.get_data(), *coords)
@@ -1491,15 +1471,15 @@ if ENABLE_GUI:
 			self.click_loc = None #Will be (x,y) tuple
 			
 			if not self.main_image:
-				self.main_image = emimage2d.EMImage2DWidget(application=self.app)
+				self.main_image = EMImage2DWidget(application=self.app)
 				self.main_image.module_closed.connect(self.main_image_closed)
 				self.main_image.mousedown.connect(self.mouse_down)
 				self.main_image.mousedrag.connect(self.mouse_drag)
 				self.main_image.mouseup.connect(self.mouse_up)
 			self.main_image.set_data( micrograph_emdata, self.micrograph_filepath )
-			self.main_image.shapes = emshape.EMShapeDict()
+			self.main_image.shapes = EMShapeDict()
 			self.main_image.shapechange=1
-			emapplication.get_application().show_specific(self.main_image)
+			get_application().show_specific(self.main_image)
 			self.helices_dict = db_get_helices_dict(self.micrograph_filepath) #Will be like {(x1,y1,x2,y2,width): emdata}
 			
 			if self.get_db_item("helixboxes") == None:
@@ -1512,7 +1492,7 @@ if ENABLE_GUI:
 					emshape_list.extend(list(self.color))
 					emshape_list.extend(list(box_coords))
 					emshape_list.append(2)
-					emshape = emshape.EMShape( emshape_list )
+					emshape = EMShape( emshape_list )
 					self.main_image.add_shape(key, emshape)
 				self.main_image.updateGL()
 			
@@ -1546,22 +1526,22 @@ if ENABLE_GUI:
 				assert new_filepath in self.micrograph_filepath_set
 				if new_filepath != self.micrograph_filepath:
 					self.micrograph_filepath = new_filepath
-					micrograph = EMAN2_cppwrap.EMData(self.micrograph_filepath)
+					micrograph = EMData(self.micrograph_filepath)
 					
 					if self.invert_contrast:
-						pass#IMPORTIMPORTIMPORT from utilities import info, model_blank
-						pass#IMPORTIMPORTIMPORT from EMAN2 	   import Util
+						from utilities import info, model_blank
+						from EMAN2 	   import Util
 						# invert contrast of micrograph so average remains unchanged
 						print("Inverting contrast of micrograph")
 						mnx = micrograph.get_xsize()
 						mny = micrograph.get_ysize()
-						sttt = utilities.info(micrograph)
-						avgimg = utilities.model_blank(mnx, ny=mny, bckg=sttt[0])
+						sttt = info(micrograph)
+						avgimg = model_blank(mnx, ny=mny, bckg=sttt[0])
 	
-						EMAN2_cppwrap.Util.sub_img(micrograph, avgimg) # subtract average
-						EMAN2_cppwrap.Util.mul_scalar(micrograph, -1.0) # multiply by -1
-						EMAN2_cppwrap.Util.add_img(micrograph, avgimg) # add back average
-						sttt2 = utilities.info(micrograph)
+						Util.sub_img(micrograph, avgimg) # subtract average
+						Util.mul_scalar(micrograph, -1.0) # multiply by -1
+						Util.add_img(micrograph, avgimg) # add back average
+						sttt2 = info(micrograph)
 						assert(abs(sttt[0] - sttt2[0])<0.0001), "Assert failed: average of micrograph should remain same after contrast inversion!"
 						
 					self.load_micrograph(micrograph)
@@ -1569,7 +1549,7 @@ if ENABLE_GUI:
 			"""
 			loads a file browser to select a micrograph or multiple microgrpahs to add to the micrograph table
 			"""
-			selector = emselector.EMSelectorDialog(single_selection=False,save_as_mode=False)
+			selector = EMSelectorDialog(single_selection=False,save_as_mode=False)
 			new_micrographs = selector.exec_()
 			if isinstance(new_micrographs, str): #Just one file was selected
 				if sys.version_info >= (2, 6):
@@ -1627,14 +1607,14 @@ if ENABLE_GUI:
 				self.helices_dict.pop(tuple(old_coords))
 				self.helices_dict[new_coords] = helix
 							
-				new_emshape = emshape.EMShape( ["rectline", self.color[0], self.color[1], self.color[2], new_coords[0], new_coords[1], new_coords[2], new_coords[3], new_coords[4], 2] )
+				new_emshape = EMShape( ["rectline", self.color[0], self.color[1], self.color[2], new_coords[0], new_coords[1], new_coords[2], new_coords[3], new_coords[4], 2] )
 				shapes[box_key] = new_emshape
 				
 			self.main_image.shapechange=1
 			self.main_image.updateGL()
 			
 			if self.helix_viewer:
-				self.display_helix(EMAN2_cppwrap.EMData(10,10))
+				self.display_helix(EMData(10,10))
 	#    def write_coords(self):
 	#        """
 	#        Save boxed helix coordinates to tab separated text file.
@@ -1662,25 +1642,25 @@ if ENABLE_GUI:
 			gets the value stored in the sxhelixboxer database for the specified key and the current micrograph 
 			"""
 			db_name = SXHELIXBOXER_DB + key
-			db = EMAN2db.db_open_dict(db_name)
+			db = db_open_dict(db_name)
 			val = db[self.micrograph_filepath]
-			EMAN2db.db_close_dict(db_name)
+			db_close_dict(db_name)
 			return val
 		def remove_db_item(self, key):
 			"""
 			removes the key and its value from the sxhelixboxer database for the current micrograph
 			"""
 			db_name = SXHELIXBOXER_DB + key
-			db = EMAN2db.db_open_dict(db_name)
+			db = db_open_dict(db_name)
 			db.pop(key)
 		def set_db_item(self, key, value):
 			"""
 			sets the value stored in the sxhelixboxer database for the specified key and the current micrograph 
 			"""
 			db_name = SXHELIXBOXER_DB + key
-			db = EMAN2db.db_open_dict(db_name)
+			db = db_open_dict(db_name)
 			db[self.micrograph_filepath] = value
-			EMAN2db.db_close_dict(db_name)
+			db_close_dict(db_name)
 		def get_image_quality(self):
 			"""
 			gets the value stored in the sxhelixboxer database for image quality, which is the user's subjective
@@ -1698,7 +1678,7 @@ if ENABLE_GUI:
 			adds the coordinates for a helix to the sxhelixboxer database for the current micrograph
 			"""
 			assert len(box_coords) == 5, "box_coords must have 5 items"
-			db = EMAN2db.db_open_dict(SXHELIXBOXER_DB + "helixboxes")
+			db = db_open_dict(SXHELIXBOXER_DB + "helixboxes")
 			boxList = db[self.micrograph_filepath] #Get a copy of the db in memory
 			boxList.append(tuple(box_coords))
 			db[self.micrograph_filepath] = boxList #Needed to save changes to disk
@@ -1707,7 +1687,7 @@ if ENABLE_GUI:
 			removes the coordinates for a helix in the sxhelixboxer database for the current micrograph
 			"""
 			assert len(box_coords) == 5, "box_coords must have 5 items"
-			db = EMAN2db.db_open_dict(SXHELIXBOXER_DB + "helixboxes")
+			db = db_open_dict(SXHELIXBOXER_DB + "helixboxes")
 			boxList = db[self.micrograph_filepath] #Get a copy of the db in memory
 			boxList.remove(tuple(box_coords))
 			db[self.micrograph_filepath] = boxList #Needed to save changes to disk
@@ -1802,7 +1782,7 @@ if ENABLE_GUI:
 						emshape_tuple = ( "rectline",self.color[0], self.color[1], self.color[2], 
 											self.click_loc[0], self.click_loc[1], cursor_loc[0], cursor_loc[1], self.get_width(), 2 )
 						
-						emshape_box = emshape.EMShape(emshape_tuple)
+						emshape_box = EMShape(emshape_tuple)
 						self.main_image.add_shape(self.current_boxkey, emshape_box)
 						self.main_image.updateGL()
 						self.initial_helix_box_data_tuple = emshape_tuple[4:9]
@@ -1982,12 +1962,12 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 		
 		windowallmic(dirid='mic', micid='mic', micsuffix='hdf', outdir='out',  pixel_size=1.2, boxsize=200, minseg = 6, outstacknameall='bdb:adata', hcoords_suffix = "_boxes.txt", ptcl_dst=15, inv_contrast=False, new_pixel_size=1.84, rmax = 60.0, topdir='/Users/project')
 	'''
-	pass#IMPORTIMPORTIMPORT import os
-	pass#IMPORTIMPORTIMPORT from utilities      import print_begin_msg, print_end_msg, print_msg
-	pass#IMPORTIMPORTIMPORT from sxhelixboxer	import windowmic
-	pass#IMPORTIMPORTIMPORT from EMAN2 	        import EMUtil, Util
+	import os
+	from utilities      import print_begin_msg, print_end_msg, print_msg
+	from sxhelixboxer	import windowmic
+	from EMAN2 	        import EMUtil, Util
 	
-	utilities.print_begin_msg("windowallmic\n")
+	print_begin_msg("windowallmic\n")
 	
 	if not(do_rotation):
 		do_gridding = False
@@ -2035,7 +2015,7 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 			return
 		outdirlist.append(coutdir)
 	for coutdir in outdirlist:
-		utilities.print_msg("Creating output directory %s\n"%coutdir)
+		print_msg("Creating output directory %s\n"%coutdir)
 		os.mkdir(coutdir)
 	cutoffhistogram = []       #@ming
 	lenmicnames = 0	
@@ -2046,10 +2026,10 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 		# sort flist2 using case insensitive string comparison
 		flist2.sort(key=str.lower)
 		nfiles = len(flist2)
-		utilities.print_msg('Sorted file list in %s:\n'%v1)
+		print_msg('Sorted file list in %s:\n'%v1)
 		for iii in range(nfiles):
-			utilities.print_msg('%s,'%flist2[iii])
-		utilities.print_msg('\n')
+			print_msg('%s,'%flist2[iii])
+		print_msg('\n')
 		for i2, v2 in enumerate(flist2):
 			filename, fext = os.path.splitext(v2)
 			if fext[1:] != micsuffix:
@@ -2064,28 +2044,28 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 				if( os.path.exists(hcoordsname) ):
 					micname = os.path.join(v1, v2)
 					lenmicnames += 1
-					utilities.print_msg("\n\nPreparing to window helices from micrograph %s with box coordinate file %s\n\n"%(micname, hcoordsname))
+					print_msg("\n\nPreparing to window helices from micrograph %s with box coordinate file %s\n\n"%(micname, hcoordsname))
 					#windowmic(outstacknameall, coutdir, micname, hcoordsname, pixel_size, boxsize, ptcl_dst, minseg, inv_contrast, new_pixel_size, rmaxp, freq, do_rotation, do_gridding, importctf, cterr)
 					windowmic(outstacknameall, v1, coutdir, micname, hcoordsname, pixel_size, boxsize, ptcl_dst, minseg, inv_contrast, new_pixel_size, rmaxp, freq, do_rotation, do_gridding, importctf, limitctf, cterr, cutoffhistogram)  ##changed by @ming 
 	
 	if len(cutoffhistogram) > 0:		#@ming
 		lhist = 3
 		if len(cutoffhistogram) >= lhist:
-			pass#IMPORTIMPORTIMPORT from statistics import hist_list
-			region,hist = statistics.hist_list(cutoffhistogram,lhist)	
+			from statistics import hist_list
+			region,hist = hist_list(cutoffhistogram,lhist)	
 			msg = "      Histogram of cut off frequencies\n      ERROR       number of frequencies\n"
-			utilities.print_msg(msg)
+			print_msg(msg)
 			for lhx in range(len(lhist)):
 				msg = " %10.3f     %7d\n"%(region[lhx], hist[lhx])
-				utilities.print_msg(msg)
-		utilities.print_msg('The percentage of micrographs filtered by the cutoff frequency: %6f\n' % (len(cutoffhistogram)*1.0/lenmicnames))		
+				print_msg(msg)
+		print_msg('The percentage of micrographs filtered by the cutoff frequency: %6f\n' % (len(cutoffhistogram)*1.0/lenmicnames))		
 	# If not debug mode, then remove all output directories 				
 	if debug == 0:
-		pass#IMPORTIMPORTIMPORT from subprocess import call
+		from subprocess import call
 		for coutdir in outdirlist:
 			cmd = "rm -ir %s"%coutdir
-			utilities.print_msg("cmd: %s"%cmd)
-			subprocess.call(cmd, shell=True)
+			print_msg("cmd: %s"%cmd)
+			call(cmd, shell=True)
 
 def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size, boxsize, ptcl_dst, minseg, inv_contrast, new_pixel_size, rmaxp, freq, do_rotation, do_gridding, importctf, limitctf, cterr, cutoffhistogram):
 	'''
@@ -2123,12 +2103,12 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 	       		    two stacks of segments to outdir: mic0_abox_0.hdf	and mic0_abox_1.hdf	 
 	       	    
 	'''
-	pass#IMPORTIMPORTIMPORT from utilities    import pad, model_blank, read_text_row, get_im, print_msg
-	pass#IMPORTIMPORTIMPORT from fundamentals import ramp, resample
-	pass#IMPORTIMPORTIMPORT from filter	  	  import filt_gaussh,filt_tanl
-	pass#IMPORTIMPORTIMPORT from pixel_error  import getnewhelixcoords
-	pass#IMPORTIMPORTIMPORT from EMAN2 	      import EMUtil, Util
-	pass#IMPORTIMPORTIMPORT from subprocess   import call
+	from utilities    import pad, model_blank, read_text_row, get_im, print_msg
+	from fundamentals import ramp, resample
+	from filter	  	  import filt_gaussh,filt_tanl
+	from pixel_error  import getnewhelixcoords
+	from EMAN2 	      import EMUtil, Util
+	from subprocess   import call
 	
 	# micname is full path name
 	# smic[-1] is micrograph name minus path
@@ -2137,7 +2117,7 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 	filename = (smic[-1].split('.'))[0]
 
 	if importctf:	
-		ctfs = utilities.read_text_row(importctf)
+		ctfs = read_text_row(importctf)
 		nx = True
 		for i in range(len(ctfs)):
 			smic = ctfs[i][-1].split('/')
@@ -2150,38 +2130,38 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 			print("Micrograph %s"%filename,"  not listed in CTER results, skipping ....")
 			return
 		if(ctfs[8]/ctfs[0] > cterr[0]):
-			utilities.print_msg('Defocus error %f exceeds the threshold. Micrograph %s rejected.\n'%(ctfs[8]/ctfs[0], filename))
+			print_msg('Defocus error %f exceeds the threshold. Micrograph %s rejected.\n'%(ctfs[8]/ctfs[0], filename))
 			return
 		if(ctfs[10] > cterr[1] ):
 			ctfs[6] = 0.0      ##astigmatism amplitude     comment by@ming
 			ctfs[7] = 0.0      ##astigmatism angle         comment by@ming
 
-	dummy = EMAN2_cppwrap.EMData()
+	dummy = EMData()
 	dummy.read_image(micname, 0, True)
 	l = dummy.get_attr_dict()
 
 	## Cut off frequency components higher than CTF limit   @ming
-	img = utilities.get_im(micname)
-	pass#IMPORTIMPORTIMPORT from morphology import ctflimit
+	img = get_im(micname)
+	from morphology import ctflimit
 	if limitctf:
 # 			Cut off frequency components higher than CTF limit 
-		q1, q2 = morphology.ctflimit(boxsize,ctfs[0],ctfs[1],ctfs[2],new_pixel_size)
+		q1, q2 = ctflimit(boxsize,ctfs[0],ctfs[1],ctfs[2],new_pixel_size)
 		# This is absolute frequency of the CTF limit in the scale of original micrograph
 		q1 = (ctfs[3] / new_pixel_size) * q1/float(boxsize)
 		if q1 < 0.5:          #@ming
-			img = filter.filt_tanl(img, q1, 0.01)
+			img = filt_tanl(img, q1, 0.01)
 			cutoffhistogram.append(q1)
 	
 	if new_pixel_size != pixel_size:
 		# Resample micrograph, map coordinates, and window segments from resampled micrograph using new coordinates
 		# Set ctf along with new pixel size in resampled micrograph
 		# set hcoordsname to name of new coordinates file, and set micname to resampled micrograph name
-		utilities.print_msg('Resample micrograph to pixel size %f and window segments from resampled micrograph\n'%new_pixel_size)
+		print_msg('Resample micrograph to pixel size %f and window segments from resampled micrograph\n'%new_pixel_size)
 		resample_ratio = pixel_size/new_pixel_size
 		# after resampling by resample_ratio, new pixel size will be pixel_size/resample_ratio = new_pixel_size
 		nx = img.get_xsize()
 		ny = img.get_ysize()
-		img = fundamentals.resample(img, resample_ratio)
+		img = resample(img, resample_ratio)
 		micname = os.path.join(outdir,'resampled_%s'%smic[-1])
 		img.write_image(micname)
 		if importctf: ctfs[3] = new_pixel_size
@@ -2189,7 +2169,7 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 		# filename is name of micrograph minus the path and extension
 		filename = (smic[-1].split('.'))[0]
 		# now need to get new coordinates file and set hcoordsname to that
-		hcoordsname = pixel_error.getnewhelixcoords(hcoordsname, outdir, resample_ratio,nx,ny, newpref="resampled_", boxsize=boxsize)
+		hcoordsname = getnewhelixcoords(hcoordsname, outdir, resample_ratio,nx,ny, newpref="resampled_", boxsize=boxsize)
 
 	imgs_0 = filename+"_abox" # Base name for the segment stack corresponding to each boxed helix. If imgs_0='mic0_abox', then windowed segments from first windowed helix would be 'mic0_abox_0.hdf', the second 'mic0_abox_1.hdf' etc
 	fimgs_0 = os.path.join(outdir, imgs_0 + ".hdf") # This has to be hdf, sxhelixboxer cannot write windowed out segments to bdb
@@ -2203,11 +2183,11 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 	#smic[-1] is micrograph name minus path
 	
 	tmpfile = os.path.join(outdir,'filt_%s.hdf'%filename)
-	imgmic  = utilities.get_im(micname)
+	imgmic  = get_im(micname)
 	
 	if inv_contrast:
-		stt = EMAN2_cppwrap.Util.infomask(imgmic, None, True)
-		EMAN2_cppwrap.Util.mul_scalar(imgmic, -1.0) # multiply by -1
+		stt = Util.infomask(imgmic, None, True)
+		Util.mul_scalar(imgmic, -1.0) # multiply by -1
 		imgmic += 2*stt[0]
 
 	imgmic.write_image(tmpfile)
@@ -2233,9 +2213,9 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 	db_save_particles(tmpfile, fimgs_0, ptcl_dst, boxsize, boxsize, do_rotation, True, do_gridding, "multiple", do_filt = True, filt_freq = freq)
 	os.remove(tmpfile)
 
-	mask = utilities.pad(utilities.model_blank(rmaxp*2, boxsize, 1, 1.0), boxsize, boxsize, 1, 0.0)
+	mask = pad(model_blank(rmaxp*2, boxsize, 1, 1.0), boxsize, boxsize, 1, 0.0)
 
-	a = utilities.read_text_row(hcoordsname)
+	a = read_text_row(hcoordsname)
 	if len(a)%2 != 0:
 		print("Number of rows in helix coordinates file %s should be even!"%hcoordsname)
 		return
@@ -2243,8 +2223,8 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 	#try:      iseg = EMUtil.get_image_count(outstacknameall)
 	#except:   iseg = 0
 	if importctf:
-		pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
-		ctfs = utilities.generate_ctf(ctfs[:8])
+		from utilities import generate_ctf
+		ctfs = generate_ctf(ctfs[:8])
 	#for h in xrange(nhelices):
 	h=0                                                           ## added by@ming
 	for coords in helices_dict:                                   ## added by@ming
@@ -2256,16 +2236,16 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 		otcl_images  = "bdb:%s/QT"%outdir+ ptcl_images[:-4]
 		ptcl_images  = os.path.join(outdir,ptcl_images)
 		if( os.path.exists(ptcl_images) ):
-			n1 = EMAN2_cppwrap.EMUtil.get_image_count(ptcl_images)
+			n1 = EMUtil.get_image_count(ptcl_images)
 			if( n1 < minseg ):
-				utilities.print_msg( "Filament %s has too few segments and was skipped\n"%otcl_images)
+				print_msg( "Filament %s has too few segments and was skipped\n"%otcl_images)
 			else:
-				utilities.print_msg( "otcl_images: %s\n"%otcl_images)
-				utilities.print_msg( "ptcl_images: %s\n"%ptcl_images)
+				print_msg( "otcl_images: %s\n"%otcl_images)
+				print_msg( "ptcl_images: %s\n"%ptcl_images)
 				for j in range(n1):
-					prj = utilities.get_im(ptcl_images, j)
-					prj = fundamentals.ramp(prj)
-					stat = EMAN2_cppwrap.Util.infomask( prj, mask, False )
+					prj = get_im(ptcl_images, j)
+					prj = ramp(prj)
+					stat = Util.infomask( prj, mask, False )
 					prj -= stat[0]
 					if importctf:
 						prj.set_attr("ctf",ctfs)						

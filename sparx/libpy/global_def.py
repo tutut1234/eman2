@@ -30,13 +30,6 @@ from __future__ import print_function
 #
 #
 
-import EMAN2
-import EMAN2_cppwrap
-import EMAN2_meta
-import mpi
-import random
-import sys
-import time
 ''' variables governing system performance - can be changed by the user'''
 # 2-D interpolation method:
 #    "linear", "quadratic", "gridding"
@@ -54,14 +47,14 @@ Eulerian_Angles = "SPIDER"
 
 # We read the global seed here. If the user wish to repeat the random results twice,
 # he/she should first set the rand_seed to a fixed number and then run the program twice.
-pass#IMPORTIMPORTIMPORT from   EMAN2   import Util, EMData, EMUtil, Transform
-pass#IMPORTIMPORTIMPORT from   random  import seed
+from   EMAN2   import Util, EMData, EMUtil, Transform
+from   random  import seed
 
-rand_seed = EMAN2_cppwrap.Util.get_randnum_seed()
-random.seed(rand_random.seed)
+rand_seed = Util.get_randnum_seed()
+seed(rand_seed)
 
-rand_seed = EMAN2_cppwrap.Util.get_randnum_seed()
-EMAN2_cppwrap.Util.set_randnum_seed(rand_seed)
+rand_seed = Util.get_randnum_seed()
+Util.set_randnum_seed(rand_seed)
 
 # BATCH flag should generally be set to False, which indicates that the output should be both displayed on the screen and written to the log file.
 # However, the user may change it to True (either here or in other programs) so that the output is only written to the log file.
@@ -76,18 +69,18 @@ CACHE_DISABLE = False
 
 global LOGFILE
 LOGFILE = "logfile"
-pass#IMPORTIMPORTIMPORT from time import localtime, strftime
+from time import localtime, strftime
 # timestring = strftime("_%d_%b_%Y_%H_%M_%S", localtime())
-timestring = time.strftime("_%Y_%m_%d_%H_%M_%S", time.localtime())
+timestring = strftime("_%Y_%m_%d_%H_%M_%S", localtime())
 LOGFILE = LOGFILE+timestring
 LOGFILE_HANDLE = 0
 IS_LOGFILE_OPEN = False
 '''   SYSTEM FUNCTIONS - please do not change the text below '''
 global SPARXVERSION
 
-pass#IMPORTIMPORTIMPORT from EMAN2_meta import DATESTAMP
+from EMAN2_meta import DATESTAMP
 
-SPARXVERSION = "SPARX v4.0" + ' (GITHUB: ' + EMAN2_meta.DATESTAMP +')'
+SPARXVERSION = "SPARX v4.0" + ' (GITHUB: ' + DATESTAMP +')'
 
 global SPARX_MPI_TAG_UNIVERSAL
 SPARX_MPI_TAG_UNIVERSAL = 123456
@@ -113,10 +106,10 @@ def ERROR(message, where, action = 1, myid = 0):
 		print("  *****  %s"%message)
 		print("")
 	if action == 1 and BATCH:
-		pass#IMPORTIMPORTIMPORT from sys import exit
+		from sys import exit
 		if  MPI:
-			pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
-			mpi.mpi_finalize()
+			from mpi import mpi_finalize
+			mpi_finalize()
 			MPI = False
 			BATCH = False
 			exit()

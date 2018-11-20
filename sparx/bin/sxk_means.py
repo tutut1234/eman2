@@ -32,24 +32,17 @@ from __future__ import print_function
 #
 #
 
-import applications
-import global_def
-import mpi
-import optparse
-import os
-import sys
-import utilities
 
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT from   global_def import *
-pass#IMPORTIMPORTIMPORT from   optparse import OptionParser
-pass#IMPORTIMPORTIMPORT import sys
+import os
+import global_def
+from   global_def import *
+from   optparse import OptionParser
+import sys
 def main():
 	
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + " stack outdir <maskfile> --K=10 --trials=2 --debug --maxit=100 --rand_seed=10 --crit='all' --F=0.9 --T0=2.0 --init_method='rnd' --normalize --CTF --MPI --CUDA"
-	parser = optparse.OptionParser(usage,version=global_def.SPARXVERSION)
+	parser = OptionParser(usage,version=SPARXVERSION)
 	parser.add_option("--K",          type="int",          default=2,         help="Number of classes (default 2)")
 	parser.add_option("--trials",     type="int",          default=1,         help="Number of trials of K-means (default 1)")
 	parser.add_option("--maxit",      type="int",          default=100,       help="Maximum number of iterations within K-means")
@@ -83,17 +76,17 @@ def main():
 			sys.exit()
 
 		if global_def.CACHE_DISABLE:
-			pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
-			utilities.disable_bdb_cache()
-		pass#IMPORTIMPORTIMPORT from  applications  import  k_means_main
+			from utilities import disable_bdb_cache
+			disable_bdb_cache()
+		from  applications  import  k_means_main
 		global_def.BATCH = True
-		applications.k_means_main(args[0], args[1], mask, "SSE", options.K, options.rand_seed, 
+		k_means_main(args[0], args[1], mask, "SSE", options.K, options.rand_seed, 
 			     options.maxit, options.trials, options.crit, options.CTF, 0.0, 0.0, 
 			     options.MPI, False, options.debug, options.normalize, options.init_method)
 		global_def.BATCH = False
 		if options.MPI:
-			pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
-			mpi.mpi_finalize()
+			from mpi import mpi_finalize
+			mpi_finalize()
 
 if __name__ == "__main__":
 	        main()

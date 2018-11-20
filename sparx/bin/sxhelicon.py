@@ -32,27 +32,20 @@ from __future__ import print_function
 #
 #
 
-import applications
-import global_def
-import mpi
-import optparse
-import os
-import sys
-import utilities
 
 def main():
-	pass#IMPORTIMPORTIMPORT import os
-	pass#IMPORTIMPORTIMPORT import sys
-	pass#IMPORTIMPORTIMPORT from optparse import OptionParser
-	pass#IMPORTIMPORTIMPORT from global_def import SPARXVERSION
-	pass#IMPORTIMPORTIMPORT import global_def
+	import os
+	import sys
+	from optparse import OptionParser
+	from global_def import SPARXVERSION
+	import global_def
 	arglist = []
 	for arg in sys.argv:
 		arglist.append( arg )
 	progname = os.path.basename(arglist[0])
 	usage = progname + " stack ref_vol outdir  <maskfile> parameters listed below"
 	
-	parser = optparse.OptionParser(usage,version=global_def.SPARXVERSION)
+	parser = OptionParser(usage,version=SPARXVERSION)
 	parser.add_option("--delta",              type="string",		 default= " 10 6 4  3   2",   help="angular step of reference projections")
 	parser.add_option("--maxit",              type="int",            default= 30,                 help="maximum number of iterations performed for each angular step (set to 30) ")
 	parser.add_option("--CTF",                action="store_true",   default=False,      		  help="CTF correction")
@@ -98,8 +91,8 @@ def main():
 			
 		if options.dp < 0 or options.dphi < 0:
 			# read helical symmetry parameters from symdoc
-			pass#IMPORTIMPORTIMPORT from utilities import read_text_row
-			hparams=utilities.read_text_row(options.symdoc)
+			from utilities import read_text_row
+			hparams=read_text_row(options.symdoc)
 			dp  = hparams[0][0]
 			dphi = hparams[0][1]
 		else:
@@ -109,7 +102,7 @@ def main():
 		rminp = int((float(options.rmin)/options.apix) + 0.5)
 		rmaxp = int((float(options.rmax)/options.apix) + 0.5)
 
-		pass#IMPORTIMPORTIMPORT from utilities import get_input_from_string, get_im
+		from utilities import get_input_from_string, get_im
 
 		searchxshiftp = int( (options.searchxshift/options.apix) + 0.5)
 		xwobblep = int( (options.xwobble/options.apix) + 0.5)
@@ -117,33 +110,33 @@ def main():
 		if( options.ystep <= 0.0 ):  ystep = 1.0
 		else:                        ystep = options.ystep/options.apix
 		if( dp/2.0 < ywobble):
-			global_def.ERROR('ywobble has to be smaller than dp/2.', 'sxhelicon')
+			ERROR('ywobble has to be smaller than dp/2.', 'sxhelicon')
 			sys.exit()
 
 		try:
-			pass#IMPORTIMPORTIMPORT from mpi import mpi_init, mpi_finalize
-			sys.argv = mpi.mpi_init(len(sys.argv), sys.argv)
+			from mpi import mpi_init, mpi_finalize
+			sys.argv = mpi_init(len(sys.argv), sys.argv)
 		except:
-			global_def.ERROR('This program has only MPI version.  Please install MPI library.', 'sxhelicon')
+			ERROR('This program has only MPI version.  Please install MPI library.', 'sxhelicon')
 			sys.exit()
 
 		if global_def.CACHE_DISABLE:
-			pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
-			utilities.disable_bdb_cache()
+			from utilities import disable_bdb_cache
+			disable_bdb_cache()
 
 
 		if len(args) < 4:  mask = None
 		else:              mask = args[3]
-		pass#IMPORTIMPORTIMPORT from applications import ehelix_MPI
+		from applications import ehelix_MPI
 		global_def.BATCH = True
-		applications.ehelix_MPI(args[0], args[1], args[2], options.seg_ny, options.delta, options.phiwobble, options.psi_max,\
+		ehelix_MPI(args[0], args[1], args[2], options.seg_ny, options.delta, options.phiwobble, options.psi_max,\
 		 searchxshiftp, xwobblep, ywobble, ystep, options.apix, dp, dphi, options.fract, rmaxp, rminp, not options.nopsisearch,\
 		  mask, options.maxit, options.CTF, options.snr, options.sym,  options.function, options.npad, options.debug, options.slowIO)
 		global_def.BATCH = False
 
 
-		pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
-		mpi.mpi_finalize()
+		from mpi import mpi_finalize
+		mpi_finalize()
 
 if __name__ == "__main__":
 	main()

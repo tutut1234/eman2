@@ -32,26 +32,19 @@ from __future__ import print_function
 #
 #
 
-import configparser
-import development
-import global_def
-import optparse
-import os
-import sys
-import utilities
 from future import standard_library
 standard_library.install_aliases()
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT from   global_def import *
-pass#IMPORTIMPORTIMPORT from   optparse import OptionParser
-pass#IMPORTIMPORTIMPORT import sys, configparser
+import os
+import global_def
+from   global_def import *
+from   optparse import OptionParser
+import sys, configparser
 
 def main():
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + " configure_file.cfg"
 
-	parser = optparse.OptionParser(usage,version=global_def.SPARXVERSION)
+	parser = OptionParser(usage,version=SPARXVERSION)
 	(options, args) = parser.parse_args()
 
 	if len(args) != 1:
@@ -60,10 +53,10 @@ def main():
 		sys.exit()
 
 	if global_def.CACHE_DISABLE:
-		pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
-		utilities.disable_bdb_cache()
+		from utilities import disable_bdb_cache
+		disable_bdb_cache()
 
-	pass#IMPORTIMPORTIMPORT from development import ali2d_mref
+	from development import ali2d_mref
 	global_def.BATCH = True
 	ali2d_mref(args[0])
 	global_def.BATCH = False

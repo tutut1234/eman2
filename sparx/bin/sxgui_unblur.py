@@ -16,17 +16,11 @@ from __future__ import print_function
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import glob
-import matplotlib
-matplotlib.use("Agg")
-import numpy
-import os
-import sys
 from builtins import range
 from builtins import object
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import Qt
-pass#IMPORTIMPORTIMPORT from matplotlib import pylab
+from matplotlib import pylab
 try:
     from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvasQTAgg
 except ImportError:
@@ -35,10 +29,10 @@ try:
     from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar2QTAgg
 except ImportError:
     from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar2QTAgg
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import glob
-pass#IMPORTIMPORTIMPORT import numpy
+import os
+import sys
+import glob
+import numpy
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -832,7 +826,7 @@ class SXUnblurPlot(QtGui.QWidget):
             canvasLower = FigureCanvasQTAgg(
                 figFunny
                 )
-            matplotlib.pylab.close(figFunny)
+            pylab.close(figFunny)
             canvasUpper.setParent(figWidgetLower)
             canvasLower.setParent(figWidgetUpper)
             # Set a pressed Signal to the Canvas
@@ -931,13 +925,13 @@ class SXUnblurPlot(QtGui.QWidget):
     def _funny_plot(self):
         """Plot a list which shows that there is no Plot"""
 
-        figFunny = matplotlib.pylab.figure(figsize=(3, 2), dpi=100)
-        matplotlib.pylab.plot([0, 0, 1, 1], [0, 2, 0, 2], 'b')
-        matplotlib.pylab.plot([2, 2, 3, 3, 2], [0, 2, 2, 0, 0], 'b')
-        matplotlib.pylab.plot([4, 4, 5, 5, 4], [0, 2, 2, 1, 1], 'b')
-        matplotlib.pylab.plot([6, 6, 7], [2, 0, 0], 'b')
-        matplotlib.pylab.plot([8, 8, 9, 9, 8], [0, 2, 2, 0, 0], 'b')
-        matplotlib.pylab.plot([10, 10.5, 10.5, 10.5, 11], [2, 2, 0, 2, 2], 'b')
+        figFunny = pylab.figure(figsize=(3, 2), dpi=100)
+        pylab.plot([0, 0, 1, 1], [0, 2, 0, 2], 'b')
+        pylab.plot([2, 2, 3, 3, 2], [0, 2, 2, 0, 0], 'b')
+        pylab.plot([4, 4, 5, 5, 4], [0, 2, 2, 1, 1], 'b')
+        pylab.plot([6, 6, 7], [2, 0, 0], 'b')
+        pylab.plot([8, 8, 9, 9, 8], [0, 2, 2, 0, 0], 'b')
+        pylab.plot([10, 10.5, 10.5, 10.5, 11], [2, 2, 0, 2, 2], 'b')
         listCoordX = []
         listCoordY = []
         arrPhiFace = numpy.linspace(0, 2 * numpy.pi, 100)
@@ -945,25 +939,25 @@ class SXUnblurPlot(QtGui.QWidget):
         for i in arrPhiFace:
             listCoordX.append(numpy.cos(i) + 13)
             listCoordY.append(numpy.sin(i) + 1)
-        matplotlib.pylab.plot(listCoordX, listCoordY, 'b')
+        pylab.plot(listCoordX, listCoordY, 'b')
         listCoordX = []
         listCoordY = []
         for i in arrPhiMouth:
             listCoordX.append(0.5 * numpy.cos(i) + 13)
             listCoordY.append(0.5 * numpy.sin(i) + 0.25)
-        matplotlib.pylab.plot(listCoordX, listCoordY, 'b')
-        matplotlib.pylab.plot([12.75, 12.75], [1.25, 1.5], 'b')
-        matplotlib.pylab.plot([13.25, 13.25], [1.25, 1.5], 'b')
-        matplotlib.pylab.plot(
+        pylab.plot(listCoordX, listCoordY, 'b')
+        pylab.plot([12.75, 12.75], [1.25, 1.5], 'b')
+        pylab.plot([13.25, 13.25], [1.25, 1.5], 'b')
+        pylab.plot(
             [-0.25, -0.25, 14.25, 14.25, -0.25],
             [-0.25, 2.25, 2.25, -0.25, -0.25],
             'r'
             )
 
-        matplotlib.pylab.xlim([-1, 15])
-        matplotlib.pylab.ylim([-0.5, 2.5])
-        matplotlib.pylab.grid()
-        matplotlib.pylab.tight_layout()
+        pylab.xlim([-1, 15])
+        pylab.ylim([-0.5, 2.5])
+        pylab.grid()
+        pylab.tight_layout()
 
         return figFunny
 
@@ -2491,13 +2485,13 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                 mode == self.modeAngle:
 
             # Create a funny plot
-            figFunny = matplotlib.pylab.figure(figsize=(3, 2), dpi=100)
-            matplotlib.pylab.plot([0, 0, 1, 1], [0, 2, 0, 2], 'b')
-            matplotlib.pylab.plot([2, 2, 3, 3, 2], [0, 2, 2, 0, 0], 'b')
-            matplotlib.pylab.plot([4, 4, 5, 5, 4], [0, 2, 2, 1, 1], 'b')
-            matplotlib.pylab.plot([6, 6, 7], [2, 0, 0], 'b')
-            matplotlib.pylab.plot([8, 8, 9, 9, 8], [0, 2, 2, 0, 0], 'b')
-            matplotlib.pylab.plot([10, 10.5, 10.5, 10.5, 11], [2, 2, 0, 2, 2], 'b')
+            figFunny = pylab.figure(figsize=(3, 2), dpi=100)
+            pylab.plot([0, 0, 1, 1], [0, 2, 0, 2], 'b')
+            pylab.plot([2, 2, 3, 3, 2], [0, 2, 2, 0, 0], 'b')
+            pylab.plot([4, 4, 5, 5, 4], [0, 2, 2, 1, 1], 'b')
+            pylab.plot([6, 6, 7], [2, 0, 0], 'b')
+            pylab.plot([8, 8, 9, 9, 8], [0, 2, 2, 0, 0], 'b')
+            pylab.plot([10, 10.5, 10.5, 10.5, 11], [2, 2, 0, 2, 2], 'b')
             listCoordX = []
             listCoordY = []
             arrPhiFace = numpy.linspace(0, 2 * numpy.pi, 100)
@@ -2505,30 +2499,30 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
             for i in arrPhiFace:
                 listCoordX.append(numpy.cos(i) + 13)
                 listCoordY.append(numpy.sin(i) + 1)
-            matplotlib.pylab.plot(listCoordX, listCoordY, 'b')
+            pylab.plot(listCoordX, listCoordY, 'b')
             listCoordX = []
             listCoordY = []
             for i in arrPhiMouth:
                 listCoordX.append(0.5 * numpy.cos(i) + 13)
                 listCoordY.append(0.5 * numpy.sin(i) + 0.25)
-            matplotlib.pylab.plot(listCoordX, listCoordY, 'b')
-            matplotlib.pylab.plot([12.75, 12.75], [1.25, 1.5], 'b')
-            matplotlib.pylab.plot([13.25, 13.25], [1.25, 1.5], 'b')
-            matplotlib.pylab.plot(
+            pylab.plot(listCoordX, listCoordY, 'b')
+            pylab.plot([12.75, 12.75], [1.25, 1.5], 'b')
+            pylab.plot([13.25, 13.25], [1.25, 1.5], 'b')
+            pylab.plot(
                 [-0.25, -0.25, 14.25, 14.25, -0.25],
                 [-0.25, 2.25, 2.25, -0.25, -0.25],
                 'r'
                 )
 
-            matplotlib.pylab.xlim([-1, 15])
-            matplotlib.pylab.ylim([-0.5, 2.5])
-            matplotlib.pylab.grid()
-            matplotlib.pylab.tight_layout()
+            pylab.xlim([-1, 15])
+            pylab.ylim([-0.5, 2.5])
+            pylab.grid()
+            pylab.tight_layout()
             self.msAllPlotAngle._fill_widget_frames_single(
                 frame=figFunny, name=mode
                 )
 
-            matplotlib.pylab.close(figFunny)
+            pylab.close(figFunny)
 
             # Make the angle Threshold widgets unenabled
             self.chAngleCriterion.setChecked(False)
@@ -2558,7 +2552,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                 strName = self.dictThresh['{:s} {:d}'.format(mode, number)][
                     self.idxName
                     ]
-                figFrames = matplotlib.pylab.figure(figsize=(3, 2), dpi=100)
+                figFrames = pylab.figure(figsize=(3, 2), dpi=100)
                 if self.varAnalyzeOne:
                     intBins = 3
                 else:
@@ -2572,19 +2566,19 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                     self.arrData[strName],
                     bins=arrBins
                     )
-                matplotlib.pylab.plot(hist[1][:-1], hist[0], 'k.')
-                matplotlib.pylab.grid()
-                matplotlib.pylab.xlim([hist[1][0] - hist[1][-1] * 0.1, hist[1][-1] * 1.1])
-                matplotlib.pylab.ylim([0, numpy.max(hist[0]) + 1])
+                pylab.plot(hist[1][:-1], hist[0], 'k.')
+                pylab.grid()
+                pylab.xlim([hist[1][0] - hist[1][-1] * 0.1, hist[1][-1] * 1.1])
+                pylab.ylim([0, numpy.max(hist[0]) + 1])
                 if mode == self.modeFrame:
-                    matplotlib.pylab.xlabel(r'Drift / Angstrom')
+                    pylab.xlabel(r'Drift / Angstrom')
                 if mode == self.modeAngle:
-                    matplotlib.pylab.xlabel(r'Angle / Degree')
-                matplotlib.pylab.ylabel(r'Nr. of Micrographs')
-                matplotlib.pylab.title('{:s} {:d}'.format(mode, number))
-                matplotlib.pylab.tight_layout()
+                    pylab.xlabel(r'Angle / Degree')
+                pylab.ylabel(r'Nr. of Micrographs')
+                pylab.title('{:s} {:d}'.format(mode, number))
+                pylab.tight_layout()
                 listFigure.append(figFrames)
-                matplotlib.pylab.close(figFrames)
+                pylab.close(figFrames)
 
             # Special case: just one figure
             if len(listFigure) == 1:
@@ -2615,7 +2609,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
         """Plot the right values for selecting a threshold"""
 
         # Figure and bin size for all plots
-        figThresh = matplotlib.pylab.figure(figsize=(5, 4), dpi=100)
+        figThresh = pylab.figure(figsize=(5, 4), dpi=100)
         if self.varAnalyzeOne:
             intBins = 3
         else:
@@ -2627,13 +2621,13 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                 mode == self.modeAngle:
 
             # Plot a list which shows that there is no Plot
-            figFrames = matplotlib.pylab.figure(figsize=(3, 2), dpi=100)
-            matplotlib.pylab.plot([0, 0, 1, 1], [0, 2, 0, 2], 'b')
-            matplotlib.pylab.plot([2, 2, 3, 3, 2], [0, 2, 2, 0, 0], 'b')
-            matplotlib.pylab.plot([4, 4, 5, 5, 4], [0, 2, 2, 1, 1], 'b')
-            matplotlib.pylab.plot([6, 6, 7], [2, 0, 0], 'b')
-            matplotlib.pylab.plot([8, 8, 9, 9, 8], [0, 2, 2, 0, 0], 'b')
-            matplotlib.pylab.plot([10, 10.5, 10.5, 10.5, 11], [2, 2, 0, 2, 2], 'b')
+            figFrames = pylab.figure(figsize=(3, 2), dpi=100)
+            pylab.plot([0, 0, 1, 1], [0, 2, 0, 2], 'b')
+            pylab.plot([2, 2, 3, 3, 2], [0, 2, 2, 0, 0], 'b')
+            pylab.plot([4, 4, 5, 5, 4], [0, 2, 2, 1, 1], 'b')
+            pylab.plot([6, 6, 7], [2, 0, 0], 'b')
+            pylab.plot([8, 8, 9, 9, 8], [0, 2, 2, 0, 0], 'b')
+            pylab.plot([10, 10.5, 10.5, 10.5, 11], [2, 2, 0, 2, 2], 'b')
             listCoordX = []
             listCoordY = []
             arrPhiFace = numpy.linspace(0, 2 * numpy.pi, 100)
@@ -2641,29 +2635,29 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
             for i in arrPhiFace:
                 listCoordX.append(numpy.cos(i) + 13)
                 listCoordY.append(numpy.sin(i) + 1)
-            matplotlib.pylab.plot(listCoordX, listCoordY, 'b')
+            pylab.plot(listCoordX, listCoordY, 'b')
             listCoordX = []
             listCoordY = []
             for i in arrPhiMouth:
                 listCoordX.append(0.5 * numpy.cos(i) + 13)
                 listCoordY.append(0.5 * numpy.sin(i) + 0.25)
-            matplotlib.pylab.plot(listCoordX, listCoordY, 'b')
-            matplotlib.pylab.plot([12.75, 12.75], [1.25, 1.5], 'b')
-            matplotlib.pylab.plot([13.25, 13.25], [1.25, 1.5], 'b')
-            matplotlib.pylab.plot(
+            pylab.plot(listCoordX, listCoordY, 'b')
+            pylab.plot([12.75, 12.75], [1.25, 1.5], 'b')
+            pylab.plot([13.25, 13.25], [1.25, 1.5], 'b')
+            pylab.plot(
                 [-0.25, -0.25, 14.25, 14.25, -0.25],
                 [-0.25, 2.25, 2.25, -0.25, -0.25],
                 'r'
                 )
 
-            matplotlib.pylab.xlim([-1, 15])
-            matplotlib.pylab.ylim([-0.5, 2.5])
-            matplotlib.pylab.grid()
-            matplotlib.pylab.tight_layout()
+            pylab.xlim([-1, 15])
+            pylab.ylim([-0.5, 2.5])
+            pylab.grid()
+            pylab.tight_layout()
             self.msAllPlotAngle._refresh_plot(
                 figure=figFrames
                 )
-            matplotlib.pylab.close(figFrames)
+            pylab.close(figFrames)
 
         # Normal case
         else:
@@ -2729,40 +2723,40 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                 arrInput,
                 bins=arrBins
                 )
-            matplotlib.pylab.plot(hist[1][:-1], hist[0], 'k.')
-            matplotlib.pylab.vlines(
+            pylab.plot(hist[1][:-1], hist[0], 'k.')
+            pylab.vlines(
                 fltStart, 0, numpy.max(hist[0]) + 1,
                 color='b', linestyle='dashed'
                 )
-            matplotlib.pylab.vlines(
+            pylab.vlines(
                 fltStop, 0, numpy.max(hist[0]) + 1,
                 color='r', linestyle='dashed'
                 )
-            matplotlib.pylab.vlines(
+            pylab.vlines(
                 fltStartSave, 0, numpy.max(hist[0]) + 1,
                 color='b', linestyle='solid'
                 )
-            matplotlib.pylab.vlines(
+            pylab.vlines(
                 fltStopSave, 0, numpy.max(hist[0]) + 1,
                 color='r', linestyle='solid'
                 )
-            matplotlib.pylab.vlines(
+            pylab.vlines(
                 hist[1][0], 0, 3,
                 color='k', linestyle='solid'
                 )
-            matplotlib.pylab.vlines(
+            pylab.vlines(
                 hist[1][-1], 0, 3,
                 color='k', linestyle='solid'
                 )
-            matplotlib.pylab.grid()
-            matplotlib.pylab.xlim([hist[1][0] - hist[1][-1] * 0.1, hist[1][-1] * 1.1])
-            matplotlib.pylab.ylim([0, numpy.max(hist[0]) + 1])
-            matplotlib.pylab.xlabel(strXLabel)
-            matplotlib.pylab.ylabel(r'Nr. of Micrographs')
-            matplotlib.pylab.title(strTitle)
-            matplotlib.pylab.tight_layout()
+            pylab.grid()
+            pylab.xlim([hist[1][0] - hist[1][-1] * 0.1, hist[1][-1] * 1.1])
+            pylab.ylim([0, numpy.max(hist[0]) + 1])
+            pylab.xlabel(strXLabel)
+            pylab.ylabel(r'Nr. of Micrographs')
+            pylab.title(strTitle)
+            pylab.tight_layout()
             varOutput._refresh_plot(figure=figThresh, mode=mode)
-            matplotlib.pylab.close(figThresh)
+            pylab.close(figThresh)
 
         # # Only do this when the combo box changes
         if fill:
@@ -3332,7 +3326,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
         """Plots without Threshold"""
 
         # Create a figure to plot on
-        figSingle = matplotlib.pylab.figure()
+        figSingle = pylab.figure()
 
         # If the mode is Average
         if mode == self.modeAverage:
@@ -3348,7 +3342,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
             strXLabel = r'Frame'
             strYLabel = r'Average Drift / Angstrom'
             varOutput = self.msAllPlotFrameAvg
-            matplotlib.pylab.xlim([arrX[0] - arrX[-1] * 0.1, arrX[-1] * 1.1])
+            pylab.xlim([arrX[0] - arrX[-1] * 0.1, arrX[-1] * 1.1])
 
         elif mode == self.modePerMic:
 
@@ -3368,7 +3362,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
             strXLabel = r'Micrograph'
             strYLabel = r'Overall Drift / Angstrom'
             varOutput = self.msAllPlotPerMic
-            matplotlib.pylab.xlim([arrX[0] - arrX[-1] * 0.01, arrX[-1] * 1.01])
+            pylab.xlim([arrX[0] - arrX[-1] * 0.01, arrX[-1] * 1.01])
 
         # If the mode is not Average
         else:
@@ -3386,17 +3380,17 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                 strXLabel = r'Drift X / Angstrom'
                 strYLabel = r'Drift Y / Angstrom'
                 varOutput = self.msPlotDrift
-                matplotlib.pylab.plot(
+                pylab.plot(
                     arrCurrentEntry[self.listCoordX[0]],
                     arrCurrentEntry[self.listCoordY[0]],
                     'dg', label=r'Frame 1'
                     )
-                matplotlib.pylab.plot(
+                pylab.plot(
                     arrCurrentEntry[self.listCoordX[-1]],
                     arrCurrentEntry[self.listCoordY[-1]],
                     'dr', label=r'Frame {:d}'.format(self.intFrames)
                     )
-                matplotlib.pylab.legend(loc='best')
+                pylab.legend(loc='best')
 
             if mode == self.modeDriftPerFrame:
                 arrX = numpy.linspace(1, self.intFrames - 1, self.intFrames - 1)
@@ -3420,22 +3414,22 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
 
         # Plot it!
         if not mode == self.modePerMic:
-            matplotlib.pylab.plot(
+            pylab.plot(
                 arrX,
                 arrY,
                 'kx'
                 )
-        matplotlib.pylab.plot(
+        pylab.plot(
             arrX,
             arrY,
             'k-'
             )
-        matplotlib.pylab.grid()
-        matplotlib.pylab.title(strTitle)
-        matplotlib.pylab.xlabel(strXLabel)
-        matplotlib.pylab.ylabel(strYLabel)
+        pylab.grid()
+        pylab.title(strTitle)
+        pylab.xlabel(strXLabel)
+        pylab.ylabel(strYLabel)
         varOutput._refresh_plot(figure=figSingle)
-        matplotlib.pylab.close(figSingle)
+        pylab.close(figSingle)
 
     def _save_selection(self):
         """Save the selected micrographs"""

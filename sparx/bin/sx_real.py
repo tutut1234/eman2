@@ -36,33 +36,26 @@ from __future__ import print_function
 #
 
 import EMAN2
-import IPython.lib.inputhook
-import eman2_gui.emapplication as emapplication
-import eman2_gui.emimage as emimage
-import global_def
-import os
-import sparx
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT from EMAN2 import *
+from EMAN2 import *
 
 
 
 GUIUSE=True
 try:
-	if EMAN2.get_platform()=="Linux" and os.os.getenv("DISPLAY")==None: raise Exception
+	if get_platform()=="Linux" and os.getenv("DISPLAY")==None: raise Exception
 
 	from PyQt4 import QtCore, QtGui, QtOpenGL
-	pass#IMPORTIMPORTIMPORT from eman2_gui.emapplication import EMApp
-	pass#IMPORTIMPORTIMPORT import IPython.lib.inputhook
+	from eman2_gui.emapplication import EMApp
+	import IPython.lib.inputhook
 
 
-	app=emapplication.EMApp()
+	app=EMApp()
 	IPython.lib.inputhook.enable_qt4(app)
 
-	pass#IMPORTIMPORTIMPORT from eman2_gui.emimage import image_update
+	from eman2_gui.emimage import image_update
 
 	def ipy_on_timer():
-		emimage.image_update()
+		image_update()
 
 	ipytimer = QtCore.QTimer()
 	ipytimer.timeout.connect(ipy_on_timer)
@@ -73,8 +66,8 @@ try:
 except:
 	GUIUSE=False
 
-pass#IMPORTIMPORTIMPORT from sparx import *
-pass#IMPORTIMPORTIMPORT import global_def
+from sparx import *
+import global_def
 if GUIUSE:
 	print("Welcome to the interactive SPARX-GUI Python interface, provided by ipython")
 else:

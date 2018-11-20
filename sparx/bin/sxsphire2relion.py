@@ -29,19 +29,14 @@
 # 
 # ========================================================================================
 from __future__ import print_function, division
-import EMAN2
-import argparse
-import global_def
-import numpy as np
+
 import os
+import argparse
 
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import argparse
+import numpy as np
 
-pass#IMPORTIMPORTIMPORT import numpy as np
-
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import global_def
+import EMAN2
+import global_def
 
 
 def parse_args():

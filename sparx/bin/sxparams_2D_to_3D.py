@@ -31,21 +31,15 @@ from __future__ import print_function
 #
 #
 
-import applications
 import global_def
-import optparse
 import os
+from optparse import OptionParser
 import sys
-import utilities
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT from optparse import OptionParser
-pass#IMPORTIMPORTIMPORT import sys
 
 def main():
 	progname = os.path.basename( sys.argv[0] )
 	usage = progname + "stack"
-	parser = optparse.OptionParser(usage, version=global_def.SPARXVERSION)
+	parser = OptionParser(usage, version=global_def.SPARXVERSION)
 	(options, args) = parser.parse_args(sys.argv[1:])
 
 	if len(args) != 1:
@@ -53,11 +47,11 @@ def main():
     		print("Please run '" + progname + " -h' for detailed options")
 	else:
 		if global_def.CACHE_DISABLE:
-			pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
-			utilities.disable_bdb_cache()
-		pass#IMPORTIMPORTIMPORT from applications import wrapper_params_2D_to_3D
+			from utilities import disable_bdb_cache
+			disable_bdb_cache()
+		from applications import wrapper_params_2D_to_3D
 		global_def.BATCH = True
-		applications.wrapper_params_2D_to_3D(args[0])
+		wrapper_params_2D_to_3D(args[0])
 		global_def.BATCH = False     
 			
 
