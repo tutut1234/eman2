@@ -272,29 +272,16 @@ for file_name in python_files:
 
     print('RESOLVED THINGS:')
     used_modules = []
+    prefixes = [' ', '\t', '=', '']
+    suffixes = ['(', '.', '']]
     for entry in ok_list:
         used_modules.extend(entry[2])
-        if ' {0}('.format(entry[1]) in no_import_lines[int(entry[0])-1]:
-            original = ' {0}('.format(entry[1])
-            new = ' {0}.{1}('.format(entry[2][0], entry[1])
-        elif '={0}('.format(entry[1]) in no_import_lines[int(entry[0])-1]:
-            original = '={0}('.format(entry[1])
-            new = '={0}.{1}('.format(entry[2][0], entry[1])
-        elif ' {0}.'.format(entry[1]) in no_import_lines[int(entry[0])-1]:
-            original = ' {0}.'.format(entry[1])
-            new = ' {0}.{1}.'.format(entry[2][0], entry[1])
-        elif '={0}.'.format(entry[1]) in no_import_lines[int(entry[0])-1]:
-            original = '={0}.'.format(entry[1])
-            new = '={0}.{1}.'.format(entry[2][0], entry[1])
-        elif ' {0}'.format(entry[1]) in no_import_lines[int(entry[0])-1]:
-            original = ' {0}'.format(entry[1])
-            new = ' {0}.{1}'.format(entry[2][0], entry[1])
-        elif '={0}'.format(entry[1]) in no_import_lines[int(entry[0])-1]:
-            original = '={0}'.format(entry[1])
-            new = '={0}.{1}'.format(entry[2][0], entry[1])
-        elif '{0}'.format(entry[1]) in no_import_lines[int(entry[0])-1]:
-            original = '{0}'.format(entry[1])
-            new = '{0}.{1}'.format(entry[2][0], entry[1])
+        for suff in suffixes:
+            for pref in prefixes:
+                original = '{0}{1}{2}'.format(pref, entry[1], suff)
+                new = '{0}{1}.{2}{3}'.format(pref, entry[2][0], entry[1], suff)
+                if original in no_import_lines[int(entry[0])-1]:
+                    break
         no_import_lines[int(entry[0])-1] = no_import_lines[int(entry[0])-1].replace(original, new)
         print(entry)
     print('')
