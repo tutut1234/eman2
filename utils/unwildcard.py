@@ -119,7 +119,9 @@ Checker.okidoki = []
 
 
 #python_files = glob.glob('../sparx/bin/sxmeridien.py')
+rounds = 0
 while True:
+    rounds += 1
     ok = 0
     fatal = 0
     confusion = 0
@@ -372,4 +374,5 @@ while True:
     print('CONFUSION:', confusion)
     print('RESOLVED:', ok)
     if ok == 0:
+        print('Resolved after', rounds, 'rounds')
         break
