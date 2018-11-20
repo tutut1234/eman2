@@ -371,8 +371,36 @@ while True:
                 break
         no_import_lines.insert(index, imports)
 
+        remove_indices = []
+        for idx, line in enumerate(no_import_lines[2:], 2):
+            if line.startswith("'''"):
+                if first_1:
+                    first_1 = False
+                else:
+                    first_1 = True
+            elif line.startswith('"""'):
+                if first_2:
+                    first_2 = False
+                else:
+                    first_2 = True
+            elif line.startswith('#') and not first_1 and not first_2:
+                continue
+            elif line.startswith("class") or line.startswith('def'):
+                    if not first_1 and not first_2 and not first_3:
+                        break
+            if '#IMPORTIMPORTIMPORT' in line:
+                remove_indices.append(idx)
+
+
+        output_lines = []
+        for idx, line in enumerate(no_import_lines):
+            if idx in remove_indices:
+                pass
+            else:
+                output_lines.append(line)
+
         if not options.silent:
-            file_content = ''.join(no_import_lines)
+            file_content = ''.join(output_lines)
             with open(os.path.join('new', os.path.basename(file_name)), 'w') as write:
                 write.write(file_content)
             with open(file_name, 'w') as write:
