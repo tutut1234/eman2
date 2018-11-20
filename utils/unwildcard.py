@@ -273,7 +273,7 @@ for file_name in python_files:
 
     print('RESOLVED THINGS:')
     used_modules = []
-    prefixes = [r'\s*(\s', r'(=', '(^']
+    prefixes = [r'\s*(\s', r'(=', '(^', '([^a-zA-Z._]']
     suffixes = [r'\(', r'\.', '']
     bad_idx = []
     for entry in ok_list:
@@ -283,51 +283,27 @@ for file_name in python_files:
             bad_idx.append((entry[0], entry[1]))
         print(entry)
         used_modules.extend(entry[2])
-        stop = False
-        no_match = True
-        for suff in suffixes:
-            for pref in prefixes:
-                out = []
+        add_to_list = False
+        out = []
+        for pref in prefixes:
+            for suff in suffixes:
                 original = r'{0}{1}{2})'.format(pref, entry[1], suff)
                 new = '{0}{1}.{2}{3}'.format(pref, entry[2][0], entry[1], suff)
                 match = re.search(original, no_import_lines[int(entry[0])-1])
                 matches = list(set(re.findall(original, no_import_lines[int(entry[0])-1])))
                 if len(matches) == 1:
+                    add_to_list = True
                     original = matches[0]
                     new = '{0}.{1}'.format(entry[2][0], entry[1]).join(original.split(entry[1]))
-                    stop = True
-                    no_match = False
-                    break
+                    out.append((original, new))
                 elif len(matches) > 1:
-                    stop = True
-                    print(matches)
+                    add_to_list = True
                     for match in matches:
                         original = match
                         new = '{0}.{1}'.format(entry[2][0], entry[1]).join(original.split(entry[1]))
-                    break
-            if stop:
-                out.append([original, new])
-                break
-        if no_match:
-            pref = '([^a-zA-Z._]'
-            for suff in suffixes:
-                original = r'{0}{1}{2})'.format(pref, entry[1], suff)
-                new = '{0}{1}.{2}{3}'.format(pref, entry[2][0], entry[1], suff)
-                matches = list(set(re.findall(original, no_import_lines[int(entry[0])-1])))
-                if len(matches) == 1:
-                    original = matches[0]
-                    new = '{0}.{1}'.format(entry[2][0], entry[1]).join(original.split(entry[1]))
-                    out.append([original, new])
-                    break
-                elif len(matches) > 1:
-                    print(matches)
-                    for match in matches:
-                        original = match
-                        new = '{0}.{1}'.format(entry[2][0], entry[1]).join(original.split(entry[1]))
-                        out.append([original, new])
-                    break
+                        out.append((original, new))
 
-        for original, new in out:
+        for original, new in list(set(out)):
             no_import_lines[int(entry[0])-1] = no_import_lines[int(entry[0])-1].replace(original, new)
 
     imports = ['import {0}\n'.format(entry) if entry not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry) for entry in list(set(used_modules))]
