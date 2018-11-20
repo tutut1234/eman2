@@ -273,7 +273,7 @@ for file_name in python_files:
     print('RESOLVED THINGS:')
     used_modules = []
     prefixes = [' ', '\t', '=', '']
-    suffixes = ['(', '.', '']]
+    suffixes = ['(', '.', '']
     for entry in ok_list:
         used_modules.extend(entry[2])
         for suff in suffixes:
