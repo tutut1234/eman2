@@ -81,6 +81,26 @@ pass#IMPORTIMPORTIMPORT import Simplex
 pass#IMPORTIMPORTIMPORT import eman2_gui.emapplication as emapplication
 pass#IMPORTIMPORTIMPORT import eman2_gui.emimage2d as emimage2d
 pass#IMPORTIMPORTIMPORT import eman2_gui.emplot2d as emplot2d
+pass#IMPORTIMPORTIMPORT import eman2_gui.valslider as valslider
+pass#IMPORTIMPORTIMPORT import fundamentals
+pass#IMPORTIMPORTIMPORT import global_def
+pass#IMPORTIMPORTIMPORT import morphology
+pass#IMPORTIMPORTIMPORT import numpy
+pass#IMPORTIMPORTIMPORT import optparse
+pass#IMPORTIMPORTIMPORT import os
+pass#IMPORTIMPORTIMPORT import sparx
+pass#IMPORTIMPORTIMPORT import sys
+pass#IMPORTIMPORTIMPORT import utilities
+pass#IMPORTIMPORTIMPORT import weakref
+pass#IMPORTIMPORTIMPORT import EMAN2
+pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
+pass#IMPORTIMPORTIMPORT import EMAN2_meta
+pass#IMPORTIMPORTIMPORT import EMAN2db
+pass#IMPORTIMPORTIMPORT import OpenGL
+pass#IMPORTIMPORTIMPORT import Simplex
+pass#IMPORTIMPORTIMPORT import eman2_gui.emapplication as emapplication
+pass#IMPORTIMPORTIMPORT import eman2_gui.emimage2d as emimage2d
+pass#IMPORTIMPORTIMPORT import eman2_gui.emplot2d as emplot2d
 pass#IMPORTIMPORTIMPORT import eman2_gui.emsprworkflow as emsprworkflow
 pass#IMPORTIMPORTIMPORT import eman2_gui.valslider as valslider
 pass#IMPORTIMPORTIMPORT import fundamentals
@@ -99,20 +119,20 @@ pass#IMPORTIMPORTIMPORT import weakref
 from builtins import range
 from builtins import object
 pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import *
 
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2db import db_open_dict, db_check_dict
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sparx import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from OpenGL import GL,GLUT
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2db import db_open_dict, db_check_dict
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sparx import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from OpenGL import GL,GLUT
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import *
 pass#IMPORTIMPORTIMPORT import os
 pass#IMPORTIMPORTIMPORT import sys
 pass#IMPORTIMPORTIMPORT import weakref
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emapplication import EMApp
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emapplication import EMApp
 
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from Simplex import Simplex
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from Simplex import Simplex
 
 debug=False
 logid=None
@@ -159,7 +179,7 @@ images far from focus."""
 	if len(args)<1 : parser.error("Input image required")
 	
 	if global_def.CACHE_DISABLE:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
 		utilities.disable_bdb_cache()
 
 	if options.auto_fit:
@@ -891,7 +911,7 @@ def ctf_env_points(im_1d,bg_1d,ctf) :
 try:
 	from PyQt4 import QtCore, QtGui, QtOpenGL
 	from PyQt4.QtCore import Qt
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.valslider import ValSlider
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.valslider import ValSlider
 except:
 	print("Warning: PyQt4 must be installed to use the --gui option")
 	class dummy(object):
@@ -909,12 +929,12 @@ class GUIctf(QtGui.QWidget):
 		'data' is a list of (filename,ctf,im_1d,bg_1d,im_2d,bg_2d)
 		"""
 		try:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emimage2d import EMImage2DWidget
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emimage2d import EMImage2DWidget
 		except:
 			print("Cannot import EMAN image GUI objects (EMImage2DWidget)")
 			sys.exit(1)
 		try: 
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emplot2d import EMPlot2DWidget
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emplot2d import EMPlot2DWidget
 		except:
 			print("Cannot import EMAN plot GUI objects (is matplotlib installed?)")
 			sys.exit(1)
@@ -1064,7 +1084,7 @@ class GUIctf(QtGui.QWidget):
 #	def get_output_params(self):
 	
 	def on_output(self):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emsprworkflow import E2CTFOutputTaskGeneral
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emsprworkflow import E2CTFOutputTaskGeneral
 		self.form = emsprworkflow.E2CTFOutputTaskGeneral()
 		self.form.run_form()
 	

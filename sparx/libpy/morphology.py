@@ -107,8 +107,34 @@ pass#IMPORTIMPORTIMPORT import sys
 pass#IMPORTIMPORTIMPORT import time
 pass#IMPORTIMPORTIMPORT import types
 pass#IMPORTIMPORTIMPORT import utilities
+pass#IMPORTIMPORTIMPORT import EMAN2
+pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
+pass#IMPORTIMPORTIMPORT import EMAN2db
+pass#IMPORTIMPORTIMPORT import alignment
+pass#IMPORTIMPORTIMPORT import applications
+pass#IMPORTIMPORTIMPORT import filter
+pass#IMPORTIMPORTIMPORT import fundamentals
+pass#IMPORTIMPORTIMPORT import glob
+pass#IMPORTIMPORTIMPORT import global_def
+pass#IMPORTIMPORTIMPORT import inspect
+pass#IMPORTIMPORTIMPORT import math
+pass#IMPORTIMPORTIMPORT import morphology
+pass#IMPORTIMPORTIMPORT import mpi
+pass#IMPORTIMPORTIMPORT import numpy
+pass#IMPORTIMPORTIMPORT import numpy as np
+pass#IMPORTIMPORTIMPORT import operator
+pass#IMPORTIMPORTIMPORT import os
+pass#IMPORTIMPORTIMPORT import pixel_error
+pass#IMPORTIMPORTIMPORT import projection
+pass#IMPORTIMPORTIMPORT import random
+pass#IMPORTIMPORTIMPORT import scipy.optimize
+pass#IMPORTIMPORTIMPORT import statistics
+pass#IMPORTIMPORTIMPORT import sys
+pass#IMPORTIMPORTIMPORT import time
+pass#IMPORTIMPORTIMPORT import types
+pass#IMPORTIMPORTIMPORT import utilities
 from builtins import range
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import *
 
 def binarize(img, minval = 0.0):
 	"""
@@ -151,10 +177,10 @@ def dilation(f, mask = None, morphtype="BINARY"):
 		Output
 			dilated image
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import morph_type, filt_dilation_
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import morph_type, filt_dilation_
 
 	if not mask:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle
 		nx = f.get_xsize()
 		ny = f.get_ysize()
 		nz = f.get_zsize()
@@ -183,14 +209,14 @@ def erosion(f, mask = None, morphtype="BINARY"):
 		Output
 			eroded image
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import morph_type, filt_erosion_
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import morph_type, filt_erosion_
 
 	if not mask:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank
 		nx = f.get_xsize()
 		ny = f.get_ysize()
 		nz = f.get_zsize()
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle
 		nx = f.get_xsize()
 		ny = f.get_ysize()
 		nz = f.get_zsize()
@@ -411,7 +437,7 @@ def rotavg_ctf(img, defocus, Cs, voltage, Pixel_size, amp = 0.0, ang = 0.0):
 	"""1D rotational average of a 2D power spectrum (img)
 	   based on estimated CTF parameters, including astigmatism amplitude and angle
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt,atan2,pi,sin,radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt,atan2,pi,sin,radians
 	defc = defocus*10000
 	astigmamp = amp*10000
 	lam = 12.398/numpy.sqrt(voltage*(1022.0+voltage))
@@ -724,8 +750,8 @@ def defocus_get(fnam_roo, volt=300, Pixel_size=1, Cs=2, wgh=.1, f_start=0, f_sto
 		   defocus which matches the extracted CTF imprints 
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math 	import sqrt, atan
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities 	import read_text_row
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math 	import sqrt, atan
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities 	import read_text_row
 	roo     = []
 	res     = []
 	if(docf == "a"):
@@ -765,7 +791,7 @@ def defocus_gett(roo, voltage=300.0, Pixel_size=1.0, Cs=2.0, wgh=0.1, f_start=0.
 		2. Based one extracted ctf imprints, perform exhaustive defocus searching to get 
 		   defocus which matches the extracted CTF imprints 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
 	#print "CTF params:", voltage, Pixel_size, Cs, wgh, f_start, f_stop, round_off, nr1, nr2, parent
 	if f_start == 0 : 	i_start = 0
 	else: 			    i_start = int(Pixel_size*2.*len(roo)*f_start)
@@ -789,10 +815,10 @@ def defocus_gett(roo, voltage=300.0, Pixel_size=1.0, Cs=2.0, wgh=0.1, f_start=0.
 		parent.ctf_data=[roo, Res_roo, Res_TE]
 		parent.i_start = i_start
 		parent.i_stop = i_stop
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
 		utilities.write_text_file([roo, Res_roo, Res_TE, ctf], "procpw.txt")
 	else:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
 		utilities.write_text_file([roo, Res_roo, Res_TE, ctf], "procpw.txt")
 	return defocus
 
@@ -804,8 +830,8 @@ def defocus_get_Eudis(fnam_roo, volt=300, Pixel_size=1, Cs=2, wgh=.1, f_start=0,
 		   defocus which matches the extracted CTF imprints
 		3. It returns Euclidean distance for defocus selection 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math 	import sqrt, atan
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities 	import read_text_row, generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math 	import sqrt, atan
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities 	import read_text_row, generate_ctf
 	roo     = []
 	res     = []
 	if docf == "a":
@@ -840,7 +866,7 @@ def defocus_get_Eudis(fnam_roo, volt=300, Pixel_size=1, Cs=2, wgh=.1, f_start=0,
 	return [defocus, dis]
 
 def defocus_L2_euc(v1,v2, ist,istp):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	dis    = 0.0
 	pw_sum = 0.0
 	if ist == istp :	global_def.ERROR("No pw2 curve is included  ", "defocus_L2_euc", 0)
@@ -867,8 +893,8 @@ def defocus_guess(Res_roo, Res_TE, volt, Cs, Pixel_size, ampcont=10.0, istart=0,
 		  Res_TE  - background-subtracted Envelope
 	"""
 	
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
 
 	if istop <= istart : 			istop=len(Res_roo)
 	step = (dz_high-dz_low)/nloop
@@ -932,9 +958,9 @@ def defocus_guess1(Res_roo, Res_TE, volt, Cs, Pixel_size, ampcont=10.0, istart=0
 		  Res_TE  - Envelope
 	"""
 	
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
 
 	if istop <= istart : 			istop=len(Res_roo)
 	step = (dz_high-dz_low)/nloop
@@ -993,7 +1019,7 @@ def defocus_get_fast(indir, writetodoc="w", Pixel_size=1, volt=120, Cs=2, wgh=.1
 	"""
 	pass#IMPORTIMPORTIMPORT import os
 	pass#IMPORTIMPORTIMPORT import types
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import set_arb_params, get_image
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import set_arb_params, get_image
 	if writetodoc[0]   != "a" and writetodoc[0]   != "l" and writetodoc[0] != "a": 	writetodoc= "a"
 	if print_screen[0] != "p" and print_screen[0] != "n"			     : 	print_screen = "n"
 	if os.path.exists(indir) == False: 	global_def.ERROR("roodir doesn't exist", "defocus_get_fast",1)
@@ -1201,7 +1227,7 @@ def defocus_get_slow(indir, writetodoc="w", Pixel_size=1, volt=120, Cs=2, wgh=.1
 		mode=3 output estimated defocus in a text file
 		This is a slow version, more accurate than no s version
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import defocus_get_Eudis
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import defocus_get_Eudis
 	pass#IMPORTIMPORTIMPORT import os
 	if writetodoc[0]   != "a" and writetodoc[0]   != "l" and writetodoc[0] != "a" : writetodoc   = "a"
 	if print_screen[0] != "p" and print_screen[0] != "n": 				print_screen = "n" 
@@ -1264,8 +1290,8 @@ def flcc(t, e):
 		Fast local cross correlation function 
 		See Alan Roseman's paper in Ultramicroscopy
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import ccf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import ccf
 	tmp        = EMAN2_cppwrap.EMData()
 	mic_avg_sq = EMAN2_cppwrap.EMData()
 	mic_sq     = EMAN2_cppwrap.EMData()
@@ -1318,7 +1344,7 @@ def imf_params_cl1(pw, n=2, iswi=3, Pixel_size=1):
 	return [feq, cur, pw, parm]
 
 def imf_B_factor_get(res_N, x, ctf_params):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from scipy.optimize import fmin
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from scipy.optimize import fmin
 	nx    = len(res_N)*2
 	ctf   = ctf_1d(nx, ctf_params)
 	p     = [1,1]
@@ -1332,7 +1358,7 @@ def imf_residuals_B1(p,y,x):
 	"""
 		Give the initial guess of B-factor
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import exp
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import exp
 	C,B = p
 	err = 0.0
 	for i in range(len(y)):
@@ -1343,7 +1369,7 @@ def imf_residuals_B2(p,y,ctf,x):
 	"""
 		fit B-factor in case of considering CTF effect
 	""" 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import exp
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import exp
 	C,B = p
 	err = 0.0
 	for i in range(len(y)):
@@ -1385,7 +1411,7 @@ def imf_params_get(fstrN, fstrP, ctf_params, pu, nrank, q, lowf=0.01):
 	return params
 
 def imf_fit_pu(res_P, x, ctf_params, pu, C, B, q, w):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from scipy.optimize import fmin
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from scipy.optimize import fmin
 	res   = []
 	nx    = len(res_P)*2
 	ctf   = ctf_1d(nx, ctf_params)
@@ -1402,7 +1428,7 @@ def imf_residuals_pu(p,y,pu,x):
 	"""
 		fit B-factor in case of considering CTF effect
 	""" 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import exp
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import exp
 	C   = p
 	err = 0.0
 	for i in range(len(y)):
@@ -1422,7 +1448,7 @@ def residuals_lsq(p,y,x):
 	return err
 
 def residuals_lsq_peak(p,y,x,c):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import exp
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import exp
 	d1,d2,d3 = p
 	c1,c2,c3 = c
 	err	 = []
@@ -1460,8 +1486,8 @@ def adaptive_mask(vol, nsigma = 1.0, threshold = -9999.0, ndilation = 3, edge_wi
 		Output
 			mask: The mask will have values one, zero, with cosine smooth transition between two regions.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import gauss_edge, model_circle
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import binarize, dilation
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import gauss_edge, model_circle
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import binarize, dilation
 	nx = vol.get_xsize()
 	ny = vol.get_ysize()
 	nz = vol.get_zsize()
@@ -1493,8 +1519,8 @@ def adaptive_mask2D(img, nsigma = 1.0, ndilation = 3, kernel_size = 11, gauss_st
 		Output
 			mask: The mask will have values one, zero, with Gaussian smooth transition between two regions.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import gauss_edge, model_circle
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import binarize, dilation
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import gauss_edge, model_circle
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import binarize, dilation
 	nx = img.get_xsize()
 	ny = img.get_ysize()
 	mc = utilities.model_circle(nx//2, nx, ny) - utilities.model_circle(nx//3, nx, ny)
@@ -1513,8 +1539,8 @@ def cosinemask(im, radius = -1, cosine_width = 5, bckg = None, s=999999.0):
 	"""
 	return  EMAN2_cppwrap.Util.cosinemask(im, radius, cosine_width, bckg, s)
 '''
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import cos, sqrt, pi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import cos, sqrt, pi
 	nx = im.get_xsize()
 	ny = im.get_ysize()
 	nz = im.get_zsize()
@@ -1574,9 +1600,9 @@ def cosinemask(im, radius = -1, cosine_width = 5, bckg = None, s=999999.0):
 
 
 def get_shrink_3dmask(nxinit, mask_file_name):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import resample
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology   import binarize
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import resample
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology   import binarize
 	mask3d = utilities.get_im(mask_file_name)
 	nx2 = nxinit
 	nx1 = mask3d.get_xsize()
@@ -1594,8 +1620,8 @@ def get_biggest_cluster(mg):
 	  Output: image that contains the largest connected subset in the input image
 	  This code was written by Wei in C and put in util_sparx.cpp
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import collapse
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import collapse
 
 	nx = mg.get_xsize()
 	ny = mg.get_ysize()
@@ -1660,9 +1686,9 @@ def get_biggest_cluster(mg):
 										l.append([iq,jq,kq])
 
 def adaptive_mask_mass(vol, mass=2000, Pixel_size=3.6):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import gauss_edge, model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import binarize, threshold, dilation
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter     import filt_gaussl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import gauss_edge, model_blank
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import binarize, threshold, dilation
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter     import filt_gaussl
 	nx = vol.get_xsize()
 	a = filter.filt_gaussl(vol, 0.15, True)
 	TH = a.find_3d_threshold(mass, Pixel_size)
@@ -1678,9 +1704,9 @@ def adaptive_mask_mass(vol, mass=2000, Pixel_size=3.6):
 
 """
 def refine_with_mask(vol):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter     import filt_dilation
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import model_circle, model_gauss, drop_image
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import collapse
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter     import filt_dilation
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import model_circle, model_gauss, drop_image
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import collapse
 	# does not seem to be working all that well
 	nx = vol.get_xsize()
 	outer_radius = nx/2-2
@@ -1718,8 +1744,8 @@ def compute_bfactor(pws, freq_min, freq_max, pixel_size = 1.0):
 		idx_freq_max : the index of the maximum frequency of fitting range
 		pixel_size   :  in A
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import log, sqrt
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import linreg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import log, sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import linreg
 	nr = len(pws)
 	"""
 	if (idx_freq_min < 0):
@@ -1756,7 +1782,7 @@ def compute_bfactor(pws, freq_min, freq_max, pixel_size = 1.0):
 	#print  B,s
 
 	ff = [0.0]*nr
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import exp
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import exp
 	for i in range(nr):  ff[i] = B*x[i] + s
 
 	return -B, [x,ff,pws_log], idx_freq_min, idx_freq_max
@@ -1794,29 +1820,29 @@ def cter_mrk(input_image_path, output_directory, selection_list = None, wn = 512
 		input_image_path  :  file name pattern for Micrographs Modes (e.g. 'Micrographs/mic*.mrc') or particle stack file path for Stack Mode (e.g. 'bdb:stack'; must be stack_mode = True).
 		output_directory  : output directory
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   EMAN2 import periodogram
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   EMAN2db import db_check_dict, db_parse_path
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import read_text_file, write_text_file, get_im, model_blank, model_circle, amoeba, generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import if_error_then_all_processes_exit_program
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import wrap_mpi_bcast
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   sys import exit
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   EMAN2 import periodogram
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   EMAN2db import db_check_dict, db_parse_path
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   applications import MPI_start_end
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import read_text_file, write_text_file, get_im, model_blank, model_circle, amoeba, generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import if_error_then_all_processes_exit_program
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import wrap_mpi_bcast
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   sys import exit
 	pass#IMPORTIMPORTIMPORT import numpy as np
 	pass#IMPORTIMPORTIMPORT import os
 	pass#IMPORTIMPORTIMPORT import glob
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   fundamentals import tilemic, rot_avg_table, resample
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import threshold, bracket_def, bracket, goldsearch_astigmatism
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import defocus_baseline_fit, simpw1d, movingaverage, localvariance, defocusgett
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import defocus_guessn, defocusget_from_crf, make_real
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import fastigmatism, fastigmatism1, fastigmatism2, fastigmatism3, simctf, simctf2, simctf2out, fupw,ctf2_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   alignment    import Numrinit, ringwe
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   statistics   import table_stat
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   pixel_error  import angle_ave
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   inspect      import currentframe, getframeinfo
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   global_def   import ERROR
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   fundamentals import tilemic, rot_avg_table, resample
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import threshold, bracket_def, bracket, goldsearch_astigmatism
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import defocus_baseline_fit, simpw1d, movingaverage, localvariance, defocusgett
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import defocus_guessn, defocusget_from_crf, make_real
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import fastigmatism, fastigmatism1, fastigmatism2, fastigmatism3, simctf, simctf2, simctf2out, fupw,ctf2_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   alignment    import Numrinit, ringwe
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   statistics   import table_stat
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   pixel_error  import angle_ave
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   inspect      import currentframe, getframeinfo
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   global_def   import ERROR
 	pass#IMPORTIMPORTIMPORT import global_def
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   time import time
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   mpi import MPI_COMM_WORLD, mpi_barrier
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   time import time
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   mpi import MPI_COMM_WORLD, mpi_barrier
 
 	# ====================================================================================
 	# Prepare processing
@@ -2346,7 +2372,7 @@ def cter_mrk(input_image_path, output_directory, selection_list = None, wn = 512
 			#at = time()
 			if(nboot == 0): boot = list(range(nimi))
 			else:
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import randint
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import randint
 				for imi in range(nimi): boot[imi] = random.randint(0, nimi - 1)
 			qa = utilities.model_blank(wn, wn)
 			roo  = np.zeros(lenroo, np.float32)
@@ -2418,7 +2444,7 @@ def cter_mrk(input_image_path, output_directory, selection_list = None, wn = 512
 			bckg = utilities.model_blank(wn, wn, 1, 1)
 			envl = utilities.model_blank(wn, wn, 1, 1)
 			
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 			nc = wn // 2
 			bg.append(bg[-1])
 			en.append(en[-1])
@@ -2645,7 +2671,7 @@ def cter_mrk(input_image_path, output_directory, selection_list = None, wn = 512
 					if pwrot2[it] > 0.5 :
 						ibec = it
 						break
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
 				ct = utilities.generate_ctf([ad1, Cs, voltage, pixel_size, temp, wgh, 0.0, 0.0])
 				cq = ctf_1d(wn, ct)
 				
@@ -2780,7 +2806,7 @@ def cter_mrk(input_image_path, output_directory, selection_list = None, wn = 512
 			img_micthumb.write_image(fou)
 
 	if RUNNING_UNDER_MPI:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import wrap_mpi_gatherv
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import wrap_mpi_gatherv
 		totresi = utilities.wrap_mpi_gatherv(totresi, 0, mpi.MPI_COMM_WORLD)
 		missing_img_names = utilities.wrap_mpi_gatherv(missing_img_names, 0, mpi.MPI_COMM_WORLD)
 		rejected_img_names = utilities.wrap_mpi_gatherv(rejected_img_names, 0, mpi.MPI_COMM_WORLD)
@@ -2849,29 +2875,29 @@ def cter_pap(input_image_path, output_directory, selection_list = None, wn = 512
 		input_image_path  :  file name pattern for Micrographs Modes (e.g. 'Micrographs/mic*.mrc') or particle stack file path for Stack Mode (e.g. 'bdb:stack'; must be stack_mode = True).
 		output_directory  : output directory
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   EMAN2 import periodogram
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   EMAN2db import db_check_dict, db_parse_path
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import read_text_file, write_text_file, get_im, model_blank, model_circle, amoeba, generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import if_error_then_all_processes_exit_program
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import wrap_mpi_bcast
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   sys import exit
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   EMAN2 import periodogram
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   EMAN2db import db_check_dict, db_parse_path
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   applications import MPI_start_end
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import read_text_file, write_text_file, get_im, model_blank, model_circle, amoeba, generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import if_error_then_all_processes_exit_program
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import wrap_mpi_bcast
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   sys import exit
 	pass#IMPORTIMPORTIMPORT import numpy as np
 	pass#IMPORTIMPORTIMPORT import os
 	pass#IMPORTIMPORTIMPORT import glob
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   fundamentals import tilemic, rot_avg_table, resample
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import threshold, bracket_def, bracket, goldsearch_astigmatism
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import defocus_baseline_fit, simpw1d, movingaverage, localvariance, defocusgett
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import defocus_guessn, defocusget_from_crf, make_real
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import fastigmatism, fastigmatism1, fastigmatism2, fastigmatism3, simctf, simctf2, simctf2out, fupw,ctf2_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   alignment    import Numrinit, ringwe
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   statistics   import table_stat
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   pixel_error  import angle_ave
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   inspect      import currentframe, getframeinfo
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   global_def   import ERROR
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   fundamentals import tilemic, rot_avg_table, resample
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import threshold, bracket_def, bracket, goldsearch_astigmatism
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import defocus_baseline_fit, simpw1d, movingaverage, localvariance, defocusgett
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import defocus_guessn, defocusget_from_crf, make_real
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import fastigmatism, fastigmatism1, fastigmatism2, fastigmatism3, simctf, simctf2, simctf2out, fupw,ctf2_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   alignment    import Numrinit, ringwe
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   statistics   import table_stat
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   pixel_error  import angle_ave
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   inspect      import currentframe, getframeinfo
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   global_def   import ERROR
 	pass#IMPORTIMPORTIMPORT import global_def
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   time import time
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   mpi import MPI_COMM_WORLD, mpi_barrier
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   time import time
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   mpi import MPI_COMM_WORLD, mpi_barrier
 
 	# ====================================================================================
 	# Prepare processing
@@ -3398,7 +3424,7 @@ def cter_pap(input_image_path, output_directory, selection_list = None, wn = 512
 			#at = time()
 			if(nboot == 0): boot = list(range(nimi))
 			else:
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import randint
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import randint
 				for imi in range(nimi): boot[imi] = random.randint(0, nimi - 1)
 			qa = utilities.model_blank(wn, wn)
 			roo  = np.zeros(lenroo, np.float32)
@@ -3469,7 +3495,7 @@ def cter_pap(input_image_path, output_directory, selection_list = None, wn = 512
 			bckg = utilities.model_blank(wn, wn, 1, 1)
 			envl = utilities.model_blank(wn, wn, 1, 1)
 			
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 			nc = wn // 2
 			bg.append(bg[-1])
 			en.append(en[-1])
@@ -3689,7 +3715,7 @@ def cter_pap(input_image_path, output_directory, selection_list = None, wn = 512
 					if pwrot2[it] > 0.5 :
 						ibec = it
 						break
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
 				ct = utilities.generate_ctf([ad1, Cs, voltage, pixel_size, temp, wgh, 0.0, 0.0])
 				cq = ctf_1d(wn, ct)
 				
@@ -3830,7 +3856,7 @@ def cter_pap(input_image_path, output_directory, selection_list = None, wn = 512
 			img_micthumb.write_image(fou)
 
 	if RUNNING_UNDER_MPI:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import wrap_mpi_gatherv
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import wrap_mpi_gatherv
 		totresi = utilities.wrap_mpi_gatherv(totresi, 0, mpi.MPI_COMM_WORLD)
 		missing_img_names = utilities.wrap_mpi_gatherv(missing_img_names, 0, mpi.MPI_COMM_WORLD)
 		rejected_img_names = utilities.wrap_mpi_gatherv(rejected_img_names, 0, mpi.MPI_COMM_WORLD)
@@ -3878,7 +3904,7 @@ def cter_pap(input_image_path, output_directory, selection_list = None, wn = 512
 
 def ampcont2angle(A):
 	#  convert amplitude contrast to phase shift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt, atan, degrees
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt, atan, degrees
 	if(A == 100.0):  return 90.0
 	elif(A == -100.0):  return 90.0
 	elif(A<0.0):  return numpy.degrees(math.atan(A/numpy.sqrt(1.0e4-A**2)))+180.0
@@ -3886,7 +3912,7 @@ def ampcont2angle(A):
 
 def angle2ampcont(phi):
 	#  convert phase shift to amplitude contrast
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt, tan, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt, tan, radians
 	return numpy.tan(numpy.radians(phi))/numpy.sqrt(1.0+numpy.tan(numpy.radians(phi))**2)*100.0
 
 def bracket_original(f, x1, h):
@@ -3954,7 +3980,7 @@ def bracket(f, dat, h):
 	print("Bracket did not find a mimimum")
  
 def goldsearch_astigmatism(f, dat, a, b, tol=1.0e-3):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import log, ceil
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import log, ceil
 	nIter = int(numpy.ceil(-2.078087*numpy.log(tol/abs(b-a)))) # Eq. (10.4)
 	R = 0.618033989
 	C = 1.0 - R
@@ -3981,7 +4007,7 @@ def defocus_baseline_fit(roo, i_start, i_stop, nrank, iswi):
 			The background fit is done between i_start, i_stop, but the entire baseline curve is evaluated and subtracted
 	"""
 	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import imf_params_cl1
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import imf_params_cl1
 	
 	TMP = imf_params_cl1(roo[i_start:i_stop], nrank, iswi)
 	nroo = len(roo)
@@ -4004,9 +4030,9 @@ def defocus_baseline_fit(roo, i_start, i_stop, nrank, iswi):
 
 def simpw1d(defocus, data):
 	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	
 	#[defocus, cs, voltage, apix, bfactor, ampcont, astigmatism_amplitude, astigmatism_angle]
 	#  data = [subpw[i_start:i_stop], envelope[i_start:i_stop], nx, defocus, Cs, voltage, Pixel_size, ampcont, i_start, i_stop]
@@ -4019,9 +4045,9 @@ def simpw1d(defocus, data):
 
 def simpw1d_pap(defocus, data):
 	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	
 	#[defocus, cs, voltage, apix, bfactor, ampcont, astigmatism_amplitude, astigmatism_angle]
 	#  data = [subpw[i_start:i_stop], envelope[i_start:i_stop], nx, defocus, Cs, voltage, Pixel_size, ampcont, i_start, i_stop]
@@ -4033,9 +4059,9 @@ def simpw1d_pap(defocus, data):
 
 def simpw1d_print(defocus, data):
 	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	
 	#[defocus, cs, voltage, apix, bfactor, ampcont, astigmatism_amplitude, astigmatism_angle]
 	#  data = [subpw[i_start:i_stop], envelope[i_start:i_stop], nx, defocus, Cs, voltage, Pixel_size, ampcont, i_start, i_stop]
@@ -4047,9 +4073,9 @@ def simpw1d_print(defocus, data):
 	return  -sum(data[0]*ct/data[1])/np.linalg.norm(ct,2)
 
 def simpw2d(defocus, data2d):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	
 	#             0        1     2      3     4         5             6                      7           
 	#           [defocus, cs, voltage, apix, bfactor, ampcont, astigmatism_amplitude, astigmatism_angle]
@@ -4063,7 +4089,7 @@ def simpw2d(defocus, data2d):
 	q2 = ct.cmp("dot", ct, dict(negative = 0, mask = data2d[10], normalize = 0))#Util.infomask(ct*ct, data2d[10], True)[0]
 	q1 = ct.cmp("dot", data2d[1], dict(negative = 0, mask = data2d[10], normalize = 0))
 	'''
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import info
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import info
 	print  info(data2d[1], data2d[10])
 	print  info(ct, data2d[10])
 	print q1,q2
@@ -4073,8 +4099,8 @@ def simpw2d(defocus, data2d):
 
 def simpw1dc(defocus, data):
 	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
 	
 	#[defocus, cs, voltage, apix, bfactor, ampcont, astigmatism_amplitude, astigmatism_angle]
 	#  data = [subpw[i_start:i_stop], envelope[i_start:i_stop], nx, defocus, Cs, voltage, Pixel_size, ampcont, i_start, i_stop]
@@ -4084,9 +4110,9 @@ def simpw1dc(defocus, data):
 	return  2.0-sum(data[0]*ct)/np.linalg.norm(ct,2),ctf_2(data[2], utilities.generate_ctf([defocus, data[4], data[5], data[6], 0.0, data[7], 0.0, 0.0]))
 
 def simpw2dc(defocus, data2d):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	
 	#             0        1     2      3     4         5             6                      7           
 	#           [defocus, cs, voltage, apix, bfactor, ampcont, astigmatism_amplitude, astigmatism_angle]
@@ -4096,7 +4122,7 @@ def simpw2dc(defocus, data2d):
 	
 
 	ct = ctf2_rimg(data2d[0], utilities.generate_ctf([defocus, data2d[3], data2d[4], data2d[5], data2d[6], data2d[7], data2d[8], data2d[9]]), ny=data2d[0])
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import info
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import info
 	q1 = ct.cmp("dot", data2d[1], dict(negative = 0, mask = data2d[10], normalize = 0))
 	q2 = numpy.sqrt(ct.cmp("dot", ct, dict(negative = 0, mask = data2d[10], normalize = 0)))
 	'''
@@ -4143,9 +4169,9 @@ def defocusgett(roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, ampcont=0.1, f_s
 		2. Based one extracted ctf imprints, perform exhaustive defocus searching to get 
 		   defocus which matches the extracted CTF imprints 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
 	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_2, bracket_def, defocus_baseline_fit, ctflimit, simpw1d, goldsearch_astigmatism
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_2, bracket_def, defocus_baseline_fit, ctflimit, simpw1d, goldsearch_astigmatism
 
 	#print "CTF params:", voltage, Pixel_size, Cs, wgh, f_start, f_stop, round_off, nr1, nr2, parent
 
@@ -4198,7 +4224,7 @@ def defocusgett(roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, ampcont=0.1, f_s
 	del defound[3:]
 	def1 = defound[0][1]
 	if adjust_fstop:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctflimit
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctflimit
 		newstop, fnewstop = ctflimit(nx, def1, Cs, voltage, Pixel_size)
 		if DEBug:  print("newstop  ", int(newstop*0.7), fnewstop*0.7, i_stop, newstop)
 		if( newstop != i_stop and (newstop-i_start)>min(10,(i_stop-i_start))):
@@ -4241,7 +4267,7 @@ def defocusgett(roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, ampcont=0.1, f_s
 			if(qt<qm):
 				qm=qt
 				defi = dc
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_row
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_row
 		utilities.write_text_row(toto,"toto1.txt")
 		print(" >>>>>>>>>  ",defi,simpw1d(defi, data))#,generate_ctf([defi, Cs, voltage, Pixel_size, 0.0, ampcont])
 		#def1 = defi
@@ -4259,9 +4285,9 @@ def defocusgett_pap(roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, ampcont=0.1,
 		2. Based one extracted ctf imprints, perform exhaustive defocus searching to get 
 		   defocus which matches the extracted CTF imprints 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
 	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d, bracket_def, defocus_baseline_fit, ctflimit, simpw1d_pap, goldsearch_astigmatism
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d, bracket_def, defocus_baseline_fit, ctflimit, simpw1d_pap, goldsearch_astigmatism
 
 	#print "CTF params:", voltage, Pixel_size, Cs, wgh, f_start, f_stop, round_off, nr1, nr2, parent
 
@@ -4314,7 +4340,7 @@ def defocusgett_pap(roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, ampcont=0.1,
 	del defound[3:]
 	def1 = defound[0][1]
 	if adjust_fstop:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctflimit
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctflimit
 		newstop, fnewstop = ctflimit(nx, def1, Cs, voltage, Pixel_size)
 		if DEBug:  print("newstop  ", int(newstop*0.7), fnewstop*0.7, i_stop, newstop)
 		if( newstop != i_stop and (newstop-i_start)>min(10,(i_stop-i_start))):
@@ -4357,7 +4383,7 @@ def defocusgett_pap(roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, ampcont=0.1,
 			if(qt<qm):
 				qm=qt
 				defi = dc
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_row
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_row
 		utilities.write_text_row(toto,"toto1.txt")
 		print(" >>>>>>>>>  ",defi,simpw1d(defi, data))#,generate_ctf([defi, Cs, voltage, Pixel_size, 0.0, ampcont])
 		#def1 = defi
@@ -4380,9 +4406,9 @@ def defocus_guessn(roo, volt, Cs, Pixel_size, ampcont, istart, i_stop):
 		  Res_TE  - background-subtracted Envelope
 	"""
 	
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_2
 	
 	pass#IMPORTIMPORTIMPORT import numpy as np
 
@@ -4408,7 +4434,7 @@ def defocus_guessn(roo, volt, Cs, Pixel_size, ampcont, istart, i_stop):
 	temp = ct
 	ct = (ct - sum(ct)/nn)*envelope
 	for i in range(nn):  print(operator.sub[i],envelope[i],ct[i],temp[i])
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
 	exit()
 	#defocus = int( defocus/round_off )*round_off
 	return defocus
@@ -4422,8 +4448,8 @@ def defocusgett_(roo, voltage=300.0, Pixel_size=1.0, Cs=2.0, wgh=0.1, f_start=0.
 		2. Based one extracted ctf imprints, perform exhaustive defocus searching to get 
 		   defocus which matches the extracted CTF imprints 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import defocus_env_baseline_fit, defocus_guess, ctf_2, defocus_guessn
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import defocus_env_baseline_fit, defocus_guess, ctf_2, defocus_guessn
 	
 	#print "CTF params:", voltage, Pixel_size, Cs, wgh, f_start, f_stop, round_off, nr1, nr2, parent
 
@@ -4437,10 +4463,10 @@ def defocusgett_(roo, voltage=300.0, Pixel_size=1.0, Cs=2.0, wgh=0.1, f_start=0.
 		parent.ctf_data=[roo, Res_roo, Res_TE]
 		parent.i_start = i_start
 		parent.i_stop  = i_stop
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
 		write_text_file([range(len(roo)), roo, Res_roo, Res_TE, ctf], "procpw.txt")
 	else:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
 		write_text_file([range(len(roo)), roo, Res_roo, Res_TE, ctf, TE, Pn1], "procpw.txt")
 	"""
 	return defocus, [], ctf2, [],[],0,0
@@ -4455,8 +4481,8 @@ def defocusget_from_crf(roo, voltage=300.0, Pixel_size=1.0, Cs=2.0, ampcont=10.,
 		2. Based one extracted ctf imprints, perform exhaustive defocus searching to get 
 		   defocus which matches the extracted CTF imprints 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import defocus_env_baseline_fit, defocus_guess, defocus_guess1, ctf_1d
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import defocus_env_baseline_fit, defocus_guess, defocus_guess1, ctf_1d
 	
 	#print "CTF params:", voltage, Pixel_size, Cs, wgh, f_start, f_stop, round_off, nr1, nr2, parent
 	if f_start == 0 : 	i_start = 0
@@ -4485,7 +4511,7 @@ def defocusget_from_crf(roo, voltage=300.0, Pixel_size=1.0, Cs=2.0, ampcont=10.,
 
 
 def make_real(t):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank
 
 	nx = t.get_ysize()
 	ny2 = nx//2
@@ -4504,8 +4530,8 @@ def make_real(t):
 
 
 def fastigmatism(amp, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
 	
 	nx = data[0].get_xsize()
 	qt = 0.5*nx**2
@@ -4527,8 +4553,8 @@ def fastigmatism(amp, data):
 
 def fastigmatism1(amp, data):
 	
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
 	
 	nx = data[0].get_xsize()
 	qt = 0.5*nx**2
@@ -4553,9 +4579,9 @@ def fastigmatism1(amp, data):
 """
 def fastigmatism2(amp, data):
 	
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ornq
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ornq
 	
 	cnx = data[2]//2+1
 	#qt = 0.5*nx**2
@@ -4566,10 +4592,10 @@ def fastigmatism2(amp, data):
 """
 
 def fastigmatism3(amp, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment  import ornq
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math       import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment  import ornq
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math       import sqrt
 	#  data[0] - crefim
 	#  data[1] - numr
 	#  data[2] - nx (image is square)
@@ -4591,9 +4617,9 @@ def fastigmatism3(amp, data):
 fastigmatism2 = fastigmatism3
 
 def fastigmatism3_pap(amp, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math       import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math       import sqrt
 	#  data[0] - crefim
 	#  data[1] - numr
 	#  data[2] - nx (image is square)
@@ -4613,8 +4639,8 @@ def fastigmatism3_pap(amp, data):
 	return  -peak
 
 def simctf(amp, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
 	
 	nx = data[2]
 	qt = 0.5*nx**2
@@ -4623,8 +4649,8 @@ def simctf(amp, data):
 	return  -bcc
 
 def simctf2(dz, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
 	
 	#nx = data[2]
 	#qt = 0.5*nx**2
@@ -4636,8 +4662,8 @@ def simctf2(dz, data):
 	return  -bcc
 
 def simctf2_pap(dz, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
 	
 	#nx = data[2]
 	#qt = 0.5*nx**2
@@ -4649,8 +4675,8 @@ def simctf2_pap(dz, data):
 	return  -bcc
 
 def simctf2out(dz, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg, localvariance
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf, model_blank, pad
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg, localvariance
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf, model_blank, pad
 	
 	nx = data[2]
 	qt = 0.5*nx**2
@@ -4674,12 +4700,12 @@ def simctf2out(dz, data):
 
 
 def fupw(args, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import fastigmatism3
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import fastigmatism3
 	return -fastigmatism3(args[1],[data[0], data[1], data[2], args[0], data[4], data[5], data[6], data[7], data[8], data[9]])
 
 
 def fupw_pap(args, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import fastigmatism3_pap
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import fastigmatism3_pap
 	return -fastigmatism3_pap(args[1],[data[0], data[1], data[2], args[0], data[4], data[5], data[6], data[7], data[8], data[9]])
 
 ########################################
@@ -4691,9 +4717,9 @@ def fupw_pap(args, data):
 ########################################################################
 
 def simpw1d_crf(defocus, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
 	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
 	
 	#[defocus, Cs, volt, Pixel_size, 0.0, ampcont]
 	# data[1] - envelope
@@ -4716,8 +4742,8 @@ def defocusgett_crf(roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, ampcont=0.1,
 		2. Based one extracted ctf imprints, perform exhaustive defocus searching to get 
 		   defocus which matches the extracted CTF imprints 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import bracket_def, goldsearch_astigmatism, ctflimit, simpw1d_crf, ctf_1d
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import bracket_def, goldsearch_astigmatism, ctflimit, simpw1d_crf, ctf_1d
 	pass#IMPORTIMPORTIMPORT import numpy as np
 
 
@@ -4769,7 +4795,7 @@ def defocusgett_crf(roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, ampcont=0.1,
 	del defound[3:]
 	if DEBug:  print(" BEST DEF CANDIDATES",defound)
 	if adjust_fstop:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctflimit
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctflimit
 		newstop,fnewstop = ctflimit(nx, defound[0][1], Cs, voltage, Pixel_size)
 		if DEBug:  
 			print("newstop  ",int(newstop),fnewstop,i_stop,newstop,nx, defound[0][1])
@@ -4818,8 +4844,8 @@ def envelopegett_crf(defold, roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, amp
 	
 		
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
 	pass#IMPORTIMPORTIMPORT import numpy as np
 
 
@@ -4848,7 +4874,7 @@ def envelopegett_crf(defold, roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, amp
 	envelope = []#movingaverage(  abs( np.array(roo, np.float32) )   , nroo//4, 3)
 
 	if adjust_fstop:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctflimit
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctflimit
 		newstop,fnewstop = ctflimit(nx, defold, Cs, voltage, Pixel_size)
 		if DEBug:  print("newstop  ",int(newstop*0.7),fnewstop*0.7,i_stop)
 	
@@ -4857,7 +4883,7 @@ def envelopegett_crf(defold, roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, amp
 	return envelope, i_start, i_stop
 
 def fufu(args,data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import fastigmatism2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import fastigmatism2
 	return -fastigmatism2(args[1],[data[0], data[1], data[2], args[0], data[4], data[5], data[6], data[7], data[8]])
 
 #  
@@ -4875,17 +4901,17 @@ def getastcrfNOE(refvol, datfilesroot, voltage=300.0, Pixel_size= 1.264, Cs = 2.
 
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_file, write_text_file, get_im, model_blank, model_circle, amoeba, generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_file, write_text_file, get_im, model_blank, model_circle, amoeba, generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
 	pass#IMPORTIMPORTIMPORT import numpy as np
 	pass#IMPORTIMPORTIMPORT import os
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi  import mpi_comm_size, mpi_comm_rank, MPI_COMM_WORLD, mpi_barrier
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import tilemic, rot_avg_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import threshold, bracket_def, bracket, goldsearch_astigmatism, defocus_baseline_fit, simpw1d, movingaverage, localvariance, defocusgett, defocus_guessn, defocusget_from_crf, make_real, fastigmatism, fastigmatism1, fastigmatism2, fastigmatism3, simctf, simctf2, simctf2out, fupw,ctf2_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import table_stat
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import angle_ave
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi  import mpi_comm_size, mpi_comm_rank, MPI_COMM_WORLD, mpi_barrier
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import tilemic, rot_avg_table
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import threshold, bracket_def, bracket, goldsearch_astigmatism, defocus_baseline_fit, simpw1d, movingaverage, localvariance, defocusgett, defocus_guessn, defocusget_from_crf, make_real, fastigmatism, fastigmatism1, fastigmatism2, fastigmatism3, simctf, simctf2, simctf2out, fupw,ctf2_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import table_stat
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import angle_ave
 
 	myid = mpi.mpi_comm_rank(mpi.MPI_COMM_WORLD)
 	ncpu = mpi.mpi_comm_size(mpi.MPI_COMM_WORLD)
@@ -4952,7 +4978,7 @@ def getastcrfNOE(refvol, datfilesroot, voltage=300.0, Pixel_size= 1.264, Cs = 2.
 			for nboot in range(kboot):
 				if(nboot == 0): boot = list(range(nimi))
 				else:
-					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import randint
+					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import randint
 					for imi in range(nimi): boot[imi] = random.randint(0,nimi-1)
 	
 				qs = utilities.model_blank(nx,nx)
@@ -4982,7 +5008,7 @@ def getastcrfNOE(refvol, datfilesroot, voltage=300.0, Pixel_size= 1.264, Cs = 2.
 				qa /= nimi
 				"""
 	
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 				nc = nx//2
 				tqa = [0.0]*(nc+1)
 				for i in range(nx):
@@ -5236,30 +5262,30 @@ def cter_vpp(input_image_path, output_directory, selection_list = None, wn = 512
 		input_image_path  :  file name pattern for Micrographs Modes (e.g. 'Micrographs/mic*.mrc') or particle stack file path for Stack Mode (e.g. 'bdb:stack'; must be stack_mode = True).
 		output_directory  : output directory
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   EMAN2 import periodogram
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   EMAN2db import db_check_dict, db_parse_path
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import read_text_file, write_text_file, get_im, model_blank, model_circle, amoeba, generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import if_error_then_all_processes_exit_program
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import wrap_mpi_bcast
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   fundamentals import tilemic, rot_avg_table, resample
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import threshold, bracket_def, bracket, goldsearch_astigmatism
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import defocus_baseline_fit, simpw1d, movingaverage, localvariance, defocusgett
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import defocus_guessn, defocusget_from_crf, make_real
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import fastigmatism, fastigmatism1, fastigmatism2, fastigmatism3, simctf, simctf2, simctf2out, fupw,ctf2_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   alignment    import Numrinit, ringwe
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   statistics   import table_stat
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   pixel_error  import angle_ave
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   global_def   import ERROR
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   EMAN2 import periodogram
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   EMAN2db import db_check_dict, db_parse_path
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   applications import MPI_start_end
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import read_text_file, write_text_file, get_im, model_blank, model_circle, amoeba, generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import if_error_then_all_processes_exit_program
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   utilities import wrap_mpi_bcast
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   fundamentals import tilemic, rot_avg_table, resample
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import threshold, bracket_def, bracket, goldsearch_astigmatism
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import defocus_baseline_fit, simpw1d, movingaverage, localvariance, defocusgett
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import defocus_guessn, defocusget_from_crf, make_real
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   morphology   import fastigmatism, fastigmatism1, fastigmatism2, fastigmatism3, simctf, simctf2, simctf2out, fupw,ctf2_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   alignment    import Numrinit, ringwe
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   statistics   import table_stat
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   pixel_error  import angle_ave
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   global_def   import ERROR
 	pass#IMPORTIMPORTIMPORT import global_def
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   sys import exit
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   sys import exit
 	pass#IMPORTIMPORTIMPORT import numpy as np
 	pass#IMPORTIMPORTIMPORT import os
 	pass#IMPORTIMPORTIMPORT import glob
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   time import time
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   inspect      import currentframe, getframeinfo
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   mpi import MPI_COMM_WORLD, mpi_barrier
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   time import time
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   inspect      import currentframe, getframeinfo
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   mpi import MPI_COMM_WORLD, mpi_barrier
 
 	# ====================================================================================
 	# Prepare processing
@@ -5787,7 +5813,7 @@ def cter_vpp(input_image_path, output_directory, selection_list = None, wn = 512
 			#at = time()
 			if(nboot == 0): boot = list(range(nimi))
 			else:
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import randint
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import randint
 				for imi in range(nimi): boot[imi] = random.randint(0, nimi - 1)
 			qa = utilities.model_blank(wn, wn)
 			roo  = np.zeros(lenroo, np.float32)
@@ -5857,7 +5883,7 @@ def cter_vpp(input_image_path, output_directory, selection_list = None, wn = 512
 			bckg = utilities.model_blank(wn, wn, 1, 1)
 			envl = utilities.model_blank(wn, wn, 1, 1)
 
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 			nc = wn // 2
 			ne = istop
 			ns = istart - 1
@@ -6005,7 +6031,7 @@ def cter_vpp(input_image_path, output_directory, selection_list = None, wn = 512
 				ed2 = angle2ampcont(ed2)
 				if(ed2<0.0): ed2 = 180.0 - ed2
 
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_1d
 				ct = utilities.generate_ctf([ad1, Cs, voltage, pixel_size, temp, ed1, 0.0, 0.0])
 				cq = ctf_1d(wn, ct)
 				#at = time()
@@ -6154,7 +6180,7 @@ def cter_vpp(input_image_path, output_directory, selection_list = None, wn = 512
 			img_micthumb.write_image(fou)
 
 	if RUNNING_UNDER_MPI:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import wrap_mpi_gatherv
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import wrap_mpi_gatherv
 		totresi = utilities.wrap_mpi_gatherv(totresi, 0, mpi.MPI_COMM_WORLD)
 		missing_img_names = utilities.wrap_mpi_gatherv(missing_img_names, 0, mpi.MPI_COMM_WORLD)
 		rejected_img_names = utilities.wrap_mpi_gatherv(rejected_img_names, 0, mpi.MPI_COMM_WORLD)
@@ -6203,9 +6229,9 @@ def defocusgett_vpp(roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, f_start=-1.0
 		2. Based one extracted ctf imprints, perform exhaustive defocus searching to get 
 		   defocus which matches the extracted CTF imprints 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf, write_text_file
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf, write_text_file
 	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import defocus_baseline_fit, simpw1d, angle2ampcont
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import defocus_baseline_fit, simpw1d, angle2ampcont
 
 	#print "CTF params:", voltage, Pixel_size, Cs, wgh, f_start, f_stop, round_off, nr1, nr2, parent
 
@@ -6271,7 +6297,7 @@ def defocusgett_vpp(roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, f_start=-1.0
 		a += vpp_options[5]
 	#'''
 	if DEBug:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_row
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_row
 		#write_text_row(toto,"toto1.txt")
 		data[7] = ampcont
 		print(" >>>>>>>>>  ",defi,data[7],ampcont2angle(data[7]),simpw1d_print(defi, data))#,generate_ctf([defi, Cs, voltage, Pixel_size, 0.0, ampcont])
@@ -6283,7 +6309,7 @@ def defocusgett_vpp(roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, f_start=-1.0
 	#'''
 	#ctf2 = ctf_1d(nx, generate_ctf([defi, Cs, voltage, Pixel_size, 0.0, ampcont]), doabs= True)
 	'''
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
 	foki = subpw.tolist()
 	write_text_file([foki,ctf2[:len(foki)]],"toto1.txt")
 	'''
@@ -6301,8 +6327,8 @@ def defocusgett_vpp2(qse, wn, xdefc, xampcont, voltage=300.0, Pixel_size=1.0, Cs
 	"""
 	#from utilities  import generate_ctf
 	#import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import amoeba
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import amoeba
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
 
 	cnx = wn // 2 + 1
 	cny = cnx
@@ -6371,7 +6397,7 @@ def defocusgett_vpp2(qse, wn, xdefc, xampcont, voltage=300.0, Pixel_size=1.0, Cs
 
 
 def fupw_vpp(args, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import fastigmatism3_vpp
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import fastigmatism3_vpp
 	#  args = [defocus, phaseshift, astigma-amp]
 	#                                   0       1     2   3     4    5         6          7     8     9 
 	#            (astdata) =          [crefim, numr, wn, bdef, Cs, voltage, Pixel_size, bphs, bamp, bang]
@@ -6388,10 +6414,10 @@ def fupw_vpp(args, data):
 
 
 def fastigmatism3_vpp(amp, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment  import ornq
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math       import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment  import ornq
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math       import sqrt
 	#  data[0] - crefim
 	#  data[1] - numr
 	#  data[2] - nx (image is square)
@@ -6428,8 +6454,8 @@ def ornq_vpp(image, crefim, xrng, yrng, step, mode, numr, cnx, cny, deltapsi = 0
 		quadratic interpolation
 		cnx, cny in FORTRAN convention
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, cos, sin, radians
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ang_n
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, cos, sin, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ang_n
 	#from utilities import info
 	#print "ORNQ"
 	peak = -1.0E23
@@ -6469,9 +6495,9 @@ def Xdefocusgett_vpp2(qse, roo, nx, xdefc, xampcont, voltage=300.0, Pixel_size=1
 		2. Based one extracted ctf imprints, perform exhaustive defocus searching to get
 		   defocus which matches the extracted CTF imprints
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
 	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_2, bracket_def, defocus_baseline_fit, ctflimit, simpw1d, goldsearch_astigmatism
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_2, bracket_def, defocus_baseline_fit, ctflimit, simpw1d, goldsearch_astigmatism
 
 	#print "CTF params:", voltage, Pixel_size, Cs, wgh, f_start, f_stop, round_off, nr1, nr2, parent
 
@@ -6507,12 +6533,12 @@ def Xdefocusgett_vpp2(qse, roo, nx, xdefc, xampcont, voltage=300.0, Pixel_size=1
 	ampcont = 0.0
 	data = [subpw[i_start:i_stop], envelope[i_start:i_stop], nx, defocus, Cs, voltage, Pixel_size, ampcont, i_start, i_stop]
 	wn = 512
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle, model_blank, amoeba
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle, model_blank, amoeba
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
 	mask = utilities.model_circle(i_stop - 1, wn, wn) * (utilities.model_blank(wn, wn, 1, 1.0) - utilities.model_circle(i_start, wn, wn))
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_avg_table
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_avg_table
 	zizi = fundamentals.rot_avg_table(qse)[i_start:i_stop]
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
 	dudi = subpw[i_start:i_stop]
 	#print dudi.tolist()
 	#print zizi
@@ -6591,7 +6617,7 @@ def Xdefocusgett_vpp2(qse, roo, nx, xdefc, xampcont, voltage=300.0, Pixel_size=1
 				defi = dc
 				ampcont = data[7]
 	if DEBug:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_row
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_row
 		utilities.write_text_row(toto,"toto1.txt")
 		print(" repi3  ",dp,dpefi,dpmpcont)
 		print(" resi2  ",qm,defi,ampcont)
@@ -6600,7 +6626,7 @@ def Xdefocusgett_vpp2(qse, roo, nx, xdefc, xampcont, voltage=300.0, Pixel_size=1
 		#print " >>>>>>>>>  ",defi,simpw1d(defi, data)#,generate_ctf([defi, Cs, voltage, Pixel_size, 0.0, ampcont])
 		#def1 = defi
 	#exit()
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg, ctf_rimg, square_root
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg, ctf_rimg, square_root
 	ctf2 = ctf_rimg(nx, utilities.generate_ctf([defi, Cs, voltage, Pixel_size, 0.0, ampcont]), sign=0)
 	cq = ctf_1d(nx, utilities.generate_ctf([defi, Cs, voltage, Pixel_size, 0.0, ampcont]), doabs = True)[20:150]
 	qse.write_image("qse.hdf")
@@ -6611,7 +6637,7 @@ def Xdefocusgett_vpp2(qse, roo, nx, xdefc, xampcont, voltage=300.0, Pixel_size=1
 	utilities.write_text_file([dudi.tolist(),zizi,cq,ci,dq],"pwds.txt")
 	ctf22.write_image("c2.hdf")
 	'''
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
 	foki = subpw.tolist()
 	write_text_file([foki,ctf2[:len(foki)]],"toto1.txt")
 	'''
@@ -6625,9 +6651,9 @@ def Xdefocusgett_vpp22(qse, roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, f_st
 		2. Based one extracted ctf imprints, perform exhaustive defocus searching to get
 		   defocus which matches the extracted CTF imprints
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import generate_ctf
 	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_2, bracket_def, defocus_baseline_fit, ctflimit, simpw1d, goldsearch_astigmatism
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf_2, bracket_def, defocus_baseline_fit, ctflimit, simpw1d, goldsearch_astigmatism
 
 	#print "CTF params:", voltage, Pixel_size, Cs, wgh, f_start, f_stop, round_off, nr1, nr2, parent
 
@@ -6663,12 +6689,12 @@ def Xdefocusgett_vpp22(qse, roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, f_st
 	ampcont = 0.0
 	data = [subpw[i_start:i_stop], envelope[i_start:i_stop], nx, defocus, Cs, voltage, Pixel_size, ampcont, i_start, i_stop]
 	wn = 512
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle, model_blank, amoeba
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle, model_blank, amoeba
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
 	mask = utilities.model_circle(i_stop - 1, wn, wn) * (utilities.model_blank(wn, wn, 1, 1.0) - utilities.model_circle(i_start, wn, wn))
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_avg_table
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_avg_table
 	zizi = fundamentals.rot_avg_table(qse)[i_start:i_stop]
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
 	dudi = subpw[i_start:i_stop]
 	#print dudi.tolist()
 	#print zizi
@@ -6745,7 +6771,7 @@ def Xdefocusgett_vpp22(qse, roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, f_st
 				defi = dc
 				ampcont = data[7]
 	if DEBug:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_row
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_row
 		utilities.write_text_row(toto,"toto1.txt")
 		print(" repi3  ",dp,dpefi,dpmpcont)
 		print(" resi2  ",qm,defi,ampcont)
@@ -6754,7 +6780,7 @@ def Xdefocusgett_vpp22(qse, roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, f_st
 		#print " >>>>>>>>>  ",defi,simpw1d(defi, data)#,generate_ctf([defi, Cs, voltage, Pixel_size, 0.0, ampcont])
 		#def1 = defi
 	#exit()
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg, ctf_rimg, square_root
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctf2_rimg, ctf_rimg, square_root
 	ctf2 = ctf_rimg(nx, utilities.generate_ctf([defi, Cs, voltage, Pixel_size, 0.0, ampcont]), sign=0)
 	cq = ctf_1d(nx, utilities.generate_ctf([defi, Cs, voltage, Pixel_size, 0.0, ampcont]), doabs = True)[20:150]
 	qse.write_image("qse.hdf")
@@ -6765,7 +6791,7 @@ def Xdefocusgett_vpp22(qse, roo, nx, voltage=300.0, Pixel_size=1.0, Cs=2.0, f_st
 	utilities.write_text_file([dudi.tolist(),zizi,cq,ci,dq],"pwds.txt")
 	ctf22.write_image("c2.hdf")
 	'''
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
 	foki = subpw.tolist()
 	write_text_file([foki,ctf2[:len(foki)]],"toto1.txt")
 	'''

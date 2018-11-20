@@ -50,11 +50,17 @@ pass#IMPORTIMPORTIMPORT import optparse
 pass#IMPORTIMPORTIMPORT import os
 pass#IMPORTIMPORTIMPORT import sys
 pass#IMPORTIMPORTIMPORT import utilities
+pass#IMPORTIMPORTIMPORT import applications
+pass#IMPORTIMPORTIMPORT import global_def
+pass#IMPORTIMPORTIMPORT import optparse
+pass#IMPORTIMPORTIMPORT import os
+pass#IMPORTIMPORTIMPORT import sys
+pass#IMPORTIMPORTIMPORT import utilities
 
 pass#IMPORTIMPORTIMPORT import os
 pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser
 pass#IMPORTIMPORTIMPORT import sys
 def main():
 	progname = os.path.basename(sys.argv[0])
@@ -78,10 +84,10 @@ def main():
 		else:
 			mask = args[2]
 		
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import local_ali2d
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import local_ali2d
 
 		if global_def.CACHE_DISABLE:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
 			utilities.disable_bdb_cache()
 		
 		global_def.BATCH = True	

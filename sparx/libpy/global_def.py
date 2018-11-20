@@ -51,6 +51,13 @@ pass#IMPORTIMPORTIMPORT import mpi
 pass#IMPORTIMPORTIMPORT import random
 pass#IMPORTIMPORTIMPORT import sys
 pass#IMPORTIMPORTIMPORT import time
+pass#IMPORTIMPORTIMPORT import EMAN2
+pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
+pass#IMPORTIMPORTIMPORT import EMAN2_meta
+pass#IMPORTIMPORTIMPORT import mpi
+pass#IMPORTIMPORTIMPORT import random
+pass#IMPORTIMPORTIMPORT import sys
+pass#IMPORTIMPORTIMPORT import time
 ''' variables governing system performance - can be changed by the user'''
 # 2-D interpolation method:
 #    "linear", "quadratic", "gridding"
@@ -68,8 +75,8 @@ Eulerian_Angles = "SPIDER"
 
 # We read the global seed here. If the user wish to repeat the random results twice,
 # he/she should first set the rand_seed to a fixed number and then run the program twice.
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   EMAN2   import Util, EMData, EMUtil, Transform
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   random  import seed
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   EMAN2   import Util, EMData, EMUtil, Transform
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   random  import seed
 
 rand_seed = EMAN2_cppwrap.Util.get_randnum_seed()
 random.seed(rand_seed)
@@ -90,7 +97,7 @@ CACHE_DISABLE = False
 
 global LOGFILE
 LOGFILE = "logfile"
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import localtime, strftime
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import localtime, strftime
 # timestring = strftime("_%d_%b_%Y_%H_%M_%S", localtime())
 timestring = time.strftime("_%Y_%m_%d_%H_%M_%S", time.localtime())
 LOGFILE = LOGFILE+timestring
@@ -99,7 +106,7 @@ IS_LOGFILE_OPEN = False
 '''   SYSTEM FUNCTIONS - please do not change the text below '''
 global SPARXVERSION
 
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2_meta import DATESTAMP
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2_meta import DATESTAMP
 
 SPARXVERSION = "SPARX v4.0" + ' (GITHUB: ' + EMAN2_meta.DATESTAMP +')'
 
@@ -127,9 +134,9 @@ def ERROR(message, where, action = 1, myid = 0):
 		print("  *****  %s"%message)
 		print("")
 	if action == 1 and BATCH:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
 		if  MPI:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
 			mpi.mpi_finalize()
 			MPI = False
 			BATCH = False

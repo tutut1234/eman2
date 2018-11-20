@@ -131,8 +131,42 @@ pass#IMPORTIMPORTIMPORT import sys
 pass#IMPORTIMPORTIMPORT import time
 pass#IMPORTIMPORTIMPORT import types
 pass#IMPORTIMPORTIMPORT import utilities
+pass#IMPORTIMPORTIMPORT import EMAN2
+pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
+pass#IMPORTIMPORTIMPORT import alignment
+pass#IMPORTIMPORTIMPORT import applications
+pass#IMPORTIMPORTIMPORT import cPickle as pickle
+pass#IMPORTIMPORTIMPORT import collections
+pass#IMPORTIMPORTIMPORT import development
+pass#IMPORTIMPORTIMPORT import filter
+pass#IMPORTIMPORTIMPORT import fundamentals
+pass#IMPORTIMPORTIMPORT import gc
+pass#IMPORTIMPORTIMPORT import glob
+pass#IMPORTIMPORTIMPORT import global_def
+pass#IMPORTIMPORTIMPORT import inspect
+pass#IMPORTIMPORTIMPORT import logger
+pass#IMPORTIMPORTIMPORT import math
+pass#IMPORTIMPORTIMPORT import morphology
+pass#IMPORTIMPORTIMPORT import mpi
+pass#IMPORTIMPORTIMPORT import multi_shc
+pass#IMPORTIMPORTIMPORT import numpy
+pass#IMPORTIMPORTIMPORT import numpy as np
+pass#IMPORTIMPORTIMPORT import operator
+pass#IMPORTIMPORTIMPORT import os
+pass#IMPORTIMPORTIMPORT import pixel_error
+pass#IMPORTIMPORTIMPORT import projection
+pass#IMPORTIMPORTIMPORT import random
+pass#IMPORTIMPORTIMPORT import scipy
+pass#IMPORTIMPORTIMPORT import socket
+pass#IMPORTIMPORTIMPORT import sparx
+pass#IMPORTIMPORTIMPORT import statistics
+pass#IMPORTIMPORTIMPORT import subprocess
+pass#IMPORTIMPORTIMPORT import sys
+pass#IMPORTIMPORTIMPORT import time
+pass#IMPORTIMPORTIMPORT import types
+pass#IMPORTIMPORTIMPORT import utilities
 from builtins import range
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import *
 
 
 #  06-12-14 code lifted
@@ -144,11 +178,11 @@ def XXali2d_single_iter(data, numr, wr, cs, tavg, cnx, cny, \
 		single iteration of 2D alignment using ormq
 		if CTF = True, apply CTF to data (not to reference!)
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import combine_params2, inverse_transform2, get_params2D, set_params2D
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ormq, ornq
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import combine_params2, inverse_transform2, get_params2D, set_params2D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ormq, ornq
 
 	if CTF:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter  import filt_ctf
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter  import filt_ctf
 
 	# 2D alignment using rotational ccf in polar coords and quadratic interpolation
 	cimage = Util.Polar2Dm(tavg, cnx, cny, numr, mode)
@@ -197,17 +231,17 @@ def ali2d_single_iter(data, numr, wr, cs, tavg, cnx, cny, \
 		single iteration of 2D alignment using ormq
 		if CTF = True, apply CTF to data (not to reference!)
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import combine_params2, inverse_transform2, get_params2D, set_params2D
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ormq, ornq
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import combine_params2, inverse_transform2, get_params2D, set_params2D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ormq, ornq
 
 	if CTF:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter  import filt_ctf
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter  import filt_ctf
 
 	maxrin = numr[-1]  #  length
 	ou = numr[-3]  #  maximum radius
 	if random_method == "SCF":
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, scf
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import multalign2d_scf
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, scf
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import multalign2d_scf
 		frotim = [fundamentals.fft(tavg)]
 		xrng = int(xrng+0.5)
 		yrng = int(yrng+0.5)
@@ -323,8 +357,8 @@ def ali2d_single_iter_fast(data, dimage, params, numr, wr, cs, tavg, cnx, cny, \
 		single iteration of 2D alignment using ormq
 		if CTF = True, apply CTF to data (not to reference!)
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import combine_params2, inverse_transform2, get_params2D, set_params2D
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ormq, ornq
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import combine_params2, inverse_transform2, get_params2D, set_params2D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ormq, ornq
 
 	# 2D alignment using rotational ccf in polar coords and quadratic interpolation
 	cimage = Util.Polar2Dm(tavg, cnx, cny, numr, mode)
@@ -367,7 +401,7 @@ def ang_n(tot, mode, maxrin):
 	"""
 	  Calculate angle based on the position of the peak
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import fmod
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import fmod
 	if (mode == 'f' or mode == 'F'): return numpy.fmod(((tot-1.0) / maxrin+1.0)*360.0, 360.0)
 	else:                            return numpy.fmod(((tot-1.0) / maxrin+1.0)*180.0, 180.0)
 
@@ -395,7 +429,7 @@ def crit2d(args, data):
 	#print  " AMOEBA ",args
 	#  data: 0 - kb,  1 - mask, 2 - nima,  3 - current ave, 4 - current image in the gridding format
 	#from utilities import info
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rtshgkb
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rtshgkb
 	mn = data[4].get_attr('mirror')
 	temp = fundamentals.rtshgkb(data[4], args[0], args[1], args[2], data[0])
 	if  mn: temp.process_inplace("xform.mirror", {"axis":'x'})
@@ -408,11 +442,11 @@ def crit2d(args, data):
 
 
 def eqproj_cascaded_ccc_fitness_function(args, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 
 	volft   = data[0]
 	kb	    = data[1]
@@ -477,13 +511,13 @@ def format_list(l):
 
 
 def objective_function_just_ccc_has_maximum(args, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 
 	# return 1
 	pass#IMPORTIMPORTIMPORT import numpy as np
@@ -537,13 +571,13 @@ def objective_function_just_ccc_has_maximum(args, data):
 	return rrr
 
 def objective_function_just_ccc_has_minimum(args, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 
 
 	# volft   = data[0]
@@ -567,8 +601,8 @@ def objective_function_just_ccc_has_minimum(args, data):
 
 def objective_function_just_ccc_has_minimum_reduced(args, data):
 	# in this version, args contains only the angles
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 
 	pass#IMPORTIMPORTIMPORT import numpy as np
 	
@@ -590,13 +624,13 @@ def objective_function_just_ccc_has_minimum_reduced(args, data):
 	# return rrr
 
 def objective_function_just_ccc_has_minimum_reduced_only_shifts(args, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 
 	# return 1
 	pass#IMPORTIMPORTIMPORT import numpy as np
@@ -654,13 +688,13 @@ def objective_function_just_ccc_has_minimum_reduced_only_shifts(args, data):
 	return rrr
 
 def objective_function_just_ccc_has_minimum2(args, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 
 	# return 1
 	pass#IMPORTIMPORTIMPORT import numpy as np
@@ -723,11 +757,11 @@ def objective_function_just_ccc_has_minimum2(args, data):
 	# return -ccc(prj, refprj, mask2D)
 
 def objective_function_just_ccc_has_maximum___old(args, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 
 	# return 1
 	pass#IMPORTIMPORTIMPORT import numpy as np
@@ -764,11 +798,11 @@ def objective_function_just_ccc_has_maximum___old(args, data):
 
 
 def objective_function_just_ccc_rewrite(params, volft, kb, data_im, mask2D):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 	# import numpy as np
 	
 	# if type(args).__module__ == np.__name__:
@@ -793,11 +827,11 @@ def objective_function_just_ccc_rewrite(params, volft, kb, data_im, mask2D):
 
 
 def eqproj_cascaded_ccc(args, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities     import peak_search, amoeba
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import fft, ccf, fpol
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment     import twoD_fine_search
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics    import ccc
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 
 	volft   = data[0]
 	kb	    = data[1]
@@ -864,7 +898,7 @@ def twoD_fine_search(args, data):
 	return data[0].get_pixel_conv7(args[0], args[1], 0.0, data[1])
 
 def eqproj(args, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgs
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgs
 	#from fundamentals import cyclic_shift
 	#from utilities import info
 	#print  " AMOEBA ",args
@@ -892,8 +926,8 @@ def eqproj(args, data):
 	return v
 
 def eqprojDot(args, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import project
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import project
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_ctf
 	phi = args[0]
 	tht = args[1]
 	psi = args[2]
@@ -913,14 +947,14 @@ def eqprojDot(args, data):
 	return ref.cmp( "dot", tmp, {"mask":msk, "negative":0} )
 
 def eqprojEuler(args, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgs
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgs
 	prj = projection.prgs(data[0], data[1], [args[0], args[1], args[2], data[3], data[4]])
 	v = prj.cmp("ccc", data[2], {"mask":data[5], "negative":0})
 	return v
 
 def symm_func(args, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import sym_vol
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import  rot_shift3D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import sym_vol
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals  import  rot_shift3D
 	sym = utilities.sym_vol(fundamentals.rot_shift3D(data[0], args[0], args[1], args[2]), data[2])
 	avg = sym.cmp("dot",sym,{"mask":data[1], "negative":0})
 	print(avg, args)
@@ -928,8 +962,8 @@ def symm_func(args, data):
 
 def find_symm(vol, mask, sym_gp, phi, theta, psi, scale, ftolerance, xtolerance):
 	
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import amoeba, model_circle
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import symm_func
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import amoeba, model_circle
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import symm_func
 	args   = [phi, theta, psi]
 	data   = [vol, mask, sym_gp]
 	result = utilities.amoeba(args, scale, symm_func, ftolerance, xtolerance, 500, data)
@@ -977,7 +1011,7 @@ def Numrinit(first_ring, last_ring, skip=1, mode="F"):
 	   "H" means a half circle interpolation
 	"""
 	MAXFFT = 32768
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi
 
 	if (mode == 'f' or mode == 'F'): dpi = 2*numpy.pi
 	else:                            dpi = numpy.pi
@@ -1010,7 +1044,7 @@ def Numrinit(first_ring, last_ring, skip=1, mode="F"):
 	   "H" means a half circle interpolation
 	"""
 	MAXFFT = 32768
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi
 
 	if (mode == 'f' or mode == 'F'): dpi = 2*pi
 	else:                            dpi = pi
@@ -1031,7 +1065,7 @@ def ringwe(numr, mode="F"):
 	   Calculate ring weights for rotational alignment
 	   The weights are r*delta(r)*delta(phi).
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi
 	if (mode == 'f' or mode == 'F'):
 		dpi = 2*numpy.pi
 	else:
@@ -1048,8 +1082,8 @@ def ornq(image, crefim, xrng, yrng, step, mode, numr, cnx, cny, deltapsi = 0.0):
 		quadratic interpolation
 		cnx, cny in FORTRAN convention
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, cos, sin, radians
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ang_n
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, cos, sin, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ang_n
 	#from utilities import info
 	#print "ORNQ"
 	peak = -1.0E23
@@ -1089,7 +1123,7 @@ def ormq(image, crefim, xrng, yrng, step, mode, numr, cnx, cny, delta = 0.0):
 		quadratic interpolation
 		cnx, cny in FORTRAN convention
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, cos, sin, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, cos, sin, radians
 	#print "ORMQ"
 	peak = -1.0E23
 
@@ -1192,8 +1226,8 @@ def ormq_fast(dimage, crefim, xrng, yrng, step, numr, mode, delta = 0.0):
 			
 
 def prepref(data, maskfile, cnx, cny, numr, mode, maxrangex, maxrangey, step):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params2D, combine_params2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Util
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params2D, combine_params2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Util
 	#step = 1
 	mashi = cnx -numr[-3] -2
 	nima = len(data)
@@ -1229,7 +1263,7 @@ def ormq_peaks(image, crefim, xrng, yrng, step, mode, numr, cnx, cny):
 	quadratic interpolation
 	cnx, cny in FORTRAN convention
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import peak_search
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import peak_search
 
 	ccfs = EMAN2_cppwrap.EMData()
 	ccfm = EMAN2_cppwrap.EMData()
@@ -1255,7 +1289,7 @@ def ormq_peaks(image, crefim, xrng, yrng, step, mode, numr, cnx, cny):
 
 '''
 def process_peak_1d_pad(peaks, step, mode, numr, nx):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, cos, sin
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, cos, sin
 	
 	peak_num = len(peaks)
 	maxrin = numr[-1]
@@ -1293,9 +1327,9 @@ def find_position(list_a, t):
 
 def select_major_peaks(g, max_major_peaks, min_height, dim):
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_gaussl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import peak_search
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_gaussl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import peak_search
 	
 	G = fft(g)
 	
@@ -1360,7 +1394,7 @@ def ormq_peaks_major(image, crefim, xrng, yrng, step, mode, numr, cnx, cny):
 	quadratic interpolation
 	cnx, cny in FORTRAN convention
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import peak_search, pad
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import peak_search, pad
 	
 	ccfs = EMData()
 	ccfm = EMData()
@@ -1439,7 +1473,7 @@ def select_k(dJe, T):
 	This routine is used in simulated annealing to select a random path
 	based on the weight of the each path and the temperature.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import random
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import random
 
 	K = len(dJe)
 
@@ -1463,8 +1497,8 @@ def select_k(dJe, T):
 	return select
 
 def sim_anneal(peaks, T, step, mode, maxrin):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import random
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, cos, sin
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import random
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, cos, sin
 
 	peaks.sort(reverse=True)
 
@@ -1532,8 +1566,8 @@ def sim_anneal(peaks, T, step, mode, maxrin):
 	return  ang, sxs, sys, mirror, peak, select
 
 def sim_ccf(peaks, T, step, mode, maxrin):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import random
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, cos, sin
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import random
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, cos, sin
 
 	if T < 0.0:
 		select = int(-T)
@@ -1580,8 +1614,8 @@ def sim_ccf(peaks, T, step, mode, maxrin):
 
 
 def sim_anneal2(peaks, Iter, T0, F, SA_stop):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import exp, pow
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import random
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import exp, pow
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import random
 
 	# Determine the current temperature
 	T = T0*pow(F, Iter)	
@@ -1619,8 +1653,8 @@ def sim_anneal2(peaks, Iter, T0, F, SA_stop):
 
 
 def sim_anneal3(peaks, peakm, peaks_major, peakm_major, Iter, T0, F, SA_stop):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pow, sin, sqrt, pi
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import random
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pow, sin, sqrt, pi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random import random
 
 	# Determine the current temperature
 	T = T0*pow(F, Iter)
@@ -1730,15 +1764,15 @@ def prepare_refrings( volft, kb, nz = -1, delta = 2.0, ref_a = "P", sym = "c1", 
 		Generate quasi-evenly distributed reference projections converted to rings
 		ref_a can be a list of angles, in which case it is used instead of being generated
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection   import prep_vol, prgs
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import even_angles, getfvec
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from types        import BooleanType
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection   import prep_vol, prgs
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import even_angles, getfvec
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from types        import BooleanType
 
 	# mpi communicator can be sent by the MPI parameter
 	if type(MPI) is types.BooleanType:
 		if MPI:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD
 			mpi_comm = mpi.MPI_COMM_WORLD
 	else:
 		mpi_comm = MPI
@@ -1746,7 +1780,7 @@ def prepare_refrings( volft, kb, nz = -1, delta = 2.0, ref_a = "P", sym = "c1", 
 
 	mode = "F"
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from types import ListType
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from types import ListType
 	if(type(ref_a) is types.ListType):
 		# if ref_a is  list, it has to be a list of projection directions, use it
 		ref_angles = ref_a
@@ -1760,7 +1794,7 @@ def prepare_refrings( volft, kb, nz = -1, delta = 2.0, ref_a = "P", sym = "c1", 
 				if(sym[:1] == "c" or sym[:1] == "d"):
 					ref_angles = utilities.even_angles(delta, symmetry=sym, method = ref_a, phiEqpsi = phiEqpsi)
 				else:
-					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import symclass
+					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import symclass
 					psp = fundamentals.symclass(sym)
 					ref_angles = psp.even_angles(delta)
 					del psp
@@ -1775,7 +1809,7 @@ def prepare_refrings( volft, kb, nz = -1, delta = 2.0, ref_a = "P", sym = "c1", 
 	num_ref = len(ref_angles)
 
 	if MPI:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_rank, mpi_comm_size
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_rank, mpi_comm_size
 		myid = mpi.mpi_comm_rank( mpi_comm )
 		ncpu = mpi.mpi_comm_size( mpi_comm )
 	else:
@@ -1813,7 +1847,7 @@ def prepare_refrings( volft, kb, nz = -1, delta = 2.0, ref_a = "P", sym = "c1", 
 			refrings[i] = cimage
 
 	if MPI:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import bcast_compacted_EMData_all_to_all
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import bcast_compacted_EMData_all_to_all
 		utilities.bcast_compacted_EMData_all_to_all(refrings, myid, comm=mpi_comm)
 
 	for i in range(len(ref_angles)):
@@ -1828,22 +1862,22 @@ def prepare_refrings_projections( volft, kb, nz = -1, delta = 2.0, ref_a = "P", 
 		Generate quasi-evenly distributed reference FTs projections and the halfrings of their scf's
 		nz has to be provided
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection   import prep_vol, prgs
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import even_angles, getfvec, model_circle
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import scf, fft, fftip
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from types        import BooleanType
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection   import prep_vol, prgs
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import even_angles, getfvec, model_circle
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import scf, fft, fftip
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from types        import BooleanType
 
 	# mpi communicator can be sent by the MPI parameter
 	if type(MPI) is types.BooleanType:
 		if MPI:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD
 			mpi_comm = mpi.MPI_COMM_WORLD
 	else:
 		mpi_comm = MPI
 		MPI = True
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from types import ListType
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from types import ListType
 	if(type(ref_a) is types.ListType):
 		# if ref_a is  list, it has to be a list of projection directions, use it
 		ref_angles = ref_a
@@ -1861,7 +1895,7 @@ def prepare_refrings_projections( volft, kb, nz = -1, delta = 2.0, ref_a = "P", 
 	num_ref = len(ref_angles)
 
 	if MPI:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_rank, mpi_comm_size
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_rank, mpi_comm_size
 		myid = mpi.mpi_comm_rank( mpi_comm )
 		ncpu = mpi.mpi_comm_size( mpi_comm )
 	else:
@@ -1899,8 +1933,8 @@ def prepare_refrings_projections( volft, kb, nz = -1, delta = 2.0, ref_a = "P", 
 		projections[i] = prjref
 
 	if MPI:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import bcast_compacted_EMData_all_to_all
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import info
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import bcast_compacted_EMData_all_to_all
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import info
 		utilities.bcast_compacted_EMData_all_to_all(projections, myid, comm=mpi_comm)
 		utilities.bcast_compacted_EMData_all_to_all(refrings, myid, comm=mpi_comm)
 
@@ -1916,11 +1950,11 @@ def prepare_refrings_projections( volft, kb, nz = -1, delta = 2.0, ref_a = "P", 
 
 def prepare_refrings2( volft, kb, nz, segmask, delta, ref_a, sym, numr, MPI=False, phiEqpsi = "Minus", kbx = None, kby = None, initial_theta = None, delta_theta = None):
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection   import prep_vol, prgs
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import sin, cos, radians
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import even_angles
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment	  import ringwe
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection   import prep_vol, prgs
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import sin, cos, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import even_angles
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment	  import ringwe
 
 	# generate list of Eulerian angles for reference projections
 	#  phi, theta, psi
@@ -1949,13 +1983,13 @@ def prepare_refrings2( volft, kb, nz, segmask, delta, ref_a, sym, numr, MPI=Fals
 	num_ref = len(ref_angles)
 
 	if MPI:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
 		myid = mpi.mpi_comm_rank( mpi.MPI_COMM_WORLD )
 		ncpu = mpi.mpi_comm_size( mpi.MPI_COMM_WORLD )
 	else:
 		ncpu = 1
 		myid = 0
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
 	ref_start, ref_end = applications.MPI_start_end(num_ref, ncpu, myid)
 
 	refrings = []     # list of (image objects) reference projections in Fourier representation
@@ -1980,7 +2014,7 @@ def prepare_refrings2( volft, kb, nz, segmask, delta, ref_a, sym, numr, MPI=Fals
 		print("do not handle this case")
 		numpy.sys.exit()
 	if MPI:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import bcast_EMData_to_all
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import bcast_EMData_to_all
 		for i in range(num_ref):
 			for j in range(ncpu):
 				ref_start, ref_end = applications.MPI_start_end(num_ref, ncpu, j)
@@ -2002,8 +2036,8 @@ def prepare_refrings2( volft, kb, nz, segmask, delta, ref_a, sym, numr, MPI=Fals
 	return refrings
 
 def refprojs( volft, kb, ref_angles, cnx, cny, numr, mode, wr ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection		import prgs
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities		import getfvec
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection		import prgs
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities		import getfvec
 
 	ref_proj_rings = []     # list of (image objects) reference projections in Fourier representation
 	for i in range(len(ref_angles)):
@@ -2020,11 +2054,11 @@ def refprojs( volft, kb, ref_angles, cnx, cny, numr, mode, wr ):
 	return ref_proj_rings
 
 def proj_ali_incore(data, refrings, numr, xrng, yrng, step, finfo=None, sym = "c1", delta_psi = 0.0, rshift = 0.0):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
 
 	if finfo:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_params_proj
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_params_proj
 		phi, theta, psi, s2x, s2y = utilities.get_params_proj(data)
 		finfo.write("Old parameters: %9.4f %9.4f %9.4f %9.4f %9.4f\n"%(phi, theta, psi, s2x, s2y))
 		finfo.flush()
@@ -2065,7 +2099,7 @@ def proj_ali_incore(data, refrings, numr, xrng, yrng, step, finfo=None, sym = "c
 	t2.set_trans(EMAN2_cppwrap.Vec2f(-s2x, -s2y))
 	data.set_attr("xform.projection", t2)
 	data.set_attr("referencenumber", iref)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
 	ts = t2.get_sym_proj(sym)
 	if(len(ts) > 1):
 		# only do it if it is not c1
@@ -2084,11 +2118,11 @@ def proj_ali_incore(data, refrings, numr, xrng, yrng, step, finfo=None, sym = "c
 	return peak, pixel_error
 
 def proj_ali_incore_zoom(data, refrings, numr, xrng, yrng, step, finfo=None, sym = "c1", delta_psi = 0.0):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
 
 	if finfo:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_params_proj
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_params_proj
 		phi, theta, psi, s2x, s2y = utilities.get_params_proj(data)
 		finfo.write("Old parameters: %7.2f  %7.2f  %7.2f  %7.2f  %7.2f\n"%(phi, theta, psi, s2x, s2y))
 		finfo.flush()
@@ -2131,7 +2165,7 @@ def proj_ali_incore_zoom(data, refrings, numr, xrng, yrng, step, finfo=None, sym
 
 	data.set_attr("xform.projection", t2)
 	data.set_attr("referencenumber", iref)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
 	ts = t2.get_sym_proj(sym)
 	if(len(ts) > 1):
 		# only do it if it is not c1
@@ -2149,10 +2183,10 @@ def proj_ali_incore_zoom(data, refrings, numr, xrng, yrng, step, finfo=None, sym
 	return peak, pixel_error
 
 def proj_ali_incore_local(data, refrings, list_of_reference_angles, numr, xrng, yrng, step, an, finfo=None, sym='c1', delta_psi = 0.0, rshift = 0.0):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import search_range
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import search_range
 	#from utilities    import set_params_proj, get_params_proj
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, pi, radians
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2        import Vec2f
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, pi, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2        import Vec2f
 
 	mode = "F"
 	nx   = data.get_xsize()
@@ -2195,7 +2229,7 @@ def proj_ali_incore_local(data, refrings, list_of_reference_angles, numr, xrng, 
 		t2 = EMAN2_cppwrap.Transform({"type":"spider","phi":phi,"theta":theta,"psi":psi})
 		t2.set_trans(EMAN2_cppwrap.Vec2f(-s2x, -s2y))
 		data.set_attr("xform.projection", t2)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
 		ts = t2.get_sym_proj(sym)
 		if(len(ts) > 1):
 			# only do it if it is not c1
@@ -2207,7 +2241,7 @@ def proj_ali_incore_local(data, refrings, list_of_reference_angles, numr, xrng, 
 			pixel_error = pixel_error.max_3D_pixel_error(t1, t2, numr[-3])
 		#print phi, theta, psi, s2x, s2y, peak, pixel_error
 		if finfo:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params_proj
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params_proj
 			phi, theta, psi, s2x, s2y = utilities.get_params_proj(data)
 			finfo.write( "New parameters: %6.2f %6.2f %6.2f %6.2f %6.2f   %10.5f  %11.3e\n\n" %(phi, theta, psi, s2x, s2y, peak, pixel_error))
 			finfo.flush()
@@ -2217,11 +2251,11 @@ def proj_ali_incore_local(data, refrings, list_of_reference_angles, numr, xrng, 
 
 
 def proj_ali_incore_local_zoom(data, refrings, list_of_reference_angles, numr, xrng, yrng, step, an, finfo=None, sym='c1', delta_psi = 0.0):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2
 	#from utilities    import set_params_proj, get_params_proj
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, pi, radians
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2        import Vec2f
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, pi, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2        import Vec2f
 
 	mode = "F"
 	nx   = data.get_xsize()
@@ -2275,7 +2309,7 @@ def proj_ali_incore_local_zoom(data, refrings, list_of_reference_angles, numr, x
 	# This trick assures that transformation is only set when at least one reference is found.
 	if( s2x != None ):
 		data.set_attr("xform.projection", t2)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
 		ts = t2.get_sym_proj(sym)
 		if(len(ts) > 1):
 			# only do it if it is not c1
@@ -2297,9 +2331,9 @@ def proj_ali_incore_local_zoom(data, refrings, list_of_reference_angles, numr, x
 
 #  This function is obsoleted
 def proj_ali_incore_delta(data, refrings, numr, xrng, yrng, step, start, delta, finfo=None):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
 	global_def.ERROR("proj_ali_incore_delta","OBSOLETED",1)
 
 	mode = "F"
@@ -2344,7 +2378,7 @@ def proj_ali_incore_delta(data, refrings, numr, xrng, yrng, step, start, delta, 
 	t2 = EMAN2_cppwrap.Transform({"type":"spider","phi":phi,"theta":theta,"psi":psi})
 	t2.set_trans(EMAN2_cppwrap.Vec2f(-s2x, -s2y))
 	data.set_attr("xform.projection", t2)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
 	ts = t2.get_sym_proj(sym)
 	if(len(ts) > 1):
 		# only do it if it is not c1
@@ -2366,11 +2400,11 @@ def proj_ali_incore_local_psi(data, refrings, numr, xrng, yrng, step, an, dpsi=1
 	"""
 	  dpsi - how far psi can be from the original value.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2
 	#from utilities   import set_params_proj, get_params_proj
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, pi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, pi
 	global_def.ERROR("proj_ali_incore_local_psi","OBSOLETED",1)
 	if finfo:
 		phi, theta, psi, s2x, s2y = utilities.get_params_proj(data)
@@ -2423,7 +2457,7 @@ def proj_ali_incore_local_psi(data, refrings, numr, xrng, yrng, step, an, dpsi=1
 		t2 = EMAN2_cppwrap.Transform({"type":"spider","phi":phi,"theta":theta,"psi":psi})
 		t2.set_trans(EMAN2_cppwrap.Vec2f(-s2x, -s2y))
 		data.set_attr("xform.projection", t2)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
 		ts = t2.get_sym_proj(sym)
 		if(len(ts) > 1):
 			# only do it if it is not c1
@@ -2450,7 +2484,7 @@ def ornq_gridding(image, crefim, shifts, shrink, kb, mode, numr, cnx, cny, delta
 		cnx, cny in FORTRAN convention
 	"""
 	#from math import pi, cos, sin, radians
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ang_n
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ang_n
 	#from utilities import info
 	peak = -1.0E23
 	for ll,iq in enumerate(shifts):
@@ -2478,11 +2512,11 @@ def ornq_gridding(image, crefim, shifts, shrink, kb, mode, numr, cnx, cny, delta
 
 
 def ali3D_gridding(data, volprep, refang, delta_psi, shifts, shrink, numr, wr, cnx, myid, main_node, kb3D = None):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgs,prgl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ornq_gridding
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import prep_refim_gridding
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgs,prgl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ornq_gridding
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import prep_refim_gridding
 	#from utilities import wrap_mpi_gatherv
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
 	###from time import time
 	#  Input data has to be CTF-multiplied, preshifted, and prepped for gridding
 	###at = time()
@@ -2514,9 +2548,9 @@ def ali3D_gridding(data, volprep, refang, delta_psi, shifts, shrink, numr, wr, c
 
 '''
 def prepare_refproj(volprep, refang, delta_psi = 1.0, mempercpu = 1.e9, kb3D = None):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgs,prgl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgs,prgl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	ny = volprep.get_ysize()
 	if kb3D:  ny /= 2
 	npsi = int(360./delta_psi)
@@ -2541,12 +2575,12 @@ def prepare_refproj(volprep, refang, delta_psi = 1.0, mempercpu = 1.e9, kb3D = N
 '''
 
 def ali3D_direct(data, volprep, refang, delta_psi, shifts, myid, main_node, lentop = 1000, kb3D = None):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgs,prgl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgs,prgl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
 	#from utilities import wrap_mpi_gatherv
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
 	#  Input data has to be CTF-multiplied, preshifted
 	#  Output - newpar, see structure
 	#    newpar = [[i, [worst_similarity, sum_all_similarities], [[-1, -1.0e23] for j in xrange(lentop)]] for i in xrange(len(data))]
@@ -2562,7 +2596,7 @@ def ali3D_direct(data, volprep, refang, delta_psi, shifts, myid, main_node, lent
 	#     hash_best = newpar[kl][-1][0][0]
 	#     best_sim  = newpar[kl][-1][0][1]
 	#  To sort:
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from operator import itemgetter#, attrgetter, methodcaller
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from operator import itemgetter#, attrgetter, methodcaller
 	#   params.sort(key=itemgetter(2))
 
 	at = time.time()
@@ -2619,12 +2653,12 @@ def ali3D_direct(data, volprep, refang, delta_psi, shifts, myid, main_node, lent
 
 
 def ali3D_direct_preselect(data, volprep, oldcodedparams, refang, delta_psi, shifts, myid, main_node, lentop = 1000, kb3D = None):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgs,prgl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgs,prgl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
 	#from utilities import wrap_mpi_gatherv
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
 	#  Input data has to be CTF-multiplied, preshifted
 	#  Output - newpar, see structure, shifts are sublist of angles
 	#    newpar = [[i, 1.0e23, [[j, -1.0e11,[[q,-1.0e22] for q in xrange(lshift)]] for j in xrange(lentop)]] for i in xrange(ldat)]
@@ -2650,7 +2684,7 @@ def ali3D_direct_preselect(data, volprep, oldcodedparams, refang, delta_psi, shi
 
 
 	#  To sort:
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from operator import itemgetter#, attrgetter, methodcaller
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from operator import itemgetter#, attrgetter, methodcaller
 	#   params.sort(key=itemgetter(2))
 
 	at = time.time()
@@ -2715,12 +2749,12 @@ def ali3D_direct_preselect(data, volprep, oldcodedparams, refang, delta_psi, shi
 
 
 def ali3D_direct_local(data, volprep, refang, delta_psi, shifts, an, oldangs, myid, main_node, lentop = 1000, kb3D = None):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgs,prgl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getfvec
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prgs,prgl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import getfvec
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
 	#  Input data has to be CTF-multiplied, preshifted
 	#  Output - newpar, see structure
 	#    newpar = [[i, [worst_similarity, sum_all_similarities]], [[-1, -1.0e23] for j in xrange(lentop)]] for i in xrange(len(data))]
@@ -2736,10 +2770,10 @@ def ali3D_direct_local(data, volprep, refang, delta_psi, shifts, an, oldangs, my
 	#     hash_best = newpar[kl][-1][0][0]
 	#     best_sim  = newpar[kl][-1][0][1]
 	#  To sort:
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from operator import itemgetter#, attrgetter, methodcaller
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from operator import itemgetter#, attrgetter, methodcaller
 	#   params.sort(key=itemgetter(2))
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import cos, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import cos, radians
 	ac = numpy.cos(numpy.radians(an))
 	dvec = [None]*len(data)
 	for kl in range(len(data)):
@@ -2801,11 +2835,11 @@ def ali3D_direct_local(data, volprep, refang, delta_psi, shifts, an, oldangs, my
 	return newpar
 
 def proj_ali_incore_direct(data, ref_angs, numr, xrng, yrng, step, finfo=None, sym = "c1", delta_psi = 0.0, rshift = 0.0):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
 
 	if finfo:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params_proj
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params_proj
 		phi, theta, psi, s2x, s2y = utilities.get_params_proj(data)
 		finfo.write("Old parameters: %9.4f %9.4f %9.4f %9.4f %9.4f\n"%(phi, theta, psi, s2x, s2y))
 		finfo.flush()
@@ -2846,7 +2880,7 @@ def proj_ali_incore_direct(data, ref_angs, numr, xrng, yrng, step, finfo=None, s
 	t2.set_trans(EMAN2_cppwrap.Vec2f(-s2x, -s2y))
 	data.set_attr("xform.projection", t2)
 	data.set_attr("referencenumber", iref)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
 	ts = t2.get_sym_proj(sym)
 	if(len(ts) > 1):
 		# only do it if it is not c1
@@ -2870,9 +2904,9 @@ def proj_ali_helical(data, refrings, numr, xrng, yrng, stepx, ynumber, psi_max=1
 	"""
 	  psi_max - how much psi can differ from 90 or 270 degrees
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2, get_params_proj
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, pi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2, get_params_proj
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, pi
 
 	mode = "F"
 	nx   = data.get_xsize()
@@ -2921,9 +2955,9 @@ def proj_ali_helical_local(data, refrings, numr, xrng, yrng, stepx,ynumber, an, 
 	"""
 	  psi_max - how much psi can differ from 90 or 270 degrees
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2, get_params_proj
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2, get_params_proj
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, radians
 
 	mode = "F"
 	nx   = data.get_xsize()
@@ -2976,8 +3010,8 @@ def proj_ali_helical_90(data, refrings, numr, xrng, yrng, stepx, ynumber, psi_ma
 	"""
 	  psi_max - how much psi can differ from 90 or 270 degrees
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2, get_params_proj
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2, get_params_proj
 
 	mode = "F"
 	nx   = data.get_xsize()
@@ -3019,9 +3053,9 @@ def proj_ali_helical_90_local(data, refrings, numr, xrng, yrng, stepx, ynumber, 
 	"""
 	  psi_max - how much psi can differ from 90 or 270 degrees
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2, get_params_proj
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2, get_params_proj
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, radians
 
 	mode = "F"
 	nx   = data.get_xsize()
@@ -3064,9 +3098,9 @@ def proj_ali_helicon_local(data, refrings, numr, xrng, yrng, stepx,ynumber, an, 
 	"""
 	  psi_max - how much psi can differ from 90 or 270 degrees
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2, get_params_proj
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2, get_params_proj
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, radians
 
 	mode = "F"
 	nx   = data.get_xsize()
@@ -3120,9 +3154,9 @@ def proj_ali_helicon_90_local_direct(data, refrings, xrng, yrng, \
 	"""
 	  psi_max - how much psi can differ from 90 or 270 degrees
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2, get_params_proj
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import directaligridding
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2, get_params_proj
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import directaligridding
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, radians
 
 	mode = "F"
 	nx   = data.get_xsize()
@@ -3180,9 +3214,9 @@ def proj_ali_helicon_90_local_direct1(data, refrings, xrng, yrng, \
 	"""
 	  psi_max - how much psi can differ from either 90 or 270 degrees
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import inverse_transform2, get_params_proj
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import directaligridding1
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import inverse_transform2, get_params_proj
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import directaligridding1
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, radians
 	
 	nx   = data.get_xsize()
 	ny   = data.get_ysize()
@@ -3211,9 +3245,9 @@ def proj_ali_helicon_90_local(data, refrings, numr, xrng, yrng, stepx, ynumber, 
 	"""
 	  psi_max - how much psi can differ from 90 or 270 degrees
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2, get_params_proj
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, pi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2, get_params_proj
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, pi
 
 	mode = "F"
 	nx   = data.get_xsize()
@@ -3252,9 +3286,9 @@ def proj_ali_helicon_90_local(data, refrings, numr, xrng, yrng, stepx, ynumber, 
 		return -1.0e23, 0.0, 0.0, 0.0, 0.0, 0.0
 
 def ali_vol_func(params, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import model_gauss
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D, cyclic_shift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology   import binarize
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import model_gauss
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D, cyclic_shift
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology   import binarize
 	#print  params
 	#print  data[3]
 	#cphi, ctheta, cpsi, cs2x, cs2y, cs2z, cscale= compose_transform3(data[3][0], data[3][1], data[3][2], data[3][3], data[3][4], data[3][5], data[3][6], params[0], params[1], params[2],params[3], params[4], params[5],1.0)
@@ -3266,9 +3300,9 @@ def ali_vol_func(params, data):
 	return res
 
 def ali_vol_func_julio(params, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import model_gauss
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D, cyclic_shift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology   import binarize
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import model_gauss
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D, cyclic_shift
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology   import binarize
 	#print  params
 	#print  data[3]
 	#cphi, ctheta, cpsi, cs2x, cs2y, cs2z, cscale= compose_transform3(data[3][0], data[3][1], data[3][2], data[3][3], data[3][4], data[3][5], data[3][6], params[0], params[1], params[2],params[3], params[4], params[5],1.0)
@@ -3283,7 +3317,7 @@ def ali_vol_func_julio(params, data):
 		mask = fundamentals.cyclic_shift(data[2], int(round(params[3],0)), int(round(params[4],0)), int(round(params[5],0)))
 
 	if (data[5] > 1):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import rsconvolution
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import rsconvolution
 		gker = utilities.model_gauss(1, 7, 7, 7)
 		x = EMAN2_cppwrap.rsconvolution(x, gker)
 		x = EMAN2_cppwrap.Util.decimate(x, data[5], data[5], data[5])
@@ -3295,8 +3329,8 @@ def ali_vol_func_julio(params, data):
 	return res
 
 def ali_vol_func_grid(params, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D_grid, cyclic_shift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology   import binarize
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D_grid, cyclic_shift
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology   import binarize
 
 	# data[0]: image output from prepi3D (segment)
 	# data[5]: kb from prepi3D
@@ -3322,8 +3356,8 @@ def ali_vol_func_grid(params, data):
 	return res
 
 def ali_vol_func_nopsi(params, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform3
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform3
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 	#print  params
 	#print  data[3]
 	#cphi, ctheta, cpsi, cs2x, cs2y, cs2z, cscale= compose_transform3(data[3][0], data[3][1], data[3][2], data[3][3], data[3][4], data[3][5], data[3][6], params[0], params[1], params[2],params[3], params[4], params[5],1.0)
@@ -3335,8 +3369,8 @@ def ali_vol_func_nopsi(params, data):
 	return res
 
 def ali_vol_func_rotate(params, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform3
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform3
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 	cphi, ctheta, cpsi, cs2x, cs2y, cs2z, cscale= utilities.compose_transform3(data[3][0], data[3][1], data[3][2], data[3][3], data[3][4], data[3][5], data[3][7], params[0], params[1], params[2],0.0,0.0,0.0,1.0)
 	x = fundamentals.rot_shift3D(data[0], cphi, ctheta, cpsi, cs2x, cs2y, cs2z, cscale)
 	res = -x.cmp(data[4], data[1], {"mask":data[2]})
@@ -3344,8 +3378,8 @@ def ali_vol_func_rotate(params, data):
 	return res
 
 def ali_vol_func_shift(params, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform3
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform3
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 	cphi, ctheta, cpsi, cs2x, cs2y, cs2z, cscale= utilities.compose_transform3(data[3][0], data[3][1], data[3][2], data[3][3], data[3][4], data[3][5], data[3][7], 0.0,0.0,0.0, params[0], params[1], params[2],1.0)
 	x = fundamentals.rot_shift3D(data[0], cphi, ctheta, cpsi, cs2x, cs2y, cs2z, cscale)
 	res = -x.cmp(data[4], data[1], {"mask":data[2]})
@@ -3353,8 +3387,8 @@ def ali_vol_func_shift(params, data):
 	return res
 
 def ali_vol_func_scale(params, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform3
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform3
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 	cphi, ctheta, cpsi, cs2x, cs2y, cs2z, cscale= utilities.compose_transform3(data[3][0], data[3][1], data[3][2], data[3][3], data[3][4], data[3][5], data[3][7], params[0], params[1], params[2], params[3], params[4], params[5], params[6])
 	x = fundamentals.rot_shift3D(data[0], cphi, ctheta, cpsi, cs2x, cs2y, cs2z, cscale)
 	res = -x.cmp(data[4], data[1], {"mask":data[2]})
@@ -3362,8 +3396,8 @@ def ali_vol_func_scale(params, data):
 	return res
 
 def ali_vol_func_only_scale(params, data):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform3
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform3
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 	cphi, ctheta, cpsi, cs2x, cs2y, cs2z, cscale= utilities.compose_transform3(data[3][0], data[3][1], data[3][2], data[3][3], data[3][4], data[3][5], data[3][7], 0.0,0.0,0.0,0.0,0.0,0.0, params[0])
 	x = fundamentals.rot_shift3D(data[0], cphi, ctheta, cpsi, cs2x, cs2y, cs2z, cscale)
 	res = -x.cmp(data[4], data[1], {"mask":data[2]})
@@ -3379,8 +3413,8 @@ def helios_func(params, data):
 	return  q
 
 def helios(vol, pixel_size, dp, dphi, section_use = 0.75, radius = 0.0, rmin = 0.0):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import helios_func
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import amoeba
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import helios_func
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import amoeba
 	nx = vol.get_xsize()
 	ny = vol.get_ysize()
 	nz = vol.get_zsize()
@@ -3394,7 +3428,7 @@ def helios(vol, pixel_size, dp, dphi, section_use = 0.75, radius = 0.0, rmin = 0
 	return  vol.helicise(pixel_size, new_params[0][0], new_params[0][1], section_use, radius), new_params[0][0], new_params[0][1]
 
 def helios7(vol, pixel_size, dp, dphi, section_use = 0.75, radius = 0.0, rmin = 0.0):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import helios_func
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import helios_func
 	nx = vol.get_xsize()
 	ny = vol.get_ysize()
 	nz = vol.get_zsize()
@@ -3408,7 +3442,7 @@ def sub_favj(ave, data, jtot, mirror, numr):
 	'''
 		Subtract FT of rings from the average
 	'''
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi,sin,cos
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi,sin,cos
 	#from utilities  import print_col
 	# trig functions in radians
 	numpy.pi2 = numpy.pi*2
@@ -3447,7 +3481,7 @@ def update_favj(ave, data, jtot, mirror, numr):
 	'''
 		Add FT of rings to the average
 	'''
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi,sin,cos
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi,sin,cos
 	#from utilities  import print_col
 	# trig functions in radians
 	numpy.pi2 = numpy.pi*2
@@ -3483,8 +3517,8 @@ def update_favj(ave, data, jtot, mirror, numr):
 	#print_col(ave)
 
 def fine_2D_refinement(data, br, mask, tavg, group = -1):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import amoeba
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals 	import rtshgkb, prepg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import amoeba
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals 	import rtshgkb, prepg
 
 	# IMAGES ARE SQUARES!
 	nx = data[0].get_xsize()
@@ -3549,7 +3583,7 @@ def align2d(image, refim, xrng=[0, 0], yrng=[0, 0], step=1, first_ring=1, last_r
 	     Output: ang, sxs, sys, mirror, peak
 	"""
 	#from utilities import print_col
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
 	step = float(step)
 	nx = refim.get_xsize()
 	ny = refim.get_ysize()
@@ -3575,7 +3609,7 @@ def align2dshc(image, refim, xrng=0, yrng=0, step=1, first_ring=1, last_ring=0, 
 	     Output: ang, sxs, sys, mirror, peak
 	"""
 	#from utilities import print_col
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
 	step = float(step)
 	nx = refim.get_xsize()
 	ny = refim.get_ysize()
@@ -3603,10 +3637,10 @@ def align2dshc(image, refim, xrng=0, yrng=0, step=1, first_ring=1, last_ring=0, 
 '''
 
 def align2d_scf(image, refim, xrng=-1, yrng=-1, ou = -1):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import scf, rot_shift2D, ccf, mirror
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import peak_search
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians, sin, cos
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import scf, rot_shift2D, ccf, mirror
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import peak_search
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians, sin, cos
 	nx = image.get_xsize()
 	ny = image.get_xsize()
 	if(ou<0):  ou = min(nx//2-1,ny//2-1)
@@ -3623,7 +3657,7 @@ def align2d_scf(image, refim, xrng=-1, yrng=-1, ou = -1):
 	#alpha2, sxs, sys, mirr, peak2 = align2d_no_mirror(mirror(sci), scr,  first_ring = 1, last_ring=ou, mode="H")
 
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe, ornq
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe, ornq
 	# center in SPIDER convention
 	cnx = nx//2+1
 	cny = ny//2+1
@@ -3671,7 +3705,7 @@ def align2d_scf(image, refim, xrng=-1, yrng=-1, ou = -1):
 		cx = int(p2[0][1])
 		cy = int(p2[0][2])
 		ccf1 = ccf2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank
 	#print cx,cy
 	z = utilities.model_blank(3,3)
 	for i in range(3):
@@ -3687,10 +3721,10 @@ def align2d_scf(image, refim, xrng=-1, yrng=-1, ou = -1):
 
 
 def multalign2dscf(image, refrings, frotim, numr, xrng=-1, yrng=-1, ou = -1):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import scf, rot_shift2D, ccf, mirror
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import peak_search, model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians, sin, cos
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ang_n
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import scf, rot_shift2D, ccf, mirror
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import peak_search, model_blank
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians, sin, cos
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ang_n
 
 	nx = image.get_xsize()
 	ny = image.get_xsize()
@@ -3752,10 +3786,10 @@ def multalign2dscf(image, refrings, frotim, numr, xrng=-1, yrng=-1, ou = -1):
 	return sx,sy,iref,talpha,totpeak
 
 def multalign2d_scf(image, refrings, frotim, numr, xrng=-1, yrng=-1, ou = -1):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import scf, rot_shift2D, ccf, mirror
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import peak_search, model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians, sin, cos
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ang_n
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import scf, rot_shift2D, ccf, mirror
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import peak_search, model_blank
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians, sin, cos
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import ang_n
 
 	nx = image.get_xsize()
 	ny = image.get_xsize()
@@ -3906,9 +3940,9 @@ def parabl(Z):
 '''
 
 def align2d_direct2(image, refim, xrng=1, yrng=1, psimax=1, psistep=1, ou = -1):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf, mirror
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import peak_search, model_circle, model_blank, inverse_transform2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians, sin, cos
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf, mirror
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import peak_search, model_circle, model_blank, inverse_transform2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians, sin, cos
 	
 	nx = image.get_xsize()
 	if(ou<0):  ou = nx//2-1
@@ -3957,10 +3991,10 @@ def align2d_direct2(image, refim, xrng=1, yrng=1, psimax=1, psistep=1, ou = -1):
 
 
 def align2d_direct3(input_images, refim, xrng=1, yrng=1, psimax=180, psistep=1, ou = -1, CTF = None):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf, mirror
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import filt_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import peak_search, model_circle, model_blank, inverse_transform2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians, sin, cos
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf, mirror
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import filt_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import peak_search, model_circle, model_blank, inverse_transform2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians, sin, cos
 	
 	nx = input_images[0].get_xsize()
 	if(ou<0):  ou = nx//2-1
@@ -4017,9 +4051,9 @@ def align2d_direct3(input_images, refim, xrng=1, yrng=1, psimax=180, psistep=1, 
 
 
 def align2d_direct(image, refim, xrng=1, yrng=1, psimax=1, psistep=1, ou = -1):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank, model_circle, peak_search, compose_transform2, inverse_transform2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians, sin, cos
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank, model_circle, peak_search, compose_transform2, inverse_transform2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians, sin, cos
 
 	nx = image.get_xsize()
 	if(ou<0):  ou = nx//2-1
@@ -4098,7 +4132,7 @@ def align2d_no_mirror(image, refim, xrng=0, yrng=0, step=1, first_ring=1, last_r
 	     Output: ang, sxs, sys, mirror, peak  # Mirror==0
 	"""
 	#from utilities import print_col
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
 	step = float(step)
 	nx = refim.get_xsize()
 	ny = refim.get_ysize()
@@ -4126,7 +4160,7 @@ def align2d_peaks(image, refim, xrng=0, yrng=0, step=1, first_ring=1, last_ring=
 	     quadratic interpolation
 	"""
 	#from utilities import print_col
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
 	step = float(step)
 	nx = refim.get_xsize()
 	ny = refim.get_ysize()
@@ -4149,9 +4183,9 @@ def align2d_g(image, refim, xrng=0, yrng=0, step=1, first_ring=1, last_ring=0, r
 	"""  Determine shift and rotation between image and reference image
 	     quadratic interpolation
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from development import ormy2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from development import ormy2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import Numrinit, ringwe
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
 	
 	step = float(step)
 	nx = refim.get_xsize()
@@ -4190,9 +4224,9 @@ def directali(inima, refs, psimax=1.0, psistep=1.0, xrng=1, yrng=1, updown = "bo
 	updown - one of three keywords: both, up, down, indicating which angle to consider, 0, 180, or both.
 	PAP 12/20/2014
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import peak_search, model_blank, inverse_transform2, compose_transform2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import parabl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import peak_search, model_blank, inverse_transform2, compose_transform2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import parabl
 
 	nr = int(2*psimax/psistep)+1
 	nc = nr//2
@@ -4223,7 +4257,7 @@ def directali(inima, refs, psimax=1.0, psistep=1.0, xrng=1, yrng=1, updown = "bo
 	"""
 	fft(ima).write_image('ima.hdf')
 	for i in xrange(nr):  fft(ref[i]).write_image('ref.hdf',i)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
 	exit()
 	"""
 	for i in range(nr):
@@ -4314,8 +4348,8 @@ def directali(inima, refs, psimax=1.0, psistep=1.0, xrng=1, yrng=1, updown = "bo
 
 
 def preparerefsgrid(refs, psimax=1.0, psistep=1.0):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import prepi, fft
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import prepi, fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 
 	M = refs.get_xsize()
 	alpha = 1.75
@@ -4332,7 +4366,7 @@ def preparerefsgrid(refs, psimax=1.0, psistep=1.0):
 
 	ref = [None]*nr
 	ima,kb = fundamentals.prepi(refs)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
 	psisteprad = numpy.radians(psistep)
 	for i in range(nr):
 		# gridding rotation
@@ -4342,8 +4376,8 @@ def preparerefsgrid(refs, psimax=1.0, psistep=1.0):
 
 
 def preparerefsgrid1(refs, psimax=1.0, psistep=1.0):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import prepi, fft
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import prepi, fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 
 	M = refs.get_xsize()
 	alpha = 1.75
@@ -4364,7 +4398,7 @@ def preparerefsgrid1(refs, psimax=1.0, psistep=1.0):
 	
 	ref = [None]*nr
 	ima,kb = fundamentals.prepi(refs)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
 	psisteprad = numpy.radians(psistep)
 # if psimax > 0:
 # 		bnr = int(round(reduced_psiref/psistep)) - nc
@@ -4389,10 +4423,10 @@ def directaligridding(inima, refs, psimax=1.0, psistep=1.0, xrng=1, yrng=1, step
 	PAP 12/27/2014
 	"""
 	#  Eventually will have to pass kb here
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf, prepi
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import peak_search, model_blank, inverse_transform2, compose_transform2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import parabl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf, prepi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import peak_search, model_blank, inverse_transform2, compose_transform2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import parabl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 	print("  directaligridding  ",psimax, psistep, xrng, yrng, stepx, stepy, updown)
 	M = inima.get_xsize()
 	alpha = 1.75
@@ -4428,7 +4462,7 @@ def directaligridding(inima, refs, psimax=1.0, psistep=1.0, xrng=1, yrng=1, step
 	except:
 		ref = [None]*nr
 		ima,kb = fundamentals.prepi(refs)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
 		psisteprad = numpy.radians(psistep)
 		for i in range(nr):
 			# gridding rotation
@@ -4461,7 +4495,7 @@ def directaligridding(inima, refs, psimax=1.0, psistep=1.0, xrng=1, yrng=1, step
 		imm = EMAN2_cppwrap.Processor.EMFourierFilter(imm, params)
 
 	#fft(ima).write_image('imap.hdf')
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params_proj
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params_proj
 	e1 = ref[0]['phi']
 	f1,e2,e3,e4,e5 = utilities.get_params_proj(inima)
 	print(" in ali  ", e1,f1,psimax, psistep, xrng, yrng, wnx, wny, rnx, rny, stepxx, stepyy, nr,updown) 
@@ -4474,7 +4508,7 @@ def directaligridding(inima, refs, psimax=1.0, psistep=1.0, xrng=1, yrng=1, step
 	"""
 	fft(ima).write_image('ima.hdf')
 	for i in xrange(nr):  fft(ref[i]).write_image('ref.hdf',i)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
 	exit()
 	"""
 	for i in range(nr):
@@ -4593,10 +4627,10 @@ def directaligridding1(inima, kb, ref, psimax=1.0, psistep=1.0, xrng=1, yrng=1, 
 	PAP 01/01/2015
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf, prepi
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import peak_search, model_blank, inverse_transform2, compose_transform2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import parabl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf, prepi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import peak_search, model_blank, inverse_transform2, compose_transform2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import parabl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 	#print  "  directaligridding1  ",psimax, psistep, xrng, yrng, stepx, stepy, updown
 
 	"""
@@ -4651,7 +4685,7 @@ def directaligridding1(inima, kb, ref, psimax=1.0, psistep=1.0, xrng=1, yrng=1, 
 	"""
 	fft(ima).write_image('ima.hdf')
 	for i in xrange(nr):  fft(ref[i]).write_image('ref.hdf',i)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
 	exit()
 	"""
 	for i in range(nr):
@@ -4782,10 +4816,10 @@ def directaligriddingconstrained(inima, kb, ref, psimax=1.0, psistep=1.0, xrng=1
 	PAP 01/16/2015
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf, prepi
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import peak_search, model_blank, inverse_transform2, compose_transform2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import parabl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf, prepi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import peak_search, model_blank, inverse_transform2, compose_transform2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import parabl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 	#from time  import time
 	#print  "  directaligridding1  ",psimax, psistep, xrng, yrng, stepx, stepy, updown
 	#print  "IN         %6.2f %6.2f  %6.2f"%(psiref, txref, tyref)
@@ -4862,7 +4896,7 @@ def directaligriddingconstrained(inima, kb, ref, psimax=1.0, psistep=1.0, xrng=1
 	"""
 	fft(ima).write_image('ima.hdf')
 	for i in xrange(nr):  fft(ref[i]).write_image('ref.hdf',i)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
 	exit()
 	"""
 	#if ( rny == 0 ) : return  0.0, 0.0, 0.0, -1.e23     ## do nothing for rny=0 @ming
@@ -5005,10 +5039,10 @@ def directaligriddingconstrained3dccf(inima, kb, ref, psimax=1.0, psistep=1.0, x
 	PAP 01/16/2015
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf, prepi
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import peak_search, model_blank, inverse_transform2, compose_transform2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import parabl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft, rot_shift2D, ccf, prepi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import peak_search, model_blank, inverse_transform2, compose_transform2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import parabl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 	#print  "  directaligridding1  ",psimax, psistep, xrng, yrng, stepx, stepy, updown
 	#print  "IN         %6.2f %6.2f  %6.2f"%(psiref, txref, tyref)
 
@@ -5075,7 +5109,7 @@ def directaligriddingconstrained3dccf(inima, kb, ref, psimax=1.0, psistep=1.0, x
 	"""
 	fft(ima).write_image('ima.hdf')
 	for i in xrange(nr):  fft(ref[i]).write_image('ref.hdf',i)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
 	exit()
 	"""
 	#print "wnx wny enr-bnr", wnx,wny,enr-bnr
@@ -5221,8 +5255,8 @@ def directaligriddingconstrained3dccf(inima, kb, ref, psimax=1.0, psistep=1.0, x
 	return  nalpha, ntx, nty, peak, ccf3dimg
 
 def alignment3Dsnake(partition, snakeknots, nsegs, initialori, ctx, psistep, stepx, stepy, txref, tyref, nc, rnx, rny, updown = "up"):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from scipy import interpolate
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import inverse_transform2, compose_transform2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from scipy import interpolate
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import inverse_transform2, compose_transform2
 	#1. setting basis parameters for b-spline
 	#patitions[ivol] = 2        ##only for test. should be removed later.@ming
 	pt = partition
@@ -5282,7 +5316,7 @@ def alignment3Dsnake(partition, snakeknots, nsegs, initialori, ctx, psistep, ste
 	sy    =sy0
 	
 	##3. refine snake's b-spline coefficients using amoeba. added@ming
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import amoeba
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import amoeba
 	params0 = angrot0+sx0+sy0
 	params  = angrot+sx+sy
 	ftol = 1.e-8
@@ -5302,7 +5336,7 @@ def alignment3Dsnake(partition, snakeknots, nsegs, initialori, ctx, psistep, ste
 	tckx   = (TCK[1][0], px,TCK[1][2]) 
 	tcky   = (TCK[2][0], py,TCK[2][2])
 	
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from scipy import interpolate
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from scipy import interpolate
 	#print "lambw", lambw
 	sx_sum=0.0
 	
@@ -5343,7 +5377,7 @@ def flexhelicalali(params,data):
 	
 
 	
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from scipy import interpolate
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from scipy import interpolate
 	#print "lambw", lambw
 	sx_sum=0.0
 		
@@ -5423,11 +5457,11 @@ def flexhelicalali(params,data):
 	return sx_sum
 	
 def ali_nvol(v, mask):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import alivol_mask_getref, alivol_mask
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics   import ave_var
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import set_params3D, get_params3D ,compose_transform3
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import alivol_mask_getref, alivol_mask
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics   import ave_var
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import set_params3D, get_params3D ,compose_transform3
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 	ocrit = 1.0e20
 	gogo = True
 	niter = 0
@@ -5455,7 +5489,7 @@ def ali_nvol(v, mask):
 	return v
 
 def alivol_mask_getref( v, mask ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import set_params3D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import set_params3D
 	v50S_ref = v.copy()
 	v50S_ref *= mask
 	cnt = v50S_ref.phase_cog()
@@ -5463,8 +5497,8 @@ def alivol_mask_getref( v, mask ):
 	return v50S_ref
 
 def alivol_mask( v, vref, mask ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import set_params3D, get_params3D,compose_transform3
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali_vol_shift, ali_vol_rotate
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import set_params3D, get_params3D,compose_transform3
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali_vol_shift, ali_vol_rotate
 	v50S_i = v.copy()
 	v50S_i *= mask
 	cnt = v50S_i.phase_cog()
@@ -5480,11 +5514,11 @@ def alivol_mask( v, vref, mask ):
 	return phi,tht,psi,s3x,s3y,s3z
 
 def ali_mvol(v, mask):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import alivol_m
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics   import ave_var
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import set_params3D, get_params3D ,compose_transform3
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import alivol_m
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics   import ave_var
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import set_params3D, get_params3D ,compose_transform3
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 	ocrit = 1.0e20
 	gogo = True
 	niter = 0
@@ -5513,8 +5547,8 @@ def ali_mvol(v, mask):
 	return v
 
 def alivol_m( v, vref, mask ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import set_params3D, get_params3D,compose_transform3
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali_vol_shift, ali_vol_rotate
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import set_params3D, get_params3D,compose_transform3
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali_vol_shift, ali_vol_rotate
 	vola = v.copy()
 	vola *= mask
 	utilities.set_params3D( vola,   (0.0,0.0,0.0,0.0,0.0,0.0,0,1.0) )
@@ -5530,9 +5564,9 @@ def alivol_m( v, vref, mask ):
 # =================== SHC
 '''
 def Xshc0(data, cimages, refrings, numr, xrng, yrng, step, an = -1.0, sym = "c1", finfo=None):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, degrees, radians
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import compose_transform2
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, degrees, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
 
 	number_of_checked_refs = 0
 
@@ -5602,7 +5636,7 @@ def Xshc0(data, cimages, refrings, numr, xrng, yrng, step, an = -1.0, sym = "c1"
 		data.set_attr("xform.projection", t2)
 		data.set_attr("previousmax", peak)
 		#  Find the pixel error that is minimum over symmetry transformations
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
 		ts = t2.get_sym_proj(sym)
 		if(len(ts) > 1):
 			# only do it if it is not c1
@@ -5619,9 +5653,9 @@ def Xshc0(data, cimages, refrings, numr, xrng, yrng, step, an = -1.0, sym = "c1"
 '''
 
 def shc(data, refrings, list_of_reference_angles, numr, xrng, yrng, step, an = -1.0, sym = "c1", finfo=None):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, degrees, radians
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import search_range
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import cos, sin, degrees, radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Vec2f
 
 	number_of_checked_refs = 0
 
@@ -5646,7 +5680,7 @@ def shc(data, refrings, list_of_reference_angles, numr, xrng, yrng, step, an = -
 	if finfo:
 		finfo.write("Old parameters: %9.4f %9.4f %9.4f %9.4f %9.4f\n"%(dp["phi"], dp["theta"], dp["psi"], -dp["tx"], -dp["ty"]))
 		finfo.flush()
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params_proj
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params_proj
 		z1,z2,z3,z4,z5 = utilities.get_params_proj(data, "xform.anchor")
 		finfo.write("Anc parameters: %9.4f %9.4f %9.4f %9.4f %9.4f\n"%(z1,z2,z3,-z4,-z5))
 		finfo.flush()
@@ -5690,7 +5724,7 @@ def shc(data, refrings, list_of_reference_angles, numr, xrng, yrng, step, an = -
 		data.set_attr("xform.projection", t2)
 		data.set_attr("previousmax", peak)
 		#  Find the pixel error that is minimum over symmetry transformations
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error import max_3D_pixel_error
 		if(sym == "nomirror" or sym == "c1"):
 			pixel_error = pixel_error.max_3D_pixel_error(t1, t2, numr[-3])
 		else:		
@@ -5715,21 +5749,21 @@ def shc(data, refrings, list_of_reference_angles, numr, xrng, yrng, step, an = -
 def center_projections_3D(data, ref_vol = None, ali3d_options = None, onx = -1, shrinkage = 1.0, \
 							mpi_comm = None, myid = 0, main_node = 0, log = None ):
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment       import Numrinit, prepare_refrings, proj_ali_incore,  proj_ali_incore_local, shc
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities       import bcast_number_to_all, bcast_EMData_to_all, model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities       import get_im, file_type, model_circle, get_input_from_string, get_params_proj, set_params_proj
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier, mpi_reduce, MPI_INT, MPI_SUM
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection      import prep_vol
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics      import hist_list
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities		 import params_2D_3D
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications    import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter          import filt_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def      import Util
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals    import resample, fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from multi_shc       import do_volume, shc_multi
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2           import EMUtil, EMData
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment       import Numrinit, prepare_refrings, proj_ali_incore,  proj_ali_incore_local, shc
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities       import bcast_number_to_all, bcast_EMData_to_all, model_blank
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities       import get_im, file_type, model_circle, get_input_from_string, get_params_proj, set_params_proj
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier, mpi_reduce, MPI_INT, MPI_SUM
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection      import prep_vol
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics      import hist_list
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities		 import params_2D_3D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications    import MPI_start_end
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter          import filt_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def      import Util
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals    import resample, fshift
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from multi_shc       import do_volume, shc_multi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2           import EMUtil, EMData
 	pass#IMPORTIMPORTIMPORT import types
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time            import time
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time            import time
 
 	ir     = ali3d_options.ir
 	rs     = ali3d_options.rs
@@ -5750,7 +5784,7 @@ def center_projections_3D(data, ref_vol = None, ali3d_options = None, onx = -1, 
 		mpi_comm = mpi.MPI_COMM_WORLD
 
 	if log == None:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from logger import Logger
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from logger import Logger
 		log = logger.Logger()
 
 	if myid == main_node:
@@ -5905,7 +5939,7 @@ def generate_list_of_reference_angles_for_search(input_angles, sym):
 	  Output - [[angles], [angles]] (no shifts)
 			Blocks - [[basic][mirrored basic]] [[basic sym1][mirrored basic sym1]] ...
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Transform
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Transform
 	t2   = EMAN2_cppwrap.Transform()
 	nsym = t2.get_nsym(sym)
 
@@ -6001,7 +6035,7 @@ def individual_process(file_name_of_pickled_object_for_which_we_want_to_know_the
 
 def total_size_of_object_in_memory(my_object):
 	pass#IMPORTIMPORTIMPORT import inspect, os, subprocess
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import random_string
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import random_string
 
 	file_name_my_object = random_string()
 	while os.path.exists(file_name_my_object):
@@ -6015,8 +6049,8 @@ def total_size_of_object_in_memory(my_object):
 
 	fp = open(file_name_my_python_code, "w")
 	fp.write("#!/usr/bin/env python\n\n")
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT fp.write("from EMAN2 import *\n")
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT fp.write("from sparx import *\n")
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT fp.write("from EMAN2 import *\n")
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT fp.write("from sparx import *\n")
 
 	for line in inspect.getsourcelines(load_object)[0]: fp.write(line)
 	for line in inspect.getsourcelines(individual_process)[0]: fp.write(line)
@@ -6038,7 +6072,7 @@ def total_size_of_object_in_memory(my_object):
 
 def determine_maximum_number_of_processes_per_node_from_all_nodes_that_belong_to_the_same_mpi_run():
 	pass#IMPORTIMPORTIMPORT import os, socket
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_barrier, MPI_COMM_WORLD
 
 	hostname = socket.gethostname()
 	file_prefix = "WKDkSGYtLDTW9Nb2Vcu1SpsptFpEIod_mpi_process_count_"
@@ -6050,7 +6084,7 @@ def determine_maximum_number_of_processes_per_node_from_all_nodes_that_belong_to
 	hostname_list=[]
 	for fn in list_of_files:
 		hostname_list.append(fn[(len(file_prefix)):(len(file_prefix)+len(hostname))])
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from collections import Counter
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from collections import Counter
 	counter = Counter(hostname_list)
 	os.system("rm %s%s_%d"%(file_prefix, hostname, os.getpid()))
 	return max(counter.values())
@@ -6058,10 +6092,10 @@ def determine_maximum_number_of_processes_per_node_from_all_nodes_that_belong_to
 def calculate_number_of_cones(volft, kb, delta, sym, cnx, cny, numr, mode, wr_four):
 
 	pass#IMPORTIMPORTIMPORT import sys
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import prepare_refrings, refprojs, Numrinit, ringwe
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import bracket_def, goldsearch_astigmatism
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import computenumberofrefs
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import even_angles, assign_projangles, cone_ang, print_from_process
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import prepare_refrings, refprojs, Numrinit, ringwe
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import bracket_def, goldsearch_astigmatism
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import computenumberofrefs
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import even_angles, assign_projangles, cone_ang, print_from_process
 	
 	
 	LOW_LIMIT_FOR_NUMBER_OF_REFERENCES_THAT_FIT_MEMORY = 100
@@ -6095,8 +6129,8 @@ def calculate_number_of_cones(volft, kb, delta, sym, cnx, cny, numr, mode, wr_fo
 		print "Not enough memory for allocating refrings. Exit."
 		error_status = [1]
 		
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_reduce, MPI_INT, MPI_SUM, MPI_COMM_WORLD, mpi_comm_rank, mpi_comm_size
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import if_error_then_all_processes_exit_program
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_reduce, MPI_INT, MPI_SUM, MPI_COMM_WORLD, mpi_comm_rank, mpi_comm_size
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import if_error_then_all_processes_exit_program
 	error_status = mpi_reduce(error_status, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 	if_error_then_all_processes_exit_program(error_status)	
 
@@ -6107,7 +6141,7 @@ def calculate_number_of_cones(volft, kb, delta, sym, cnx, cny, numr, mode, wr_fo
 	number_of_processes = mpi_comm_size(MPI_COMM_WORLD)
 	
 	all_cones_estimates = [0]*number_of_processes
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import ceil
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import ceil
 	all_cones_estimates[myid] = max(int(ceil(total_number_of_references/number_of_references_that_fit_in_memory)),1)
 	
 	mpi_reduce(all_cones_estimates, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
@@ -6116,21 +6150,21 @@ def calculate_number_of_cones(volft, kb, delta, sym, cnx, cny, numr, mode, wr_fo
 	else:
 		number_of_cones_to_return = 0
 		
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_bcast
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_bcast
 	number_of_cones_to_return = mpi_bcast(number_of_cones_to_return, 1, MPI_INT, 0, MPI_COMM_WORLD)[0]
 	return number_of_cones_to_return
 
 
 def generate_indices_and_refrings(nima, projangles, volft, kb, nx, delta, an, rangle, ref_a, sym, numr, MPI, phiEqpsi = "Zero"):
 	
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import prepare_refrings, refprojs, Numrinit, ringwe, generate_list_of_reference_angles_for_search
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import reduce_indices_so_that_angles_map_only_to_asymmetrix_unit_and_keep_mirror_info
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import bracket_def, goldsearch_astigmatism
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import computenumberofrefs
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import even_angles, assign_projangles_f, assign_projangles
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import cone_ang_with_index
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import prepare_refrings, refprojs, Numrinit, ringwe, generate_list_of_reference_angles_for_search
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import reduce_indices_so_that_angles_map_only_to_asymmetrix_unit_and_keep_mirror_info
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import bracket_def, goldsearch_astigmatism
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import computenumberofrefs
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import even_angles, assign_projangles_f, assign_projangles
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import cone_ang_with_index
 	pass#IMPORTIMPORTIMPORT import sys
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prep_vol
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection import prep_vol
 
 	cnx = cny = nx//2 + 1
 	# numr = Numrinit(1,15)
@@ -6147,7 +6181,7 @@ def generate_indices_and_refrings(nima, projangles, volft, kb, nx, delta, an, ra
 			ref_angles[0][1] = 0.01
 		if( rangle > 0.0 ):
 			# shake
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import rotate_shift_params
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import rotate_shift_params
 			ref_angles = rotate_shift_params(anglelist, [ delta*rangle, delta*rangle, delta*rangle ])
 		
 		#=========================================================================
@@ -6185,7 +6219,7 @@ def generate_indices_and_refrings(nima, projangles, volft, kb, nx, delta, an, ra
 				ref_angles[0][1] = 0.01
 			if( rangle > 0.0 ):
 				# shake
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import rotate_shift_params
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import rotate_shift_params
 				ref_angles = rotate_shift_params(anglelist, [ delta*rangle, delta*rangle, delta*rangle ])
 			
 			#=========================================================================
@@ -6257,7 +6291,7 @@ def generate_indices_and_refrings(nima, projangles, volft, kb, nx, delta, an, ra
 					filtered_refsincone_plus_mirror_and_symmetries_with_original_index_and_refrings_index = \
 						filtered_refsincone_plus_mirror_and_symmetries_with_original_index
 					
-					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_comm_rank
+					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_comm_rank
 					myid = mpi_comm_rank(MPI_COMM_WORLD)
 					
 					filtered_refsincone_plus_mirror_and_symmetries_with_original_index_and_refrings_index[0].append(len_of_all_refs_angles_within_asymmetric_unit)
@@ -6280,10 +6314,10 @@ def generate_indices_and_refrings(nima, projangles, volft, kb, nx, delta, an, ra
 
 def frame_alignment(movie_stack, particle_radius, templates, x_half_size, psi_half_size, y_half_size = None, apply_alignment_in_place = False):
 	
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle, list_prod, calculate_space_size
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import ccc
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle, list_prod, calculate_space_size
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import ccc
 	pass#IMPORTIMPORTIMPORT import numpy as np
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift2D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift2D
 	
 	if y_half_size == None:
 		y_half_size = x_half_size

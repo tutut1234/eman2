@@ -56,11 +56,19 @@ pass#IMPORTIMPORTIMPORT import optparse
 pass#IMPORTIMPORTIMPORT import os
 pass#IMPORTIMPORTIMPORT import sys
 pass#IMPORTIMPORTIMPORT import utilities
+pass#IMPORTIMPORTIMPORT import applications
+pass#IMPORTIMPORTIMPORT import development
+pass#IMPORTIMPORTIMPORT import global_def
+pass#IMPORTIMPORTIMPORT import mpi
+pass#IMPORTIMPORTIMPORT import optparse
+pass#IMPORTIMPORTIMPORT import os
+pass#IMPORTIMPORTIMPORT import sys
+pass#IMPORTIMPORTIMPORT import utilities
 
 pass#IMPORTIMPORTIMPORT import os
 pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   global_def import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   optparse import OptionParser
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   global_def import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   optparse import OptionParser
 pass#IMPORTIMPORTIMPORT import sys
 
 
@@ -98,35 +106,35 @@ def main():
 			mask = args[2]
 
 		if options.MPI:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init
 			sys.argv = mpi.mpi_init(len(sys.argv), sys.argv)
 
 		if global_def.CACHE_DISABLE:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
 			utilities.disable_bdb_cache()
 
 		
 		global_def.BATCH = True
 		if options.fourvar:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from development import nlocal_ali3d_MPI
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from development import nlocal_ali3d_MPI
 			nlocal_ali3d_MPI(args[0], args[1], mask, options.ou, options.delta, options.ts, options.center, options.maxit,
 			options.CTF, options.snr, options.sym, options.chunk, options.function, options.fourvar,
 			options.npad, options.debug)
 		elif options.scipy_minimization:
 			if options.MPI:
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import local_ali3d_MPI_scipy_minimization
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import local_ali3d_MPI_scipy_minimization
 				applications.local_ali3d_MPI_scipy_minimization(args[0], args[1], mask, options.ou, options.delta, options.ts, options.center, options.maxit,
 				options.CTF, options.snr, options.sym, options.chunk, options.function, options.fourvar,
 				options.npad, options.debug)
 		else:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import local_ali3d
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import local_ali3d
 			applications.local_ali3d(args[0], args[1], mask, options.ou, options.delta, options.ts, options.center, options.maxit,
 			options.CTF, options.snr, options.sym, options.chunk, options.function, options.fourvar,
 			options.npad, options.debug, options.MPI)
 		global_def.BATCH = False
 
 		if options.MPI:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
 			mpi.mpi_finalize()
 
 if __name__ == "__main__":

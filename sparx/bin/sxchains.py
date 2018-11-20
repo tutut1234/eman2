@@ -83,14 +83,31 @@ pass#IMPORTIMPORTIMPORT import statistics
 pass#IMPORTIMPORTIMPORT import sys
 pass#IMPORTIMPORTIMPORT import time
 pass#IMPORTIMPORTIMPORT import utilities
+pass#IMPORTIMPORTIMPORT import EMAN2
+pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
+pass#IMPORTIMPORTIMPORT import EMAN2jsondb
+pass#IMPORTIMPORTIMPORT import alignment
+pass#IMPORTIMPORTIMPORT import copy
+pass#IMPORTIMPORTIMPORT import fundamentals
+pass#IMPORTIMPORTIMPORT import global_def
+pass#IMPORTIMPORTIMPORT import math
+pass#IMPORTIMPORTIMPORT import numpy
+pass#IMPORTIMPORTIMPORT import optparse
+pass#IMPORTIMPORTIMPORT import os
+pass#IMPORTIMPORTIMPORT import pyemtbx.options
+pass#IMPORTIMPORTIMPORT import random
+pass#IMPORTIMPORTIMPORT import statistics
+pass#IMPORTIMPORTIMPORT import sys
+pass#IMPORTIMPORTIMPORT import time
+pass#IMPORTIMPORTIMPORT import utilities
 from builtins import range
 pass#IMPORTIMPORTIMPORT import	global_def
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from	global_def 	import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from	EMAN2 		import EMUtil, parsemodopt, EMAN2Ctf
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from    EMAN2jsondb import js_open_dict
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from	global_def 	import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from	EMAN2 		import EMUtil, parsemodopt, EMAN2Ctf
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from    EMAN2jsondb import js_open_dict
 
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from	utilities 	import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from    statistics import mono
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from	utilities 	import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from    statistics import mono
 pass#IMPORTIMPORTIMPORT import  os
 
 """
@@ -98,7 +115,7 @@ pass#IMPORTIMPORTIMPORT import  os
 """
 #from scipy import *
 #from pylab import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import *
 
 def Distance(i1, i2, lccc):
 	return max(1.0 - lccc[statistics.mono(i1,i2)][0], 0.0)
@@ -150,7 +167,7 @@ def Plot(city, R, dist):
 def tsp(lccc):
 
 	#     ncity = 100        # Number of cities to visit
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	ncity = int( (1+numpy.sqrt(1+8*len(lccc)))/2 )        # Number of cities to visit
     #  sanity check
 	if( ncity*(ncity-1)/2 != len(lccc) ): return [-1]
@@ -241,7 +258,7 @@ def tsp(lccc):
 
 
 def pca(cov):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import  linalg, argsort
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import  linalg, argsort
 	""" assume one sample per column """
 	values, vecs = numpy.linalg.eigh(cov)
 	perm = numpy.argsort(-values)  # sort in descending order
@@ -255,9 +272,9 @@ def main():
 	pass#IMPORTIMPORTIMPORT import random
 	pass#IMPORTIMPORTIMPORT import pyemtbx.options
 	pass#IMPORTIMPORTIMPORT import time
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   random   import random, seed, randint
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   optparse import OptionParser
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import ERROR
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   random   import random, seed, randint
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   optparse import OptionParser
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import ERROR
 
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + """ [options] <inputfile> <outputfile>
@@ -316,9 +333,9 @@ def main():
 		new_stack = args[1]
 
 
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import ccc
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import mono
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import ccc
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import mono
 		lend = EMAN2_cppwrap.EMUtil.get_image_count(stack)
 		lccc = [None]*(lend*(lend-1)/2)
 
@@ -341,7 +358,7 @@ def main():
 		order = tsp(lccc)
 		if(len(order) != lend):
 			print(" problem with data length")
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
 			exit()
 		print("Total sum of cccs :",TotalDistance(order, lccc))
 		print("ordering :",order)
@@ -353,11 +370,11 @@ def main():
 			print("must provide name of input and two output files!")
 			return
 
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params2D, model_circle
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift2D
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import ccc
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import align2d, align2d_scf
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params2D, model_circle
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift2D
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import ccc
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import align2d, align2d_scf
 		
 		stack = args[0]
 		new_stack = args[1]
@@ -390,10 +407,10 @@ def main():
 			
 		initial = max(options.initial, 0)
 
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import mono
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import mono
 		lend = len(d)
 		lccc = [None]*(lend*(lend-1)/2)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_row
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_row
 
 		if  options.pairwiseccc == " " or not os.path.exists(options.pairwiseccc) :
 			st = time()
@@ -406,7 +423,7 @@ def main():
 				#print "  %4d   %10.1f"%(i,time()-st)
 
 			if((not os.path.exists(options.pairwiseccc)) and (options.pairwiseccc != " ")):
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_row
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_row
 				utilities.write_text_row([[initial,0,0,0,0]]+lccc, options.pairwiseccc)
 		elif(os.path.exists(options.pairwiseccc)):
 			lccc = utilities.read_text_row(options.pairwiseccc)
@@ -457,7 +474,7 @@ def main():
 		print("  Initial image selected : ",init,maxsum,"    ",TotalDistance([snake[m][0] for m in range(lend)], lccc))
 		#for q in snake: print q
 
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from copy import deepcopy
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from copy import deepcopy
 		trans=copy.deepcopy([snake[i][1] for i in range(len(snake))])
 		print([snake[i][0] for i in range(len(snake))])
 		"""
@@ -479,7 +496,7 @@ def main():
 		order = tsp(lccc)
 		if(len(order) != lend):
 			print(" problem with data length")
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import exit
 			exit()
 		print(TotalDistance(order, lccc))
 		print(order)
@@ -498,7 +515,7 @@ def main():
 			if( order[i] > order[i-1] ):  T = T.inverse()
 			snake.append(T)
 		assert(len(snake) == lend)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from copy import deepcopy
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from copy import deepcopy
 		trans = copy.deepcopy(snake)
 		for k in range(lend-2,0,-1):
 			T = snake[k]
@@ -528,7 +545,7 @@ def main():
 
 		"""
 		#  This was an effort to get number of loops, inconclusive, to say the least
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import outer, zeros, float32, sqrt
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import outer, zeros, float32, sqrt
 		lend = len(d)
  		cor = zeros(lend,float32)
  		cor = outer(cor, cor)
@@ -540,7 +557,7 @@ def main():
 
 		lmbd, eigvec = pca(cor)
 
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_file
 
 		nvec=20
 		print  [lmbd[j] for j in xrange(nvec)]
@@ -626,11 +643,11 @@ def main():
 			print("must provide name of input and output file!")
 			return
 		
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params2D, model_circle
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift2D
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import ccc
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import align2d
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params2D, model_circle
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift2D
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import ccc
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment import align2d
 		
 		stack = args[0]
 		new_stack = args[1]

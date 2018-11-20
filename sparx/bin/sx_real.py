@@ -57,7 +57,14 @@ pass#IMPORTIMPORTIMPORT import global_def
 pass#IMPORTIMPORTIMPORT import os
 pass#IMPORTIMPORTIMPORT import sparx
 pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import *
+pass#IMPORTIMPORTIMPORT import IPython.lib.inputhook
+pass#IMPORTIMPORTIMPORT import eman2_gui.emapplication as emapplication
+pass#IMPORTIMPORTIMPORT import eman2_gui.emimage as emimage
+pass#IMPORTIMPORTIMPORT import global_def
+pass#IMPORTIMPORTIMPORT import os
+pass#IMPORTIMPORTIMPORT import sparx
+pass#IMPORTIMPORTIMPORT import EMAN2
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import *
 
 
 
@@ -66,14 +73,14 @@ try:
 	if EMAN2.get_platform()=="Linux" and os.os.getenv("DISPLAY")==None: raise Exception
 
 	from PyQt4 import QtCore, QtGui, QtOpenGL
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emapplication import EMApp
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emapplication import EMApp
 	pass#IMPORTIMPORTIMPORT import IPython.lib.inputhook
 
 
 	app=emapplication.EMApp()
 	IPython.lib.inputhook.enable_qt4(app)
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emimage import image_update
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emimage import image_update
 
 	def ipy_on_timer():
 		emimage.image_update()
@@ -87,7 +94,7 @@ try:
 except:
 	GUIUSE=False
 
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sparx import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sparx import *
 pass#IMPORTIMPORTIMPORT import global_def
 if GUIUSE:
 	print("Welcome to the interactive SPARX-GUI Python interface, provided by ipython")

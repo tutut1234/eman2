@@ -80,6 +80,23 @@ pass#IMPORTIMPORTIMPORT import reconstruction
 pass#IMPORTIMPORTIMPORT import time
 pass#IMPORTIMPORTIMPORT import types
 pass#IMPORTIMPORTIMPORT import utilities
+pass#IMPORTIMPORTIMPORT import EMAN2
+pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
+pass#IMPORTIMPORTIMPORT import alignment
+pass#IMPORTIMPORTIMPORT import applications
+pass#IMPORTIMPORTIMPORT import filter
+pass#IMPORTIMPORTIMPORT import fundamentals
+pass#IMPORTIMPORTIMPORT import global_def
+pass#IMPORTIMPORTIMPORT import imp
+pass#IMPORTIMPORTIMPORT import math
+pass#IMPORTIMPORTIMPORT import morphology
+pass#IMPORTIMPORTIMPORT import mpi
+pass#IMPORTIMPORTIMPORT import numpy
+pass#IMPORTIMPORTIMPORT import os
+pass#IMPORTIMPORTIMPORT import reconstruction
+pass#IMPORTIMPORTIMPORT import time
+pass#IMPORTIMPORTIMPORT import types
+pass#IMPORTIMPORTIMPORT import utilities
 #  This file contains fuctions that perform project-dependent tasks in various
 #   alignment programs, for example preparation of the reference during 2D and 3D alignment
 #  To write you own function, modify the existing one (for example, wei_func is a version
@@ -89,14 +106,14 @@ pass#IMPORTIMPORTIMPORT import utilities
 
 from builtins import range
 from builtins import object
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2_cppwrap import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2_cppwrap import *
 
 ref_ali2d_counter = -1
 def ref_ali2d( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import center_2D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -123,9 +140,9 @@ def ref_ali2d( ref_data ):
 	return  tavg, cs
 
 def ref_ali2d_c( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import center_2D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -150,9 +167,9 @@ def ref_ali2d_c( ref_data ):
 	return  tavg, cs
 
 def julien( ref_data ):
-        pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
-        pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
-        pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import center_2D
+        pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
+        pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
+        pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import center_2D
         #  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
         #  Input: list ref_data
         #   0 - mask
@@ -178,9 +195,9 @@ def julien( ref_data ):
         return  tavg, cs
 
 def ref_ali2d_m( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import center_2D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -205,9 +222,9 @@ def ref_ali2d_m( ref_data ):
 	return  tavg, cs
 
 def ref_ali3dm( refdata ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 	pass#IMPORTIMPORTIMPORT import os
 
 	numref = refdata[0]
@@ -225,9 +242,9 @@ def ref_ali3dm( refdata ):
 		v.write_image(os.path.join(outdir, "volf%04d.hdf"%total_iter), iref)
 		
 def ref_sort3d(refdata):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 	pass#IMPORTIMPORTIMPORT import os
 	numref          = refdata[0]
 	outdir          = refdata[1]
@@ -237,7 +254,7 @@ def ref_sort3d(refdata):
 	mask            = refdata[5]
 	low_pass_filter = refdata[6]
 	pass#IMPORTIMPORTIMPORT import time
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import strftime, localtime
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import strftime, localtime
 	theme='filter every volume at (%f, 0.1)'%low_pass_filter
 	line = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime()) + " =>"
 	print((line+theme))
@@ -249,9 +266,9 @@ def ref_sort3d(refdata):
 		v.write_image(os.path.join(outdir, "volf%04d.hdf"%total_iter), iref)
 
 def ref_ali3dm_ali_50S( refdata ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_im
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_im
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 	pass#IMPORTIMPORTIMPORT import  os
 
 	numref     = refdata[0]
@@ -280,8 +297,8 @@ def ref_ali3dm_ali_50S( refdata ):
 		v = filter.filt_tanl(v, flmin, aamin)
 		
 		if ali50s:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_params3D, set_params3D, combine_params3
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali_vol_shift, ali_vol_rotate
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_params3D, set_params3D, combine_params3
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali_vol_shift, ali_vol_rotate
 			if iref==0:
 				v50S_ref = alignment.alivol_mask_getref( v, mask_50S )
 			else:
@@ -294,9 +311,9 @@ def ref_ali3dm_ali_50S( refdata ):
 		v.write_image(os.path.join(outdir, "volf%04d.hdf"%total_iter), iref)
 
 def ref_random( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import center_2D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -326,7 +343,7 @@ def ref_random( ref_data ):
 	cs = [0.0]*2
 	tavg, cs[0], cs[1] = utilities.center_2D(ref_data[2], ref_data[1])
 	'''
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import exp
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import exp
 	nx = tavg.get_xsize()
 	ft = []
 	good = True
@@ -335,7 +352,7 @@ def ref_random( ref_data ):
 			ex = exp((float(i)/float(nx))**2/2.0/0.12**2)
 			if(ex>100.): good = False
 		ft.append(ex)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_table
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_table
 	tavg = filt_table(tavg, ft)
 	'''
 	if(ref_data[1] > 0):
@@ -344,10 +361,10 @@ def ref_random( ref_data ):
 	return  tavg, cs
 
 def ref_ali3d( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fshift
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -398,9 +415,9 @@ def ref_ali3d( ref_data ):
 	return  volf, cs
 
 def helical( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
 	#  Prepare the reference in helical refinement, i.e., low-pass filter .
 	#  Input: list ref_data
 	#   0 - raw volume
@@ -426,9 +443,9 @@ def helical( ref_data ):
 	return  volf#,[0.,0.,0.]
 
 def helical2( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter	    import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter	    import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
 	#  Prepare the reference in helical refinement, i.e., low-pass filter.
 	#  Input: list ref_data
 	#  2 - raw volume
@@ -450,10 +467,10 @@ def helical2( ref_data ):
 
 
 def reference3( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh1, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh1, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fshift
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -485,10 +502,10 @@ def reference3( ref_data ):
 	return  volf, cs
 
 def reference4( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh, filt_tanl, filt_gaussl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fshift, fft
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh, filt_tanl, filt_gaussl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fshift, fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -520,11 +537,11 @@ def reference4( ref_data ):
 	return  volf, cs
 
 def ref_aliB_cone( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math           import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fshift
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math           import sqrt
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -544,12 +561,12 @@ def ref_aliB_cone( ref_data ):
 	volf = morphology.threshold(volf)
 	EMAN2_cppwrap.Util.mul_img(volf, ref_data[0])
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from  fundamentals  import  rops_table
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from  fundamentals  import  rops_table
 	pwem = fundamentals.rops_table(volf)
 	ftb = []
 	for idum in range(len(pwem)):
 		ftb.append(numpy.sqrt(ref_data[1][idum]/pwem[idum]))
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_table
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_table
 	volf = filter.filt_table(volf, ftb)
 
 	fl, aa = filter.fit_tanh(ref_data[3])
@@ -571,11 +588,11 @@ def ref_aliB_cone( ref_data ):
 	return  volf
 
 def ref_7grp( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh, filt_tanl, filt_gaussinv
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math           import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh, filt_tanl, filt_gaussinv
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fshift
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math           import sqrt
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -605,9 +622,9 @@ def ref_7grp( ref_data ):
 	return  volf,cs
 
 def spruce_up( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import filt_tanl, fit_tanh
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import filt_tanl, fit_tanh
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -625,12 +642,12 @@ def spruce_up( ref_data ):
 	EMAN2_cppwrap.Util.mul_scalar(volf, 1.0/stat[1])
 	volf = morphology.threshold(volf)
 	# Apply B-factor
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_gaussinv
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_gaussinv
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	B = 1.0/numpy.sqrt(2.*14.0)
 	volf = filter.filt_gaussinv(volf, B, False)
 	nx = volf.get_xsize()
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle
 	stat = EMAN2_cppwrap.Util.infomask(volf, utilities.model_circle(nx//2-2,nx,nx,nx)-utilities.model_circle(nx//2-6,nx,nx,nx), True)
 
 	volf -= stat[0]
@@ -645,9 +662,9 @@ def spruce_up( ref_data ):
 	return  volf, cs
 
 def spruce_up_variance( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import filt_tanl, fit_tanh, filt_gaussl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import filt_tanl, fit_tanh, filt_gaussl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -680,7 +697,7 @@ def spruce_up_variance( ref_data ):
 	volf = volf - stat[0]
 	EMAN2_cppwrap.Util.mul_scalar(volf, 1.0/stat[1])
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle
 	nx = volf.get_xsize()
 	stat = EMAN2_cppwrap.Util.infomask(volf, utilities.model_circle(nx//2-2,nx,nx,nx)-utilities.model_circle(nx//2-6,nx,nx,nx), True)
 
@@ -693,7 +710,7 @@ def spruce_up_variance( ref_data ):
 	return  volf, cs
 
 def minfilt( fscc ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import fit_tanh
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import fit_tanh
 	numref = len(fscc)
 	flmin = 1.0
 	flmax = -1.0
@@ -709,13 +726,13 @@ def minfilt( fscc ):
 	return flmin,aamin,idmin
 
 def ref_ali3dm_new( refdata ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import model_circle, get_im
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import filt_tanl, filt_gaussl, filt_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology   import threshold
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rops_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import ali_nvol
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import model_circle, get_im
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import filt_tanl, filt_gaussl, filt_table
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology   import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rops_table
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from alignment    import ali_nvol
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math         import sqrt
 	pass#IMPORTIMPORTIMPORT import   os
 
 	numref     = refdata[0]
@@ -762,10 +779,10 @@ def ref_ali3dm_new( refdata ):
 		filter.filt_tanl( vol[i], flmin, aamin ).write_image( os.path.join(outdir, "volf%04d.hdf" % total_iter), i )
 
 def spruce_up_var_m( refdata ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import model_circle, get_im
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter     import filt_tanl, filt_gaussl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import model_circle, get_im
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter     import filt_tanl, filt_gaussl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import threshold
 	pass#IMPORTIMPORTIMPORT import os
 
 	numref     = refdata[0]
@@ -811,8 +828,8 @@ def spruce_up_var_m( refdata ):
 				v50S_0 = volf.copy()
 				v50S_0 *= mask_50S
 			else:
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali_vol_3
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali_vol_3
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 				v50S_i = volf.copy()
 				v50S_i *= mask_50S
 
@@ -822,9 +839,9 @@ def spruce_up_var_m( refdata ):
 		volf.write_image( os.path.join(outdir, "volf%04d.hdf"%total_iter), i )
 
 def steady( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import center_2D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -846,10 +863,10 @@ def steady( ref_data ):
 
 
 def constant( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import center_2D
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology   import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import center_2D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology   import threshold
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -865,7 +882,7 @@ def constant( ref_data ):
 	aa = 0.1
 	#msg = "Tangent filter:  cut-off frequency = %10.3f        fall-off = %10.3f\n"%(fl, aa)
 	#print_msg(msg)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_circle
 	nx = ref_data[2].get_xsize()
 	stat = EMAN2_cppwrap.Util.infomask(ref_data[2], utilities.model_circle(nx//2-2,nx,nx), False)
 	ref_data[2] -= stat[0]
@@ -876,10 +893,10 @@ def constant( ref_data ):
 
 
 def temp_dovolume( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg, read_text_row
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg, read_text_row
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fshift
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
 	#  Prepare the reference in 3D alignment, this function corresponds to what do_volume does.
 	#  Input: list ref_data
 	#   0 - mask
@@ -910,9 +927,9 @@ def temp_dovolume( ref_data ):
 	msg = "Tangent filter:  cut-off frequency = %10.3f        fall-off = %10.3f\n"%(fl, aa)
 	utilities.print_msg(msg)
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import read_text_file
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rops_table, fftip, fft
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import filt_table, filt_btwl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import read_text_file
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rops_table, fftip, fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import filt_table, filt_btwl
 	fundamentals.fftip(vol)
 	try:
 		rt = utilities.read_text_file( "pwreference.txt" )
@@ -943,10 +960,10 @@ def temp_dovolume( ref_data ):
 
 
 def dovolume( ref_data ):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg, read_text_row
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh, filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fshift
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_msg, read_text_row
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import fit_tanh, filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import fshift
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology     import threshold
 	#  Prepare the reference in 3D alignment, this function corresponds to what do_volume does.
 	#  Input: list ref_data
 	#   0 - mask
@@ -977,9 +994,9 @@ def dovolume( ref_data ):
 	msg = "Tangent filter:  cut-off frequency = %10.3f        fall-off = %10.3f\n"%(fl, aa)
 	utilities.print_msg(msg)
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import read_text_file
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rops_table, fftip, fft
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import filt_table, filt_btwl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import read_text_file
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rops_table, fftip, fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import filt_table, filt_btwl
 	fundamentals.fftip(vol)
 	try:
 		rt = utilities.read_text_file( "pwreference.txt" )
@@ -1014,9 +1031,9 @@ def do_volume_mask(ref_data):
 		2. - Tracker, see meridien
 		3. - current iteration number
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2	import Util
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import cosinemask
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import get_im
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2	import Util
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import cosinemask
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import get_im
 
 	# Retrieve the function specific input arguments from ref_data
 	vol		= ref_data[0]
@@ -1035,12 +1052,12 @@ def do_volume_mrk02(ref_data):
 		options - the same for all cpus
 		return - volume the same for all cpus
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2          import Util
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import filt_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rops_table, fftip, fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2          import Util
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import filt_table
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rops_table, fftip, fft
 	pass#IMPORTIMPORTIMPORT import types
 
 	# Retrieve the function specific input arguments from ref_data
@@ -1069,22 +1086,22 @@ def do_volume_mrk02(ref_data):
 		vol = data
 
 	if myid == 0:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import threshold
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter     import filt_tanl, filt_btwl
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import model_circle, get_im
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import threshold
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter     import filt_tanl, filt_btwl
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import model_circle, get_im
 		pass#IMPORTIMPORTIMPORT import types
 		nx = vol.get_xsize()
 		if(Tracker["constants"]["mask3D"] == None):
 			mask3D = utilities.model_circle(int(Tracker["constants"]["radius"]*float(nx)/float(Tracker["constants"]["nnxo"])+0.5), nx, nx, nx)
 		elif(Tracker["constants"]["mask3D"] == "auto"):
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import adaptive_mask
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import adaptive_mask
 			mask3D = morphology.adaptive_mask(vol)
 		else:
 			if( type(Tracker["constants"]["mask3D"]) == bytes ):  mask3D = utilities.get_im(Tracker["constants"]["mask3D"])
 			else:  mask3D = (Tracker["constants"]["mask3D"]).copy()
 			nxm = mask3D.get_xsize()
 			if( nx != nxm):
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 				mask3D = EMAN2_cppwrap.Util.window(fundamentals.rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
 				nxm = mask3D.get_xsize()
 				assert(nx == nxm)
@@ -1095,7 +1112,7 @@ def do_volume_mrk02(ref_data):
 		vol = morphology.threshold(vol)
 		EMAN2_cppwrap.Util.mul_img(vol, mask3D)
 		if( Tracker["PWadjustment"] ):
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import read_text_file, write_text_file
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import read_text_file, write_text_file
 			rt = utilities.read_text_file( Tracker["PWadjustment"] )
 			fundamentals.fftip(vol)
 			ro = fundamentals.rops_table(vol)
@@ -1105,7 +1122,7 @@ def do_volume_mrk02(ref_data):
 			if Tracker["constants"]["sausage"]:
 				ny = vol.get_ysize()
 				y = float(ny)
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import exp
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import exp
 				for i in range(len(ro)):  ro[i] *= \
 				  (1.0+1.0*numpy.exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.10)/0.025)**2)+1.0*numpy.exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.215)/0.025)**2))
 
@@ -1123,7 +1140,7 @@ def do_volume_mrk02(ref_data):
 				ny = vol.get_ysize()
 				y = float(ny)
 				ro = [0.0]*(ny//2+2)
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import exp
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import exp
 				for i in range(len(ro)):  ro[i] = \
 				  (1.0+1.0*numpy.exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.10)/0.025)**2)+1.0*numpy.exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.215)/0.025)**2))
 				fundamentals.fftip(vol)
@@ -1137,7 +1154,7 @@ def do_volume_mrk02(ref_data):
 			if Tracker["constants"]["sausage"]: vol = fundamentals.fft(vol)
 
 	if local_filter:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import binarize
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import binarize
 		if(myid == 0): nx = mask3D.get_xsize()
 		else:  nx = 0
 		nx = utilities.bcast_number_to_all(nx, source_node = 0)
@@ -1148,7 +1165,7 @@ def do_volume_mrk02(ref_data):
 			lx = locres.get_xsize()
 			if(lx != nx):
 				if(lx < nx):
-					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fdecimate, rot_shift3D
+					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fdecimate, rot_shift3D
 					mask = EMAN2_cppwrap.Util.window(fundamentals.rot_shift3D(mask,scale=float(lx)/float(nx)),lx,lx,lx)
 					vol = fundamentals.fdecimate(vol, lx,lx,lx)
 				else:  global_def.ERROR("local filter cannot be larger than input volume","user function",1)
@@ -1162,12 +1179,12 @@ def do_volume_mrk02(ref_data):
 		lx = utilities.bcast_number_to_all(lx, source_node = 0)
 		if( myid != 0 ):  mask = utilities.model_blank(lx,lx,lx)
 		utilities.bcast_EMData_to_all(mask, myid, 0, comm=mpi_comm)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filterlocal
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filterlocal
 		vol = filter.filterlocal( locres, vol, mask, Tracker["falloff"], myid, 0, nproc)
 
 		if myid == 0:
 			if(lx < nx):
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fpol
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fpol
 				vol = fundamentals.fpol(vol, nx,nx,nx)
 			vol = morphology.threshold(vol)
 			vol = filter.filt_btwl(vol, 0.38, 0.5)#  This will have to be corrected.
@@ -1200,12 +1217,12 @@ def do_volume_mrk03(ref_data):
 		options - the same for all cpus
 		return - volume the same for all cpus
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2          import Util
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import filt_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from reconstruction import recons3d_4nn_MPI, recons3d_4nnw_MPI  #  recons3d_4nn_ctf_MPI
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import rops_table, fftip, fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2          import Util
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import filt_table
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from reconstruction import recons3d_4nn_MPI, recons3d_4nnw_MPI  #  recons3d_4nn_ctf_MPI
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import rops_table, fftip, fft
 	pass#IMPORTIMPORTIMPORT import types
 
 	# Retrieve the function specific input arguments from ref_data
@@ -1233,22 +1250,22 @@ def do_volume_mrk03(ref_data):
 		vol = data
 
 	if myid == 0:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import threshold
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter     import filt_tanl, filt_btwl
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import model_circle, get_im
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import threshold
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter     import filt_tanl, filt_btwl
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import model_circle, get_im
 		pass#IMPORTIMPORTIMPORT import types
 		nx = vol.get_xsize()
 		if(Tracker["constants"]["mask3D"] == None):
 			mask3D = utilities.model_circle(int(Tracker["constants"]["radius"]*float(nx)/float(Tracker["constants"]["nnxo"])+0.5), nx, nx, nx)
 		elif(Tracker["constants"]["mask3D"] == "auto"):
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import adaptive_mask
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import adaptive_mask
 			mask3D = morphology.adaptive_mask(vol)
 		else:
 			if( type(Tracker["constants"]["mask3D"]) == bytes ):  mask3D = utilities.get_im(Tracker["constants"]["mask3D"])
 			else:  mask3D = (Tracker["constants"]["mask3D"]).copy()
 			nxm = mask3D.get_xsize()
 			if( nx != nxm ):
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 				mask3D = EMAN2_cppwrap.Util.window(fundamentals.rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
 				nxm = mask3D.get_xsize()
 				assert(nx == nxm)
@@ -1260,7 +1277,7 @@ def do_volume_mrk03(ref_data):
 				vol = filter.filt_tanl(vol, Tracker["lowpass"], Tracker["falloff"])
 
 	if local_filter:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import binarize
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import binarize
 		if(myid == 0): nx = mask3D.get_xsize()
 		else:  nx = 0
 		if( nproc > 1 ): nx = utilities.bcast_number_to_all(nx, source_node = 0)
@@ -1271,7 +1288,7 @@ def do_volume_mrk03(ref_data):
 			lx = locres.get_xsize()
 			if(lx != nx):
 				if(lx < nx):
-					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fdecimate, rot_shift3D
+					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fdecimate, rot_shift3D
 					mask = EMAN2_cppwrap.Util.window(fundamentals.rot_shift3D(mask,scale=float(lx)/float(nx)),lx,lx,lx)
 					vol = fundamentals.fdecimate(vol, lx,lx,lx)
 				else:  global_def.ERROR("local filter cannot be larger than input volume","user function",1)
@@ -1286,12 +1303,12 @@ def do_volume_mrk03(ref_data):
 			lx = utilities.bcast_number_to_all(lx, source_node = 0)
 			if( myid != 0 ):  mask = utilities.model_blank(lx,lx,lx)
 			utilities.bcast_EMData_to_all(mask, myid, 0, comm=mpi_comm)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filterlocal
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filterlocal
 		vol = filter.filterlocal( locres, vol, mask, Tracker["falloff"], myid, 0, nproc)
 
 		if myid == 0:
 			if(lx < nx):
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fpol
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fpol
 				vol = fundamentals.fpol(vol, nx,nx,nx)
 			vol = morphology.threshold(vol)
 			EMAN2_cppwrap.Util.mul_img(vol, mask3D)
@@ -1325,12 +1342,12 @@ def do_volume_mrk04(ref_data):
 		options - the same for all cpus
 		return - volume the same for all cpus
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2          import Util
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import filt_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import rops_table, fftip, fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2          import Util
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import filt_table
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import rops_table, fftip, fft
 	pass#IMPORTIMPORTIMPORT import types
 
 	# Retrieve the function specific input arguments from ref_data
@@ -1357,22 +1374,22 @@ def do_volume_mrk04(ref_data):
 		vol = data
 
 	if myid == 0:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import threshold
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter     import filt_tanl, filt_btwl
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import model_circle, get_im
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import threshold
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter     import filt_tanl, filt_btwl
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import model_circle, get_im
 		pass#IMPORTIMPORTIMPORT import types
 		nx = vol.get_xsize()
 		if(Tracker["constants"]["mask3D"] == None):
 			mask3D = utilities.model_circle(int(Tracker["constants"]["radius"]*float(nx)/float(Tracker["constants"]["nnxo"])+0.5), nx, nx, nx)
 		elif(Tracker["constants"]["mask3D"] == "auto"):
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import adaptive_mask
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import adaptive_mask
 			mask3D = morphology.adaptive_mask(vol)
 		else:
 			if( type(Tracker["constants"]["mask3D"]) == bytes ):  mask3D = utilities.get_im(Tracker["constants"]["mask3D"])
 			else:  mask3D = (Tracker["constants"]["mask3D"]).copy()
 			nxm = mask3D.get_xsize()
 			if( nx != nxm):
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 				mask3D = EMAN2_cppwrap.Util.window(fundamentals.rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
 				nxm = mask3D.get_xsize()
 				assert(nx == nxm)
@@ -1384,7 +1401,7 @@ def do_volume_mrk04(ref_data):
 		EMAN2_cppwrap.Util.mul_img(vol, mask3D)
 
 	if local_filter:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import binarize
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import binarize
 		if(myid == 0): nx = mask3D.get_xsize()
 		else:  nx = 0
 		if( nproc > 1 ):  nx = utilities.bcast_number_to_all(nx, source_node = 0)
@@ -1395,7 +1412,7 @@ def do_volume_mrk04(ref_data):
 			lx = locres.get_xsize()
 			if(lx != nx):
 				if(lx < nx):
-					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fdecimate, rot_shift3D
+					pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fdecimate, rot_shift3D
 					mask = EMAN2_cppwrap.Util.window(fundamentals.rot_shift3D(mask,scale=float(lx)/float(nx)),lx,lx,lx)
 					vol = fundamentals.fdecimate(vol, lx,lx,lx)
 				else:  global_def.ERROR("local filter cannot be larger than input volume","user function",1)
@@ -1410,12 +1427,12 @@ def do_volume_mrk04(ref_data):
 			lx = utilities.bcast_number_to_all(lx, source_node = 0)
 			if( myid != 0 ):  mask = utilities.model_blank(lx,lx,lx)
 			utilities.bcast_EMData_to_all(mask, myid, 0, comm=mpi_comm)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filterlocal
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filterlocal
 		vol = filter.filterlocal( locres, vol, mask, Tracker["falloff"], myid, 0, nproc)
 
 		if myid == 0:
 			if(lx < nx):
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fpol
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fpol
 				vol = fundamentals.fpol(vol, nx,nx,nx)
 			vol = morphology.threshold(vol)
 			vol = filter.filt_btwl(vol, 0.38, 0.5)#  This will have to be corrected.
@@ -1449,34 +1466,34 @@ def do_volume_mrk05(ref_data):
 		vol - volume
 		return - volume the same for all cpus
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2          import Util
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import filt_table
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import rops_table, fftip, fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2          import Util
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter         import filt_table
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals   import rops_table, fftip, fft
 	pass#IMPORTIMPORTIMPORT import types
 
 	# Retrieve the function specific input arguments from ref_data
 	vol     = ref_data[0]
 	Tracker = ref_data[1]
 	
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import threshold
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter     import filt_tanl, filt_btwl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import model_circle, get_im
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import threshold
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter     import filt_tanl, filt_btwl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities  import model_circle, get_im
 	pass#IMPORTIMPORTIMPORT import types
 	nx = vol.get_xsize()
 	if(Tracker["constants"]["mask3D"] == None):
 		mask3D = utilities.model_circle(int(Tracker["constants"]["radius"]*float(nx)/float(Tracker["constants"]["nnxo"])+0.5), nx, nx, nx)
 	elif(Tracker["constants"]["mask3D"] == "auto"):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import adaptive_mask
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import adaptive_mask
 		mask3D = morphology.adaptive_mask(vol)
 	else:
 		if( type(Tracker["constants"]["mask3D"]) == bytes ):  mask3D = utilities.get_im(Tracker["constants"]["mask3D"])
 		else:  mask3D = (Tracker["constants"]["mask3D"]).copy()
 		nxm = mask3D.get_xsize()
 		if( nx != nxm):
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift3D
 			mask3D = EMAN2_cppwrap.Util.window(fundamentals.rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
 			nxm = mask3D.get_xsize()
 			assert(nx == nxm)

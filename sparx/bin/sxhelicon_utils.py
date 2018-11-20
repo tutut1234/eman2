@@ -74,13 +74,27 @@ pass#IMPORTIMPORTIMPORT import os
 pass#IMPORTIMPORTIMPORT import pixel_error
 pass#IMPORTIMPORTIMPORT import sys
 pass#IMPORTIMPORTIMPORT import utilities
+pass#IMPORTIMPORTIMPORT import EMAN2
+pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
+pass#IMPORTIMPORTIMPORT import applications
+pass#IMPORTIMPORTIMPORT import copy
+pass#IMPORTIMPORTIMPORT import development
+pass#IMPORTIMPORTIMPORT import global_def
+pass#IMPORTIMPORTIMPORT import math
+pass#IMPORTIMPORTIMPORT import mpi
+pass#IMPORTIMPORTIMPORT import numpy
+pass#IMPORTIMPORTIMPORT import optparse
+pass#IMPORTIMPORTIMPORT import os
+pass#IMPORTIMPORTIMPORT import pixel_error
+pass#IMPORTIMPORTIMPORT import sys
+pass#IMPORTIMPORTIMPORT import utilities
 
 from builtins import range
 def main():
 	pass#IMPORTIMPORTIMPORT import os
 	pass#IMPORTIMPORTIMPORT import sys
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import SPARXVERSION
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import SPARXVERSION
 	pass#IMPORTIMPORTIMPORT import global_def
 	arglist = []
 	for arg in sys.argv:
@@ -204,14 +218,14 @@ def main():
 			if len(args) != 1:
 				print("Incorrect number of parameters")
 				sys.exit()
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import imgstat_hfsc
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import imgstat_hfsc
 			applications.imgstat_hfsc( args[0], options.hfsc, options.filament_attr)
 			sys.exit()
 		elif len(options.filinfo) > 0:
 			if len(args) != 1:
 				print("Incorrect number of parameters")
 				sys.exit()
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import EMUtil
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import EMUtil
 			filams =  EMAN2_cppwrap.EMUtil.get_all_attributes(args[0], "filament")
 			ibeg = 0
 			filcur = filams[0]
@@ -227,7 +241,7 @@ def main():
 					ibeg = i
 					filcur = fis
 				i += 1
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_row
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import write_text_row
 			utilities.write_text_row(inf, options.filinfo)
 			sys.exit()
 		
@@ -240,9 +254,9 @@ def main():
 			if(abs(float(rise) - dpp)>1.0e-3):
 				print("  dpp has to be integer multiplicity of the pixel size")
 				sys.exit()
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im
 			v = utilities.get_im(args[0])
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import stack_disks
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import stack_disks
 			ref_ny = options.ref_ny
 			if ref_ny < 0:
 				ref_ny = options.ref_nx
@@ -254,14 +268,14 @@ def main():
 			if len(args) != 1:
 				print("Incorrect number of parameters")
 				sys.exit()
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from development import consistency_params
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from development import consistency_params
 			pixel_error.consistency_params(args[0], options.consistency, options.dphi, options.dp, options.apix,phithr=options.phithr, ythr=options.ythr, THR=options.segthr)
 			sys.exit()
 
 		rminp = int((float(options.rmin)/options.apix) + 0.5)
 		rmaxp = int((float(options.rmax)/options.apix) + 0.5)
 		
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_input_from_string, get_im
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_input_from_string, get_im
 
 		xr = utilities.get_input_from_string(options.xr)
 		txs = utilities.get_input_from_string(options.txs)
@@ -282,7 +296,7 @@ def main():
 		zstepp = int( (options.zstep/options.apix) + 0.5)
 
 		if options.MPI:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init, mpi_finalize
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init, mpi_finalize
 			sys.argv = mpi.mpi_init(len(sys.argv), sys.argv)
 
 		if len(options.predict_helical) > 0:
@@ -292,7 +306,7 @@ def main():
 			if options.dp < 0:
 				print("Helical symmetry paramter rise --dp should not be negative")
 				sys.exit()
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import predict_helical_params
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import predict_helical_params
 			predict_helical_params(args[0], options.dp, options.dphi, options.apix, options.predict_helical)
 			sys.exit()
 
@@ -303,7 +317,7 @@ def main():
 			if options.dp < 0:
 				print("Helical symmetry paramter rise --dp should not be negative")
 				sys.exit()
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im, sym_vol
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im, sym_vol
 			vol = utilities.get_im(args[0])
 			vol = utilities.sym_vol(vol, options.sym)
 			hvol = vol.helicise(options.apix, options.dp, options.dphi, options.fract, rmaxp, rminp)
@@ -319,10 +333,10 @@ def main():
 			if options.dp < 0:
 				print("Helical symmetry paramter rise --dp should not be negative")
 				sys.exit()
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import cos, sin, radians
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from copy import deepcopy
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import cos, sin, radians
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from copy import deepcopy
 			pass#IMPORTIMPORTIMPORT import numpy
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import zeros,dot,float32
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import zeros,dot,float32
 
 			dp   = options.dp
 			dphi = options.dphi
@@ -390,7 +404,7 @@ def main():
 				sys.exit()
 			if len(args) < 4:  mask = None
 			else:               mask = args[3]
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import volalixshift_MPI
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import volalixshift_MPI
 			global_def.BATCH = True
 			applications.volalixshift_MPI(args[0], args[1], args[2], searchxshiftp, options.apix, options.dp, options.dphi, options.fract, rmaxp, rminp, mask, options.maxit, options.CTF, options.snr, options.sym,  options.function, options.npad, options.debug, nearbyp)
 			global_def.BATCH = False
@@ -403,10 +417,10 @@ def main():
 			else:               mask = args[3]
 			global_def.BATCH = True
 			if(options.sym[:1] == "d" or options.sym[:1] == "D" ):
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from development import diskaliD_MPI
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from development import diskaliD_MPI
 				diskaliD_MPI(args[0], args[1], args[2], mask, options.dp, options.dphi, options.apix, options.function, zstepp, options.fract, rmaxp, rminp, options.CTF, options.maxit, options.sym)
 			else:
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import diskali_MPI
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import diskali_MPI
 				applications.diskali_MPI(args[0], args[1], args[2], mask, options.dp, options.dphi, options.apix, options.function, zstepp, options.fract, rmaxp, rminp, options.CTF, options.maxit, options.sym)
 			global_def.BATCH = False
 		
@@ -419,7 +433,7 @@ def main():
 			
 			if options.dp < 0 or options.dphi < 0:
 				# read helical symmetry parameters from symdoc
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_row
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_row
 				hparams=utilities.read_text_row(options.symdoc)
 				dp = hparams[0][0]
 				dphi = hparams[0][1]
@@ -427,7 +441,7 @@ def main():
 				dp   = options.dp
 				dphi = options.dphi
 			
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import symsearch_MPI
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import symsearch_MPI
 			if len(args) < 3:	
 				mask = None
 			else:
@@ -437,7 +451,7 @@ def main():
 			global_def.BATCH = False
 			
 		elif len(options.gendisk)> 0:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import gendisks_MPI
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import gendisks_MPI
 			global_def.BATCH = True
 			if len(args) == 1:  mask3d = None
 			else:               mask3d = args[1]
@@ -448,7 +462,7 @@ def main():
 			global_def.BATCH = False
 		
 		if options.MPI:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
 			mpi.mpi_finalize()
 
 if __name__ == "__main__":

@@ -34,11 +34,17 @@ pass#IMPORTIMPORTIMPORT import matplotlib
 pass#IMPORTIMPORTIMPORT import numpy
 pass#IMPORTIMPORTIMPORT import os
 pass#IMPORTIMPORTIMPORT import sys
+pass#IMPORTIMPORTIMPORT import glob
+pass#IMPORTIMPORTIMPORT import matplotlib
+#pass#IMPORTIMPORTIMPORT matplotlib.use("Agg")
+pass#IMPORTIMPORTIMPORT import numpy
+pass#IMPORTIMPORTIMPORT import os
+pass#IMPORTIMPORTIMPORT import sys
 from builtins import range
 from builtins import object
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import Qt
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from matplotlib import pylab
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from matplotlib import pylab
 try:
     from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvasQTAgg
 except ImportError:

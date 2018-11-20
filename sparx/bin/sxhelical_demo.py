@@ -68,14 +68,26 @@ pass#IMPORTIMPORTIMPORT import random
 pass#IMPORTIMPORTIMPORT import sys
 pass#IMPORTIMPORTIMPORT import user_functions
 pass#IMPORTIMPORTIMPORT import utilities
+pass#IMPORTIMPORTIMPORT import EMAN2
+pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
+pass#IMPORTIMPORTIMPORT import filter
+pass#IMPORTIMPORTIMPORT import fundamentals
+pass#IMPORTIMPORTIMPORT import global_def
+pass#IMPORTIMPORTIMPORT import optparse
+pass#IMPORTIMPORTIMPORT import os
+pass#IMPORTIMPORTIMPORT import projection
+pass#IMPORTIMPORTIMPORT import random
+pass#IMPORTIMPORTIMPORT import sys
+pass#IMPORTIMPORTIMPORT import user_functions
+pass#IMPORTIMPORTIMPORT import utilities
 # clean up the code, make documentation
 
 from builtins import range
 pass#IMPORTIMPORTIMPORT import os
 pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   global_def     import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   user_functions import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   optparse       import OptionParser
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   global_def     import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   user_functions import *
+pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   optparse       import OptionParser
 pass#IMPORTIMPORTIMPORT import sys
 
 def main():
@@ -153,7 +165,7 @@ def main():
 			generate_helimic(args[0], args[1], options.apix, options.CTF, options.Cs, options.voltage, options.ac, options.nonoise, options.rand_seed)
 
 		if options.generate_noisycyl:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_cylinder, model_gauss_noise
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_cylinder, model_gauss_noise
 			outvol = args[0]
 			boxdims = options.boxsize.split(',')
 			if len(boxdims) < 1 or len(boxdims) > 3:
@@ -171,7 +183,7 @@ def main():
 			(utilities.model_cylinder(options.rad,nx, ny, nz)*utilities.model_gauss_noise(1.0, nx, ny, nz) ).write_image(outvol)
 
 		if options.generate_mask:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank, pad
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import model_blank, pad
 			outvol = args[0]
 			maskdims = options.masksize.split(',')
 			if len(maskdims) < 1 or len(maskdims) > 2:
@@ -187,8 +199,8 @@ def main():
 			mask.write_image(outvol)
 		
 		if options.applyparams:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_im, get_params2D, set_params2D
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import cyclic_shift
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_im, get_params2D, set_params2D
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import cyclic_shift
 			stack = args[0]
 			newstack = args[1]
 			mask = utilities.get_im(args[2])
@@ -206,11 +218,11 @@ def main():
 
 def generate_helimic(refvol, outdir, pixel, CTF=False, Cs=2.0,voltage = 200.0, ampcont = 10.0, nonoise = False, rand_seed=14567):
 	
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities	 import model_blank, model_gauss, model_gauss_noise, pad, get_im
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random 	 import random
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection  import prgs, prep_vol
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter	     import filt_gaussl, filt_ctf
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 	     import EMAN2Ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities	 import model_blank, model_gauss, model_gauss_noise, pad, get_im
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from random 	 import random
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from projection  import prgs, prep_vol
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter	     import filt_gaussl, filt_ctf
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 	     import EMAN2Ctf
 	
 	if os.path.exists(outdir):   global_def.ERROR('Output directory exists, please change the name and restart the program', "sxhelical_demo", 1)
 	os.mkdir(outdir)
@@ -239,7 +251,7 @@ def generate_helimic(refvol, outdir, pixel, CTF=False, Cs=2.0,voltage = 200.0, a
 		if CTF :
 			#ctf = EMAN2Ctf()
 			#ctf.from_dict( {"defocus":defocus, "cs":Cs, "voltage":voltage, "apix":pixel, "ampcont":ampcont, "bfactor":0.0} )
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
 			ctf = utilities.generate_ctf([defocus,2,200,1.84,0.0,ampcont,defocus*0.2,80])   ##@ming   the range of astigmatism amplitude is between 10 percent and 22 percent. 20 percent is a good choice.
 		i = idef - 4
 		for k in range(1):
