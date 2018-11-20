@@ -39,6 +39,7 @@ import EMAN2db
 import OpenGL
 import Simplex
 import eman2_gui.emapplication as emapplication
+import eman2_gui.emsprworkflow as emsprworkflow
 import eman2_gui.emimage2d as emimage2d
 import eman2_gui.emplot2d as emplot2d
 import eman2_gui.valslider as valslider
