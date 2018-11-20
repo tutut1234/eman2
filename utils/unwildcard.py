@@ -118,7 +118,7 @@ Checker.report = my_report
 Checker.okidoki = []
 
 
-python_files = glob.glob('../sparx/bin/sxmeridien.py')
+#python_files = glob.glob('../sparx/bin/sxmeridien.py')
 for file_name in python_files:
     print(file_name)
     Checker.okidoki = []
@@ -303,7 +303,6 @@ for file_name in python_files:
                         new = '{0}.{1}'.format(entry[2][0], entry[1]).join(original.split(entry[1]))
                         out.append((original, new))
 
-        print(out)
         for original, new in list(set(out)):
             no_import_lines[int(entry[0])-1] = no_import_lines[int(entry[0])-1].replace(original, new)
 
