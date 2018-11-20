@@ -41,57 +41,8 @@ import os
 import string
 import types
 import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import math
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import numpy as np
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import string
-pass#IMPORTIMPORTIMPORT import types
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import math
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import numpy as np
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import string
-pass#IMPORTIMPORTIMPORT import types
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import math
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import numpy as np
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import string
-pass#IMPORTIMPORTIMPORT import types
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import math
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import numpy as np
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import string
-pass#IMPORTIMPORTIMPORT import types
-pass#IMPORTIMPORTIMPORT import utilities
 from builtins import range
 from builtins import object
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import *
 
 def absi(e):
 	if e.is_complex():
@@ -109,7 +60,7 @@ def acf(e, center=True):
 		Output
 			circulant autocorrelation function of the input image. Real.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import autocorrelation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import autocorrelation, fp_flag
 	return EMAN2_cppwrap.autocorrelation(e, EMAN2_cppwrap.fp_flag.CIRCULANT, center)
 
 def acfn(e, center=True):
@@ -122,11 +73,11 @@ def acfn(e, center=True):
 		Output
 			normalized circulant autocorrelation function of an input image. Real.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import autocorrelation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import autocorrelation, fp_flag
 	return EMAN2_cppwrap.autocorrelation(e, EMAN2_cppwrap.fp_flag.CIRCULANT_NORMALIZED, center)
 
 def acfp(e, center=True):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import autocorrelation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import autocorrelation, fp_flag
 	return EMAN2_cppwrap.autocorrelation(e, EMAN2_cppwrap.fp_flag.PADDED, center)
 
 def acfnp(e, center=True):
@@ -139,7 +90,7 @@ def acfnp(e, center=True):
 		Output
 			normalized autocorrelation function of the input image. Real. 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import autocorrelation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import autocorrelation, fp_flag
 	return EMAN2_cppwrap.autocorrelation(e, EMAN2_cppwrap.fp_flag.PADDED_NORMALIZED, center)
 
 def acfpl(e, center=True):
@@ -153,7 +104,7 @@ def acfpl(e, center=True):
 			normalized autocorrelation function of the input image. Real. 
 			
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import autocorrelation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import autocorrelation, fp_flag
 	return EMAN2_cppwrap.autocorrelation(e, EMAN2_cppwrap.fp_flag.PADDED_LAG, center)
 
 def acfnpl(e, center=True):
@@ -166,7 +117,7 @@ def acfnpl(e, center=True):
 		Output
 			autocorrelation function of the input image. Real. 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import autocorrelation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import autocorrelation, fp_flag
 	return EMAN2_cppwrap.autocorrelation(e, EMAN2_cppwrap.fp_flag.PADDED_NORMALIZED_LAG, center)
 
 def __buildweights(m, kb):
@@ -187,7 +138,7 @@ def ccf(e, f, center=True):
 	Input images may be real or complex.  Output image is real.
 	1-D, 2-D, or 3-D images supported.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import correlation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import correlation, fp_flag
 	return EMAN2_cppwrap.correlation(e,f,EMAN2_cppwrap.fp_flag.CIRCULANT, center)
 
 def ccfn(e, f, center=True):
@@ -201,7 +152,7 @@ def ccfn(e, f, center=True):
 		Output
 			normalized circulant cross-correlation function between image and ref. Real.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import correlation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import correlation, fp_flag
 	return EMAN2_cppwrap.correlation(e,f,EMAN2_cppwrap.fp_flag.CIRCULANT_NORMALIZED, center)
 
 def ccfp(e, f, center=True):
@@ -215,7 +166,7 @@ def ccfp(e, f, center=True):
 		Output
 			cross-correlation function between image and ref. Real.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import correlation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import correlation, fp_flag
 	return EMAN2_cppwrap.correlation(e,f,EMAN2_cppwrap.fp_flag.PADDED, center)
 
 def ccfnp(e, f, center=True):
@@ -229,7 +180,7 @@ def ccfnp(e, f, center=True):
 		Output
 			normalized cross-correlation function between image and ref. Real.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import correlation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import correlation, fp_flag
 	return EMAN2_cppwrap.correlation(e,f,EMAN2_cppwrap.fp_flag.PADDED_NORMALIZED, center)
 
 def ccfpl(e, f, center=True):
@@ -243,7 +194,7 @@ def ccfpl(e, f, center=True):
 		Output
 			cross-correlation function between image and ref. Real. 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import correlation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import correlation, fp_flag
 	return EMAN2_cppwrap.correlation(e,f, EMAN2_cppwrap.fp_flag.PADDED_LAG, center)
 
 def ccfnpl(e, f, center=True):
@@ -255,7 +206,7 @@ def ccfnpl(e, f, center=True):
 			ref: second input image (real) 
 			center: if set to True (default), the origin of the result is at the center
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import correlation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import correlation, fp_flag
 	return EMAN2_cppwrap.correlation(e,f,EMAN2_cppwrap.fp_flag.PADDED_NORMALIZED_LAG, center)
     
 # Convolution functions
@@ -270,7 +221,7 @@ def cnv(e, f, center=True):
 		Output
 			circulant convolution function between image and ref. Real.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import convolution, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import convolution, fp_flag
 	return EMAN2_cppwrap.convolution(e,f,EMAN2_cppwrap.fp_flag.CIRCULANT, center)
 
 def cnvn(e, f, center=True):
@@ -284,7 +235,7 @@ def cnvn(e, f, center=True):
 		Output
 			normalized circulant convolution function between image and ref. Real. 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import convolution, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import convolution, fp_flag
 	return EMAN2_cppwrap.convolution(e,f,EMAN2_cppwrap.fp_flag.CIRCULANT_NORMALIZED, center)
 
 def cnvp(e, f, center=True):
@@ -298,7 +249,7 @@ def cnvp(e, f, center=True):
 		Output
 			convolution function between image and ref. Real.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import convolution, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import convolution, fp_flag
 	return EMAN2_cppwrap.convolution(e,f,EMAN2_cppwrap.fp_flag.PADDED, center)
 
 def cnvnp(e, f, center=True):
@@ -312,7 +263,7 @@ def cnvnp(e, f, center=True):
 		Output
 			normalized convolution function between image and ref. Real. 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import convolution, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import convolution, fp_flag
 	return EMAN2_cppwrap.convolution(e,f,EMAN2_cppwrap.fp_flag.PADDED_NORMALIZED, center)
 
 def cnvpl(e, f, center=True):
@@ -326,7 +277,7 @@ def cnvpl(e, f, center=True):
 		Output
 			convolution function between image and ref. Real. 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import convolution, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import convolution, fp_flag
 	return EMAN2_cppwrap.convolution(e,f,EMAN2_cppwrap.fp_flag.PADDED_LAG, center)
 
 def cnvnpl(e, f, center=True):
@@ -340,7 +291,7 @@ def cnvnpl(e, f, center=True):
 		Output
 			convolution function between image and ref. Real.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import convolution, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import convolution, fp_flag
 	return EMAN2_cppwrap.convolution(e,f,EMAN2_cppwrap.fp_flag.PADDED_NORMALIZED_LAG, center)
     
     
@@ -355,7 +306,7 @@ def scf(e, center=True):
 		Output
 			circulant self-correlation function of the input image. Real.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import self_correlation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import self_correlation, fp_flag
 	return EMAN2_cppwrap.self_correlation(e, EMAN2_cppwrap.fp_flag.CIRCULANT, center)
 
 def scfn(e, center=True):
@@ -368,7 +319,7 @@ def scfn(e, center=True):
 		Output
 			normalized circulant self-correlation function of an input image. Real.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import self_correlation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import self_correlation, fp_flag
 	return EMAN2_cppwrap.self_correlation(e, EMAN2_cppwrap.fp_flag.CIRCULANT_NORMALIZED, center)
 
 def scfp(e, center=True):
@@ -381,7 +332,7 @@ def scfp(e, center=True):
 		Output
 			self-correlation function of the input image. Real. 
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import self_correlation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import self_correlation, fp_flag
 	return EMAN2_cppwrap.self_correlation(e, EMAN2_cppwrap.fp_flag.PADDED, center)
 
 def scfnp(e, center=True):
@@ -394,7 +345,7 @@ def scfnp(e, center=True):
 		Output
 			normalized self-correlation function of the input image. Real.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import self_correlation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import self_correlation, fp_flag
 	return EMAN2_cppwrap.self_correlation(e, EMAN2_cppwrap.fp_flag.PADDED_NORMALIZED, center)
 
 def scfpl(e, center=True):
@@ -407,7 +358,7 @@ def scfpl(e, center=True):
 		Output
 			self-correlation function of the input image. Real.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import self_correlation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import self_correlation, fp_flag
 	return EMAN2_cppwrap.self_correlation(e, EMAN2_cppwrap.fp_flag.PADDED_LAG, center)
 
 def scfnpl(e, center=True):
@@ -420,7 +371,7 @@ def scfnpl(e, center=True):
 		Output
 			self-correlation function of the input image. Real.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import self_correlation, fp_flag
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import self_correlation, fp_flag
 	return EMAN2_cppwrap.self_correlation(e, EMAN2_cppwrap.fp_flag.PADDED_NORMALIZED_LAG, center)
  
 def cyclic_shift(img, dx=0, dy=0, dz=0):
@@ -504,7 +455,7 @@ def fpol(image, nnx, nny=1, nnz=1, RetReal = True, normalize = True):
 		Output
 			the output interpolated up image
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fft
 	
 	nx = image.get_xsize()
 	ny = image.get_ysize()
@@ -546,7 +497,7 @@ def fshift(e, delx=0, dely=0, delz=0):
 		Output
 			output image
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 
 	params = {"filter_type" : EMAN2_cppwrap.Processor.fourier_filter_types.SHIFT,	"x_shift" : float(delx), "y_shift" : float(dely), "z_shift" : float(delz) }
 	return EMAN2_cppwrap.Processor.EMFourierFilter(e, params)
@@ -556,9 +507,9 @@ def image_decimate(img, decimation=2, fit_to_fft = True, frequency_low=0, freque
 		Window 2D image to FFT-friendly size, apply Butterworth low pass filter,
 		and decimate image by integer factor
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import filt_btwl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import smallprime, window2d
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_image
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter       import filt_btwl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import smallprime, window2d
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_image
 	if type(img)     == str:	img=utilities.get_image(img)
 	nz       = img.get_zsize()
 	if( nz > 1):                    global_def.ERROR("This command works only for 2-D images", "image_decimate", 1)
@@ -595,11 +546,11 @@ def resample(img, sub_rate=0.5):
 		fit_to_fft will change the ouput image size to an fft_friendly size
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import subsample
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_pixel_size, set_pixel_size
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import subsample
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_pixel_size, set_pixel_size
 
 	if type(img) == str:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_image
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_image
 		img = utilities.get_image(img)
 	nx = img.get_xsize()
 	ny = img.get_ysize()
@@ -635,7 +586,7 @@ def resample(img, sub_rate=0.5):
 				e = e.rot_scale_conv_new_3D(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, kb, sub_rate)
 
 	# Automatically adjust pixel size for ctf parameters
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_pixel_size, set_pixel_size
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_pixel_size, set_pixel_size
 	apix = utilities.get_pixel_size(e)
 	apix /= sub_rate
 	utilities.set_pixel_size(e, apix)
@@ -644,14 +595,14 @@ def resample(img, sub_rate=0.5):
 		cp = cc.get_params("spider")
 		cp["tx"] *= sub_rate
 		cp["ty"] *= sub_rate
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import set_params_proj
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import set_params_proj
 		utilities.set_params_proj(e, [cp["phi"], cp["theta"], cp["psi"], -cp["tx"], -cp["ty"]]) # have to invert as set inverts them again
 	cc = e.get_attr_default("xform.align2d", None)
 	if cc:
 		cp = cc.get_params("2D")
 		cp["tx"] *= sub_rate
 		cp["ty"] *= sub_rate
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import set_params2D
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import set_params2D
 		utilities.set_params2D(e, [cp["alpha"], cp["tx"], cp["ty"], cp["mirror"], cp["scale"]])
 
 	return 	e
@@ -667,11 +618,11 @@ def fdownsample(img, sub_rate=0.5, RetReal = True):
 		fit_to_fft will change the ouput image size to an fft_friendly size
 	"""
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fdecimate
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_pixel_size, set_pixel_size
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fdecimate
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_pixel_size, set_pixel_size
 
 	if type(img) == str:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_image
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import get_image
 		img = utilities.get_image(img)
 	nx = img.get_xsize()
 	if img.is_complex():
@@ -715,7 +666,7 @@ def fdownsample(img, sub_rate=0.5, RetReal = True):
 		"""
 
 	# Automatically adjust pixel size for ctf parameters
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_pixel_size, set_pixel_size
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_pixel_size, set_pixel_size
 	apix = utilities.get_pixel_size(e)
 	apix /= sub_rate
 	utilities.set_pixel_size(e, apix)
@@ -724,14 +675,14 @@ def fdownsample(img, sub_rate=0.5, RetReal = True):
 		cp = cc.get_params("spider")
 		cp["tx"] *= sub_rate
 		cp["ty"] *= sub_rate
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import set_params_proj
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import set_params_proj
 		utilities.set_params_proj(e, [cp["phi"], cp["theta"], cp["psi"], -cp["tx"], -cp["ty"]]) # have to invert as set inverts them again
 	cc = e.get_attr_default("xform.align2d", None)
 	if cc:
 		cp = cc.get_params("2D")
 		cp["tx"] *= sub_rate
 		cp["ty"] *= sub_rate
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import set_params2D
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import set_params2D
 		utilities.set_params2D(e, [cp["alpha"], cp["tx"], cp["ty"], cp["mirror"], cp["scale"]])
 
 	return 	e
@@ -766,7 +717,7 @@ def prepi(image, RetReal = True):
 			imageft: real space image prepared for gridding rotation and shift by convolution
 			kb: interpolants (tabulated Kaiser-Bessel function)
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 
 	M = image.get_xsize()
 	# pad two times
@@ -791,7 +742,7 @@ def prepi(image, RetReal = True):
 
 
 def prep_refim_gridding(refim, wr, numr, mode = "F"):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import prepi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import prepi
 	nx = refim.get_xsize()
 	ny = refim.get_ysize()
 	cnx = nx//2+1
@@ -814,7 +765,7 @@ def prepi3D(image):
 			imageft: image prepared for gridding rotation and shift
 			kb: interpolants (tabulated Kaiser-Bessel function)
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 
 	M = image.get_xsize()
 	# padding size:
@@ -846,7 +797,7 @@ def prepg(image, kb):
 		Output
 			imageft: image prepared for gridding rotation and shift
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 
 	M = image.get_xsize()
 	# padd two times
@@ -900,7 +851,7 @@ def rot_avg_image(image_to_be_averaged):
 	Returns a 2-D or 3-D image containing a rotational average of image e
 	"""
 	pass#IMPORTIMPORTIMPORT import types
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im
 	if type(image_to_be_averaged) is bytes: image_to_be_averaged = utilities.get_im(image_to_be_averaged)
 	return image_to_be_averaged.rotavg_i()
 
@@ -921,7 +872,7 @@ def rops(e):
 	   Returns a 1-D image containing a rotational average
 	   of the periodogram of image e.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import periodogram
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import periodogram
 	ps = EMAN2_cppwrap.periodogram(e)
 	return ps.rotavg()
 
@@ -930,7 +881,7 @@ def rops_textfile(e, filename, helpful_string="", lng = False):
 	   Saves a text file (suitable for gnuplot) of the rotational average 
 	   of the periodogram of image e.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import periodogram
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import periodogram
 	out = open(filename, "w")
 	if helpful_string != "": out.write("#Rotational average: %s\n" % (helpful_string))
 	ps = EMAN2_cppwrap.periodogram(e)
@@ -939,7 +890,7 @@ def rops_textfile(e, filename, helpful_string="", lng = False):
 	table = [0.0]*nr
 	for ir in range(nr): table[ir] = f.get_value_at(ir)
 	if lng:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import log
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import log
 		for ir in range(1,nr): table[ir] = numpy.log(table[ir])
 		table[0] = table[1]
 	for ir in range(nr): out.write("%d\t%12.5g\n" % (ir, table[ir]))
@@ -951,14 +902,14 @@ def rops_table(img, lng = False):
 		Calculate 1D rotationally averaged 
 		power spectrum and save it in list
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import periodogram
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import periodogram
 	e = EMAN2_cppwrap.periodogram(img)
 	ro = e.rotavg()
 	nr = ro.get_xsize()
 	table = [0.0]*nr
 	for ir in range(nr): table[ir] = ro.get_value_at(ir)
 	if lng:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import log10
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import log10
 		for ir in range(1,nr): table[ir] = numpy.log10(table[ir])
 		table[0] = table[1]
 	return table
@@ -968,7 +919,7 @@ def rops_dir(indir, output_dir = "1dpw2_dir"):
 		Calculate 1D rotationally averaged power spectra from
 		image stack listed in a directory
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import periodogram
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import periodogram
 	pass#IMPORTIMPORTIMPORT import os
 	flist = os.listdir(indir)
 	print(flist)
@@ -996,8 +947,8 @@ def rops_dir(indir, output_dir = "1dpw2_dir"):
 def rotshift2dg(image, ang, dx, dy, kb, scale = 1.0):
 	"""Rotate and shift an image using gridding
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
 
 	M = image.get_xsize()
 	alpha = 1.75
@@ -1019,8 +970,8 @@ def gridrot_shift2D(image, ang = 0.0, sx = 0.0, sy = 0.0, scale = 1.0):
 	"""
 		Rotate and shift an image using gridding in Fourier space.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fftip, fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fftip, fft
 
 	nx = image.get_xsize()
 	# split shift into integer and fractional parts
@@ -1063,8 +1014,8 @@ def ft2polargrid(image, ring_length, nb, ne):
 	"""
 		resample to polar coordinates using gridding in Fourier space.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fftip, fft
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Processor
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import fftip, fft
 
 	nx = image.get_xsize()
 	# prepare 
@@ -1124,23 +1075,23 @@ def rot_shift2D(img, angle = 0.0, sx = 0.0, sy = 0.0, mirror = 0, scale = 1.0, i
 		if  mirror: img.process_inplace("xform.mirror", {"axis":'x'})
 		return img
 	elif(use_method == "gridding" and mode == "cyclic"): # previous rtshg
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import prepi
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import prepi
 		o, kb = prepi(img)
 		# gridding rotation
 		o = o.rot_scale_conv_new(numpy.radians(angle), sx, sy, kb, scale)
 		if  mirror: o.process_inplace("xform.mirror", {"axis":'x'})
 		return o
 	elif(use_method == "gridding" and mode == "background"): # previous rtshg
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import prepi
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import prepi
 		o, kb = prepi(img)
 		# gridding rotation
 		o = o.rot_scale_conv_new_background(numpy.radians(angle), sx, sy, kb, scale)
 		if  mirror: o.process_inplace("xform.mirror", {"axis":'x'})
 		return o	
 	elif(use_method == "ftgridding"): # previous rtshg
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import gridrot_shift2D
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import gridrot_shift2D
 		img = gridrot_shift2D(img, angle, sx, sy, scale)
 		if  mirror: img.process_inplace("xform.mirror", {"axis":'x'})
 		return img
@@ -1186,7 +1137,7 @@ def rot_shift3D_grid(img, phi=0.0, theta=0.0, psi=0.0, sx=0.0, sy=0.0, sz=0.0, s
 	if scale == 0.0 :  global_def.ERROR("scale=0 not allowed", "rot_shift3D_grid", 1)
 
 	if mode == "cyclic":
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
 		if kb == None:
 			o, kb = prepi3D(img)
 		else:
@@ -1195,7 +1146,7 @@ def rot_shift3D_grid(img, phi=0.0, theta=0.0, psi=0.0, sx=0.0, sy=0.0, sz=0.0, s
 		#if  mirror: o.process_inplace("xform.mirror", {"axis":'x'})
 		return o.rot_scale_conv_new_3D(numpy.radians(phi), numpy.radians(theta), numpy.radians(psi), sx, sy, sz, kb, scale, wrap)
 	elif mode == "background":
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
 		if kb == None:
 			o, kb = prepi3D(img)
 		else:
@@ -1219,7 +1170,7 @@ def rtshg(image, angle = 0.0, sx=0.0, sy=0.0, scale = 1.0):
 		Output
 			the output rotated and shifted image
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
 	o,kb = prepi(image)
 	# gridding rotation
 	return o.rot_scale_conv_new(numpy.radians(angle), sx, sy, kb, scale)
@@ -1235,7 +1186,7 @@ def rtshgkb(image, angle, sx, sy, kb, scale = 1.0):
 		Output
 			the output rotated and shifted image
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import radians
 	# gridding rotation
 	return image.rot_scale_conv_new(numpy.radians(angle), sx, sy, kb, scale)
 	
@@ -1258,12 +1209,12 @@ def smallprime(arbit_num, numprime=3):
 	return nicenum
 
 def sinc2inv(nx):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	s = sincinv(nx)
 	return [i*i for i in s]
 
 def sincinv(nx):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi,sin
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi,sin
 	cdf =numpy.pi/nx
 	npad = 1
 	nxb = nx/2/npad
@@ -1279,14 +1230,14 @@ def welch_pw2(img, win_size=512, overlp_x=50, overlp_y=50, edge_x=0, edge_y=0):
 	""" 
 		Calculate the power spectrum using Welch periodograms (overlapped periodogram)
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import window2d, ramp
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import periodogram
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import window2d, ramp
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import periodogram
 	nx = img.get_xsize()
 	ny = img.get_ysize()
 	nx_fft = smallprime(nx)
 	ny_fft = smallprime(ny)
 	x_gaussian_hi = 1./win_size
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter    import filt_gaussh
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter    import filt_gaussh
 	e_fil = filter.filt_gaussh(window2d(img,nx_fft,ny_fft,"l"), x_gaussian_hi)
 	x38 = 100/(100-overlp_x) # normalization of % of the overlap in x 
 	x39 = 100/(100-overlp_y) # normalization of % of the overlap in y
@@ -1310,7 +1261,7 @@ def welch_pw2_tilt_band(img,theta,num_bnd=-1,overlp_y=50,edge_x=0,edge_y=0,win_s
 		2. The tilt micrograph is rotated such that the tilt axis is vertical (along Y axis)
 		3. edge_x and edge_y are removed from the micrograph
 	""" 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import periodogram
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import periodogram
 	nx = img.get_xsize()
 	ny = img.get_ysize()
 	num1 = int(nx-2*edge_x)
@@ -1327,8 +1278,8 @@ def welch_pw2_tilt_band(img,theta,num_bnd=-1,overlp_y=50,edge_x=0,edge_y=0,win_s
 	win_y = win_x
 	x_gaussian_hi = 1./win_x
 	del img
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_gaussh
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import drop_image, rot_image
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter import filt_gaussh
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import drop_image, rot_image
 	# The input img is rotated such that tilt axis is vertical
 	img2  = rot_image(img1,theta, 0, 0, 1.0,1.0)	
 	e_fil = filter.filt_gaussh(img2, x_gaussian_hi)
@@ -1357,14 +1308,14 @@ def tilemic(img, win_size=512, overlp_x=50, overlp_y=50, edge_x=0, edge_y=0):
 	""" 
 		Calculate set of periodograms for tiles.  Returns a list.
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import window2d, ramp
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import periodogram
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import window2d, ramp
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import periodogram
 	nx = img.get_xsize()
 	ny = img.get_ysize()
 	nx_fft = smallprime(nx)
 	ny_fft = smallprime(ny)
 	x_gaussian_hi = 1./win_size
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter    import filt_gaussh
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter    import filt_gaussh
 	e_fil = filter.filt_gaussh(window2d(img,nx_fft,ny_fft,"l"), x_gaussian_hi)
 	x38 = 100/(100-overlp_x) # normalization of % of the overlap in x 
 	x39 = 100/(100-overlp_y) # normalization of % of the overlap in y
@@ -1392,7 +1343,7 @@ def window2d(img, isize_x, isize_y, opt="c", ix=0, iy=0):
 	lx = img.get_xsize()
 	ly = img.get_ysize()
 	if(lx == isize_x and ly == isize_y):  return img.copy()
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Region
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Region
 	if(opt == "l"): reg = EMAN2_cppwrap.Region(ix, iy, isize_x, isize_y)
 	elif(opt == "c"):
 		mx = lx//2-isize_x//2
@@ -1426,7 +1377,7 @@ def bracket(f,x1,h):
 	print("Bracket did not find a mimimum")        
  
 def goldsearch(f,a,b,tol=1.0e-9):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import log, ceil
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import log, ceil
 	nIter = int(numpy.ceil(-2.078087*numpy.log(tol/abs(b-a))))
 	R = 0.618033989
 	C = 1.0 - R
@@ -1451,7 +1402,7 @@ def goldsearch(f,a,b,tol=1.0e-9):
 #                 will fix the problem of rotation of a 0,0,0 direction.  It does not as one neeeds psi
 #                 in this case as well.  So, the only choice is to use small theta instead of exact 0,0,0 direction
 def rotate_params(params, transf):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rotmatrix, recmat, rotmatrix
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rotmatrix, recmat, rotmatrix
 	matinv = rotmatrix( -transf[2], -transf[1], -transf[0] )
 	n = len(params)
 	cpar = [None]*n
@@ -1463,7 +1414,7 @@ def rotate_params(params, transf):
 
 """
 def rotmatrix(phi,theta,psi):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sin,cos,radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sin,cos,radians
 	rphi   = radians(phi)
 	rtheta = radians(theta)
 	rpsi   = radians(psi)
@@ -1486,7 +1437,7 @@ def rotmatrix(phi,theta,psi):
 """
 
 def rotmatrix(phi,theta,psi):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sin,cos,radians
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sin,cos,radians
 	rphi   = numpy.radians(phi)
 	rtheta = numpy.radians(theta)
 	rpsi   = numpy.radians(psi)
@@ -1535,7 +1486,7 @@ def mulmat(m1,m2):
 	return mat
 
 def recmat(mat):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import acos,asin,atan2,degrees,pi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import acos,asin,atan2,degrees,pi
 	def sign(x):
 		if( x >= 0.0 ): return 1
 		else:  return -1
@@ -1693,9 +1644,9 @@ class symclass(object):
 		"""
 		  sym: cn, dn, oct, tet, icos
 		"""
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import degrees, radians, sin, cos, tan, atan, acos, sqrt, pi
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import degrees, radians, sin, cos, tan, atan, acos, sqrt, pi
 		#from utilities import get_sym, get_symt
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string import lower
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from string import lower
 		self.sym = sym.lower()
 		if(self.sym[0] == "c"):
 			self.nsym = int(self.sym[1:])
@@ -1783,7 +1734,7 @@ class symclass(object):
 		Output: True if input projection direction is in the first asymmetric subunit,
 		        False otherwise.
 		"""
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import degrees, radians, sin, cos, tan, atan, acos, sqrt
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import degrees, radians, sin, cos, tan, atan, acos, sqrt
 		if( (self.sym[0] == "c")  or  (self.sym[0] == "d" and (self.nsym//2)%2 == 0) ):
 			if((phi>= 0.0 and phi<self.brackets[inc_mirror][0]) and (theta<=self.brackets[inc_mirror][1])):  return True
 			else:  return False
@@ -1856,7 +1807,7 @@ class symclass(object):
 			for l in range(nsm,self.nsym):
 				redang.append([(360.0-redang[l-nsm][0])%360.0, 180.0-angles[1], (angles[2]+180.0*(nsm%2))%360.0])
 		else:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rotmatrix, recmat, mulmat
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rotmatrix, recmat, mulmat
 			mat = rotmatrix(angles[0],angles[1],angles[2])
 			for l in range(1,self.nsym):
 				p1,p2,p3 = recmat( mulmat( mat , self.symatrix[l]) )
@@ -1887,7 +1838,7 @@ class symclass(object):
 		neighbors["icos"] = [1,2,3,4,6,7,11,12]
 		sang = [[] for l in range(len(angles)*(len(neighbors[self.sym])+1))]
 		for i,q in enumerate(angles):  sang[i*(len(neighbors[self.sym])+1)] = angles[i][:]
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rotmatrix, recmat, mulmat
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rotmatrix, recmat, mulmat
 		for i,q in enumerate(angles):
 			mat = rotmatrix(q[0],q[1],q[2])
 			for j,l in enumerate(neighbors[self.sym]):
@@ -1902,7 +1853,7 @@ class symclass(object):
 				inc_mirror = 0 consider mirror directions as outside of unique range.
 		  It will map all triplets to the first asymmetric subunit.
 		"""
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import degrees, radians, sin, cos, tan, atan, acos, sqrt
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import degrees, radians, sin, cos, tan, atan, acos, sqrt
 		pass#IMPORTIMPORTIMPORT import types
 		is_platonic_sym = self.sym[0] == "o" or self.sym[0] == "i"
 		if(self.sym[0] == "c"): qs = 360.0/self.nsym
@@ -1993,7 +1944,7 @@ class symclass(object):
 				inc_mirror = 1 consider mirror directions as unique
 				inc_mirror = 0 consider mirror directions as outside of unique range.
 		"""
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import degrees, radians, sin, cos, tan, atan, acos, sqrt
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import degrees, radians, sin, cos, tan, atan, acos, sqrt
 		is_platonic_sym = self.sym[0] == "o" or self.sym[0] == "i"
 		if(self.sym[0] == "c"): qs = 360.0/self.nsym
 		elif(self.sym[0] == "d"): qs = 720.0/self.nsym
@@ -2063,7 +2014,7 @@ class symclass(object):
 
 	"""
 	def reduce_normal(self, phi, theta, psi, inc_mirror):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import degrees, radians, sin, cos, tan, atan, acos, sqrt
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import degrees, radians, sin, cos, tan, atan, acos, sqrt
 		return False
 	"""
 
@@ -2077,8 +2028,8 @@ class symclass(object):
 						 it will yield angles from the asymmetric unit, not the specified range;
 		"""
 
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math      import pi, sqrt, cos, acos, tan, sin, radians, degrees
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import even_angles_cd
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math      import pi, sqrt, cos, acos, tan, sin, radians, degrees
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import even_angles_cd
 		angles = []
 		phi2_org = phi2
 		if(phi2_org < 0.0):  phi2_org = self.brackets[1][0] - 1.0e-7 # exclude right border of unit

@@ -39,41 +39,13 @@ import optparse
 import os
 import sys
 import utilities
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
 
 from builtins import range
 def main():
 	pass#IMPORTIMPORTIMPORT import os
 	pass#IMPORTIMPORTIMPORT import sys
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import SPARXVERSION, ERROR
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import SPARXVERSION, ERROR
 	pass#IMPORTIMPORTIMPORT import global_def
 	arglist = []
 	for arg in sys.argv:
@@ -138,7 +110,7 @@ def main():
 		rminp = int((float(options.rmin)/options.apix) + 0.5)
 		rmaxp = int((float(options.rmax)/options.apix) + 0.5)
 		
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_input_from_string, get_im
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_input_from_string, get_im
 
 		xr = utilities.get_input_from_string(options.xr)
 		txs = utilities.get_input_from_string(options.txs)
@@ -159,14 +131,14 @@ def main():
 		for i in range(len(y_restrict)): y_restrict2 +=  str(float(y_restrict[i])/options.apix)+" "
 		y_restrict2 = y_restrict2[:-1]
 
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init, mpi_finalize
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init, mpi_finalize
 		sys.argv = mpi.mpi_init(len(sys.argv), sys.argv)
 
 		if global_def.CACHE_DISABLE:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
 			utilities.disable_bdb_cache()
 
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import localhelicon_MPI, localhelicon_MPInew, localhelicon_MPIming
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import localhelicon_MPI, localhelicon_MPInew, localhelicon_MPIming
 		if len(args) < 4:  mask = None
 		else:              mask = args[3]
 		if options.new:  applications.localhelicon_MPInew(args[0], args[1], args[2], options.seg_ny, mask, irp, oup, options.rs, xrp, options.ynumber, \
@@ -186,7 +158,7 @@ def main():
 			options.apix, options.debug, y_restrict2, options.searchit, options.slowIO)
 		global_def.BATCH = False
 	
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
 		mpi.mpi_finalize()
 
 if __name__ == "__main__":

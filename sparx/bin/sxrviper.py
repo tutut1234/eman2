@@ -4,10 +4,6 @@ from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
 from builtins import range
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_SUM, mpi_reduce, mpi_init, mpi_finalize, MPI_COMM_WORLD, mpi_comm_rank, mpi_comm_size, mpi_barrier, \
-#pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #pass#IMPORTIMPORTIMPORT #	pass#IMPORTIMPORTIMPORT mpi_comm_split, mpi_bcast, MPI_INT, MPI_CHAR, MPI_FLOAT
 
 import EMAN2
 import EMAN2_cppwrap
@@ -36,121 +32,7 @@ import sys
 import time
 import user_functions
 import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import copy
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import io
-pass#IMPORTIMPORTIMPORT import itertools
-pass#IMPORTIMPORTIMPORT import json
-pass#IMPORTIMPORTIMPORT import logger
-pass#IMPORTIMPORTIMPORT import matplotlib
-#pass#IMPORTIMPORTIMPORT matplotlib.use("Agg")
-pass#IMPORTIMPORTIMPORT import matplotlib.pyplot as plt
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import multi_shc
-pass#IMPORTIMPORTIMPORT import numpy as np
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import random
-pass#IMPORTIMPORTIMPORT import re
-pass#IMPORTIMPORTIMPORT import six
-pass#IMPORTIMPORTIMPORT import statistics
-pass#IMPORTIMPORTIMPORT import string
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import user_functions
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import copy
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import io
-pass#IMPORTIMPORTIMPORT import itertools
-pass#IMPORTIMPORTIMPORT import json
-pass#IMPORTIMPORTIMPORT import logger
-pass#IMPORTIMPORTIMPORT import matplotlib
-#pass#IMPORTIMPORTIMPORT matplotlib.use("Agg")
-pass#IMPORTIMPORTIMPORT import matplotlib.pyplot as plt
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import multi_shc
-pass#IMPORTIMPORTIMPORT import numpy as np
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import random
-pass#IMPORTIMPORTIMPORT import re
-pass#IMPORTIMPORTIMPORT import six
-pass#IMPORTIMPORTIMPORT import statistics
-pass#IMPORTIMPORTIMPORT import string
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import user_functions
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import copy
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import io
-pass#IMPORTIMPORTIMPORT import itertools
-pass#IMPORTIMPORTIMPORT import json
-pass#IMPORTIMPORTIMPORT import logger
-pass#IMPORTIMPORTIMPORT import matplotlib
-#pass#IMPORTIMPORTIMPORT matplotlib.use("Agg")
-pass#IMPORTIMPORTIMPORT import matplotlib.pyplot as plt
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import multi_shc
-pass#IMPORTIMPORTIMPORT import numpy as np
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import random
-pass#IMPORTIMPORTIMPORT import re
-pass#IMPORTIMPORTIMPORT import six
-pass#IMPORTIMPORTIMPORT import statistics
-pass#IMPORTIMPORTIMPORT import string
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import user_functions
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import copy
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import io
-pass#IMPORTIMPORTIMPORT import itertools
-pass#IMPORTIMPORTIMPORT import json
-pass#IMPORTIMPORTIMPORT import logger
-pass#IMPORTIMPORTIMPORT import matplotlib
-#pass#IMPORTIMPORTIMPORT matplotlib.use("Agg")
-pass#IMPORTIMPORTIMPORT import matplotlib.pyplot as plt
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import multi_shc
-pass#IMPORTIMPORTIMPORT import numpy as np
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import random
-pass#IMPORTIMPORTIMPORT import re
-pass#IMPORTIMPORTIMPORT import six
-pass#IMPORTIMPORTIMPORT import statistics
-pass#IMPORTIMPORTIMPORT import string
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import user_functions
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im, string_found_in_file, get_latest_directory_increment_value, store_value_of_simple_vars_in_json_file
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import cmdexecute, if_error_then_all_processes_exit_program
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_row, read_text_file, write_text_file, write_text_row, getindexdata#, print_program_start_information
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from multi_shc import find_common_subset, do_volume, multi_shc
 
-pass#IMPORTIMPORTIMPORT import string
-pass#IMPORTIMPORTIMPORT import os, sys
 #from debug_mpi import mpi_barrier, mpi_bcast 
 
 
@@ -171,7 +53,7 @@ DIR_DELIM = os.sep
 def calculate_list_of_independent_viper_run_indices_used_for_outlier_elimination(no_of_viper_runs_analyzed_together, 
 	no_of_viper_runs_analyzed_together_from_user_options, masterdir, rviper_iter, criterion_name, symc):
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import combinations_of_n_taken_by_k
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import combinations_of_n_taken_by_k
 
 	# generate all possible combinations of (no_of_viper_runs_analyzed_together - 1) taken (3 - 1) at a time
 	pass#IMPORTIMPORTIMPORT import itertools
@@ -622,9 +504,9 @@ def calculate_volumes_after_rotation_and_save_them(ali3d_options, rviper_iter, m
 
 	if( mpi_rank == 0):
 		# Align all rotated volumes, calculate their average and save as an overall result
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params3D, set_params3D, get_im, model_circle
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import ave_var
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali_vol
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_params3D, set_params3D, get_im, model_circle
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import ave_var
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ali_vol
 		# vls = [None]*no_of_viper_runs_analyzed_together
 		vls = [None]*len(list_of_independent_viper_run_indices_used_for_outlier_elimination)
 		# for i in xrange(no_of_viper_runs_analyzed_together):
@@ -691,11 +573,11 @@ def get_already_processed_viper_runs(run_get_already_processed_viper_runs):
 
 def main():
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from logger import Logger, BaseLogger_Files
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from logger import Logger, BaseLogger_Files
 	pass#IMPORTIMPORTIMPORT import user_functions
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser, SUPPRESS_HELP
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import SPARXVERSION
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import EMData
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser, SUPPRESS_HELP
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import SPARXVERSION
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import EMData
 
 	main_node = 0
 	mpi.mpi_init(0, [])
@@ -884,7 +766,7 @@ output_directory: directory name into which the output files will be written.  I
 				cmd = "{} {} {}".format("e2bdb.py", org_stack_location,"--makevstack=" + bdb_stack_location + "_000")
 				junk = utilities.cmdexecute(cmd)
 
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import header
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import header
 				try:
 					applications.header(bdb_stack_location + "_000", params='original_image_index', fprint=True)
 					print("Images were already indexed!")
@@ -898,7 +780,7 @@ output_directory: directory name into which the output files will be written.  I
 				cmd = "{} {} {}".format("sxcpy.py  ", args[0], bdb_stack_location + "_000")
 				junk = utilities.cmdexecute(cmd)
 
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import header
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import header
 				try:
 					applications.header(bdb_stack_location + "_000", params='original_image_index', fprint=True)
 					print("Images were already indexed!")
@@ -947,7 +829,7 @@ output_directory: directory name into which the output files will be written.  I
 
 	utilities.if_error_then_all_processes_exit_program(error_status)
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import symclass
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import symclass
 	symc = fundamentals.symclass(options.sym)
 	
 

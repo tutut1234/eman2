@@ -39,40 +39,12 @@ import optparse
 import os
 import sys
 import utilities
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
 
 def main():
 	pass#IMPORTIMPORTIMPORT import os
 	pass#IMPORTIMPORTIMPORT import sys
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import SPARXVERSION
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import SPARXVERSION
 	pass#IMPORTIMPORTIMPORT import global_def
 	arglist = []
 	for arg in sys.argv:
@@ -126,7 +98,7 @@ def main():
 			
 		if options.dp < 0 or options.dphi < 0:
 			# read helical symmetry parameters from symdoc
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_row
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_row
 			hparams=utilities.read_text_row(options.symdoc)
 			dp  = hparams[0][0]
 			dphi = hparams[0][1]
@@ -137,7 +109,7 @@ def main():
 		rminp = int((float(options.rmin)/options.apix) + 0.5)
 		rmaxp = int((float(options.rmax)/options.apix) + 0.5)
 
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_input_from_string, get_im
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_input_from_string, get_im
 
 		searchxshiftp = int( (options.searchxshift/options.apix) + 0.5)
 		xwobblep = int( (options.xwobble/options.apix) + 0.5)
@@ -149,20 +121,20 @@ def main():
 			sys.exit()
 
 		try:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init, mpi_finalize
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init, mpi_finalize
 			sys.argv = mpi.mpi_init(len(sys.argv), sys.argv)
 		except:
 			global_def.ERROR('This program has only MPI version.  Please install MPI library.', 'sxhelicon')
 			sys.exit()
 
 		if global_def.CACHE_DISABLE:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
 			utilities.disable_bdb_cache()
 
 
 		if len(args) < 4:  mask = None
 		else:              mask = args[3]
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ehelix_MPI
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import ehelix_MPI
 		global_def.BATCH = True
 		applications.ehelix_MPI(args[0], args[1], args[2], options.seg_ny, options.delta, options.phiwobble, options.psi_max,\
 		 searchxshiftp, xwobblep, ywobble, ystep, options.apix, dp, dphi, options.fract, rmaxp, rminp, not options.nopsisearch,\
@@ -170,7 +142,7 @@ def main():
 		global_def.BATCH = False
 
 
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
 		mpi.mpi_finalize()
 
 if __name__ == "__main__":

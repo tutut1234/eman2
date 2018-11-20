@@ -40,45 +40,8 @@ import optparse
 import os
 import sys
 import utilities
-pass#IMPORTIMPORTIMPORT import configparser
-pass#IMPORTIMPORTIMPORT import development
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import configparser
-pass#IMPORTIMPORTIMPORT import development
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import configparser
-pass#IMPORTIMPORTIMPORT import development
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import configparser
-pass#IMPORTIMPORTIMPORT import development
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
 from future import standard_library
 standard_library.install_aliases()
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   global_def import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   optparse import OptionParser
-pass#IMPORTIMPORTIMPORT import sys, configparser
 
 def main():
 	progname = os.path.basename(sys.argv[0])
@@ -110,21 +73,21 @@ def main():
 	else:	mask = None
 
 	if global_def.CACHE_DISABLE:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
 		utilities.disable_bdb_cache()
 
 	if options.MPI:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init
 		sys.argv = mpi.mpi_init(len(sys.argv),sys.argv)		
 		
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from development import multi_assign
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from development import multi_assign
 	global_def.BATCH = True
 	multi_assign(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr, options.yr, options.ts,  
 			options.CTF, options.CUDA, options.GPUID, options.SA, options.T, options.F, options.heads_up, options.MPI)
 	global_def.BATCH = False
 
 	if options.MPI:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
 		mpi.mpi_finalize()
 
 

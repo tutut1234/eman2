@@ -12,38 +12,6 @@ import os
 import subprocess
 import sys
 import time
-pass#IMPORTIMPORTIMPORT import glob
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import subprocess
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import glob
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import subprocess
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import glob
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import subprocess
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import glob
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import subprocess
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
 # source code in this file under either license. However, note that the
 # complete EMAN2 and SPARX software packages have some GPL dependencies,
 # so you are responsible for compliance with the licenses of these packages
@@ -64,17 +32,6 @@ pass#IMPORTIMPORTIMPORT import time
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sys import argv
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from os import mkdir, path, system, remove, rmdir
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from glob import glob
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from numpy import genfromtxt
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import subprocess
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import SPARXVERSION, ERROR
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser, SUPPRESS_HELP
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sxsummovie import create_summovie_command
 
 def main():
 

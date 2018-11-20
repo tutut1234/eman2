@@ -40,46 +40,10 @@ import numpy
 import optparse
 import os
 import sys
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import math
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import math
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import math
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import math
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import sys
 from builtins import range
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   global_def import *
-
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from   optparse import OptionParser
 
 
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import *
+
 
 
 def main():
@@ -100,7 +64,7 @@ def main():
 		print("usage: " + usage)
 		return None
 
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import sqrt
 	nimage = EMAN2_cppwrap.EMUtil.get_image_count( args[0] )
 
 	for i in range(nimage) :

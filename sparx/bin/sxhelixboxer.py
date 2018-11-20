@@ -51,95 +51,10 @@ import statistics
 import subprocess
 import sys
 import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import EMAN2_meta
-pass#IMPORTIMPORTIMPORT import EMAN2db
-pass#IMPORTIMPORTIMPORT import eman2_gui.emapplication as emapplication
-pass#IMPORTIMPORTIMPORT import eman2_gui.emimage2d as emimage2d
-pass#IMPORTIMPORTIMPORT import eman2_gui.emselector as emselector
-pass#IMPORTIMPORTIMPORT import eman2_gui.emshape as emshape
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import math
-pass#IMPORTIMPORTIMPORT import morphology
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import pixel_error
-pass#IMPORTIMPORTIMPORT import statistics
-pass#IMPORTIMPORTIMPORT import subprocess
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import EMAN2_meta
-pass#IMPORTIMPORTIMPORT import EMAN2db
-pass#IMPORTIMPORTIMPORT import eman2_gui.emapplication as emapplication
-pass#IMPORTIMPORTIMPORT import eman2_gui.emimage2d as emimage2d
-pass#IMPORTIMPORTIMPORT import eman2_gui.emselector as emselector
-pass#IMPORTIMPORTIMPORT import eman2_gui.emshape as emshape
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import math
-pass#IMPORTIMPORTIMPORT import morphology
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import pixel_error
-pass#IMPORTIMPORTIMPORT import statistics
-pass#IMPORTIMPORTIMPORT import subprocess
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import EMAN2_meta
-pass#IMPORTIMPORTIMPORT import EMAN2db
-pass#IMPORTIMPORTIMPORT import eman2_gui.emapplication as emapplication
-pass#IMPORTIMPORTIMPORT import eman2_gui.emimage2d as emimage2d
-pass#IMPORTIMPORTIMPORT import eman2_gui.emselector as emselector
-pass#IMPORTIMPORTIMPORT import eman2_gui.emshape as emshape
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import math
-pass#IMPORTIMPORTIMPORT import morphology
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import pixel_error
-pass#IMPORTIMPORTIMPORT import statistics
-pass#IMPORTIMPORTIMPORT import subprocess
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import EMAN2_meta
-pass#IMPORTIMPORTIMPORT import EMAN2db
-pass#IMPORTIMPORTIMPORT import eman2_gui.emapplication as emapplication
-pass#IMPORTIMPORTIMPORT import eman2_gui.emimage2d as emimage2d
-pass#IMPORTIMPORTIMPORT import eman2_gui.emselector as emselector
-pass#IMPORTIMPORTIMPORT import eman2_gui.emshape as emshape
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import math
-pass#IMPORTIMPORTIMPORT import morphology
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import pixel_error
-pass#IMPORTIMPORTIMPORT import statistics
-pass#IMPORTIMPORTIMPORT import subprocess
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import utilities
 from builtins import range
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import get_image_directory, Transform, Region, EMANVERSION, EMData, E2init, E2end, EMArgumentParser
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2db import db_open_dict, db_check_dict, db_close_dict
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import *
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import os
 
 try:
 	from PyQt4 import QtGui, QtCore
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emapplication import EMApp, get_application
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emimage2d import EMImage2DWidget
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emselector import EMSelectorDialog
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from eman2_gui.emshape import EMShape, EMShapeDict
 	
 	ENABLE_GUI = True
 	
@@ -435,8 +350,8 @@ def get_rotated_particles( micrograph, helix_coords, px_dst = None, px_length = 
 
 		else:
 			try:
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Util
-				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift2D
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import Util
+				pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import rot_shift2D
 				ptcl = EMAN2_cppwrap.Util.window( micrograph, sidepadded, sidepadded, 1, int(round(centroid[0] - nxc)), int(round(centroid[1] - nyc)), 0) 
 				ptcl = EMAN2_cppwrap.Util.window( fundamentals.rot_shift2D(ptcl, -rot_angle, interpolation_method="gridding"), side1, side1, 1, 0, 0, 0)
 				ptcl["ptcl_helix_coords"] = tuple(helix_coords)
@@ -792,7 +707,7 @@ def db_save_particle_coords(micrograph_filepath, output_filepath = None, px_dst 
 	save_particle_coords(helix_particle_coords_dict, output_filepath, micrograph_filepath, px_length, px_width)
 	
 def db_save_particles(micrograph_filepath, ptcl_filepath = None, px_dst = None, px_length = None, px_width = None, rotated = True, do_edge_norm = False, gridding = False, stack_file_mode = "multiple", do_filt = True, filt_freq = -1):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter 		import filt_gaussh
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter 		import filt_gaussh
 	
 	micrograph_filename = os.path.basename(micrograph_filepath)
 	micrograph_name = os.path.splitext( micrograph_filename )[0]
@@ -1393,7 +1308,7 @@ if ENABLE_GUI:
 		def calc_ctf_cter(self):
 			# calculate ctf of ORIGINAL micrograph using cter in gui mode
 			# this must mean cter is being calculated on a single micrograph!
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im
 			
 			print("starting cter")
 			
@@ -1429,7 +1344,7 @@ if ENABLE_GUI:
 				print("Please remove or rename %s and or %s"%(outpwrot,outpartres))
 				return
 			
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import cter
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import cter
 			defocus, ast_amp, ast_agl, error_defocus, error_astamp, error_astagl = cter(None, outpwrot, outpartres, None, None, ctf_window_size, voltage=ctf_volt, Pixel_size=input_pixel_size, Cs = ctf_cs, wgh=ctf_ampcont, kboot=ctf_kboot, MPI=False, DEBug= False, overlap_x = ctf_overlap_size, overlap_y = ctf_overlap_size, edge_x = ctf_edge_size, edge_y = ctf_edge_size, guimic=image_name)
 		
 			self.estdef.setText(str(defocus))
@@ -1452,7 +1367,7 @@ if ENABLE_GUI:
 			
 			# XXX: wgh?? amp_cont static to 0?
 			# set image properties, in order to save ctf values
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import set_ctf
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import set_ctf
 			utilities.set_ctf(img, [defocus, ctf_cs, ctf_volt, input_pixel_size, 0, ctf_ampcont, ast_amp, ast_agl])
 			# and rewrite image 
 			img.write_image(image_name)
@@ -1624,8 +1539,8 @@ if ENABLE_GUI:
 					micrograph = EMAN2_cppwrap.EMData(self.micrograph_filepath)
 					
 					if self.invert_contrast:
-						pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import info, model_blank
-						pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 	   import Util
+						pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import info, model_blank
+						pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 	   import Util
 						# invert contrast of micrograph so average remains unchanged
 						print("Inverting contrast of micrograph")
 						mnx = micrograph.get_xsize()
@@ -2058,9 +1973,9 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 		windowallmic(dirid='mic', micid='mic', micsuffix='hdf', outdir='out',  pixel_size=1.2, boxsize=200, minseg = 6, outstacknameall='bdb:adata', hcoords_suffix = "_boxes.txt", ptcl_dst=15, inv_contrast=False, new_pixel_size=1.84, rmax = 60.0, topdir='/Users/project')
 	'''
 	pass#IMPORTIMPORTIMPORT import os
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_begin_msg, print_end_msg, print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sxhelixboxer	import windowmic
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 	        import EMUtil, Util
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities      import print_begin_msg, print_end_msg, print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sxhelixboxer	import windowmic
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 	        import EMUtil, Util
 	
 	utilities.print_begin_msg("windowallmic\n")
 	
@@ -2146,7 +2061,7 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 	if len(cutoffhistogram) > 0:		#@ming
 		lhist = 3
 		if len(cutoffhistogram) >= lhist:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import hist_list
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from statistics import hist_list
 			region,hist = statistics.hist_list(cutoffhistogram,lhist)	
 			msg = "      Histogram of cut off frequencies\n      ERROR       number of frequencies\n"
 			utilities.print_msg(msg)
@@ -2156,7 +2071,7 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 		utilities.print_msg('The percentage of micrographs filtered by the cutoff frequency: %6f\n' % (len(cutoffhistogram)*1.0/lenmicnames))		
 	# If not debug mode, then remove all output directories 				
 	if debug == 0:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from subprocess import call
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from subprocess import call
 		for coutdir in outdirlist:
 			cmd = "rm -ir %s"%coutdir
 			utilities.print_msg("cmd: %s"%cmd)
@@ -2198,12 +2113,12 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 	       		    two stacks of segments to outdir: mic0_abox_0.hdf	and mic0_abox_1.hdf	 
 	       	    
 	'''
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import pad, model_blank, read_text_row, get_im, print_msg
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import ramp, resample
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter	  	  import filt_gaussh,filt_tanl
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error  import getnewhelixcoords
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 	      import EMUtil, Util
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from subprocess   import call
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities    import pad, model_blank, read_text_row, get_im, print_msg
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import ramp, resample
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from filter	  	  import filt_gaussh,filt_tanl
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from pixel_error  import getnewhelixcoords
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 	      import EMUtil, Util
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from subprocess   import call
 	
 	# micname is full path name
 	# smic[-1] is micrograph name minus path
@@ -2237,7 +2152,7 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 
 	## Cut off frequency components higher than CTF limit   @ming
 	img = utilities.get_im(micname)
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctflimit
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from morphology import ctflimit
 	if limitctf:
 # 			Cut off frequency components higher than CTF limit 
 		q1, q2 = morphology.ctflimit(boxsize,ctfs[0],ctfs[1],ctfs[2],new_pixel_size)
@@ -2318,7 +2233,7 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 	#try:      iseg = EMUtil.get_image_count(outstacknameall)
 	#except:   iseg = 0
 	if importctf:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
 		ctfs = utilities.generate_ctf(ctfs[:8])
 	#for h in xrange(nhelices):
 	h=0                                                           ## added by@ming

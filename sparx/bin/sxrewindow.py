@@ -47,98 +47,9 @@ import sparx
 import sys
 import time
 import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import EMAN2db
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import copy
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import glob
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import inspect
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import shutil
-pass#IMPORTIMPORTIMPORT import sparx
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import EMAN2db
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import copy
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import glob
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import inspect
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import shutil
-pass#IMPORTIMPORTIMPORT import sparx
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import EMAN2db
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import copy
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import glob
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import inspect
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import shutil
-pass#IMPORTIMPORTIMPORT import sparx
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import EMAN2db
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import copy
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import glob
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import inspect
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import optparse
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import shutil
-pass#IMPORTIMPORTIMPORT import sparx
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import utilities
 from __future__ import print_function
 from builtins import range
-pass#IMPORTIMPORTIMPORT import os, sys
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from optparse import OptionParser, SUPPRESS_HELP
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from copy import copy, deepcopy
-pass#IMPORTIMPORTIMPORT import glob
-pass#IMPORTIMPORTIMPORT import shutil
 
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2db import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sparx import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from inspect import currentframe, getframeinfo
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import generate_ctf
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import *
 
 # ========================================================================================
 # General Helper Functions
@@ -157,7 +68,7 @@ def get_cmd_line():
 # Get suffix of current time stamp
 # ----------------------------------------------------------------------------------------
 def get_time_stamp_suffix():
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import strftime, localtime
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import strftime, localtime
 	time_stamp_suffix = time.strftime("%Y%m%d_%H%M%S", time.localtime())
 	return time_stamp_suffix
 
@@ -190,7 +101,7 @@ def mrk_resample2d(img, sub_rate, target_size = None):
 		sub_rate > 1.0, upsampling the image using new gridding interpolation.
 		(??? fit_to_fft will change the ouput image size to an fft_friendly size ???)
 	"""
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import subsample, prepi
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import subsample, prepi
 	
 	original_size = img.get_xsize()
 	assert (original_size > 1)
@@ -302,8 +213,8 @@ For negative staining data, use --skip_invert.
 	
 	main_mpi_proc = 0
 	if RUNNING_UNDER_MPI:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_comm_rank, mpi_comm_size, mpi_barrier, mpi_reduce, MPI_INT, MPI_SUM
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_comm_rank, mpi_comm_size, mpi_barrier, mpi_reduce, MPI_INT, MPI_SUM
 		
 		mpi.mpi_init(0, [])
 		my_mpi_proc_id = mpi.mpi_comm_rank(mpi.MPI_COMM_WORLD)
@@ -316,7 +227,7 @@ For negative staining data, use --skip_invert.
 	# Set up SPHIRE global definitions
 	# ------------------------------------------------------------------------------------
 	if global_def.CACHE_DISABLE:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
 		utilities.disable_bdb_cache()
 	
 	# Change the name log file for error message
@@ -1454,7 +1365,7 @@ For negative staining data, use --skip_invert.
 	# ------------------------------------------------------------------------------------
 	if RUNNING_UNDER_MPI:
 		mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_finalize
 		mpi.mpi_finalize()
 	
 	sys.stdout.flush()

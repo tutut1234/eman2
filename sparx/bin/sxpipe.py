@@ -57,113 +57,9 @@ import sparx
 import sys
 import time
 import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import EMAN2db
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import argparse
-pass#IMPORTIMPORTIMPORT import errno
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import glob
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import inspect
-pass#IMPORTIMPORTIMPORT import matplotlib
-#pass#IMPORTIMPORTIMPORT matplotlib.use("Agg")
-pass#IMPORTIMPORTIMPORT import matplotlib.pyplot as plt
-pass#IMPORTIMPORTIMPORT import morphology
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import scipy.spatial as scipy_spatial
-pass#IMPORTIMPORTIMPORT import shutil
-pass#IMPORTIMPORTIMPORT import sparx
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import EMAN2db
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import argparse
-pass#IMPORTIMPORTIMPORT import errno
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import glob
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import inspect
-pass#IMPORTIMPORTIMPORT import matplotlib
-#pass#IMPORTIMPORTIMPORT matplotlib.use("Agg")
-pass#IMPORTIMPORTIMPORT import matplotlib.pyplot as plt
-pass#IMPORTIMPORTIMPORT import morphology
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import scipy.spatial as scipy_spatial
-pass#IMPORTIMPORTIMPORT import shutil
-pass#IMPORTIMPORTIMPORT import sparx
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import EMAN2db
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import argparse
-pass#IMPORTIMPORTIMPORT import errno
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import glob
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import inspect
-pass#IMPORTIMPORTIMPORT import matplotlib
-#pass#IMPORTIMPORTIMPORT matplotlib.use("Agg")
-pass#IMPORTIMPORTIMPORT import matplotlib.pyplot as plt
-pass#IMPORTIMPORTIMPORT import morphology
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import scipy.spatial as scipy_spatial
-pass#IMPORTIMPORTIMPORT import shutil
-pass#IMPORTIMPORTIMPORT import sparx
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import utilities
-pass#IMPORTIMPORTIMPORT import EMAN2
-pass#IMPORTIMPORTIMPORT import EMAN2_cppwrap
-pass#IMPORTIMPORTIMPORT import EMAN2db
-pass#IMPORTIMPORTIMPORT import applications
-pass#IMPORTIMPORTIMPORT import argparse
-pass#IMPORTIMPORTIMPORT import errno
-pass#IMPORTIMPORTIMPORT import filter
-pass#IMPORTIMPORTIMPORT import fundamentals
-pass#IMPORTIMPORTIMPORT import glob
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT import inspect
-pass#IMPORTIMPORTIMPORT import matplotlib
-#pass#IMPORTIMPORTIMPORT matplotlib.use("Agg")
-pass#IMPORTIMPORTIMPORT import matplotlib.pyplot as plt
-pass#IMPORTIMPORTIMPORT import morphology
-pass#IMPORTIMPORTIMPORT import mpi
-pass#IMPORTIMPORTIMPORT import numpy
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import scipy.spatial as scipy_spatial
-pass#IMPORTIMPORTIMPORT import shutil
-pass#IMPORTIMPORTIMPORT import sparx
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import time
-pass#IMPORTIMPORTIMPORT import utilities
 from builtins import object
-pass#IMPORTIMPORTIMPORT import sys
-pass#IMPORTIMPORTIMPORT import os
-pass#IMPORTIMPORTIMPORT import argparse
 
 # SPHIRE/EMAN2 Libraries
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2 import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from sparx import *
-pass#IMPORTIMPORTIMPORT import global_def
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from global_def import *
-pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
 
 # ========================================================================================
 # Helper Functions
@@ -182,7 +78,7 @@ def get_cmd_line():
 # Print progress message with time stamp
 # ----------------------------------------------------------------------------------------
 def print_progress(message):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import strftime, localtime
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import strftime, localtime
 	time_stamp = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime()) + " =>"
 	print(time_stamp, message)
 
@@ -190,7 +86,7 @@ def print_progress(message):
 # Get suffix of current time stamp
 # ----------------------------------------------------------------------------------------
 def get_time_stamp_suffix():
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import strftime, localtime
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import strftime, localtime
 	time_stamp_suffix = time.strftime("%Y%m%d_%H%M%S", time.localtime())
 	return time_stamp_suffix
 
@@ -215,8 +111,8 @@ class SXmpi_run(object):
 	
 		SXmpi_run.main_mpi_proc = 0
 		if SXmpi_run.RUNNING_UNDER_MPI:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_comm_rank, mpi_comm_size
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import mpi_init
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_comm_rank, mpi_comm_size
 
 			mpi.mpi_init(0, [])
 			SXmpi_run.my_mpi_proc_id = mpi.mpi_comm_rank(mpi.MPI_COMM_WORLD)
@@ -225,7 +121,7 @@ class SXmpi_run(object):
 	@staticmethod
 	def cleanup():
 		if SXmpi_run.RUNNING_UNDER_MPI:
-			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_barrier, mpi_finalize
+			pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_barrier, mpi_finalize
 			mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
 			mpi.mpi_finalize()
 	
@@ -266,8 +162,8 @@ class SXmpi_run(object):
 # 
 # ----------------------------------------------------------------------------------------
 def isac_substack(args):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im, read_text_row, write_text_row, write_text_file, combine_params2, cmdexecute
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2db import db_check_dict
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im, read_text_row, write_text_row, write_text_file, combine_params2, cmdexecute
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2db import db_check_dict
 	# from EMAN2db import db_open_dict, db_check_dict
 	# from e2bdb import makerelpath
 	
@@ -691,8 +587,8 @@ def isac_substack(args):
 def resample_micrographs(args):
 	pass#IMPORTIMPORTIMPORT import glob
 	pass#IMPORTIMPORTIMPORT import shutil
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from inspect import currentframe, getframeinfo
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from applications import MPI_start_end
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from inspect import currentframe, getframeinfo
 
 	# ====================================================================================
 	# Prepare processing
@@ -705,13 +601,13 @@ def resample_micrographs(args):
 	# Check MPI execution
 	# ------------------------------------------------------------------------------------
 	if SXmpi_run.RUNNING_UNDER_MPI:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_barrier, mpi_reduce, MPI_INT, MPI_SUM
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from mpi import MPI_COMM_WORLD, mpi_barrier, mpi_reduce, MPI_INT, MPI_SUM
 
 	# ------------------------------------------------------------------------------------
 	# Set up SPHIRE global definitions
 	# ------------------------------------------------------------------------------------
 	if global_def.CACHE_DISABLE:
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import disable_bdb_cache
 		utilities.disable_bdb_cache()
 	
 	# Change the name log file for error message
@@ -1158,7 +1054,7 @@ def resample_micrographs(args):
 def organize_micrographs(args):
 	pass#IMPORTIMPORTIMPORT import glob
 	pass#IMPORTIMPORTIMPORT import shutil
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_file
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_file
 	
 	# Define the name of this subcommand
 	# subcommand_name = "organize_micrographs"
@@ -1840,8 +1736,8 @@ def restacking(args):
 	# import glob
 	# import traceback
 	# import math
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2db   import db_check_dict
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im, get_params_proj
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2db   import db_check_dict
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import get_im, get_params_proj
 	
 	# ========================================================================================
 	class SX_mic_entry(object):
@@ -2378,7 +2274,7 @@ def restacking(args):
 
 # ----------------------------------------------------------------------------------------
 def moon_eliminator(args):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import resample, rot_shift3D
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from fundamentals import resample, rot_shift3D
 	
 	# Define the name of this subcommand
 	# subcommand_name = "isac_substack"
@@ -2719,8 +2615,8 @@ def moon_eliminator(args):
 # rm -r debug_mrkout_sxpipe_desymmetrize_cwd_g1; sxpipe.py desymmetrize bdb:sdata Sort3D/Cluster_001.txt debug_mrkout_sxpipe_desymmetrize_cwd_g1 --check_duplication
 # ----------------------------------------------------------------------------------------
 def desymmetrize(args):
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_file, write_text_file
-	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2db import db_check_dict, db_parse_path, db_open_dict
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import read_text_file, write_text_file
+	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from EMAN2db import db_check_dict, db_parse_path, db_open_dict
 	
 	# To make the execution exit upon fatal error by ERROR in global_def.py
 	global_def.BATCH = True 
