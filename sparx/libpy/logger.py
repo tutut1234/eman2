@@ -5,6 +5,7 @@ from builtins import object
 pass#IMPORTIMPORTIMPORT import time
 pass#IMPORTIMPORTIMPORT import time
 pass#IMPORTIMPORTIMPORT import time
+pass#IMPORTIMPORTIMPORT import time
 import time
 class BaseLogger_Print(object):
 	
@@ -40,7 +41,7 @@ class Logger(object):
 		self.file_name = file_name
 
 	def add(self, param1=None, param2=None, param3=None, param4=None, param5=None, param6=None, param7=None, param8=None, param9=None, param10=None):
-		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import localtime, strftime
+		pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import localtime, strftime
 		
 		if self.base_logger == None:
 			return
