@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-pass#IMPORTIMPORTIMPORT import os
+from __future__ import print_function
 
 # TO DO:
 #	resize the class-averages and re-projections if they have different sizes?

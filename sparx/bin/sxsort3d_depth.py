@@ -1,10 +1,10 @@
 #!/usr/bin/env python
+from __future__ import print_function
 #
 #
 #  08/26/2016
 #  New version of sort3D.
 #  
-from __future__ import print_function
 import EMAN2
 import EMAN2_cppwrap
 import applications

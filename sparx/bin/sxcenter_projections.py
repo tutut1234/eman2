@@ -55,7 +55,6 @@ import time
 import user_functions
 import utilities
 
-from __future__ import print_function
 from builtins import range
 from builtins import object
 

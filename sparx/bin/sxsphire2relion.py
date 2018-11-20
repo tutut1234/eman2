@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 
 # Author: Markus Stabrin 2018/09/28 (markus.stabrin@mpi-dortmund.mpg.de)
 #
@@ -28,7 +29,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 # 
 # ========================================================================================
-from __future__ import print_function, division
 import EMAN2
 import argparse
 import global_def
