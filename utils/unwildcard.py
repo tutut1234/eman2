@@ -273,7 +273,7 @@ for file_name in python_files:
 
     print('RESOLVED THINGS:')
     used_modules = []
-    prefixes = ['((?:[^a-zA-Z._]|^)']
+    prefixes = ['\s*(\s', '(=', '(^', '([^a-zA-Z._]']
     suffixes = [r'\(', r'\.', '']
     bad_idx = []
     for entry in ok_list:
@@ -285,7 +285,9 @@ for file_name in python_files:
         used_modules.extend(entry[2])
         add_to_list = False
         out = []
-        for pref in prefixes:
+        for idx, pref in enumerate(prefixes):
+            if idx == len(prefixes)-1 and out:
+                continue
             for suff in suffixes:
                 original = r'{0}{1}{2})'.format(pref, entry[1], suff)
                 new = '{0}{1}.{2}{3}'.format(pref, entry[2][0], entry[1], suff)
