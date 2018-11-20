@@ -14,8 +14,6 @@ import utilities
 def runcheck(classavgstack, recon, outdir, inangles=None, selectdoc=None, displayYN=False, 
 			 projstack='proj.hdf', outangles='angles.txt', outstack='comp-proj-reproj.hdf', normstack='comp-proj-reproj-norm.hdf'):
 	
-	print
-	
 	# Check if inputs exist
 	check(classavgstack)
 	check(recon)
@@ -47,7 +45,7 @@ def runcheck(classavgstack, recon, outdir, inangles=None, selectdoc=None, displa
 			print("mv %s %s" % (newclasses, renamefile))
 		
 		cmd7="e2proc2d.py %s %s --list=%s" % (classavgstack, newclasses, selectdoc)
-		print cmd7
+		print(cmd7)
 		os.system(cmd7)
 		
 		# Update class-averages
@@ -56,11 +54,11 @@ def runcheck(classavgstack, recon, outdir, inangles=None, selectdoc=None, displa
 	# Import Euler angles
 	if inangles:
 		cmd6="sxheader.py %s --params=xform.projection --import=%s" % (classavgstack, inangles)
-		print cmd6
+		print(cmd6)
 		applications.header(classavgstack, 'xform.projection', fimport=inangles)
 	
 	cmd1="sxheader.py %s --params=xform.projection --export=%s" % (classavgstack, outangles) 
-	print cmd1
+	print(cmd1)
 	#os.system(cmd1)
 	try:
 		applications.header(classavgstack, 'xform.projection', fexport=outangles)
@@ -69,7 +67,7 @@ def runcheck(classavgstack, recon, outdir, inangles=None, selectdoc=None, displa
 		exit()
 	
 	cmd2="sxproject3d.py %s %s --angles=%s" % (recon, projstack, outangles)
-	print cmd2
+	print(cmd2)
 	#os.system(cmd2)
 	applications.project3d(recon, stack=projstack, listagls=outangles)
 	
@@ -108,7 +106,7 @@ def runcheck(classavgstack, recon, outdir, inangles=None, selectdoc=None, displa
 			prjimg.set_attr_dict({'mean-cross-corr':meanccc})
 			utilities.write_header(outstack,prjimg,imgnum)
 		if (imgnum % 100) == 0:
-			print imgnum
+			print(imgnum)
 	
 	# e2proc2d appends to existing files, so delete existing output
 	if os.path.exists(normstack):
@@ -116,13 +114,13 @@ def runcheck(classavgstack, recon, outdir, inangles=None, selectdoc=None, displa
 		print("rm %s" % normstack)
 		
 	cmd5="e2proc2d.py %s %s --process=normalize" % (outstack, normstack)
-	print cmd5
+	print(cmd5)
 	os.system(cmd5)
 	
 	# Optionally pop up e2display
 	if displayYN:
 		cmd8 = "e2display.py %s" % normstack
-		print cmd8
+		print(cmd8)
 		os.system(cmd8)
 	
 	print("Done!")
