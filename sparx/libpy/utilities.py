@@ -730,7 +730,7 @@ def common_line_in3D(phiA,thetaA,phiB,thetaB):
 
 	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from math import pi, sqrt, cos, sin, asin, atan2
 
-	numpy.piOver=numpy.pi/180.0;
+	piOver=numpy.pi/180.0;
 	ph1 = phiA*piOver;
 	th1 = thetaA*piOver;
 	ph2 = phiB*piOver;
@@ -2356,7 +2356,7 @@ def ttime():
 def running_time(start_time):
 	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from utilities import print_msg
 	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
-	time.time_run = int(time() - start_time)
+	time_run = int(time.time() - start_time)
 	time_h   = time_run / 3600
 	time_m   = (time_run % 3600) / 60
 	time_s   = (time_run % 3600) % 60
@@ -2364,7 +2364,7 @@ def running_time(start_time):
 
 def running_time_txt(start_time):
 	pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT pass#IMPORTIMPORTIMPORT from time import time
-	time.time_run = int(time() - start_time)
+	time_run = int(time.time() - start_time)
 	time_h   = time_run / 3600
 	time_m   = (time_run % 3600) / 60
 	time_s   = (time_run % 3600) % 60
@@ -7140,7 +7140,7 @@ def split_a_group(workdir,list_of_a_group,Tracker):
 	total_stack = len(list_of_a_group)
 	################
 	pass#IMPORTIMPORTIMPORT import copy
-	data_list [:] = list_of_a_group[:]
+	data_list = list_of_a_group[:]
 	update_full_dict(data_list,Tracker)
 	this_particle_text_file = os.os.path.join(workdir,"full_class.txt")
 	if myid ==main_node: write_text_file(data_list,"full_class.txt")

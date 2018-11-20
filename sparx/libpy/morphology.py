@@ -859,7 +859,7 @@ def defocus_get_Eudis(fnam_roo, volt=300, Pixel_size=1, Cs=2, wgh=.1, f_start=0,
 	#
 	defocus=defocus_guess(Res_roo, Res_TE, volt, Cs, Pixel_size, wgh, i_start, i_stop, 2, round_off)
 	nx  = int(len(roo)*2)
-	ctf = ctf_2(nx, utilities.generate_ctf([defocus,Cs,voltage,Pixel_size, 0.0, wgh]))
+	ctf = ctf_2(nx, utilities.generate_ctf([defocus,Cs,volt,Pixel_size, 0.0, wgh]))
 	for i in range(len(Res_TE)):
 		ctf[i]=ctf[i]*Res_TE[i]
 	dis = defocus_L2_euc(ctf, Res_roo, i_start, i_stop)
@@ -903,7 +903,7 @@ def defocus_guess(Res_roo, Res_TE, volt, Cs, Pixel_size, ampcont=10.0, istart=0,
 	xval_e = 0.0
 	for ifreq in range(len(Res_TE)):
 		xval_e += Res_TE[ifreq]**2
-	if (xval_e == 0.0): return xvale_e  #  This is strange, returns defocus=0.
+	if (xval_e == 0.0): return xval_e  #  This is strange, returns defocus=0.
 
 	if round_off >= 1: 			cut_off  =  1.
 	else: 					    cut_off  =  round_off # do extreme fitting
@@ -969,7 +969,7 @@ def defocus_guess1(Res_roo, Res_TE, volt, Cs, Pixel_size, ampcont=10.0, istart=0
 	xval_e = 0.0
 	for ifreq in range(len(Res_TE)):
 		xval_e += Res_TE[ifreq]**2
-	if (xval_e == 0.0): return xvale_e  #  This is strange, returns defocus=0.
+	if (xval_e == 0.0): return xval_e  #  This is strange, returns defocus=0.
 
 	if round_off >= 1: 			cut_off  =  1.
 	else: 					    cut_off  =  round_off # do extreme fitting
@@ -1189,7 +1189,7 @@ def defocus_get_fast_MPI(indir, writetodoc="w", Pixel_size=1, volt=120, Cs=2, wg
 				nr1 -= 1
 				nr2 -= 1
 				defocus = defocus_get(fnam_roo, volt,Pixel_size, Cs, wgh, istart, istop, docf, skip, round_off, nr1, nr2)
-				if(print_sreen[0] == "p" or print_screen=="P"): print("defocus",defocus,"Euclidean inspect.distance",inspect.dis,"starting feq",istart,"stop freq",istop,"P R E", nr1,"P R B", nr2)
+				if(print_screen[0] == "p" or print_screen=="P"): print("defocus",defocus,"Euclidean inspect.distance",inspect.dis,"starting feq",istart,"stop freq",istop,"P R E", nr1,"P R B", nr2)
 				if(defocus < dz_max): break
 		if(defocus > dz_max):
 			while(istart > istop):

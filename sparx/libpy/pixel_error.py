@@ -591,15 +591,15 @@ def ali_stable_list(ali_params1, ali_params2, pixel_error_threshold, r=25):
 	return ali_list
 
 
+def sqerr(a):
+	n = len(a)
+	avg = sum(a)
+	sq = 0.0
+	for i in range(n): sq += a[i]**2
+	return (sq-avg*avg/n)/n
+
 
 def multi_align_stability(ali_params, mir_stab_thld = 0.0, grp_err_thld = 10000.0, err_thld = 1.732, print_individual = False, d = 64):
-
-	def sqerr(a):
-		n = len(a)
-		avg = sum(a)
-		sq = 0.0
-		for i in range(n): sq += a[i]**2
-		return (sq-avg*avg/n)/n
 
 	# args - G, data - [T, d]
 	def func(args, data, return_avg_pixel_error=True):
