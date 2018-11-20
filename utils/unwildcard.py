@@ -118,7 +118,7 @@ Checker.report = my_report
 Checker.okidoki = []
 
 
-#python_files = glob.glob('master/sparx/libpy/multi_shc.py')
+python_files = glob.glob('master/sparx/libpy/global_def.py')
 for file_name in python_files:
     print(file_name)
     Checker.okidoki = []
@@ -273,8 +273,8 @@ for file_name in python_files:
 
     print('RESOLVED THINGS:')
     used_modules = []
-    prefixes = [' ', '\t', '=', '^']
-    suffixes = ['(', '.', '']
+    prefixes = ['\s+', '=', '^']
+    suffixes = ['\(', '\.', '']
     for entry in ok_list:
         used_modules.extend(entry[2])
         for suff in suffixes:
