@@ -118,7 +118,7 @@ Checker.report = my_report
 Checker.okidoki = []
 
 
-python_files = glob.glob('master/sparx/libpy/global_def.py')
+python_files = glob.glob('../sparx/libpy/global_def.py')
 for file_name in python_files:
     print(file_name)
     Checker.okidoki = []
@@ -273,19 +273,36 @@ for file_name in python_files:
 
     print('RESOLVED THINGS:')
     used_modules = []
-    prefixes = ['\s+', '=', '^']
-    suffixes = ['\(', '\.', '']
+    prefixes = [r'\s*(\s', r'(=', '(^']
+    suffixes = [r'\(', r'\.', '']
     for entry in ok_list:
+        print(entry)
+        print(no_import_lines[int(entry[0])-1])
         used_modules.extend(entry[2])
+        stop = False
         for suff in suffixes:
             for pref in prefixes:
-                original = '{0}{1}{2}'.format(pref, entry[1], suff)
+                original = r'{0}{1}{2})'.format(pref, entry[1], suff)
                 new = '{0}{1}.{2}{3}'.format(pref, entry[2][0], entry[1], suff)
-                if re.search(original, no_import_lines[int(entry[0])-1]):
+                match = re.search(original, no_import_lines[int(entry[0])-1])
+                if match:
+                    print("NEW")
+                    print(original)
+                    print(new)
+                    print(match)
+                    print(match.groups())
+                    print(repr(match.group(1)))
+                    original = match.group(1)
+                    new = '{0}.{1}'.format(entry[2][0], entry[1]).join(original.split(entry[1]))
+                    stop = True
                     break
+                else:
+                    print(original)
+                print('')
+            if stop:
+                break
         no_import_lines[int(entry[0])-1] = no_import_lines[int(entry[0])-1].replace(original, new)
-        print(entry)
-    print('')
+        print('')
 
     imports = ['import {0}\n'.format(entry) if entry not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry) for entry in list(set(used_modules))]
     imports.extend(['import {0}\n'.format(entry) if entry.split('.')[-1] not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry.split('.')[-1]) for entry in correct_imports])
