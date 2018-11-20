@@ -118,7 +118,7 @@ Checker.report = my_report
 Checker.okidoki = []
 
 
-#python_files = glob.glob('../sparx/libpy/applications.py')
+#python_files = glob.glob('../sparx/bin/sxmeridien.py')
 for file_name in python_files:
     print(file_name)
     Checker.okidoki = []
@@ -275,38 +275,60 @@ for file_name in python_files:
     used_modules = []
     prefixes = [r'\s*(\s', r'(=', '(^']
     suffixes = [r'\(', r'\.', '']
+    bad_idx = []
     for entry in ok_list:
+        if (entry[0], entry[1]) in bad_idx:
+            continue
+        else:
+            bad_idx.append((entry[0], entry[1]))
         print(entry)
         used_modules.extend(entry[2])
         stop = False
         no_match = True
         for suff in suffixes:
             for pref in prefixes:
+                out = []
                 original = r'{0}{1}{2})'.format(pref, entry[1], suff)
                 new = '{0}{1}.{2}{3}'.format(pref, entry[2][0], entry[1], suff)
                 match = re.search(original, no_import_lines[int(entry[0])-1])
-                if match:
-                    original = match.group(1)
+                matches = list(set(re.findall(original, no_import_lines[int(entry[0])-1])))
+                if len(matches) == 1:
+                    original = matches[0]
                     new = '{0}.{1}'.format(entry[2][0], entry[1]).join(original.split(entry[1]))
                     stop = True
                     no_match = False
                     break
+                elif len(matches) > 1:
+                    stop = True
+                    print(matches)
+                    for match in matches:
+                        original = match
+                        new = '{0}.{1}'.format(entry[2][0], entry[1]).join(original.split(entry[1]))
+                    break
             if stop:
+                out.append([original, new])
                 break
         if no_match:
-            pref = '(.+'
+            pref = '([^a-zA-Z._]'
             for suff in suffixes:
                 original = r'{0}{1}{2})'.format(pref, entry[1], suff)
                 new = '{0}{1}.{2}{3}'.format(pref, entry[2][0], entry[1], suff)
-                match = re.search(original, no_import_lines[int(entry[0])-1])
-                if match:
-                    original = match.group(1)
+                matches = list(set(re.findall(original, no_import_lines[int(entry[0])-1])))
+                if len(matches) == 1:
+                    original = matches[0]
                     new = '{0}.{1}'.format(entry[2][0], entry[1]).join(original.split(entry[1]))
-                    stop = True
-                    no_match = False
+                    out.append([original, new])
+                    break
+                elif len(matches) > 1:
+                    print(matches)
+                    for match in matches:
+                        original = match
+                        new = '{0}.{1}'.format(entry[2][0], entry[1]).join(original.split(entry[1]))
+                        out.append([original, new])
                     break
 
-        no_import_lines[int(entry[0])-1] = no_import_lines[int(entry[0])-1].replace(original, new)
+        for original, new in out:
+            no_import_lines[int(entry[0])-1] = no_import_lines[int(entry[0])-1].replace(original, new)
 
     imports = ['import {0}\n'.format(entry) if entry not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry) for entry in list(set(used_modules))]
     imports.extend(['import {0}\n'.format(entry) if entry.split('.')[-1] not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry.split('.')[-1]) for entry in correct_imports])
