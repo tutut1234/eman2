@@ -384,10 +384,10 @@ while True:
                 else:
                     first_2 = True
             elif line.startswith('#') and not first_1 and not first_2:
-                continue
+                pass
             elif line.startswith("class") or line.startswith('def'):
-                    if not first_1 and not first_2 and not first_3:
-                        break
+                if not first_1 and not first_2:
+                    break
             if '#IMPORTIMPORTIMPORT' in line:
                 remove_indices.append(idx)
 
