@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import print_function
 
 # Author: Markus Stabrin 2018/09/28 (markus.stabrin@mpi-dortmund.mpg.de)
 #
@@ -29,14 +28,15 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 # 
 # ========================================================================================
-import EMAN2
-import argparse
-import global_def
-import numpy as np
+from __future__ import print_function, division
+
 import os
+import argparse
 
+import numpy as np
 
-
+import EMAN2
+import global_def
 
 
 def parse_args():
@@ -129,7 +129,7 @@ def main(args):
 			params_3d_subset_data['_rlnRandomSubset'][chunk_import] = idx
 			params_import.extend(chunk_import.tolist())
 		output_dtype.extend(params_3d_subset_data.dtype.descr)
-		params_3d_subset_data = params_3d_subset_data[params_import]
+		params_3d_subset_data = params_3d_subset_data[params_index_data]
 		assert params_3d_subset_data.shape[0] == params_3d_data.shape[0]
 		assert np.unique(params_import).shape[0] == params_3d_data.shape[0]
 
@@ -397,7 +397,7 @@ def sanity_checks(args):
 
 	if not args.particle_stack and not args.partres_file:
 			global_def.ERROR(
-				'Particle_stack or partres_file option needs to be present!',
+				'Particle_stack or partres_file option needs to be present!'.format(option),
 				'sxsphire2relion',
 				1
 				)

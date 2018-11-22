@@ -32,13 +32,12 @@ from __future__ import print_function
 #
 #
 
-import applications
-import global_def
-import optparse
-import os
-import sys
-import utilities
 
+import os
+import global_def
+from   global_def import *
+from   optparse import OptionParser
+import sys
 def main():
 	
 	progname = os.path.basename(sys.argv[0])
@@ -46,7 +45,7 @@ def main():
 
 Read projection angles from 2Dprojections file or from a text file and write a 2D image file
 containing their distribution on a hemisphere."""
-	parser = optparse.OptionParser(usage,version=global_def.SPARXVERSION)
+	parser = OptionParser(usage,version=SPARXVERSION)
 	parser.add_option("--wnx",       type="int",  default=256,             help="plot image size (default = 256)")
 
 	(options, args) = parser.parse_args()
@@ -55,9 +54,11 @@ containing their distribution on a hemisphere."""
 		print("Please run '" + progname + """ -h' for detailed options""")
 	else:
 		if global_def.CACHE_DISABLE:
-			utilities.disable_bdb_cache()
+			from utilities import disable_bdb_cache
+			disable_bdb_cache()
+		from applications import plot_projs_distrib
 		global_def.BATCH = True
-		applications.plot_projs_distrib(args[0], args[1], options.wnx)
+		plot_projs_distrib(args[0], args[1], options.wnx)
 		global_def.BATCH = False
 
 if __name__ == "__main__":

@@ -31,36 +31,27 @@ from __future__ import print_function
 #
 #
 
-import EMAN2
-import EMAN2_cppwrap
-import alignment
-import applications
-import filter
-import fundamentals
-import global_def
-import logger
-import math
-import mpi
-import multi_shc
-import numpy
-import optparse
-import os
-import pixel_error
-import socket
-import sparx
-import string
-import subprocess
-import sys
-import time
-import user_functions
-import utilities
 
+from __future__ import print_function
 from builtins import range
 from builtins import object
+from EMAN2 import *
+from sparx import *
+from logger import Logger, BaseLogger_Files
+import global_def
+
+from mpi   import  *
+from math  import  *
 
 
 
-
+import os
+import sys
+import subprocess
+import time
+import string
+from   sys import exit
+from   time import localtime, strftime
 
 def subdict(d,u):
 	# substitute values in dictionary d by those given by dictionary u
@@ -68,19 +59,19 @@ def subdict(d,u):
 
 def fuselowf(vs, fq):
 	n = len(vs)
-	for i in range(n): fundamentals.fftip(vs[i])
+	for i in range(n): fftip(vs[i])
 	a = vs[0].copy()
 	for i in range(1,n):
-		EMAN2_cppwrap.Util.add_img(a, vs[i])
-	EMAN2_cppwrap.Util.mul_scalar(a, 1.0/float(n))
-	a = filter.filt_tophatl(a, fq)
+		Util.add_img(a, vs[i])
+	Util.mul_scalar(a, 1.0/float(n))
+	a = filt_tophatl(a, fq)
 	for i in range(n):
-		vs[i] = fundamentals.fft(EMAN2_cppwrap.Util.addn_img(a, filter.filt_tophath(vs[i], fq)))
+		vs[i] = fft(Util.addn_img(a, filt_tophath(vs[i], fq)))
 	return
 
 global passlastring, mempernode
 def hlfmem(x):
-	return (len(utilities.even_angles(x))*4.*passlastring**2*4./ mempernode - 0.5)**2
+	return (len(even_angles(x))*4.*passlastring**2*4./ mempernode - 0.5)**2
 
 
 def comparetwoalis(params1, params2, thresherr=1.0, radius = 1.0):
@@ -88,7 +79,7 @@ def comparetwoalis(params1, params2, thresherr=1.0, radius = 1.0):
 	nn = len(params1)
 	perr = 0
 	for k in range(nn):
-		if(pixel_error.max_3D_pixel_error(params1[k], params2[k], r=radius) < thresherr):
+		if(max_3D_pixel_error(params1[k], params2[k], r=radius) < thresherr):
 			perr += 1
 	return perr/float(nn)*100.0
 
@@ -105,7 +96,7 @@ def checkstep(item, keepchecking, myid, main_node):
 			doit = 1
 	else:
 		doit = 1
-	doit = utilities.bcast_number_to_all(doit, source_node = main_node)
+	doit = bcast_number_to_all(doit, source_node = main_node)
 	return doit, keepchecking
 
 
@@ -114,9 +105,9 @@ def getindexdata(stack, partids, partstack, myid, nproc):
 	#   and assign to them parameters from partstack
 	# So, the lengths of partids and partstack are the same.
 	#  The read data is properly distributed among MPI threads.
-	lpartids  = list(map(int, utilities.read_text_file(partids) ))
+	lpartids  = list(map(int, read_text_file(partids) ))
 	ndata = len(lpartids)
-	partstack = utilities.read_text_row(partstack)
+	partstack = read_text_row(partstack)
 	if( ndata < nproc):
 		if(myid<ndata):
 			image_start = myid
@@ -125,18 +116,18 @@ def getindexdata(stack, partids, partstack, myid, nproc):
 			image_start = 0
 			image_end   = 1			
 	else:
-		image_start, image_end = applications.MPI_start_end(ndata, nproc, myid)
+		image_start, image_end = MPI_start_end(ndata, nproc, myid)
 	lpartids  = lpartids[image_start:image_end]
 	partstack = partstack[image_start:image_end]
-	data = EMAN2_cppwrap.EMData.read_images(stack, lpartids)
-	for i in range(len(partstack)):  utilities.set_params_proj(data[i], partstack[i])
+	data = EMData.read_images(stack, lpartids)
+	for i in range(len(partstack)):  set_params_proj(data[i], partstack[i])
 	return data
 
 
 def getalldata(stack, myid, nproc):
-	if(myid == 0):  ndata = EMAN2_cppwrap.EMUtil.get_image_count(stack)
+	if(myid == 0):  ndata = EMUtil.get_image_count(stack)
 	else:           ndata = 0
-	ndata = utilities.bcast_number_to_all(ndata)	
+	ndata = bcast_number_to_all(ndata)	
 	if( ndata < nproc):
 		if(myid<ndata):
 			image_start = myid
@@ -145,8 +136,8 @@ def getalldata(stack, myid, nproc):
 			image_start = 0
 			image_end   = 1			
 	else:
-		image_start, image_end = applications.MPI_start_end(ndata, nproc, myid)
-	data = EMAN2_cppwrap.EMData.read_images(stack, list(range(image_start, image_end)))
+		image_start, image_end = MPI_start_end(ndata, nproc, myid)
+	data = EMData.read_images(stack, list(range(image_start, image_end)))
 	return data
 
 
@@ -183,13 +174,13 @@ def run3Dalignment(paramsdict, partids, partstack, outputdir, procid, myid, main
 	#  Will write to outputdir output parameters: params-chunk0.txt and params-chunk1.txt
 	if(myid == main_node):
 		#  Create output directory
-		log = logger.Logger(logger.BaseLogger_Files())
+		log = Logger(BaseLogger_Files())
 		log.prefix = os.path.join(outputdir)
 		#cmd = "mkdir "+log.prefix
 		#junk = cmdexecute(cmd)
 		log.prefix += "/"
 	else:  log = None
-	mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
+	mpi_barrier(MPI_COMM_WORLD)
 
 	ali3d_options.delta  = paramsdict["delta"]
 	ali3d_options.ts     = paramsdict["ts"]
@@ -208,20 +199,20 @@ def run3Dalignment(paramsdict, partids, partstack, outputdir, procid, myid, main
 	onx = projdata[0].get_xsize()
 	last_ring = ali3d_options.ou
 	if last_ring < 0:	last_ring = int(onx/2) - 2
-	mask2D  = utilities.model_circle(last_ring,onx,onx) - utilities.model_circle(ali3d_options.ir,onx,onx)
+	mask2D  = model_circle(last_ring,onx,onx) - model_circle(ali3d_options.ir,onx,onx)
 	if(shrinkage < 1.0):
 		# get the new size
-		masks2D = fundamentals.resample(mask2D, shrinkage)
+		masks2D = resample(mask2D, shrinkage)
 		nx = masks2D.get_xsize()
-		masks2D  = utilities.model_circle(int(last_ring*shrinkage+0.5),nx,nx) - utilities.model_circle(max(int(ali3d_options.ir*shrinkage+0.5),1),nx,nx)
+		masks2D  = model_circle(int(last_ring*shrinkage+0.5),nx,nx) - model_circle(max(int(ali3d_options.ir*shrinkage+0.5),1),nx,nx)
 	nima = len(projdata)
 	oldshifts = [0.0,0.0]*nima
 	for im in range(nima):
 		#data[im].set_attr('ID', list_of_particles[im])
 		ctf_applied = projdata[im].get_attr_default('ctf_applied', 0)
-		phi,theta,psi,sx,sy = utilities.get_params_proj(projdata[im])
-		projdata[im] = fundamentals.fshift(projdata[im], sx, sy)
-		utilities.set_params_proj(projdata[im],[phi,theta,psi,0.0,0.0])
+		phi,theta,psi,sx,sy = get_params_proj(projdata[im])
+		projdata[im] = fshift(projdata[im], sx, sy)
+		set_params_proj(projdata[im],[phi,theta,psi,0.0,0.0])
 		#  For local SHC set anchor
 		#if(nsoft == 1 and an[0] > -1):
 		#	set_params_proj(data[im],[phi,tetha,psi,0.0,0.0], "xform.anchor")
@@ -229,16 +220,16 @@ def run3Dalignment(paramsdict, partids, partstack, outputdir, procid, myid, main
 		if ali3d_options.CTF :
 			ctf_params = projdata[im].get_attr("ctf")
 			if ctf_applied == 0:
-				st = EMAN2_cppwrap.Util.infomask(projdata[im], mask2D, False)
+				st = Util.infomask(projdata[im], mask2D, False)
 				projdata[im] -= st[0]
-				projdata[im] = filter.filt_ctf(projdata[im], ctf_params)
+				projdata[im] = filt_ctf(projdata[im], ctf_params)
 				projdata[im].set_attr('ctf_applied', 1)
 		if(shrinkage < 1.0):
 			#phi,theta,psi,sx,sy = get_params_proj(projdata[im])
-			projdata[im] = fundamentals.resample(projdata[im], shrinkage)
-			st = EMAN2_cppwrap.Util.infomask(projdata[im], None, True)
+			projdata[im] = resample(projdata[im], shrinkage)
+			st = Util.infomask(projdata[im], None, True)
 			projdata[im] -= st[0]
-			st = EMAN2_cppwrap.Util.infomask(projdata[im], masks2D, True)
+			st = Util.infomask(projdata[im], masks2D, True)
 			projdata[im] /= st[1]
 			#sx *= shrinkage
 			#sy *= shrinkage
@@ -247,9 +238,9 @@ def run3Dalignment(paramsdict, partids, partstack, outputdir, procid, myid, main
 				ctf_params.apix /= shrinkage
 				projdata[im].set_attr('ctf', ctf_params)
 		else:
-			st = EMAN2_cppwrap.Util.infomask(projdata[im], None, True)
+			st = Util.infomask(projdata[im], None, True)
 			projdata[im] -= st[0]
-			st = EMAN2_cppwrap.Util.infomask(projdata[im], mask2D, True)
+			st = Util.infomask(projdata[im], mask2D, True)
 			projdata[im] /= st[1]
 	del mask2D
 	if(shrinkage < 1.0): del masks2D
@@ -269,27 +260,27 @@ def run3Dalignment(paramsdict, partids, partstack, outputdir, procid, myid, main
 		print("                    =>  partids             :  ",partids)
 		print("                    =>  partstack           :  ",partstack)
 		
-	if(ali3d_options.fl > 0.46):  global_def.ERROR("Low pass filter in 3D alignment > 0.46 on the scale of shrank data","sxcenter_projections",1,myid) 
+	if(ali3d_options.fl > 0.46):  ERROR("Low pass filter in 3D alignment > 0.46 on the scale of shrank data","sxcenter_projections",1,myid) 
 
 	#  Run alignment command, it returns params per CPU
-	params = alignment.center_projections_3D(projdata, paramsdict["refvol"], \
+	params = center_projections_3D(projdata, paramsdict["refvol"], \
 									ali3d_options, onx, shrinkage, \
-									mpi_comm = mpi.MPI_COMM_WORLD,  myid = myid, main_node = main_node, log = log )
+									mpi_comm = MPI_COMM_WORLD,  myid = myid, main_node = main_node, log = log )
 	del log, projdata
 
-	params = utilities.wrap_mpi_gatherv(params, main_node, mpi.MPI_COMM_WORLD)
+	params = wrap_mpi_gatherv(params, main_node, MPI_COMM_WORLD)
 
 	#  store params
 	if(myid == main_node):
 		for im in range(nima):
 			params[im][0] = params[im][0]/shrinkage +oldshifts[im][0]
 			params[im][1] = params[im][1]/shrinkage +oldshifts[im][1]
-		line = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime()) + " =>"
+		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 		print(line,"Executed successfully: ","3D alignment","  number of images:%7d"%len(params))
-		utilities.write_text_row(params, os.path.join(outputdir,"params.txt") )
+		write_text_row(params, os.path.join(outputdir,"params.txt") )
 
 def print_dict(dict,theme):
-	line = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime()) + " =>"
+	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	print(line,theme)
 	spaces = "                    "
 	for q in dict:  print("                    => ",q+spaces[len(q):],":  ",dict[q])
@@ -297,10 +288,22 @@ def print_dict(dict,theme):
 
 def main():
 
+	from utilities import write_text_row, drop_image, model_gauss_noise, get_im, set_params_proj, wrap_mpi_bcast, model_circle
+	import user_functions
+	from applications import MPI_start_end
+	from optparse import OptionParser
+	from global_def import SPARXVERSION
+	from EMAN2 import EMData
+	from multi_shc import multi_shc, do_volume
+	from logger import Logger, BaseLogger_Files
+	import sys
+	import os
+	import time
+	import socket
 
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + " stack  [output_directory]  initial_volume  --ir=inner_radius --ou=outer_radius --rs=ring_step --xr=x_range --yr=y_range  --ts=translational_search_step  --delta=angular_step --an=angular_neighborhood  --CTF  --fl --aa --ref_a=S --sym=c1"
-	parser = optparse.OptionParser(usage,version=global_def.SPARXVERSION)
+	parser = OptionParser(usage,version=SPARXVERSION)
 	parser.add_option("--ir",      		type= "int",   default= 1,			help="inner radius for rotational correlation > 0 (set to 1)")
 	parser.add_option("--ou",      		type= "int",   default= -1,			help="outer radius for rotational correlation < int(nx/2)-1 (set to the radius of the particle)")
 	parser.add_option("--rs",      		type= "int",   default= 1,			help="step between rings in rotational correlation >0  (set to 1)" ) 
@@ -361,18 +364,18 @@ def main():
 	ali3d_options.initfl = 0.4
 	ali3d_options.aa     = 0.1
 
-	mpi.mpi_init(0, [])
+	mpi_init(0, [])
 
 
 
-	nproc     = mpi.mpi_comm_size(mpi.MPI_COMM_WORLD)
-	myid      = mpi.mpi_comm_rank(mpi.MPI_COMM_WORLD)
+	nproc     = mpi_comm_size(MPI_COMM_WORLD)
+	myid      = mpi_comm_rank(MPI_COMM_WORLD)
 	main_node = 0
 
 	# Get the pixel size, if none set to 1.0, and the original image size
 	if(myid == main_node):
-		total_stack = EMAN2_cppwrap.EMUtil.get_image_count(stack)
-		a = utilities.get_im(stack)
+		total_stack = EMUtil.get_image_count(stack)
+		a = get_im(stack)
 		nxinit = a.get_xsize()
 		if ali3d_options.CTF:
 			i = a.get_attr('ctf')
@@ -387,12 +390,12 @@ def main():
 		total_stack = 0
 		nxinit = 0
 		pixel_size = 1.0
-	total_stack = utilities.bcast_number_to_all(total_stack, source_node = main_node)
-	pixel_size  = utilities.bcast_number_to_all(pixel_size, source_node = main_node)
-	nxinit      = utilities.bcast_number_to_all(nxinit, source_node = main_node)
+	total_stack = bcast_number_to_all(total_stack, source_node = main_node)
+	pixel_size  = bcast_number_to_all(pixel_size, source_node = main_node)
+	nxinit      = bcast_number_to_all(nxinit, source_node = main_node)
 
 	if(radi < 1):  radi = nxinit//2-2
-	elif((2*radi+2)>nxinit):  global_def.ERROR("Particle radius set too large!","sxcenter_projections",1,myid)
+	elif((2*radi+2)>nxinit):  ERROR("Particle radius set too large!","sxcenter_projections",1,myid)
 	ali3d_options.ou = radi
 
 	shrink = options.shrink
@@ -403,18 +406,18 @@ def main():
 	if(myid == main_node):
 		print( "   masterdir   ",masterdir)
 		if( masterdir == ""):
-			timestring = time.strftime("_%d_%b_%Y_%H_%M_%S", time.localtime())
+			timestring = strftime("_%d_%b_%Y_%H_%M_%S", localtime())
 			masterdir = "master"+timestring
 		li = len(masterdir)
 		cmd = "{} {}".format("mkdir", masterdir)
-		junk = utilities.cmdexecute(cmd)
+		junk = cmdexecute(cmd)
 	else:
 		li = 0
 
-	li = mpi.mpi_bcast(li,1,mpi.MPI_INT,main_node,mpi.MPI_COMM_WORLD)[0]
+	li = mpi_bcast(li,1,MPI_INT,main_node,MPI_COMM_WORLD)[0]
 
 	if( li > 0 ):
-		masterdir = mpi.mpi_bcast(masterdir,li,mpi.MPI_CHAR,main_node,mpi.MPI_COMM_WORLD)
+		masterdir = mpi_bcast(masterdir,li,MPI_CHAR,main_node,MPI_COMM_WORLD)
 		masterdir = string.join(masterdir,"")
 
 
@@ -433,7 +436,7 @@ def main():
 	else:  yr = options.yr
 
 	delta = float(options.delta)
-	if(delta <= 0.0):  delta = "%f"%round(numpy.degrees(math.atan(1.0/float(radi))), 2)
+	if(delta <= 0.0):  delta = "%f"%round(degrees(atan(1.0/float(radi))), 2)
 	else:    delta = "%f"%delta
 
 	paramsdict = {	"stack":stack,"delta":delta, "ts":"1.0", "xr":xr, "an":angular_neighborhood, \
@@ -447,14 +450,14 @@ def main():
 
 
 	if( myid == main_node ):
-		utilities.write_text_file(list(range(total_stack)), partids)
-		utilities.write_text_row([[0.0,0.0,0.0,0.0,0.0] for i in range(total_stack) ], partstack)
+		write_text_file(list(range(total_stack)), partids)
+		write_text_row([[0.0,0.0,0.0,0.0,0.0] for i in range(total_stack) ], partstack)
 
 	run3Dalignment(paramsdict, partids, partstack, initdir, 0, myid, main_node, nproc)
 
-	mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
+	mpi_barrier(MPI_COMM_WORLD)
 
-	mpi.mpi_finalize()
+	mpi_finalize()
 
 
 if __name__=="__main__":

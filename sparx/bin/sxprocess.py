@@ -32,34 +32,15 @@ from __future__ import print_function
 #
 #
 
-import EMAN2
-import EMAN2_cppwrap
-import EMAN2jsondb
-import filter
-import fundamentals
-import glob
-import global_def
-import logger
-import math
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pylab as plt
-import morphology
-import numpy
-import optparse
-import os
-import projection
-import pyemtbx.options
-import random
-import scipy
-import statistics
-import string
-import subprocess
-import sys
-import time
-import utilities
 from builtins import range
+import	global_def
+from	global_def 	import *
+from	EMAN2 		import EMUtil, parsemodopt, EMAN2Ctf
+from    EMAN2jsondb import js_open_dict
 
+from	utilities 	import *
+from    statistics import mono
+import  os
 
 
 
@@ -67,6 +48,7 @@ from builtins import range
  rotate_shift_params(paramsin, transf) has been moved to utilities
 """
 
+from utilities import rotate_shift_params
 
 """
 	Traveling salesman problem solved using Simulated Annealing.
@@ -75,7 +57,7 @@ from builtins import range
 #from pylab import *
 
 def Distance(i1, i2, lccc):
-	return max(1.0 - lccc[statistics.mono(i1,i2)][0], 0.0)
+	return max(1.0 - lccc[mono(i1,i2)][0], 0.0)
 # 	return sqrt((R1[0]-R2[0])**2+(R1[1]-R2[1])**2)
 
 def TotalDistance(city, lccc):
@@ -124,7 +106,8 @@ def Plot(city, R, dist):
 def tsp(lccc):
 
 	#     ncity = 100        # Number of cities to visit
-	ncity = int( (1+numpy.sqrt(1+8*len(lccc)))/2 )        # Number of cities to visit
+	from math import sqrt
+	ncity = int( (1+sqrt(1+8*len(lccc)))/2 )        # Number of cities to visit
     #  sanity check
 	if( ncity*(ncity-1)/2 != len(lccc) ): return [-1]
 
@@ -145,7 +128,7 @@ def tsp(lccc):
 	#  Not clear what is nct
 	nct = ncity
 	# Stores points of a move
-	n = numpy.zeros(6, dtype=int)
+	n = zeros(6, dtype=int)
 
 	T = Tstart # temperature
 
@@ -158,8 +141,8 @@ def tsp(lccc):
 
 			while True: # Will find two random cities sufficiently close by
 				# Two cities n[0] and n[1] are choosen at random
-				n[0] = int((nct)*scipy.rand())     # select one city
-				n[1] = int((nct-1)*scipy.rand())   # select another city, but not the same
+				n[0] = int((nct)*rand())     # select one city
+				n[1] = int((nct-1)*rand())   # select another city, but not the same
 				if (n[1] >= n[0]): n[1] += 1   #
 				if (n[1] < n[0]): (n[0],n[1]) = (n[1],n[0]) # swap, because it must be: n[0]<n[1]
 				nn = (n[0]+nct -n[1]-1) % nct  # number of cities not on the segment n[0]..n[1]
@@ -170,19 +153,19 @@ def tsp(lccc):
 			n[2] = (n[0]-1) % nct  # index before n0  -- see figure in the lecture notes
 			n[3] = (n[1]+1) % nct  # index after n2   -- see figure in the lecture notes
 
-			if Preverse > scipy.rand():
+			if Preverse > rand():
 				# Here we reverse a segment
 				# What would be the cost to reverse the path between city[n[0]]-city[n[1]]?
 				de = Distance(city[n[2]], city[n[1]], lccc) + Distance(city[n[3]], city[n[0]], lccc)\
 					 - Distance(city[n[2]], city[n[0]], lccc) - Distance(city[n[3]] ,city[n[1]], lccc)
 
-				if de<0 or numpy.exp(-de/T)>scipy.rand(): # Metropolis
+				if de<0 or exp(-de/T)>rand(): # Metropolis
 					accepted += 1
 					dist += de
 					reverse(city, n)
 			else:
 				# Here we transpose a segment
-				nc = (n[1]+1+ int(scipy.rand()*(nn-1)))%nct  # Another point outside n[0],n[1] segment. See picture in lecture nodes!
+				nc = (n[1]+1+ int(rand()*(nn-1)))%nct  # Another point outside n[0],n[1] segment. See picture in lecture nodes!
 				n[4] = nc
 				n[5] = (nc+1) % nct
 
@@ -192,7 +175,7 @@ def tsp(lccc):
 				de += Distance( city[n[0]], city[n[4]], lccc) + Distance( city[n[1]], city[n[5]], lccc) \
 						+ Distance( city[n[2]], city[n[3]], lccc)
 
-				if de<0 or numpy.exp(-de/T)>scipy.rand(): # Metropolis
+				if de<0 or exp(-de/T)>rand(): # Metropolis
 					accepted += 1
 					dist += de
 					city = transpt(city, n)
@@ -214,13 +197,22 @@ def tsp(lccc):
 
 
 def pca(cov):
+	from numpy import  linalg, argsort
 	""" assume one sample per column """
-	values, vecs = numpy.linalg.eigh(cov)
-	perm = numpy.argsort(-values)  # sort in descending order
+	values, vecs = linalg.eigh(cov)
+	perm = argsort(-values)  # sort in descending order
 	return values[perm], vecs[:, perm]
 
 
 def main():
+	import sys
+	import os
+	import math
+	import random
+	import pyemtbx.options
+	import time
+	from   random   import random, seed, randint
+	from   optparse import OptionParser
 
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + """ [options] <inputfile> <outputfile>
@@ -359,7 +351,7 @@ def main():
 
 """
 
-	parser = optparse.OptionParser(usage,version=global_def.SPARXVERSION)
+	parser = OptionParser(usage,version=SPARXVERSION)
 	parser.add_option("--order",                action="store_true", default=False,                  help="Two arguments are required: name of input stack and desired name of output stack. The output stack is the input stack sorted by similarity in terms of cross-correlation coefficent.")
 	parser.add_option("--order_lookup",         action="store_true", default=False,                  help="Test/Debug.")
 	parser.add_option("--order_metropolis",     action="store_true", default=False,                  help="Test/Debug.")
@@ -457,11 +449,13 @@ def main():
 		if nargs != 2:
 			print("must provide name of input and output file!")
 			return
+		from EMAN2 import Processor
 		instack = args[0]
 		outstack = args[1]
-		nima = EMAN2_cppwrap.EMUtil.get_image_count(instack)
+		nima = EMUtil.get_image_count(instack)
+		from filter import filt_ctf
 		for i in range(nima):
-			img = EMAN2_cppwrap.EMData()
+			img = EMData()
 			img.read_image(instack, i)
 			try:
 				ctf = img.get_attr('ctf')
@@ -488,7 +482,7 @@ def main():
 			else:                             ip = 0
 
 
-			params = {"filter_type": EMAN2_cppwrap.Processor.fourier_filter_types.CTF_,
+			params = {"filter_type": Processor.fourier_filter_types.CTF_,
 	 			"defocus" : dz,
 				"Cs": cs,
 				"voltage": voltage,
@@ -501,7 +495,7 @@ def main():
 				"dza": dza,
 				"azz":azz}
 
-			tmp = EMAN2_cppwrap.Processor.EMFourierFilter(img, params)
+			tmp = Processor.EMFourierFilter(img, params)
 			tmp.set_attr_dict({"ctf": ctf})
 
 			tmp.write_image(outstack, i)
@@ -509,81 +503,95 @@ def main():
 	elif options.changesize:
 		nargs = len(args)
 		if nargs != 2:
-			global_def.ERROR("must provide name of input and output file!", "change size", 1)
+			ERROR("must provide name of input and output file!", "change size", 1)
 			return
+		from utilities import get_im
 		instack = args[0]
 		outstack = args[1]
 		sub_rate = float(options.ratio)
 
-		nima = EMAN2_cppwrap.EMUtil.get_image_count(instack)
+		nima = EMUtil.get_image_count(instack)
+		from fundamentals import resample
 		for i in range(nima):
-			fundamentals.resample(utilities.get_im(instack, i), sub_rate).write_image(outstack, i)
+			resample(get_im(instack, i), sub_rate).write_image(outstack, i)
 
 	elif options.isacgroup>-1:
 		nargs = len(args)
 		if nargs != 3:
-			global_def.ERROR("Three files needed on input!", "isacgroup", 1)
+			ERROR("Three files needed on input!", "isacgroup", 1)
 			return
+		from utilities import get_im
 		instack = args[0]
-		m=utilities.get_im(args[1],int(options.isacgroup)).get_attr("members")
+		m=get_im(args[1],int(options.isacgroup)).get_attr("members")
 		l = []
 		for k in m:
-			l.append(int(utilities.get_im(args[0],k).get_attr(options.params)))
-		utilities.write_text_file(l, args[2])
+			l.append(int(get_im(args[0],k).get_attr(options.params)))
+		from utilities import write_text_file
+		write_text_file(l, args[2])
 
 	elif options.isacselect:
 		nargs = len(args)
 		if nargs != 2:
-			global_def.ERROR("Two files needed on input!", "isacgroup", 1)
+			ERROR("Two files needed on input!", "isacgroup", 1)
 			return
-		nima = EMAN2_cppwrap.EMUtil.get_image_count(args[0])
+		from utilities import get_im
+		nima = EMUtil.get_image_count(args[0])
 		m = []
 		for k in range(nima):
-			m += utilities.get_im(args[0],k).get_attr("members")
+			m += get_im(args[0],k).get_attr("members")
 		m.sort()
-		utilities.write_text_file(m, args[1])
+		from utilities import write_text_file
+		write_text_file(m, args[1])
 
 	elif options.pw:
 		nargs = len(args)
 		if nargs < 2:
-			global_def.ERROR("must provide name of input and output file!", "pw", 1)
+			ERROR("must provide name of input and output file!", "pw", 1)
 			return
-		d = utilities.get_im(args[0])
+		from utilities import get_im, write_text_file
+		from fundamentals import rops_table
+		d = get_im(args[0])
 		ndim = d.get_ndim()
 		if ndim ==3:
-			pw = fundamentals.rops_table(d)
-			utilities.write_text_file(pw, args[1])
+			pw = rops_table(d)
+			write_text_file(pw, args[1])
 		else:
 			nx = d.get_xsize()
 			ny = d.get_ysize()
-			if nargs ==3: mask = utilities.get_im(args[2])
+			if nargs ==3: mask = get_im(args[2])
 			wn = int(options.wn)
 			if wn == -1:
 				wn = max(nx, ny)
 			else:
-				if( (wn<nx) or (wn<ny) ):  global_def.ERROR("window size cannot be smaller than the image size","pw",1)
-			n = EMAN2_cppwrap.EMUtil.get_image_count(args[0])
-			p = utilities.model_blank(wn,wn)
+				if( (wn<nx) or (wn<ny) ):  ERROR("window size cannot be smaller than the image size","pw",1)
+			n = EMUtil.get_image_count(args[0])
+			from utilities import model_blank, model_circle, pad
+			from EMAN2 import periodogram
+			p = model_blank(wn,wn)
 
 			for i in range(n):
-				d = utilities.get_im(args[0], i)
-				st = EMAN2_cppwrap.Util.infomask(d, None, True)
+				d = get_im(args[0], i)
+				st = Util.infomask(d, None, True)
 				d -= st[0]
 				if nargs==3: d *=mask
-				p += EMAN2_cppwrap.periodogram(utilities.pad(d, wn, wn, 1, 0.))
+				p += periodogram(pad(d, wn, wn, 1, 0.))
 			p /= n
 			p.write_image(args[1])
 
 	elif options.adjpw:
 
 		if len(args) < 3:
-			global_def.ERROR("filt_by_rops input target output fl aa (the last two are optional parameters of a low-pass filter)","adjpw",1)
+			ERROR("filt_by_rops input target output fl aa (the last two are optional parameters of a low-pass filter)","adjpw",1)
 			return
 		img_stack = args[0]
+		from math         import sqrt
+		from fundamentals import rops_table, fft
+		from utilities    import read_text_file, get_im
+		from filter       import  filt_tanl, filt_table
 		if(  args[1][-3:] == 'txt'):
-			rops_dst = utilities.read_text_file( args[1] )
+			rops_dst = read_text_file( args[1] )
 		else:
-			rops_dst = fundamentals.rops_table(utilities.get_im( args[1] ))
+			rops_dst = rops_table(get_im( args[1] ))
 
 		out_stack = args[2]
 		if(len(args) >4):
@@ -593,56 +601,61 @@ def main():
 			fl = -1.0
 			aa = 0.0
 
-		nimage = EMAN2_cppwrap.EMUtil.get_image_count( img_stack )
+		nimage = EMUtil.get_image_count( img_stack )
 
 		for i in range(nimage):
-			img = fundamentals.fft(utilities.get_im(img_stack, i) )
-			rops_src = fundamentals.rops_table(img)
+			img = fft(get_im(img_stack, i) )
+			rops_src = rops_table(img)
 
 			assert len(rops_dst) == len(rops_src)
 
 			table = [0.0]*len(rops_dst)
 			for j in range( len(rops_dst) ):
-				table[j] = numpy.sqrt( rops_dst[j]/rops_src[j] )
+				table[j] = sqrt( rops_dst[j]/rops_src[j] )
 
 			if( fl > 0.0):
-				img = filter.filt_tanl(img, fl, aa)
-			img = fundamentals.fft(filter.filt_table(img, table))
+				img = filt_tanl(img, fl, aa)
+			img = fft(filt_table(img, table))
 			img.write_image(out_stack, i)
 
 	elif options.rotpw != None:
 
 		if len(args) != 1:
-			global_def.ERROR("Only one input permitted","rotpw",1)
+			ERROR("Only one input permitted","rotpw",1)
 			return
-		im = utilities.get_im(args[0])
+		from utilities import write_text_file, get_im
+		from fundamentals import rops_table
+		from math import log10
+		im = get_im(args[0])
 		nx = im.get_xsize()
 		ny = im.get_ysize()
 		nz = im.get_zsize()
 		ndim = im.get_ndim()
 		if(ndim == 3):
 			nn = min(nx,ny,nz)
-			t = fundamentals.rops_table(EMAN2_cppwrap.Util.window(im,nn,nn,nn))
+			t = rops_table(Util.window(im,nn,nn,nn))
 		elif(ndim == 2):
+			from fundamentals import window2d
 			nn = min(nx,ny)
 			print(nn,nx,ny)
-			t = fundamentals.rops_table(fundamentals.window2d(im,nn,nn))
+			t = rops_table(window2d(im,nn,nn))
 		else:
-			t = EMAN2_cppwrap.periodogram(im)
+			t = periodogram(im)
 			t = [t[i] for i in range(t.get_xsize())]
 		x = list(range(len(t)))
-		r = [numpy.log10(q) for q in t]
-		utilities.write_text_file([t,r,x], options.rotpw)
+		r = [log10(q) for q in t]
+		write_text_file([t,r,x], options.rotpw)
 
 	elif options.transformparams != None:
 		if len(args) != 2:
-			global_def.ERROR("Please provide names of input and output files with orientation parameters","transformparams",1)
+			ERROR("Please provide names of input and output files with orientation parameters","transformparams",1)
 			return
+		from utilities import read_text_row, write_text_row
 		transf = [0.0]*6
 		spl = options.transformparams.split(',')
 		for i in range(len(spl)):  transf[i] = float(spl[i])
 
-		utilities.write_text_row( utilities.rotate_shift_params(utilities.read_text_row(args[0]), transf)	, args[1])
+		write_text_row( rotate_shift_params(read_text_row(args[0]), transf)	, args[1])
 
 	elif options.makedb != None:
 		nargs = len(args)
@@ -651,10 +664,10 @@ def main():
 			return
 		dbkey = args[0]
 		print("database key under which params will be stored: ", dbkey)
-		gbdb = EMAN2jsondb.js_open_dict("e2boxercache/gauss_box_DB.json")
+		gbdb = js_open_dict("e2boxercache/gauss_box_DB.json")
 
 		parmstr = 'dummy:'+options.makedb[0]
-		(processorname, param_dict) = EMAN2.parsemodopt(parmstr)
+		(processorname, param_dict) = parsemodopt(parmstr)
 		dbdict = {}
 		for pkey in param_dict:
 			if (pkey == 'invert_contrast') or (pkey == 'use_variance'):
@@ -669,7 +682,7 @@ def main():
 	elif options.generate_projections:
 		nargs = len(args)
 		if nargs != 3:
-			global_def.ERROR("Must provide name of input structure(s) from which to generate projections, name of output projection stack, and prefix for output micrographs."\
+			ERROR("Must provide name of input structure(s) from which to generate projections, name of output projection stack, and prefix for output micrographs."\
 			"sxprocess - generate projections",1)
 			return
 		inpstr  = args[0]
@@ -677,7 +690,7 @@ def main():
 		micpref = args[2]
 
 		parmstr = 'dummy:'+options.generate_projections[0]
-		(processorname, param_dict) = EMAN2.parsemodopt(parmstr)
+		(processorname, param_dict) = parsemodopt(parmstr)
 
 		parm_CTF    = False
 		parm_format = 'bdb'
@@ -725,34 +738,39 @@ def main():
 		if 'sigma_gauss_mic' in param_dict:
 			sigma_gauss_mic = float(param_dict['sigma_gauss_mic'])
 
-		random.seed(int(time()))
+		from filter import filt_gaussl, filt_ctf
+		from utilities import drop_spider_doc, even_angles, model_gauss, delete_bdb, model_blank,pad,model_gauss_noise,set_params2D, set_params_proj
+		from projection import prep_vol,prgs
+		from time import time
+		seed(int(time()))
 		delta = 29
-		angles = utilities.even_angles(delta, 0.0, 89.9, 0.0, 359.9, "S")
+		angles = even_angles(delta, 0.0, 89.9, 0.0, 359.9, "S")
 		nangle = len(angles)
 
 		modelvol = []
-		nvlms = EMAN2_cppwrap.EMUtil.get_image_count(inpstr)
-		for k in range(nvlms):  modelvol.append(utilities.get_im(inpstr,k))
+		nvlms = EMUtil.get_image_count(inpstr)
+		from utilities import get_im
+		for k in range(nvlms):  modelvol.append(get_im(inpstr,k))
 
 		nx = modelvol[0].get_xsize()
 
 		if nx != boxsize:
-			global_def.ERROR("Requested box dimension does not match dimension of the input model.", \
+			ERROR("Requested box dimension does not match dimension of the input model.", \
 			"sxprocess - generate projections",1)
 		nvol = 10
 		volfts = [[] for k in range(nvlms)]
 		for k in range(nvlms):
 			for i in range(nvol):
 				sigma = sigma_add + random()  # 1.5-2.5
-				addon = utilities.model_gauss(sigma, boxsize, boxsize, boxsize, sigma, sigma, 38, 38, 40 )
+				addon = model_gauss(sigma, boxsize, boxsize, boxsize, sigma, sigma, 38, 38, 40 )
 				scale = scale_mult * (0.5+random())
-				vf, kb = projection.prep_vol(modelvol[k] + scale*addon)
+				vf, kb = prep_vol(modelvol[k] + scale*addon)
 				volfts[k].append(vf)
 		del vf, modelvol
 
 		if parm_format == "bdb":
 			stack_data = "bdb:"+outstk
-			utilities.delete_bdb(stack_data)
+			delete_bdb(stack_data)
 		else:
 			stack_data = outstk + ".hdf"
 		Cs      = 2.0
@@ -766,18 +784,19 @@ def main():
 		xstart = 8 + boxsize/2
 		ystart = 8 + boxsize/2
 		rowlen = 17
+		from random import randint
 		params = []
 		for idef in range(3, 8):
 
 			irow = 0
 			icol = 0
 
-			mic = utilities.model_blank(4096, 4096)
+			mic = model_blank(4096, 4096)
 			defocus = idef * 0.5#0.2
 			if parm_CTF:
 				astampl=defocus*0.15
 				astangl=50.0
-				ctf = utilities.generate_ctf([defocus, Cs, voltage,  pixel, 0.0, ampcont, astampl, astangl])
+				ctf = generate_ctf([defocus, Cs, voltage,  pixel, 0.0, ampcont, astampl, astangl])
 
 			for i in range(nangle):
 				for k in range(12):
@@ -796,25 +815,25 @@ def main():
 					ivol = iprj % nvol
 					#imgsrc = randint(0,nvlms-1)
 					imgsrc = iprj % nvlms
-					proj = projection.prgs(volfts[imgsrc][ivol], kb, [phi, tht, psi, -s2x, -s2y])
+					proj = prgs(volfts[imgsrc][ivol], kb, [phi, tht, psi, -s2x, -s2y])
 
 					x = xstart + irow * width
 					y = ystart + icol * width
 
-					mic += utilities.pad(proj, 4096, 4096, 1, 0.0, x-2048, y-2048, 0)
+					mic += pad(proj, 4096, 4096, 1, 0.0, x-2048, y-2048, 0)
 
-					proj = proj + utilities.model_gauss_noise( sigma_proj, nx, nx )
+					proj = proj + model_gauss_noise( sigma_proj, nx, nx )
 					if parm_CTF:
-						proj = filter.filt_ctf(proj, ctf)
+						proj = filt_ctf(proj, ctf)
 						proj.set_attr_dict({"ctf":ctf, "ctf_applied":0})
 
-					proj = proj + filter.filt_gaussl(utilities.model_gauss_noise(sigma2_proj, nx, nx), sigma_gauss)
+					proj = proj + filt_gaussl(model_gauss_noise(sigma2_proj, nx, nx), sigma_gauss)
 					proj.set_attr("origimgsrc",imgsrc)
 					proj.set_attr("test_id", iprj)
 					proj.set_attr("ptcl_source_image",micpref + "%1d.hdf" % (idef-3))
 					# flags describing the status of the image (1 = true, 0 = false)
-					utilities.set_params2D(proj, [0.0, 0.0, 0.0, 0, 1.0])
-					utilities.set_params_proj(proj, [phi, tht, psi, s2x, s2y])
+					set_params2D(proj, [0.0, 0.0, 0.0, 0, 1.0])
+					set_params_proj(proj, [phi, tht, psi, s2x, s2y])
 
 					proj.write_image(stack_data, iprj)
 
@@ -825,30 +844,35 @@ def main():
 
 					iprj += 1
 
-			mic += utilities.model_gauss_noise(sigma_mic,4096,4096)
+			mic += model_gauss_noise(sigma_mic,4096,4096)
 			if parm_CTF:
 				#apply CTF
-				mic = filter.filt_ctf(mic, ctf)
-			mic += filter.filt_gaussl(utilities.model_gauss_noise(sigma2_mic, 4096, 4096), sigma_gauss_mic)
+				mic = filt_ctf(mic, ctf)
+			mic += filt_gaussl(model_gauss_noise(sigma2_mic, 4096, 4096), sigma_gauss_mic)
 
 			mic.write_image(micpref + "%1d.hdf" % (idef-3), 0)
 
-		utilities.drop_spider_doc("params.txt", params)
+		drop_spider_doc("params.txt", params)
 
 	elif options.importctf != None:
 		print(' IMPORTCTF  ')
-		grpfile = 'groupid%04d'%random.randint(1000,9999)
-		ctfpfile = 'ctfpfile%04d'%random.randint(1000,9999)
+		from utilities import read_text_row,write_text_row
+		from random import randint
+		import subprocess
+		grpfile = 'groupid%04d'%randint(1000,9999)
+		ctfpfile = 'ctfpfile%04d'%randint(1000,9999)
 		cterr = [options.defocuserror/100.0, options.astigmatismerror]
-		ctfs = utilities.read_text_row(options.importctf)
+		ctfs = read_text_row(options.importctf)
 		for kk in range(len(ctfs)):
 			root,name = os.path.split(ctfs[kk][-1])
 			ctfs[kk][-1] = name[:-4]
 		if(options.input[:4] != 'bdb:'):
-			global_def.ERROR('Sorry, only bdb files implemented','importctf',1)
+			ERROR('Sorry, only bdb files implemented','importctf',1)
 		d = options.input[4:]
 		#try:     str = d.index('*')
 		#except:  str = -1
+		from string import split
+		import glob
 		uu = os.path.split(d)
 		uu = os.path.join(uu[0],'EMAN2DB',uu[1]+'.bdb')
 		flist = glob.glob(uu)
@@ -857,7 +881,7 @@ def main():
 			root = root[:-7]
 			name = name[:-4]
 			fil = 'bdb:'+os.path.join(root,name)
-			sourcemic = EMAN2_cppwrap.EMUtil.get_all_attributes(fil,'ptcl_source_image')
+			sourcemic = EMUtil.get_all_attributes(fil,'ptcl_source_image')
 			nn = len(sourcemic)
 			gctfp = []
 			groupid = []
@@ -879,8 +903,8 @@ def main():
 							groupid.append(kk)
 						break
 			if(len(groupid) > 0):
-				utilities.write_text_row(groupid, grpfile)
-				utilities.write_text_row(gctfp, ctfpfile)
+				write_text_row(groupid, grpfile)
+				write_text_row(gctfp, ctfpfile)
 				cmd = "{} {} {} {}".format('e2bdb.py',fil,'--makevstack=bdb:'+root+'G'+name,'--list='+grpfile)
 				#print cmd
 				subprocess.call(cmd, shell=True)
@@ -894,41 +918,46 @@ def main():
 		subprocess.call(cmd, shell=True)
 
 	elif options.scale > 0.0:
+		from utilities import read_text_row,write_text_row
 		scale = options.scale
 		nargs = len(args)
 		if nargs != 2:
 			print("Please provide names of input and output file!")
 			return
-		p = utilities.read_text_row(args[0])
+		p = read_text_row(args[0])
 		for i in range(len(p)):
 			p[i][3] /= scale
 			p[i][4] /= scale
-		utilities.write_text_row(p, args[1])
+		write_text_row(p, args[1])
 
 	elif options.adaptive_mask:
+		from utilities import get_im
+		from morphology import adaptive_mask
 		nargs = len(args)
 		if nargs ==0:
 			print(" Generate soft-edged 3D mask from input 3D volume automatically or using the user provided threshold.")
 			return
 		elif nargs > 2:
-			global_def.ERROR( "Too many arguments", "options.adaptive_mask", 1)
+			ERROR( "Too many arguments", "options.adaptive_mask", 1)
 			return
 		
-		inputvol = utilities.get_im(args[0]) # args[0]: input 3D volume file path
+		inputvol = get_im(args[0]) # args[0]: input 3D volume file path
 		input_path, input_file_name = os.path.split(args[0])
 		input_file_name_root,ext=os.path.splitext(input_file_name)
 		if nargs == 2:  mask_file_name = args[1] # args[1]: output 3D mask file path
 		else:           mask_file_name = "adaptive_mask_for_" + input_file_name_root + ".hdf" # Only hdf file is output.
 
-		if( options.fl > 0.0 ):  inputvol =filter.filt_tanl(inputvol,options.fl/options.pixel_size, options.aa)
+		if( options.fl > 0.0 ):  inputvol =filt_tanl(inputvol,options.fl/option.pixel_size, options.aa)
 		if( options.mol_mass> 0.0 ): density_threshold = inputvol.find_3d_threshold(options.mol_mass, options.pixel_size)
 		else: density_threshold = options.threshold
 		if options.edge_type == "cosine": mode = "C"
 		else:  mode = "G"
 
-		morphology.adaptive_mask(inputvol, options.nsigma, density_threshold, options.ndilation, options.edge_width, mode).write_image(mask_file_name)
+		adaptive_mask(inputvol, options.nsigma, density_threshold, options.ndilation, options.edge_width, mode).write_image(mask_file_name)
 	
 	elif options.binary_mask:
+		from utilities import get_im
+		from morphology import binarize, erosion, dilation
 		nargs = len(args)
 		if nargs == 0:
 			print(" Generate binary 3D mask from input 3D volume using the user-provided threshold.")
@@ -937,31 +966,38 @@ def main():
 			print("Too many arguments are given, try again!")
 			return
 		
-		inputvol = utilities.get_im(args[0])
+		inputvol = get_im(args[0])
 		input_path, input_file_name = os.path.split(args[0])
 		input_file_name_root,ext=os.path.splitext(input_file_name)
 		if nargs == 2:  mask_file_name = args[1]
 		else:           mask_file_name = "binary_mask_for_" + input_file_name_root + ".hdf" # Only hdf file is output.
-		mask3d = morphology.binarize(inputvol, options.bin_threshold)
-		for i in range(options.nerosion): mask3d = morphology.erosion(mask3d)
-		for i in range(options.ndilation): mask3d = morphology.dilation(mask3d)
+		mask3d = binarize(inputvol, options.bin_threshold)
+		for i in range(options.nerosion): mask3d = erosion(mask3d)
+		for i in range(options.ndilation): mask3d = dilation(mask3d)
 		mask3d.write_image(mask_file_name)
 
 	elif options.combinemaps:
 		if options.output_dir !="./":
 			if not os.path.exists(options.output_dir): os.mkdir(options.output_dir)
+		from logger import Logger,BaseLogger_Files
 		if os.path.exists(os.path.join(options.output_dir, "log.txt")): os.remove(os.path.join(options.output_dir, "log.txt"))
-		log_main=logger.Logger(logger.BaseLogger_Files())
+		log_main=Logger(BaseLogger_Files())
 		log_main.prefix = os.path.join(options.output_dir, "./")
 		#line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 		log_main.add("--------------------------------------------")
 		log_main.add("------->>> SPHIRE combinemaps <<<-------")
+		from utilities    	import get_im, write_text_file, read_text_file
+		from fundamentals 	import rot_avg_table, fft
+		from morphology   	import compute_bfactor,power
+		from statistics   	import fsc, pearson
+		from filter       	import filt_table, filt_gaussinv, filt_tanl
+		from EMAN2 			import periodogram
 		
 		nargs = len(args)
 		if nargs < 1:
-			global_def.ERROR("too few inputs", " --combinemaps option", 1)
+			ERROR("too few inputs", " --combinemaps option", 1)
 		if options.pixel_size <= 0.0:
-			global_def.ERROR("set a valid value to pixel_size first! There is no default value for pixel_size", " --combinemaps option", 1)
+			ERROR("set a valid value to pixel_size first! There is no default value for pixel_size", " --combinemaps option", 1)
 		
 		input_path_list = []
 		suffix_patten = None
@@ -969,10 +1005,11 @@ def main():
 		cluster_id_substr_head_idx = None
 		if nargs == 1: # 2D case, 3D single map case, or 3D single maps case
 			if args[0].find("*") != -1: # 3D single maps case
+				import glob
 				input_path_list = glob.glob(args[0])
 				# Check error condition of input file path list
 				if len(input_path_list) == 0:
-					global_def.ERROR("no input files are found with the provided path pattern %s"%(args[0]), "--combinemaps option for 3-D", 1)
+					ERROR("no input files are found with the provided path pattern %s"%(args[0]), "--combinemaps option for 3-D", 1)
 				# Prepare variables for the loop section below
 				# Get prefix and suffix in cluster volume basename pattern 
 				# to find the head/tail indices of cluster id substring
@@ -987,9 +1024,9 @@ def main():
 			input_path_list.append(args[0])
 		
 		try:
-			e1 = utilities.get_im(input_path_list[0],0)
+			e1 = get_im(input_path_list[0],0)
 		except:
-			global_def.ERROR(input_path_list[0]+" does not exist", " --combinemaps option", 1)
+			ERROR(input_path_list[0]+" does not exist", " --combinemaps option", 1)
 		
 		nx = e1.get_xsize()
 		ny = e1.get_ysize()
@@ -1010,43 +1047,43 @@ def main():
 			# log_main.add("randomphasesafter "+str(options.randomphasesafter))
 			log_main.add("------------>>> processing <<<-----------------------")
 			log_main.add("2-D combinemaps for ISAC averaged images")
-			if nargs > 1: global_def.ERROR("too many inputs!", "--combinemaps option for 2-D", 1)
-			else: global_def.ERROR("incorrected number of inputs", "--combinemaps option for 2-D", 1) # This should be unreachable
-			nimage = EMAN2_cppwrap.EMUtil.get_image_count(input_path_list[0])
+			if nargs > 1: ERROR("too many inputs!", "--combinemaps option for 2-D", 1)
+			else: ERROR("incorrected number of inputs", "--combinemaps option for 2-D", 1) # This should be unreachable
+			nimage = EMUtil.get_image_count(input_path_list[0])
 			if options.mask !=None:
 				try:
-					m = utilities.get_im(options.mask)
+					m = get_im(options.mask)
 					log_main.add("user provided mask is %s"%options.mask)
 				except:
-					global_def.ERROR("Mask image %s does not exists"%options.mask, " --combinemaps for 2-D", 1)
+					ERROR("Mask image %s does not exists"%options.mask, " --combinemaps for 2-D", 1)
 			else:
 				m = None
 				log_main.add("Mask is not used")
 			log_main.add("Total number of average images is %d"%nimage)
 			for i in range(nimage):
-				e1 = utilities.get_im(input_path_list[0],i)
+				e1 = get_im(input_path_list[0],i)
 				if m: e1 *=m
 				if options.B_enhance ==0.0 or options.B_enhance == -1.:
-					guinierline = fundamentals.rot_avg_table(morphology.power(EMAN2_cppwrap.periodogram(e1),.5))
+					guinierline = rot_avg_table(power(periodogram(e1),.5))
 					if options.B_stop == 0.0:
 						freq_max   =  1./(2.*options.pixel_size)
 					else:
 						freq_max =1./options.B_stop
 					freq_min   =  1./options.B_start
 					log_main.add("B-factor exp(-B*s^2) is estimated from %f[A] to %f[A]"%(options.B_start, 2*options.pixel_size))
-					b,junk,ifreqmin, ifreqmax =morphology.compute_bfactor(guinierline, freq_min, freq_max, options.pixel_size)
+					b,junk,ifreqmin, ifreqmax =compute_bfactor(guinierline, freq_min, freq_max, options.pixel_size)
 					global_b = b*4
 					log_main.add( "The estimated slope of rotationally averaged Fourier factors  of the summed volumes is %f"%round(-b,2))
 				else:
-					global_b = options.B_enhance
+					global_b = option.B_enhance
 					log_main.add( "User provided B_factor is %f"%global_b)
-				sigma_of_inverse = numpy.sqrt(2./global_b)
-				e1 = filter.filt_gaussinv(e1,sigma_of_inverse)
+				sigma_of_inverse = sqrt(2./global_b)
+				e1 = filt_gaussinv(e1,sigma_of_inverse)
 				if options.fl > 0.0 and options.fl < 0.5:
 					log_main.add("Low-pass filter ff %   aa  %f"%(options.fl, options.aa))
-					e1 =filter.filt_tanl(e1,options.fl, options.aa)
+					e1 =filt_tanl(e1,options.fl, options.aa)
 				elif options.fl > 0.5:
-					e1 =filter.filt_tanl(e1,options.fl/options.pixel_size, options.aa)
+					e1 =filt_tanl(e1,options.fl/option.pixel_size, options.aa)
 				e1.write_image(options.output)
 
 		else: # 3D case High pass filter should always come along with low-pass filter. 
@@ -1074,9 +1111,9 @@ def main():
 				log_main.add("Combinemaps has single input map")
 				# Check error condition of input 3D density map file path list
 				if options.fl == 0.0: 
-					global_def.ERROR("Low-pass filter to resolution (--fl=0.0) cannot be used with cluster volumes mode", "--combinemaps option for 3-D", 1)
+					ERROR("Low-pass filter to resolution (--fl=0.0) cannot be used with cluster volumes mode", "--combinemaps option for 3-D", 1)
 				if options.B_enhance == 0.0: 
-					global_def.ERROR("Automatic B-factor estimation (--B_enhance=0.0) cannot be used with cluster volumes mode", "--combinemaps option for 3-D", 1)
+					ERROR("Automatic B-factor estimation (--B_enhance=0.0) cannot be used with cluster volumes mode", "--combinemaps option for 3-D", 1)
 				if len(input_path_list) > 1:
 					log_main.add("Using 3D density map path pattern (found %d files in %s)"%(len(input_path_list), os.path.dirname(args[0])))
 				else:
@@ -1086,16 +1123,16 @@ def main():
 				single_map = False
 				map2_path = args[1]
 			elif nargs >=3: 
-				global_def.ERROR("Too many input maps!", "--combinemaps option for 3-D", 1)
-			else: global_def.ERROR("Incorrected number of inputs", "--combinemaps option for 3-D", 1) # This should be unreachable
+				ERROR("Too many input maps!", "--combinemaps option for 3-D", 1)
+			else: ERROR("Incorrected number of inputs", "--combinemaps option for 3-D", 1) # This should be unreachable
 			
 			for map1_path in input_path_list:
 				log_main.add("-------------------------------------------------------")
 				log_main.add("------------->>> %s <<<-----------------------" % map1_path)
 				log_main.add("The first input volume: %s"%map1_path)
-				try: map1 = utilities.get_im(map1_path)
+				try: map1 = get_im(map1_path)
 				except:
-					global_def.ERROR("Sphire combinemaps fails to read the first map " + map1_path, "--combinemaps option for 3-D")
+					ERROR("Sphire combinemaps fails to read the first map " + map1_path, "--combinemaps option for 3-D")
 					exit()
 			
 				if single_map:
@@ -1103,12 +1140,12 @@ def main():
 				else:
 					log_main.add("The second input volume: %s"%map2_path)
 					try:
-						map2 = utilities.get_im(map2_path)
+						map2 = get_im(map2_path)
 					except:
-						global_def.ERROR("Sphire combinemaps fails to read the second map " + map2_path, "--combinemaps option for 3-D", 1)
+						ERROR("Sphire combinemaps fails to read the second map " + map2_path, "--combinemaps option for 3-D", 1)
 				
 					if (map2.get_xsize() != map1.get_xsize()) or (map2.get_ysize() != map1.get_ysize()) or (map2.get_zsize() != map1.get_zsize()):
-						global_def.ERROR("Two input maps have different image size", "--combinemaps option for 3-D", 1)
+						ERROR("Two input maps have different image size", "--combinemaps option for 3-D", 1)
 				
 				suffix = ""
 				if suffix_patten is not None:
@@ -1134,20 +1171,21 @@ def main():
 
 				## prepare mask 
 				if options.mask != None and options.do_adaptive_mask:
-					global_def.ERROR("Wrong options, use either adaptive_mask or supply a mask", " options.mask and options.do_adaptive_mask ", 1)
+					ERROR("Wrong options, use either adaptive_mask or supply a mask", " options.mask and options.do_adaptive_mask ", 1)
 
 				if options.mask != None:
 					log_main.add("User provided mask: %s"%options.mask)
-					try: m = utilities.get_im(options.mask)
+					try: m = get_im(options.mask)
 					except:
-						global_def.ERROR("Sphire combinemaps fails to read mask file " + options.mask, "--combinemaps option for 3-D")
+						ERROR("Sphire combinemaps fails to read mask file " + options.mask, "--combinemaps option for 3-D")
 						exit()
 					if (m.get_xsize() != map1.get_xsize()) or (m.get_ysize() != map1.get_ysize()) or (m.get_zsize() != map1.get_zsize()):
-						global_def.ERROR(" Mask file  "+options.mask+" has different size with input image  ", "--combinemaps for mask "+options.mask), 1
+						ERROR(" Mask file  "+options.mask+" has different size with input image  ", "--combinemaps for mask "+options.mask), 1
 
 				elif options.do_adaptive_mask:
 					log_main.add("Create an adaptive mask, let's wait...")
 					log_main.add("Options.threshold, options.ndilation, options.edge_width %f %5.2f %5.2f"%(options.threshold, options.ndilation, options.edge_width))
+					from morphology import adaptive_mask
 					if single_map:
 						input_vol_mask = map1
 					else:
@@ -1163,7 +1201,7 @@ def main():
 						mode = "C"
 					else:
 						mode = "G"
-					m = morphology.adaptive_mask(
+					m = adaptive_mask(
 						input_vol_mask,
 						options.nsigma,
 						density_threshold,
@@ -1176,21 +1214,26 @@ def main():
 					m = None
 					log_main.add("No mask is applied")
 				## prepare FSC
+				from math import sqrt
 				resolution_FSC143   = 0.5 # for single volume, this is the default resolution
 				resolution_FSChalf  = 0.5
 
 				def filter_product(B_factor, pixel_size, cutoff, aa, image_size):
+					from math import sqrt
 					def gauss_inverse(x, sigma):
+						from math import exp
 						omega = 0.5/(sigma*sigma)
-						return numpy.exp(x*omega)
+						return exp(x*omega)
 					def tanhfl(x, cutoff, aa):
+						from math import pi, tanh
 						omega = cutoff
-						cnst  = numpy.pi/(2.0*omega*aa)
+						cnst  = pi/(2.0*omega*aa)
 						v1    = (cnst*(x + omega))
 						v2    = (cnst*(x - omega))
-						return 0.5*(numpy.tanh(v1) - numpy.tanh(v2))
+						return 0.5*(tanh(v1) - tanh(v2))
+					from math import pi
 					N = image_size//2
-					sigma_of_inverse = numpy.sqrt(2./(B_factor/pixel_size**2))
+					sigma_of_inverse = sqrt(2./(B_factor/pixel_size**2))
 					values = []
 					if cutoff >0.5: cutoff = pixel_size/cutoff # always uses absolute frequencies
 					for i in range(N):
@@ -1237,7 +1280,7 @@ def main():
 					fsc_out = []
 					for ifreq, value in enumerate(fsc[1]):
 						fsc_out.append("%5d   %7.2f   %7.3f"%(ifreq, resolution[ifreq], value))
-					utilities.write_text_file( fsc_out, os.path.join( output_dir, '{0}.txt'.format(name)))
+					write_text_file( fsc_out, os.path.join( output_dir, '{0}.txt'.format(name)))
 
 				def freq_to_angstrom(values, pixel_size):
 					"""
@@ -1253,6 +1296,9 @@ def main():
 				dip_at_fsc = False
 				if not single_map:
 					# Plot FSC curves and write output fsc files
+					import matplotlib
+					matplotlib.use('Agg')
+					import matplotlib.pylab as plt
 					plt.rcParams['font.family'] = 'monospace'
 					title = []
 
@@ -1262,7 +1308,7 @@ def main():
 					plot_title = []
 
 					# Output curves
-					fsc_true = statistics.fsc(map1, map2, 1)
+					fsc_true = fsc(map1, map2, 1)
 					fsc_true[1][0] = 1.0  # always reset fsc of zero frequency as 1.0
 					plot_curves.append(fsc_true)
 					plot_names.append(r'FSC halves')
@@ -1270,7 +1316,7 @@ def main():
 					plot_curves.append([fsc_true[0], list(map(scale_fsc, fsc_true[1]))])
 					plot_names.append(r'FSC full')
 					if m is not None:
-						fsc_mask = statistics.fsc(map1*m, map2*m, 1)
+						fsc_mask = fsc(map1*m, map2*m, 1)
 						fsc_mask[1][0] = 1.0  # always reset fsc of zero frequency to 1.0
 						plot_curves.append(fsc_mask)
 						plot_names.append(r'FSC masked halves')
@@ -1413,27 +1459,28 @@ def main():
 						if ifreq ==nfreq143+1: fsc_true[1][ifreq] = (fsc_true[1][nfreq143-2] + fsc_true[1][nfreq143-1])/5.
 						elif ifreq ==nfreq143+2: fsc_true[1][ifreq] = (fsc_true[1][nfreq143-1])/5.
 						else:  fsc_true[1][ifreq] = 0.0
-					EMAN2_cppwrap.Util.add_img(map1, map2)
+					Util.add_img(map1, map2)
 					del map2
-					EMAN2_cppwrap.Util.mul_scalar(map1, 0.5)
+					Util.mul_scalar(map1, 0.5)
 
 				outtext     = [["Squaredfreq"],[ "LogOrig"]]
-				guinierline = fundamentals.rot_avg_table(morphology.power(EMAN2_cppwrap.periodogram(map1),.5))
+				guinierline = rot_avg_table(power(periodogram(map1),.5))
+				from math import log
 				for ig in range(len(guinierline)):
 					x = ig*.5/float(len(guinierline))/options.pixel_size
 					outtext[0].append("%10.6f"%(x*x))
-					outtext[1].append("%10.6f"%numpy.log(guinierline[ig]))
+					outtext[1].append("%10.6f"%log(guinierline[ig]))
 					
 				# starts adjustment of powerspectrum
 				if options.mtf: # MTF division #1
 					log_main.add("MTF correction is applied")
 					log_main.add("MTF file is %s"%options.mtf)
-					try: mtf_core  = utilities.read_text_file(options.mtf, -1)
-					except: global_def.ERROR("Sphire combinemaps fails to read MTF file "+options.mtf, "--combinemaps option for 3-D", 1)
-					map1 = fundamentals.fft(EMAN2_cppwrap.Util.divide_mtf(fundamentals.fft(map1), mtf_core[1], mtf_core[0]))
+					try: mtf_core  = read_text_file(options.mtf, -1)
+					except: ERROR("Sphire combinemaps fails to read MTF file "+options.mtf, "--combinemaps option for 3-D", 1)
+					map1 = fft(Util.divide_mtf(fft(map1), mtf_core[1], mtf_core[0]))
 					outtext.append(["LogMTFdiv"])
-					guinierline   = fundamentals.rot_avg_table(morphology.power(EMAN2_cppwrap.periodogram(map1),.5))
-					for ig in range(len(guinierline)): outtext[-1].append("%10.6f"%numpy.log(guinierline[ig]))
+					guinierline   = rot_avg_table(power(periodogram(map1),.5))
+					for ig in range(len(guinierline)): outtext[-1].append("%10.6f"%log(guinierline[ig]))
 				else: log_main.add("MTF is not applied")
 
 				if options.fsc_adj and not single_map:# limit resolution #2
@@ -1441,14 +1488,14 @@ def main():
 					#log_main.add("Notice: FSC adjustment of powerspectrum will increase B-factor 2-3 times than not!")
 					#### FSC adjustment ((2.*fsc)/(1+fsc)) to the powerspectrum;
 					fil = len(fsc_true[1])*[None]
-					for i in range(len(fil)): fil[i] = numpy.sqrt(fsc_true[1][i]) # fsc already matched to full dataset
-					map1 = filter.filt_table(map1,fil)
-					guinierline = fundamentals.rot_avg_table(morphology.power(EMAN2_cppwrap.periodogram(map1),.5))
+					for i in range(len(fil)): fil[i] = sqrt(fsc_true[1][i]) # fsc already matched to full dataset
+					map1 = filt_table(map1,fil)
+					guinierline = rot_avg_table(power(periodogram(map1),.5))
 					outtext.append(["LogFSCadj"])
-					for ig in range(len(guinierline)):outtext[-1].append("%10.6f"%numpy.log(guinierline[ig]))
+					for ig in range(len(guinierline)):outtext[-1].append("%10.6f"%log(guinierline[ig]))
 				else: log_main.add("Fsc_adj is not applied")
 
-				map1 = fundamentals.fft(map1)
+				map1 = fft(map1)
 				if options.B_enhance !=-1: #3 One specifies and then apply B-factor sharpen
 					if options.B_enhance == 0.0: # auto mode
 						cutoff_by_fsc = 0
@@ -1456,35 +1503,35 @@ def main():
 							if fsc_true[1][ifreq]<0.143: break
 						cutoff_by_fsc = float(ifreq-1)
 						freq_max      = cutoff_by_fsc/(2.*len(fsc_true[0]))/options.pixel_size
-						guinierline    = fundamentals.rot_avg_table(morphology.power(EMAN2_cppwrap.periodogram(map1),.5))
+						guinierline    = rot_avg_table(power(periodogram(map1),.5))
 						logguinierline = []
-						for ig in range(len(guinierline)):logguinierline.append(numpy.log(guinierline[ig]))
+						for ig in range(len(guinierline)):logguinierline.append(log(guinierline[ig]))
 						freq_min = 1./options.B_start  # given frequencies in Angstrom unit, say, B_start is 10 Angstrom, or 15  Angstrom
 						if options.B_stop!=0.0: freq_max = 1./options.B_stop 
 						if freq_min>= freq_max:
 							log_main.add("B_start is too high! Decrease it and rerun the program!")
-							global_def.ERROR("B_start is too high! Decrease it and re-run the program!", "--combinemaps option", 1)
-						b, junk, ifreqmin, ifreqmax = morphology.compute_bfactor(guinierline, freq_min, freq_max, options.pixel_size)
+							ERROR("B_start is too high! Decrease it and re-run the program!", "--combinemaps option", 1)
+						b, junk, ifreqmin, ifreqmax = compute_bfactor(guinierline, freq_min, freq_max, options.pixel_size)
 						global_b = 4.*b # Just a convention!
-						cc = statistics.pearson(junk[1],logguinierline)
+						cc = pearson(junk[1],logguinierline)
 						log_main.add("Similarity between the fitted line and 1-D rotationally average power spectrum within [%d, %d] is %5.3f"%(\
-							  ifreqmin, ifreqmax, statistics.pearson(junk[1][ifreqmin:ifreqmax],logguinierline[ifreqmin:ifreqmax])))
+							  ifreqmin, ifreqmax, pearson(junk[1][ifreqmin:ifreqmax],logguinierline[ifreqmin:ifreqmax])))
 						log_main.add("The slope is %6.2f[A^2]"%(round(-b,2)))
-						sigma_of_inverse = numpy.sqrt(2./(global_b/options.pixel_size**2))
+						sigma_of_inverse = sqrt(2./(global_b/options.pixel_size**2))
 					else: # User provided value
 						#log_main.add( " apply user provided B-factor to enhance map!")
 						log_main.add("User-provided B-factor is %6.2f[A^2]"%options.B_enhance)
-						sigma_of_inverse = numpy.sqrt(2./((abs(options.B_enhance))/options.pixel_size**2))
+						sigma_of_inverse = sqrt(2./((abs(options.B_enhance))/options.pixel_size**2))
 						global_b = options.B_enhance
 
-					map1 = (filter.filt_gaussinv(map1, sigma_of_inverse))
-					guinierline = fundamentals.rot_avg_table(morphology.power(EMAN2_cppwrap.periodogram(map1),.5))
+					map1 = (filt_gaussinv(map1, sigma_of_inverse))
+					guinierline = rot_avg_table(power(periodogram(map1),.5))
 					outtext.append([" LogBfacapplied"])
 					last_non_zero = -999.0
 					for ig in range(len(guinierline)):
 						if guinierline[ig]>0: 
-							outtext[-1].append("%10.6f"%numpy.log(guinierline[ig]))
-							last_non_zero = numpy.log(guinierline[ig])
+							outtext[-1].append("%10.6f"%log(guinierline[ig]))
+							last_non_zero = log(guinierline[ig])
 						else: outtext[-1].append("%10.6f"%last_non_zero)
 				else: log_main.add("B-factor enhancement is not applied to map!")
 
@@ -1492,15 +1539,15 @@ def main():
 				if not single_map:
 					if options.fl !=-1.: # User provided low-pass filter #4.
 						if options.fl>0.5: # Input is in Angstrom 
-							map1   = filter.filt_tanl(map1,options.pixel_size/options.fl, min(options.aa,.1))
+							map1   = filt_tanl(map1,options.pixel_size/options.fl, min(options.aa,.1))
 							cutoff = options.fl
 							log_main.add("low-pass filter to user-provided %f[A]"%cutoff)
 						elif options.fl>0.0 and options.fl< 0.5:  # input is in absolution frequency
-							map1   = filter.filt_tanl(map1,options.fl, min(options.aa,.1))
+							map1   = filt_tanl(map1,options.fl, min(options.aa,.1))
 							cutoff = options.pixel_size/options.fl
 							log_main.add("Low-pass filter to user-provided %f[A]"%cutoff)
 						else: # low-pass filter to resolution determined by FSC0.143
-							map1   = filter.filt_tanl(map1,resolution_FSC143, options.aa)
+							map1   = filt_tanl(map1,resolution_FSC143, options.aa)
 							cutoff = options.pixel_size/resolution_FSC143
 							log_main.add("Low-pass filter to FSC0.143 resolution (%f[A])!"%cutoff)
 					else:
@@ -1519,17 +1566,17 @@ def main():
 						log_main.add("There is no low-pass filteration in single map enhancement")
 					else:
 						if options.fl>0.5: # Input is in Angstrom 
-							map1   = filter.filt_tanl(map1, options.pixel_size/options.fl, min(options.aa,.1))
+							map1   = filt_tanl(map1, options.pixel_size/options.fl, min(options.aa,.1))
 							cutoff = options.fl
 						else:
 							"""
 							map1   = filt_tanl(map1,options.fl, min(options.aa,.1))
 							cutoff = options.pixel_size/options.fl
 							"""
-							global_def.ERROR("Incorrect low-pass filter value, it should be in Angstroms", "combinemaps", 1)
+							ERROR("Incorrect low-pass filter value, it should be in Angstroms", "combinemaps", 1)
 						log_main.add("Low-pass filter to user provided %f[A]"%cutoff)
 					
-				map1 = fundamentals.fft(map1)
+				map1 = fft(map1)
 				file_name, file_ext = os.path.splitext(options.output)
 				if file_ext =='': file_ext = ".hdf"
 				file_path_nomask = os.path.join(options.output_dir, file_name+suffix+"_nomask"+file_ext)
@@ -1553,7 +1600,7 @@ def main():
 				log_main.add("Guinierlines in logscale are saved in "+file_path_guinierlines)
 				if options.fl !=-1: log_main.add("Tanl low-pass filter is applied using cutoff frequency 1/%5.2f[1/A]" %round(cutoff,2))
 				else: log_main.add("The final volume is not low-pass filtered. ")
-				utilities.write_text_file(outtext, file_path_guinierlines)
+				write_text_file(outtext, file_path_guinierlines)
 
 				# evaluation of enhancement: values, values.index(max(values)), max(values), index_zero, int(index_zero - cutoff*N*2)
 				if cutoff !=0.0:
@@ -1594,14 +1641,15 @@ def main():
 			if output_stack_name is None:
 				if stack_is_bdb: output_stack_name  = "bdb:window_"+input_file_name_root[4:]
 				else: output_stack_name = "window_"+input_file_name_root+".hdf" # Only hdf file is output.
-			nimage = EMAN2_cppwrap.EMUtil.get_image_count(inputstack)
+			nimage = EMUtil.get_image_count(inputstack)
+			from utilities import get_im
 			for i in range(nimage):
-				im = utilities.get_im(inputstack,i)
+				im = get_im(inputstack,i)
 				if( i == 0 ):
-					if( im.get_xsize() < options.box ):  global_def.ERROR( "New image size has to be smaller than the original image size", "sxprocess.py", 1)
+					if( im.get_xsize() < options.box ):  ERROR( "New image size has to be smaller than the original image size", "sxprocess.py", 1)
 					newz = im.get_zsize()
 					if( newz > 1):  newz = options.box
-				im = EMAN2_cppwrap.Util.window(im, options.box,options.box, newz, 0,0,0)
+				im = Util.window(im, options.box,options.box, newz, 0,0,0)
 				im.write_image(output_stack_name,i)
 
 	elif options.pad:
@@ -1620,50 +1668,55 @@ def main():
 			if output_stack_name is None:
 				if stack_is_bdb: output_stack_name  = "bdb:pad_"+input_file_name_root[4:]
 				else: output_stack_name = "pad_"+input_file_name_root+".hdf" # Only hdf file is output.
-			nimage = EMAN2_cppwrap.EMUtil.get_image_count(inputstack)
+			nimage = EMUtil.get_image_count(inputstack)
+			from utilities import get_im, pad
 			for i in range(nimage):
-				im = utilities.get_im(inputstack,i)
+				im = get_im(inputstack,i)
 				if( i == 0 ):
-					if( im.get_xsize() > options.box ):  global_def.ERROR( "New image size has to be larger than the original image size", "sxprocess.py", 1)
+					if( im.get_xsize() > options.box ):  ERROR( "New image size has to be larger than the original image size", "sxprocess.py", 1)
 					newz = im.get_zsize()
 					if( newz > 1):  newz = options.box
-				utilities.pad(im, options.box, options.box, newz, float(options.background)).write_image(output_stack_name,i)
+				pad(im, options.box, options.box, newz, float(options.background)).write_image(output_stack_name,i)
 
 	elif options.angular_distribution:
+		from utilities import angular_distribution
 		nargs = len(args)
 		if nargs > 1:
-			global_def.ERROR('Too many inputs are given, see usage and restart the program!',"sxprocess.py",1)
+			ERROR('Too many inputs are given, see usage and restart the program!',"sxprocess.py",1)
 		else:
 			if not os.path.exists(args[0]):
-				global_def.ERROR( "Params file does not exists! Please rename and restart the program.", "sxprocess.py", 1)
+				ERROR( "Params file does not exists! Please rename and restart the program.", "sxprocess.py", 1)
 			strInput = args[0]
 			strOutput = strInput[:-len(strInput.split('/')[-1])] + 'distribution.bild'
 			if options.pixel_size == 0:
 				options.pixel_size = 1
-			utilities.angular_distribution(inputfile=strInput, options=options, output=strOutput)
+			angular_distribution(inputfile=strInput, options=options, output=strOutput)
 			
 	elif options.subtract_stack:
+		from utilities  import get_im, set_params_proj, get_params_proj, write_text_row, model_circle
+		from filter     import filt_tanl
+		from statistics import im_diff
 		nargs = len(args)
 
 		if nargs<2 or nargs>4:
-			global_def.ERROR('Three stack names required, see usage and restart the program!','options.subtract_stack',1)
+			ERROR('Three stack names required, see usage and restart the program!','options.subtract_stack',1)
 		else:
 			minuend_stack    = args[0]
 			subtrahend_stack = args[1]
 			result_stack     = args[2]
 
-			nimages = EMAN2_cppwrap.EMUtil.get_image_count(minuend_stack)
-			mimages = EMAN2_cppwrap.EMUtil.get_image_count(subtrahend_stack)
+			nimages = EMUtil.get_image_count(minuend_stack)
+			mimages = EMUtil.get_image_count(subtrahend_stack)
 			'''
 			if options.comparison_radius>0.5:
 				ERROR('Incorrect maximum resolution', 'options.subtract_stack',1)
 			'''
 			if nimages != mimages:
-				global_def.ERROR('Two input stacks have different number of images', 'options.subtract_stack',1)
+				ERROR('Two input stacks have different number of images', 'options.subtract_stack',1)
 			else:
 				for im in range(nimages):
-					image  = utilities.get_im(minuend_stack, im)
-					simage = utilities.get_im(subtrahend_stack, im)
+					image  = get_im(minuend_stack, im)
+					simage = get_im(subtrahend_stack, im)
 					if options.normalize:
 						if im == 0:
 							'''
@@ -1672,8 +1725,8 @@ def main():
 							else:
 							'''
 							radius = image.get_xsize()//2-1 
-							mask = utilities.model_circle(radius, image.get_xsize(), image.get_ysize())
-						st = EMAN2_cppwrap.Util.infomask(image, mask, False)
+							mask = model_circle(radius, image.get_xsize(), image.get_ysize())
+						st = Util.infomask(image, mask, False)
 						image -= st[0]
 						image /= st[1]
 					'''
@@ -1684,7 +1737,7 @@ def main():
 					image *=a
 					image -=b
 					'''
-					ssimage = EMAN2_cppwrap.Util.subn_img(image, simage)
+					ssimage = Util.subn_img(image, simage)
 					try:
 						ctf = image.get_attr('ctf')
 						ssimage.set_attr('ctf_applied', 0)
@@ -1700,9 +1753,10 @@ def main():
 					ssimage.write_image(result_stack, im)
 
 	elif options.balance_angular_distribution:
-		utilities.write_text_file(utilities.balance_angular_distribution(utilities.read_text_row(args[0]), options.max_occupy, options.angstep, options.symmetry),args[1])
+		from utilities  import balance_angular_distribution, read_text_row, write_text_file
+		write_text_file(balance_angular_distribution(read_text_row(args[0]), options.max_occupy, options.angstep, options.symmetry),args[1])
 
-	else:  global_def.ERROR("Please provide option name","sxprocess.py",1)
+	else:  ERROR("Please provide option name","sxprocess.py",1)
 
 if __name__ == "__main__":
 	main()

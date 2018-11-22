@@ -32,14 +32,12 @@ from __future__ import print_function
 #
 #
 
-import applications
-import development
-import global_def
-import optparse
-import os
-import sys
-import utilities
 
+import os
+import global_def
+from   global_def import *
+from   optparse import OptionParser
+import sys
 def main():
 	
 	progname = os.path.basename(sys.argv[0])
@@ -47,7 +45,7 @@ def main():
 	# usage = progname + " stack <name_output> --ali --active --set_size=param_name_with_size --set_members=param_name_with_id"
 	# # horatio active_refactoring Jy51i1EwmLD4tWZ9_00003_2	
 	usage = progname + " stack <name_output> --ali --set_size=param_name_with_size --set_members=param_name_with_id"
-	parser = optparse.OptionParser(usage,version=global_def.SPARXVERSION)
+	parser = OptionParser(usage,version=SPARXVERSION)
 	parser.add_option("--ali"        , action = "store_true", default=False, help="Perform average using alignment parameters")
 
 	# # horatio active_refactoring Jy51i1EwmLD4tWZ9_00004_1	
@@ -67,21 +65,25 @@ def main():
 			name_output = args[1]
 		
 		if options.filament:
+			from development import ave_ali_filament
 	
 			if global_def.CACHE_DISABLE:
-				utilities.disable_bdb_cache()
+				from utilities import disable_bdb_cache
+				disable_bdb_cache()
 	
 			global_def.BATCH = True
 			ave_ali_filament(args[0], name_output, options.ali)
 			global_def.BATCH = False
 		
 		else:
+			from applications import ave_ali
 	
 			if global_def.CACHE_DISABLE:
-				utilities.disable_bdb_cache()
+				from utilities import disable_bdb_cache
+				disable_bdb_cache()
 	
 			global_def.BATCH = True
-			applications.ave_ali(args[0], name_output, options.ali, options.set_size, options.set_members)
+			ave_ali(args[0], name_output, options.ali, options.set_size, options.set_members)
 			global_def.BATCH = False
 
 if __name__ == "__main__":
