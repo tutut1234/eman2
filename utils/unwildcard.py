@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+from __future__ import print_function
+from __future__ import division
+
 # Author: Markus Stabrin, 2018/11/20 (markus.stabrin@mpi-dortmund.mpg.de
 # Copyright (c) 2018 Max Plank of molecular physiology Dortmund
 #
@@ -25,8 +29,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
-from __future__ import print_function
-from __future__ import division
 
 import os
 import shutil
