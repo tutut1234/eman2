@@ -175,7 +175,7 @@ Checker.okidoki = []
 pym.Message.to_list = my_to_list
 
 
-#python_files = glob.glob('../sparx/bin/sxsort3d_depth.py')
+python_files = glob.glob('../sparx/bin/sxgui_cter.py')
 #python_files = glob.glob('../sparx/libpy/statistics.py')
 rounds = 0
 while True:
@@ -400,6 +400,7 @@ while True:
 
         correct_imports_clean = []
         for entry in correct_imports:
+            print(entry)
             try:
                 importlib.import_module(entry.split()[0])
             except ImportError:
