@@ -274,17 +274,23 @@ while True:
                 no_import_lines[idx] = '{0}pass#IMPORTIMPORTIMPORT {1}\n'.format(string, lines[idx].strip())
         correct_imports = list(set(correct_imports))
 
-        file_content = ''.join(no_from_import_lines)
-        pyfl.check(file_content, file_name, reporter)
+        while True:
+            file_content = ''.join(no_from_import_lines)
+            pyfl.check(file_content, file_name, reporter)
 
-        if not options.silent:
-            with open(os.path.join('tmp', os.path.basename(file_name)), 'w') as write:
-                write.write(file_content)
+            if not options.silent:
+                with open(os.path.join('tmp', os.path.basename(file_name)), 'w') as write:
+                    write.write(file_content)
 
-        if not options.silent:
-            file_content = ''.join(no_import_lines)
-            with open(os.path.join('no_import', os.path.basename(file_name)), 'w') as write:
-                write.write(file_content)
+            if not options.silent:
+                file_content = ''.join(no_import_lines)
+                with open(os.path.join('no_import', os.path.basename(file_name)), 'w') as write:
+                    write.write(file_content)
+
+            if not reporter.okidoki:
+                print(reporter.okidoki)
+                break
+            break
 
         fatal_list = []
         ok_list = []
@@ -403,6 +409,7 @@ while True:
         imports = ['import {0}\n'.format(entry) if entry not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry) for entry in list(set(used_modules))]
         imports.extend(['import {0}\n'.format(entry) if entry.split('.')[-1] not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry.split('.')[-1]) for entry in correct_imports_clean])
         imports = sorted(list(set(imports)))
+        print(imports)
         inserted = False
         for idx, entry in enumerate(imports[:]):
             if entry == 'import matplotlib\n' and not inserted:
