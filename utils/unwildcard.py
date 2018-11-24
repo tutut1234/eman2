@@ -64,7 +64,7 @@ def my_to_list(self):
 def my_exception(self, filename, msg, lineno, offset, text):
     if msg == 'expected an indented block':
         print(filename, msg, lineno, offset, text)
-        self.okidoki.append(lineno)
+        self.okidoki.append([int(lineno)-1, text])
 
 
 def index_search(lines, index, no_index):
@@ -90,6 +90,7 @@ IMPORT_SINGLE_IMPORT_RE = re.compile(r'^(\s*)(?:from\s+[\w.]\s+|)import\s+([\w.,
 IMPORT_LEADING_RE = re.compile("^(\s*)[^\s]*.*")
 IMPORT_COMMENT_RE = re.compile("^(\s*)#[^\s]*.*")
 IMPORT_MATPLOTLIB_RE = re.compile("^(\s*)matplotlib.use")
+IMPORT_FIND_SYNTAX_RE = re.compile("^\s*(if|else|try|except).*:")
 
 
 lib_files = glob.glob('../sparx/libpy/*.py')
@@ -175,8 +176,8 @@ Checker.okidoki = []
 pym.Message.to_list = my_to_list
 
 
-python_files = glob.glob('../sparx/bin/sxgui_cter.py')
-#python_files = glob.glob('../sparx/libpy/statistics.py')
+#python_files = glob.glob('../sparx/bin/sxgui_cter.py')
+python_files = glob.glob('../sparx/libpy/applications.py')
 rounds = 0
 while True:
     rounds += 1
@@ -186,8 +187,6 @@ while True:
     for file_name in python_files:
         print('######################################')
         print(file_name)
-        Checker.okidoki = []
-        reporter.okidoki = []
 
         with open(file_name, 'r') as read:
             lines = read.readlines()
@@ -275,6 +274,9 @@ while True:
         correct_imports = list(set(correct_imports))
 
         while True:
+            stop = False
+            Checker.okidoki = []
+            reporter.okidoki = []
             file_content = ''.join(no_from_import_lines)
             pyfl.check(file_content, file_name, reporter)
 
@@ -288,9 +290,26 @@ while True:
                     write.write(file_content)
 
             if not reporter.okidoki:
-                print(reporter.okidoki)
+                stop = True
+            else:
+                for start_num, text in reporter.okidoki:
+                    stop = 0
+                    for i in range(1, 10):
+                        line = lines[start_num-i]
+                        match = IMPORT_FIND_SYNTAX_RE.match(line)
+                        if match:
+                            stop = i
+                            break
+                    if match.group(1) == 'if':
+                        no_import_lines[start_num - stop] = '\n'
+                        no_from_import_lines[start_num - stop] = '\n'
+                        if 'else:' in text:
+                            no_import_lines[start_num] = '\n'
+                            no_from_import_lines[start_num] = '\n'
+                    else:
+                        stop = True
+            if stop:
                 break
-            break
 
         fatal_list = []
         ok_list = []
