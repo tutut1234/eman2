@@ -38,16 +38,40 @@ import re
 import importlib
 import argparse
 
-from pylint import epylint
+from pyflakes import reporter as modReporter
+from pyflakes.checker import Checker
+import pyflakes.messages as pym
+import pyflakes.api as pyfl
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--silent', action='store_true', help='Do not write any output to disc')
 options = parser.parse_args()
 
+
+def my_report(self, messageClass, *args, **kwargs):
+    if pym.UndefinedName == messageClass:
+        message = messageClass(self.filename, *args, **kwargs)
+        self.okidoki.append(message.to_list())
+
+
+def my_to_list(self):
+    lineno = int(self.lineno) - 1
+    col = int(self.col)
+    name = re.match(".*'(.*)'", self.message % self.message_args).group(1)
+    return [lineno, col, name]
+
+
+def my_exception(self, filename, msg, lineno, offset, text):
+    if msg == 'expected an indented block':
+        print(filename, msg, lineno, offset, text)
+        self.okidoki.append(lineno)
+
+
 def index_search(lines, index, no_index):
     if lines[index].strip().endswith('\\'):
         no_index.append(index+1)
         index_search(lines, index+1, no_index)
+
 
 folders = ['tmp', 'no_import', 'new']
 for entry in folders:
@@ -63,7 +87,6 @@ for entry in folders:
 IMPORT_DEF_RE = re.compile(r'^(?:def|class) ([^(]*).*')
 IMPORT_IMPORTS_RE = re.compile(r'^(\s*).*from\s+([\w.]*)\s+import\s+([\w.]*)\s*(?:as\s+([\w.]*).*|)')
 IMPORT_SINGLE_IMPORT_RE = re.compile(r'^(\s*)(?:from\s+[\w.]\s+|)import\s+([\w.,\s]*)\s*(?:as\s*([\w.]*).*|)')
-IMPORT_LINE_RE = re.compile("\s*([0-9]+),([0-9]+),Undefined variable '(.*)'.*")
 IMPORT_LEADING_RE = re.compile("^(\s*)[^\s]*.*")
 IMPORT_COMMENT_RE = re.compile("^(\s*)#[^\s]*.*")
 IMPORT_MATPLOTLIB_RE = re.compile("^(\s*)matplotlib.use")
@@ -143,8 +166,17 @@ for entry in external_modules:
 
 python_files = bin_files + lib_files
 
+modReporter.Reporter.syntaxError = my_exception
+reporter = modReporter._makeDefaultReporter()
+reporter.okidoki = []
 
-python_files = glob.glob('../sparx/bin/sxsort3d_depth.py')
+Checker.report = my_report
+Checker.okidoki = []
+pym.Message.to_list = my_to_list
+
+
+#python_files = glob.glob('../sparx/bin/sxsort3d_depth.py')
+#python_files = glob.glob('../sparx/libpy/statistics.py')
 rounds = 0
 while True:
     rounds += 1
@@ -152,7 +184,10 @@ while True:
     fatal = 0
     confusion = 0
     for file_name in python_files:
+        print('######################################')
         print(file_name)
+        Checker.okidoki = []
+        reporter.okidoki = []
 
         with open(file_name, 'r') as read:
             lines = read.readlines()
@@ -240,34 +275,21 @@ while True:
         correct_imports = list(set(correct_imports))
 
         file_content = ''.join(no_from_import_lines)
+        pyfl.check(file_content, file_name, reporter)
 
-        tmp_file = os.path.join('tmp', os.path.basename(file_name))
-        no_import_file = os.path.join('no_import', os.path.basename(file_name))
-        with open(tmp_file, 'w') as write:
-            write.write(file_content)
+        if not options.silent:
+            with open(os.path.join('tmp', os.path.basename(file_name)), 'w') as write:
+                write.write(file_content)
 
         if not options.silent:
             file_content = ''.join(no_import_lines)
-            with open(no_import_file, 'w') as write:
+            with open(os.path.join('no_import', os.path.basename(file_name)), 'w') as write:
                 write.write(file_content)
-
-        pylint_stdout, pylint_stderr = epylint.py_run(
-            '{0} -E --msg-template "{{line}},{{column}},{{msg}}"'.format(tmp_file),
-            return_std=True
-            )
-        lint_results = pylint_stdout.getvalue()
 
         fatal_list = []
         ok_list = []
         confusion_list = []
-        for entry in lint_results.splitlines():
-            match = IMPORT_LINE_RE.match(entry)
-            if not match:
-                continue
-
-            line_number, column, name = match.groups()
-            line_number = int(line_number) - 1
-            column = int(column)
+        for line_number, column, name in Checker.okidoki:
             mod_list = []
             for key, values in lib_modules.items():
                 for val in values:
@@ -294,6 +316,9 @@ while True:
                     mod_list = ['numpy']
                     out_list = ok_list
                 elif ['numpy', 'scipy'] == sorted(mod_list):
+                    mod_list = ['numpy']
+                    out_list = ok_list
+                elif ['numpy', 'scipy', 'scipy.optimize'] == sorted(mod_list):
                     mod_list = ['numpy']
                     out_list = ok_list
                 elif name == 'os':
@@ -327,7 +352,7 @@ while True:
             out_list.append([line_number, column, name, mod_list])
 
         print('Typos that needs to be resolved:')
-        template = 'name: {2}, line: {0}, column: {1}, module(s): {3}'
+        template = 'name: {2:>25s}, line: {0: 6d}, column: {1: 6d}, module(s): {3}'
         fatal += len(fatal_list)
         for entry in fatal_list:
             print(template.format(*entry))
@@ -455,6 +480,7 @@ while True:
                 write.write(file_content)
             with open(file_name, 'w') as write:
                 write.write(file_content)
+        print('')
 
     print('FATAL:', fatal)
     print('CONFUSION:', confusion)
