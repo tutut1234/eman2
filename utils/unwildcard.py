@@ -38,41 +38,32 @@ import re
 import importlib
 import argparse
 
-from pyflakes import reporter as modReporter
-from pyflakes.checker import Checker
-import pyflakes.messages as pym
-import pyflakes.api as pyfl
+from pylint import epylint
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--silent', action='store_true', help='Do not write any output to disc')
 options = parser.parse_args()
-
-def my_report(self, messageClass, *args, **kwargs):
-    if pym.UndefinedName == messageClass:
-        message = messageClass(self.filename, *args, **kwargs)
-        self.okidoki.append(str(message))
 
 def index_search(lines, index, no_index):
     if lines[index].strip().endswith('\\'):
         no_index.append(index+1)
         index_search(lines, index+1, no_index)
 
-if not options.silent:
-    folders = ['tmp', 'no_import', 'new']
-    for entry in folders:
-        try:
-            shutil.rmtree(entry)
-        except Exception as e:
-            print(e)
-        try:
-            os.mkdir(entry)
-        except Exception as e:
-            print(e)
+folders = ['tmp', 'no_import', 'new']
+for entry in folders:
+    try:
+        shutil.rmtree(entry)
+    except Exception as e:
+        print(e)
+    try:
+        os.mkdir(entry)
+    except Exception as e:
+        print(e)
 
 IMPORT_DEF_RE = re.compile(r'^(?:def|class) ([^(]*).*')
 IMPORT_IMPORTS_RE = re.compile(r'^(\s*).*from\s+([\w.]*)\s+import\s+([\w.]*)\s*(?:as\s+([\w.]*).*|)')
 IMPORT_SINGLE_IMPORT_RE = re.compile(r'^(\s*)(?:from\s+[\w.]\s+|)import\s+([\w.,\s]*)\s*(?:as\s*([\w.]*).*|)')
-IMPORT_LINE_RE = re.compile(".*:([0-9]+).*undefined name '(.*)'.*")
+IMPORT_LINE_RE = re.compile("\s*([0-9]+),([0-9]+),Undefined variable '(.*)'.*")
 IMPORT_LEADING_RE = re.compile("^(\s*)[^\s]*.*")
 IMPORT_COMMENT_RE = re.compile("^(\s*)#[^\s]*.*")
 IMPORT_MATPLOTLIB_RE = re.compile("^(\s*)matplotlib.use")
@@ -101,6 +92,12 @@ for lib_file in lib_files + lib_eman2_files + lib_eman2_files_2 + lib_eman2_file
         lib_modules[name].append('SPARXVERSION')
         lib_modules[name].append('CACHE_DISABLE')
         lib_modules[name].append('SPARX_MPI_TAG_UNIVERSAL')
+        lib_modules[name].append('interpolation_method_2D')
+        lib_modules[name].append('Eulerian_Angles')
+        lib_modules[name].append('BATCH')
+        lib_modules[name].append('MPI')
+        lib_modules[name].append('LOGFILE')
+        lib_modules[name].append('SPARX_DOCUMENTATION_WEBSITE')
     elif 'EMAN2_meta' == name:
         lib_modules[name].append('EMANVERSION')
         lib_modules[name].append('DATESTAMP')
@@ -145,12 +142,9 @@ for entry in external_modules:
     lib_modules_ext[entry] = dir(sys.modules[entry])
 
 python_files = bin_files + lib_files
-reporter = modReporter._makeDefaultReporter()
-Checker.report = my_report
-Checker.okidoki = []
 
 
-#python_files = glob.glob('../sparx/bin/sxmeridien.py')
+python_files = glob.glob('../sparx/bin/sxsort3d_depth.py')
 rounds = 0
 while True:
     rounds += 1
@@ -159,7 +153,6 @@ while True:
     confusion = 0
     for file_name in python_files:
         print(file_name)
-        Checker.okidoki = []
 
         with open(file_name, 'r') as read:
             lines = read.readlines()
@@ -172,7 +165,11 @@ while True:
             match = IMPORT_IMPORTS_RE.match(entry)
             if IMPORT_COMMENT_RE.match(entry):
                 continue
-            elif match and 'future' not in entry and 'qt' not in entry.lower() and not 'builtins' in entry:
+
+            elif match and \
+                    'future' not in entry and \
+                    'qt' not in entry.lower() and \
+                    not 'builtins' in entry:
                 string = match.group(1)
                 local_func_import.setdefault(match.group(2), []).append(match.group(3))
                 file_modules.append([index, string, [match.group(2)]])
@@ -190,15 +187,20 @@ while True:
                 if lines[index].strip().endswith('\\'):
                     no_index.append(index+1)
                     index_search(lines, index+1, no_index)
+
             else:
                 match = IMPORT_SINGLE_IMPORT_RE.match(entry)
-                if match and 'future' not in entry and 'qt' not in entry.lower() and not 'builtins' in entry:
+                if match and \
+                        'future' not in entry and \
+                        'qt' not in entry.lower() and \
+                        not 'builtins' in entry:
                     string = match.group(1)
                     name = [loc_entry.strip() for loc_entry in match.group(2).split(',')]
                     file_modules.append([index, string, name])
                     if lines[index].strip().endswith('\\'):
                         no_index.append(index+1)
                         index_search(lines, index+1, no_index)
+
             match = IMPORT_MATPLOTLIB_RE.match(entry)
             if match:
                 string = match.group(1)
@@ -238,22 +240,34 @@ while True:
         correct_imports = list(set(correct_imports))
 
         file_content = ''.join(no_from_import_lines)
-        pyfl.check(file_content, file_name, reporter)
 
-        if not options.silent:
-            with open(os.path.join('tmp', os.path.basename(file_name)), 'w') as write:
-                write.write(file_content)
+        tmp_file = os.path.join('tmp', os.path.basename(file_name))
+        no_import_file = os.path.join('no_import', os.path.basename(file_name))
+        with open(tmp_file, 'w') as write:
+            write.write(file_content)
 
         if not options.silent:
             file_content = ''.join(no_import_lines)
-            with open(os.path.join('no_import', os.path.basename(file_name)), 'w') as write:
+            with open(no_import_file, 'w') as write:
                 write.write(file_content)
+
+        pylint_stdout, pylint_stderr = epylint.py_run(
+            '{0} -E --msg-template "{{line}},{{column}},{{msg}}"'.format(tmp_file),
+            return_std=True
+            )
+        lint_results = pylint_stdout.getvalue()
 
         fatal_list = []
         ok_list = []
         confusion_list = []
-        for entry in Checker.okidoki:
-            line_number, name = IMPORT_LINE_RE.match(entry).groups()
+        for entry in lint_results.splitlines():
+            match = IMPORT_LINE_RE.match(entry)
+            if not match:
+                continue
+
+            line_number, column, name = match.groups()
+            line_number = int(line_number) - 1
+            column = int(column)
             mod_list = []
             for key, values in lib_modules.items():
                 for val in values:
@@ -273,7 +287,13 @@ while True:
                     out_list = fatal_list
                 elif len(mod_list) == 1:
                     out_list = ok_list
-                elif 'numpy' in mod_list:
+                #elif 'numpy' in mod_list:
+                #    mod_list = ['numpy']
+                #    out_list = ok_list
+                elif ['math', 'numpy', 'scipy'] == sorted(mod_list):
+                    mod_list = ['numpy']
+                    out_list = ok_list
+                elif ['numpy', 'scipy'] == sorted(mod_list):
                     mod_list = ['numpy']
                     out_list = ok_list
                 elif name == 'os':
@@ -304,59 +324,48 @@ while True:
                         else:
                             #print(name, local_imports)
                             out_list = confusion_list
-            out_list.append([line_number, name, mod_list])
+            out_list.append([line_number, column, name, mod_list])
 
         print('Typos that needs to be resolved:')
+        template = 'name: {2}, line: {0}, column: {1}, module(s): {3}'
         fatal += len(fatal_list)
         for entry in fatal_list:
-            print(entry)
+            print(template.format(*entry))
 
         print('')
         print('Confusion list:')
         confusion += len(confusion_list)
         for entry in confusion_list:
-            print(entry)
+            print(template.format(*entry))
         print('')
 
         print('RESOLVED THINGS:')
         used_modules = []
-        prefixes = ['\s*(\s', '(=', '(^', r'([^a-zA-Z.\_]']
-        suffixes = [r'\(', r'\.', '']
-        bad_idx = []
         ok += len(ok_list)
+        idx_line = 0
+        idx_column = 1
+        idx_name = 2
+        idx_mod = 3
+        len_dict = {}
         for entry in ok_list:
-            if (entry[0], entry[1]) in bad_idx:
-                continue
-            else:
-                bad_idx.append((entry[0], entry[1]))
-            print(entry)
-            used_modules.extend(entry[2])
-            add_to_list = False
+            print(template.format(*entry))
+            used_modules.extend(entry[idx_mod])
             out = []
-            for idx, pref in enumerate(prefixes):
-                for suff in suffixes:
-                    if out:
-                        continue
-                    original = r'{0}{1}{2})'.format(pref, entry[1], suff)
-                    new = '{0}{1}.{2}{3}'.format(pref, entry[2][0], entry[1], suff)
-                    match = re.search(original, no_import_lines[int(entry[0])-1])
-                    matches = list(set(re.findall(original, no_import_lines[int(entry[0])-1])))
-                    ##print(pref, suff, matches)
-                    if len(matches) == 1:
-                        add_to_list = True
-                        original = matches[0]
-                        new = '{0}.{1}'.format(entry[2][0], entry[1]).join(original.split(entry[1]))
-                        out.append((original, new))
-                    elif len(matches) > 1:
-                        add_to_list = True
-                        for match in matches:
-                            original = match
-                            new = '{0}.{1}'.format(entry[2][0], entry[1]).join(original.split(entry[1]))
-                            out.append((original, new))
 
-            #print(out)
-            for original, new in list(set(out)):
-                no_import_lines[int(entry[0])-1] = no_import_lines[int(entry[0])-1].replace(original, new)
+            new_line = []
+            current_line = no_import_lines[entry[idx_line]]
+            len_name = len(entry[idx_name])
+            len_mod = len(entry[idx_mod][0])+1
+            len_adjust = len_dict.setdefault(entry[idx_line], 0)
+
+            new_line.append(current_line[:entry[idx_column] + len_adjust])
+            new_line.append('{0}.{1}'.format(entry[idx_mod][0], entry[idx_name]))
+            new_line.append(current_line[entry[idx_column]+len_name+len_adjust:])
+            no_import_lines[entry[idx_line]] = ''.join(new_line)
+            try:
+                len_dict[entry[idx_line]] += len_mod
+            except KeyError:
+                len_dict[entry[idx_line]] = len_mod
 
         correct_imports_clean = []
         for entry in correct_imports:
@@ -374,11 +383,11 @@ while True:
             if entry == 'import matplotlib\n' and not inserted:
                 imports.insert(idx+1, 'matplotlib.use("Agg")\n')
                 inserted = True
+                break
             elif 'matplotlib' in entry and not inserted:
                 imports.insert(idx, 'matplotlib.use("Agg")\n')
                 imports.insert(idx, 'import matplotlib\n')
                 inserted = True
-            if inserted:
                 break
 
         imports = ''.join(imports)
