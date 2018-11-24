@@ -293,20 +293,21 @@ while True:
                 stop = True
             else:
                 for start_num, text in reporter.okidoki:
-                    stop = 0
+                    stop_idx = 0
                     for i in range(1, 10):
                         line = lines[start_num-i]
                         match = IMPORT_FIND_SYNTAX_RE.match(line)
                         if match:
-                            stop = i
+                            stop_idx = i
                             break
                     if match.group(1) == 'if':
-                        no_import_lines[start_num - stop] = '\n'
-                        no_from_import_lines[start_num - stop] = '\n'
+                        no_import_lines[start_num - stop_idx] = '\n'
+                        no_from_import_lines[start_num - stop_idx] = '\n'
                         if 'else:' in text:
                             no_import_lines[start_num] = '\n'
                             no_from_import_lines[start_num] = '\n'
                     else:
+                        print(entry)
                         stop = True
             if stop:
                 break
