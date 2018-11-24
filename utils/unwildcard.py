@@ -400,18 +400,18 @@ while True:
 
         correct_imports_clean = []
         for entry in correct_imports:
-            print(entry)
             try:
                 importlib.import_module(entry.split()[0])
             except ImportError:
-                continue
-            print(entry)
+                if 'eman2_gui' in entry:
+                    pass
+                else:
+                    continue
             correct_imports_clean.append(entry)
 
         imports = ['import {0}\n'.format(entry) if entry not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry) for entry in list(set(used_modules))]
         imports.extend(['import {0}\n'.format(entry) if entry.split('.')[-1] not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry.split('.')[-1]) for entry in correct_imports_clean])
         imports = sorted(list(set(imports)))
-        print(imports)
         inserted = False
         for idx, entry in enumerate(imports[:]):
             if entry == 'import matplotlib\n' and not inserted:
