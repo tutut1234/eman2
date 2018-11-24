@@ -400,6 +400,7 @@ while True:
 
         correct_imports_clean = []
         for entry in correct_imports:
+            print(entry)
             try:
                 importlib.import_module(entry.split()[0])
             except ImportError:
