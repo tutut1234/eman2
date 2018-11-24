@@ -63,7 +63,7 @@ def my_to_list(self):
 
 def my_exception(self, filename, msg, lineno, offset, text):
     if msg == 'expected an indented block':
-        print(filename, msg, lineno, offset, text)
+        #print(filename, msg, lineno, offset, text)
         self.okidoki.append([int(lineno)-1, text])
 
 
@@ -307,7 +307,7 @@ while True:
                             no_import_lines[start_num] = '\n'
                             no_from_import_lines[start_num] = '\n'
                     else:
-                        print(entry)
+                        print('Could not resolve:', no_from_import_lines[start_num].strip(), 'Unexpected indent!')
                         stop = True
             if stop:
                 break
