@@ -1500,7 +1500,7 @@ def generate_random_averages(data, K, rand_seed = -1):
 		else: ave = data[randint(0, ndata)]
 		avgs.append(ave)
 	'''
-	return avgs
+	#return avgs
 
 
 
