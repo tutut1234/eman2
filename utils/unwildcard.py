@@ -182,8 +182,9 @@ rounds = 0
 while True:
     rounds += 1
     ok = 0
-    fatal = 0
-    confusion = 0
+    fatal = [0, []]
+    confusion = [0, []]
+    syntax = [0, []]
     for file_name in python_files:
         print('######################################')
         print(file_name)
@@ -313,6 +314,8 @@ while True:
                         need_intervention = True
             if stop:
                 if need_intervention:
+                    syntax[0] += 1
+                    syntax[1].append(file_name)
                     print('Needs manual intervention!')
                 break
             else:
@@ -385,13 +388,17 @@ while True:
 
         print('Typos that needs to be resolved:')
         template = 'name: {2:>25s}, line: {0: 6d}, column: {1: 6d}, module(s): {3}'
-        fatal += len(fatal_list)
+        fatal[0] += len(fatal_list)
+        if len(fatal_list):
+            fatal[1].append(file_name)
         for entry in fatal_list:
             print(template.format(*entry))
 
         print('')
         print('Confusion list:')
-        confusion += len(confusion_list)
+        confusion[0] += len(confusion_list)
+        if len(confusion_list):
+            confusion[1].append(file_name)
         for entry in confusion_list:
             print(template.format(*entry))
         print('')
@@ -520,6 +527,7 @@ while True:
     print('FATAL:', fatal)
     print('CONFUSION:', confusion)
     print('RESOLVED:', ok)
+    print('SYNTAX:', syntax)
     if ok == 0:
         print('Resolved after', rounds, 'rounds')
         break

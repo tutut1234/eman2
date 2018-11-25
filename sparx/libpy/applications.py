@@ -7424,7 +7424,6 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 
 	if CTF:
 		if(data[0].get_attr_default("ctf_applied",0) > 0):  global_def.ERROR("mref_ali3d_MPI does not work for CTF-applied data", "mref_ali3d_MPI", 1, myid)
-	else:
 
 	if debug:
 		finfo.write( '%d loaded  \n' % len(data) )
@@ -8054,7 +8053,6 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 
 	if CTF:
 		if(data[0].get_attr("ctf_applied") > 0.0):  global_def.ERROR("Kmref_ali3d_MPI does not work for CTF-applied data", "Kmref_ali3d_MPI", 1, myid)
-	else:
 
 	if debug:
 		finfo.write( '%d loaded  \n' % len(data) )
@@ -8500,9 +8498,9 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 			utilities.get_im(ref_vol, iref).write_image(os.path.join(outdir, "volf0000.hdf"), iref)
 	mpi.mpi_barrier( mpi.MPI_COMM_WORLD )
 
-	if CTF:
+
 		#if(data[0].get_attr("ctf_applied") > 0.0):  ERROR("Kmref_ali3d_MPI does not work for CTF-applied data", "Kmref_ali3d_MPI", 1, myid)
-	else:
+
 
 	if debug:
 		finfo.write( '%d loaded  \n' % len(data) )
@@ -8952,8 +8950,6 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 	if(CTF):
 		if(data[0].get_attr("ctf_applied") > 0):
 			global_def.ERROR( "local_ali3dm does not work on ctf_applied data", "local_ali3dm_MPI_", 1,myid)
-	else:
-	
 
 	#  this is needed for gathering of pixel errors
 	disps = []
@@ -9322,7 +9318,6 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 	if(CTF):
 		if(data[0].get_attr("ctf_applied") > 0):
 			global_def.ERROR( "local_ali3dm does not work on ctf_applied data", "local_ali3dm_MPI", 1,myid)
-	else:
 
 
 	#  this is needed for gathering of pixel errors
@@ -9771,7 +9766,7 @@ def local_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cente
 	number_of_proc = mpi.mpi_comm_size(mpi.MPI_COMM_WORLD)
 	myid = mpi.mpi_comm_rank(mpi.MPI_COMM_WORLD)
 
-	if CTF:
+
 
 	main_node = 0
 	
@@ -10101,7 +10096,7 @@ def local_ali3d_MPI_scipy_minimization(stack, outdir, maskfile, ou = -1,  delta 
 	number_of_proc = mpi.mpi_comm_size(mpi.MPI_COMM_WORLD)
 	myid = mpi.mpi_comm_rank(mpi.MPI_COMM_WORLD)
 
-	if CTF:
+
 
 	main_node = 0
 	
@@ -11264,7 +11259,7 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 
 	numr	= alignment.Numrinit(first_ring, last_ring, rstep, "F")
 
-	if CTF:
+
 
 	if myid == main_node:
 		if(utilities.file_type(stack) == "bdb"):
@@ -12710,7 +12705,7 @@ def copyfromtif_MPI(indir, outdir=None, input_extension="tif", film_or_CCD="f", 
 				e1  += scanner_param_b
 		e                    = e1*contrast_invert
 		if  gridding : e1    = fundamentals.resample(e, scaling_ratio) # resample will pad image two times 
-		else         : e1    = image_decimate(e, scaling_ratio, 1)
+		else         : e1    = fundamentals.image_decimate(e, scaling_ratio, 1)
 		f_micrograph         = "micrograph_"+tifname[len(indir)+1:]+"."+ output_extension
 		f_micname            = os.path.join(outdir, f_micrograph)
 		e1.write_image(f_micname)
@@ -12747,7 +12742,7 @@ def cpy(ins_list, ous):
 		data = EMAN2_cppwrap.EMData()
 		iextension = utilities.file_type(ins)
 
-		if iextension == "bdb":
+
 
 		if nima == 1 and oextension == "spi":
 			data.read_image(ins)
@@ -12901,7 +12896,7 @@ def iso_kmeans(images, out_dir, parameter, K=None, mask=None, init_method="Rando
 '''
 
 def project3d(volume, stack = None, mask = None, delta = 5, method = "S", phiEqpsi = "Minus", symmetry = "c1", listagls = None , listctfs = None, noise = None, realsp = False, trillinear = False):
-	if trillinear:
+
 	if trillinear and realsp:
 		global_def.ERROR("Both relion mode and realsp mode are specified","project3d", 1)
 	
@@ -13622,7 +13617,7 @@ def rot_sym(infile, outfile, sym_gp="d4", \
 
 def transform2d(stack_data, stack_data_ali, shift = False, ignore_mirror = False, method = "quadratic"):
 # apply 2D alignment parameters stored in the header of the input stack file using gridding interpolation and create an output stack file
-	if  shift:
+
 
 	t = EMAN2_cppwrap.Transform({"type":"2D"})
 	nima = EMAN2_cppwrap.EMUtil.get_image_count(stack_data)
@@ -16313,10 +16308,10 @@ def k_means_main(stack, out_dir, maskname, opt_method, K, rand_seed, maxit, tria
 		 init_method = 'rnd'):
 	# Common
 	#import time
-	if MPI:
+
 		
-	if CUDA:
-	else:
+
+
 
 	ext = utilities.file_type(stack)
 	if ext == 'txt': TXT = True
@@ -17257,7 +17252,7 @@ def volalixshift_MPI(stack, ref_vol, outdir, search_rng, pixel_size, dp, dphi, f
 	else: mask3D = utilities.model_cylinder(rmax, nx, ny, nz)
 
 	fscmask = mask3D  #model_circle(last_ring,nx,nx,nx)  For a fancy mask circle would work better  PAP 7/21/11
-	if CTF:
+
 
 	filaments = pixel_error.ordersegments(stack, filament_attr = 'filament', verify=False)
 	
@@ -18159,7 +18154,7 @@ def ehelix_MPI(stack, ref_vol, outdir, seg_ny, delta, phiwobble, psi_max, search
 	else: mask3D = utilities.model_cylinder(rmax, nx, ny, nz)
 
 	fscmask = mask3D
-	if CTF:
+
 
 	if( myid == 0):
 		infils = EMAN2_cppwrap.EMUtil.get_all_attributes(stack, "filament")
@@ -18557,7 +18552,7 @@ def localhelicon_MPInew(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr
 	else: mask3D = None
 	#else: mask3D = model_circle(last_ring, nx, nx, nx)
 
-	if CTF:
+
 
 	if( myid == 0):
 		infils = EMAN2_cppwrap.EMUtil.get_all_attributes(stack, "filament")
@@ -19043,7 +19038,7 @@ def localhelicon_MPIming(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, x
 	else: mask3D = None
 	#else: mask3D = model_circle(last_ring, nx, nx, nx)
 
-	if CTF:
+
 
 	if( myid == 0):
 		infils = EMAN2_cppwrap.EMUtil.get_all_attributes(stack, "filament")
@@ -19520,7 +19515,7 @@ def localhelicon_MPInew_fullrefproj(stack, ref_vol, outdir, seg_ny, maskfile, ir
 	else: mask3D = None
 	#else: mask3D = model_circle(last_ring, nx, nx, nx)
 
-	if CTF:
+
 
 	if( myid == 0):
 		infils = EMAN2_cppwrap.EMUtil.get_all_attributes(stack, "filament")
@@ -19894,7 +19889,7 @@ def localhelicon_MPI(stack, ref_vol, outdir, seg_ny, maskfile, ir, ou, rs, xr, y
 	else: mask3D = None
 	#else: mask3D = model_circle(last_ring, nx, nx, nx)
 
-	if CTF:
+
 
 	if( myid == 0):
 		infils = EMAN2_cppwrap.EMUtil.get_all_attributes(stack, "filament")
@@ -21729,9 +21724,9 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 			
 	mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
 
-	if CTF:
+
 		#if(data[0].get_attr("ctf_applied") > 0.0):  ERROR("mref_ali3d_MPI does not work for CTF-applied data", "mref_ali3d_MPI", 1, myid)
-	else:
+
 
 	if debug:
 		finfo.write( '%d loaded  \n' % len(data) )
@@ -22361,9 +22356,9 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 			ref_list[iref].write_image(os.path.join(outdir,"volf0000.hdf"),iref)
 			
 	mpi.mpi_barrier( mpi.MPI_COMM_WORLD )
-	if CTF:
+
 		#if(data[0].get_attr_default("ctf_applied",0) > 0):  ERROR("mref_ali3d_MPI does not work for CTF-applied data", "mref_ali3d_MPI", 1, myid)
-	else:
+
 	if debug:
 		finfo.write( '%d loaded  \n' % len(data) )
 		finfo.flush()
@@ -23187,9 +23182,9 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 			ref_list[iref].write_image(os.path.join(outdir,"volf0000.hdf"),iref)
 			
 	mpi.mpi_barrier( mpi.MPI_COMM_WORLD )
-	if CTF:
+
 		#if(data[0].get_attr_default("ctf_applied",0) > 0):  ERROR("mref_ali3d_MPI does not work for CTF-applied data", "mref_ali3d_MPI", 1, myid)
-	else:
+
 	if debug:
 		finfo.write( '%d loaded  \n' % len(data) )
 		finfo.flush()
