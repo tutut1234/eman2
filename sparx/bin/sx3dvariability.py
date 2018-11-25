@@ -160,7 +160,7 @@ def main():
 		log_main.add(line)
 	
 		if(instack[:4] !="bdb:"):
-			if output_dir =="./": stack = "bdb:data"
+			if options.output_dir =="./": stack = "bdb:data"
 			else: stack = "bdb:"+options.output_dir+"/data"
 			delete_bdb(stack)
 			junk = cmdexecute("sxcpy.py  "+instack+"  "+stack)
@@ -407,7 +407,7 @@ def main():
 		"""
 		
 		if options.VAR: # 2D variance images have no shifts
-			#varList   = EMData.read_images(stack, range(img_begin, img_end))
+			varList   = EMData.read_images(stack, range(img_begin, img_end))
 			from EMAN2 import Region
 			if options.window > 0:
 				mx = nnxo//2 - options.window//2
@@ -416,7 +416,7 @@ def main():
 			else: reg = None
 			from fundamentals import subsample
 			for index_of_particle in range(img_begin,img_end):
-				image = get_im(stack, index_of_proj)
+				image = get_im(stack, index_of_particle)
 				if reg: varList.append(subsample(image.get_clip(reg), options.decimate))
 				else:   varList.append(subsample(image, options.decimate))
 				
