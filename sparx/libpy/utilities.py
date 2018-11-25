@@ -813,7 +813,7 @@ def even_angles(delta = 15.0, theta1=0.0, theta2=90.0, phi1=0.0, phi2=359.99, \
 
 	angles = []
 	symmetryLower = symmetry.lower()
-	symmetry_string = split(symmetry)[0]
+	symmetry_string = symmetry.split()[0]
 	if(symmetry_string[0]  == "c"):
 		if(phi2 == 359.99):
 			angles = even_angles_cd(delta, theta1, theta2, phi1-ant, phi2/int(symmetry_string[1:])+ant, method, phiEqpsi)
@@ -1214,7 +1214,7 @@ def get_input_from_string(str_input):
 	"""
 		Extract input numbers from a given string
 	"""
-	qq = split(" |,",str_input)
+	qq = str_input.split(' |,')
 	for i in range(len(qq)-1, -1, -1):
 		if(qq[i] == ""):  del qq[i]
 	o = []
@@ -1792,7 +1792,7 @@ def read_text_row(fnam, format="", skip=";"):
 		for j in range(len(strg)):
 			if(strg[j] == skip):	com_line = True
 		if com_line == False:
-			word=split(strg)
+			word=strg.split()
 			if format == "s" :
 				key = int(word[1])
 				if key != len(word) - 2:
@@ -1865,7 +1865,7 @@ def read_text_file(file_name, ncol = 0):
 	data = []
 	while len(line) > 0:
 		if ncol == -1:
-			vdata = split(line)
+			vdata = line.split()
 			if data == []:
 				for i in range(len(vdata)):
 					try:     data.append([int(vdata[i])])
@@ -1879,7 +1879,7 @@ def read_text_file(file_name, ncol = 0):
 						try:  data[i].append(float(vdata[i]))
 						except:  data[i].append(vdata[i])
 		else:
-			vdata = split(line)[ncol]
+			vdata = line.split()[ncol]
 			try:     data.append(int(vdata))
 			except:
 				try:  	data.append(float(vdata))
@@ -3154,7 +3154,7 @@ def read_fsc( filename ):
 	fscc = None
 	line = f.readline()
 	while len(line) > 0:
-		items = split( line )
+		items = line.split()
 		if fscc is None:
 			fscc = [None]*len(items)
 			for i in range( len(items) ):
@@ -3174,7 +3174,7 @@ def memory_usage():
 	f = open(file, 'r')
 	line = f.readline()
 	while len(line) > 0 :
-		items = split( line )
+		items = line.split()
 		if items[0]=='VmSize:':
 			return items[1]+items[2]
 		line = f.readline()
@@ -4856,8 +4856,8 @@ def unpack_message(msg):
 
 	if msg[0]=="C" : return zlib.decompress((msg[1:]).tostring())
 	elif msg[0]=="S" : return (msg[1:]).tostring()
-	elif msg[0]=="Z" : return loads(zlib.decompress((msg[1:]).tostring()))
-	elif msg[0]=="O" : return loads((msg[1:]).tostring())
+	elif msg[0]=="Z" : return pickle.loads(zlib.decompress((msg[1:]).tostring()))
+	elif msg[0]=="O" : return pickle.loads((msg[1:]).tostring())
 	else :
 		print("ERROR: Invalid MPI message. Please contact developers. (%s)"%str(msg[:20]))
 		raise Exception("unpack_message")
@@ -5202,6 +5202,11 @@ def if_error_then_all_processes_exit_program(error_status):
 			return None
 		MPI_INT, MPI_COMM_WORLD = 0, 0
 	else:
+		mpi_comm_rank = mpi.mpi_comm_rank
+		mpi_bcast = mpi.mpi_bcast
+		mpi_finalize = mpi.mpi_finalize
+		MPI_INT = mpi.MPI_INT
+		MPI_COMM_WORLD = mpi.MPI_COMM_WORLD
 
 	myid = mpi_comm_rank(MPI_COMM_WORLD)
 	if error_status != None and error_status != 0:
@@ -6465,7 +6470,7 @@ def get_stable_members_from_two_runs(SORT3D_rootdirs, ad_hoc_number, log_main):
 	# ad_hoc_number would be a number larger than the id simply for handling two_way comparison of non-equal number of groups from two partitions.
 	########
 
-	sort3d_rootdir_list = split(SORT3D_rootdirs)
+	sort3d_rootdir_list = SORT3D_rootdirs.split()
 	dict1              = []
 	maximum_elements   = 0
 	for index_sort3d in range(len(sort3d_rootdir_list)):
