@@ -93,11 +93,11 @@ IMPORT_MATPLOTLIB_RE = re.compile("^(\s*)matplotlib.use")
 IMPORT_FIND_SYNTAX_RE = re.compile("^\s*(if|else|try|except).*:")
 
 
-lib_files = glob.glob('../sparx/libpy/*.py')
-lib_eman2_files = glob.glob('../libpyEM/*.py')
-lib_eman2_files_2 = glob.glob('../libpyEM/qtgui/*.py')
-lib_eman2_files_3 = glob.glob('../libpyEM/*.py.in')
-bin_files = glob.glob('../sparx/bin/*.py')
+lib_files = sorted(glob.glob('../sparx/libpy/*.py'))
+lib_eman2_files = sorted(glob.glob('../libpyEM/*.py'))
+lib_eman2_files_2 = sorted(glob.glob('../libpyEM/qtgui/*.py'))
+lib_eman2_files_3 = sorted(glob.glob('../libpyEM/*.py.in'))
+bin_files = sorted(glob.glob('../sparx/bin/*.py'))
 
 qtgui_files = [os.path.splitext(os.path.basename(entry))[0] for entry in lib_eman2_files_2]
 
