@@ -63,7 +63,7 @@ def my_to_list(self):
 
 def my_exception(self, filename, msg, lineno, offset, text):
     if msg == 'expected an indented block':
-        #print(filename, msg, lineno, offset, text)
+        print(filename, msg, lineno, offset, text.strip())
         self.okidoki.append([int(lineno)-1, text])
 
 
@@ -177,7 +177,7 @@ pym.Message.to_list = my_to_list
 
 
 #python_files = glob.glob('../sparx/bin/sxgui_cter.py')
-python_files = glob.glob('../sparx/libpy/applications.py')
+#python_files = glob.glob('../sparx/libpy/applications.py')
 rounds = 0
 while True:
     rounds += 1
@@ -275,6 +275,7 @@ while True:
 
         while True:
             stop = False
+            need_intervention = False
             Checker.okidoki = []
             reporter.okidoki = []
             file_content = ''.join(no_from_import_lines)
@@ -292,10 +293,11 @@ while True:
             if not reporter.okidoki:
                 stop = True
             else:
+                maxi = 30
                 for start_num, text in reporter.okidoki:
                     stop_idx = 0
-                    for i in range(1, 10):
-                        line = lines[start_num-i]
+                    for i in range(1, maxi):
+                        line = no_from_import_lines[start_num-i]
                         match = IMPORT_FIND_SYNTAX_RE.match(line)
                         if match:
                             stop_idx = i
@@ -307,10 +309,14 @@ while True:
                             no_import_lines[start_num] = '\n'
                             no_from_import_lines[start_num] = '\n'
                     else:
-                        print('Could not resolve:', no_from_import_lines[start_num].strip(), 'Unexpected indent!')
                         stop = True
+                        need_intervention = True
             if stop:
+                if need_intervention:
+                    print('Needs manual intervention!')
                 break
+            else:
+                print('Resolved!')
 
         fatal_list = []
         ok_list = []
