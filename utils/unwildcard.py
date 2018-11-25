@@ -58,7 +58,7 @@ def my_to_list(self):
     lineno = int(self.lineno) - 1
     col = int(self.col)
     name = re.match(".*'(.*)'", self.message % self.message_args).group(1)
-    return [lineno, col, name]
+    return (lineno, col, name)
 
 
 def my_exception(self, filename, msg, lineno, offset, text):
@@ -176,7 +176,7 @@ Checker.okidoki = []
 pym.Message.to_list = my_to_list
 
 
-#python_files = glob.glob('../sparx/bin/sxgui_cter.py')
+#python_files = glob.glob('../sparx/bin/sxchains.py')
 #python_files = glob.glob('../sparx/libpy/applications.py')
 rounds = 0
 while True:
@@ -324,7 +324,7 @@ while True:
         fatal_list = []
         ok_list = []
         confusion_list = []
-        for line_number, column, name in Checker.okidoki:
+        for line_number, column, name in sorted(Checker.okidoki):
             mod_list = []
             for key, values in lib_modules.items():
                 for val in values:
