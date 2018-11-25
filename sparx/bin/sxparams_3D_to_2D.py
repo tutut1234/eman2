@@ -30,26 +30,26 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
 #
-import os
+import applications
 import global_def
-from optparse import OptionParser
+import optparse
+import os
 import sys
+import utilities
 
 def main():
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + " stack "
-	parser = OptionParser(usage,version=global_def.SPARXVERSION)
+	parser = optparse.OptionParser(usage,version=global_def.SPARXVERSION)
 	(options, args) = parser.parse_args(sys.argv[1:])
 	if len(args) != 1 :
     		print("usage: " + usage)
     		print("Please run '" + progname + " -h' for detailed options")
 	else:
 		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
-			disable_bdb_cache()
-		from applications import wrapper_params_3D_to_2D
+			utilities.disable_bdb_cache()
 		global_def.BATCH = True
-		wrapper_params_3D_to_2D(args[0])
+		applications.wrapper_params_3D_to_2D(args[0])
 		global_def.BATCH = False
 
 if __name__ == "__main__":
