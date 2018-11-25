@@ -691,6 +691,7 @@ output_directory: directory name into which the output files will be written.  I
 			masterdir += DIR_DELIM
 	elif len(args) == 1:
 		if use_latest_master_directory:
+			r = re.compile("^master.*$")
 			all_dirs = [d for d in os.listdir(".") if os.path.isdir(d)]
 			all_dirs = list(filter(r.match, all_dirs))
 			if len(all_dirs)>0:
