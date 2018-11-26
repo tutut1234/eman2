@@ -7536,7 +7536,7 @@ def do3d_final(partids, partstack, original_data, oldparams, oldparamstructure, 
 		carryon = bcast_number_to_all(carryon, source_node = Blockdata["main_node"], mpi_comm = comm)
 		if carryon == 0: 
 			ERROR("Failed to read refang and rshifts: %s %s "%(os.path.join(final_dir, "refang.txt"),\
-			  os.path.join(final_dir, "rshifts.txt")), "do_final_rec3d", 1, data["subgroup_myid"])
+			  os.path.join(final_dir, "rshifts.txt")), "do_final_rec3d", 1, Blockdata["subgroup_myid"])
 		refang  = wrap_mpi_bcast(refang,  Blockdata["main_node"], comm)
 		rshifts = wrap_mpi_bcast(rshifts, Blockdata["main_node"], comm)
 
@@ -8747,7 +8747,7 @@ def recons3d_trl_struct_MPI_nosmearing(myid, main_node, prjlist, parameters, CTF
 	else:   do_ctf = 0
 	fftvol = EMData()
 	weight = EMData()
-	try:    qt = projlist[0].get_attr("qt")
+	try:    qt = prjlist[0].get_attr("qt")
 	except: qt = 1.0
 	params = {"size":target_size, "npad":2, "snr":1.0, "sign":1, "symmetry":"c1", "refvol":refvol, "fftvol":fftvol, "weight":weight, "do_ctf": do_ctf}
 	r = Reconstructors.get( "nn4_ctfw", params )
