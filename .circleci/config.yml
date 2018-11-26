@@ -8,13 +8,6 @@ jobs:
     steps:
       - run: sudo apt-get update && sudo apt-get install freeglut3-dev
       - checkout
-      - restore_cache:
-          keys:
-            - mini-eman-deps-14.0
-      - save_cache:
-          key: mini-eman-deps-14.0
-          paths:
-            - ~/miniconda2
       - run: bash ci_support/build_no_recipe.sh
 
   build_recipe:
@@ -24,13 +17,6 @@ jobs:
     steps:
       - run: sudo apt-get update && sudo apt-get install freeglut3-dev
       - checkout
-      - restore_cache:
-          keys:
-            - mini-eman-deps-14.0
-      - save_cache:
-          key: mini-eman-deps-14.0
-          paths:
-            - ~/miniconda2
       - run: bash ci_support/build_recipe.sh
 
 workflows:
