@@ -45,6 +45,7 @@ import pyflakes.api as pyfl
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--silent', action='store_true', help='Do not write any output to disc')
+parser.add_argument('--leave_imports', action='store_true', help='Do not clear tmp import lines to not touch the original structure.')
 options = parser.parse_args()
 
 
@@ -58,7 +59,7 @@ def my_to_list(self):
     lineno = int(self.lineno) - 1
     col = int(self.col)
     name = re.match(".*'(.*)'", self.message % self.message_args).group(1)
-    return [lineno, col, name]
+    return (lineno, col, name)
 
 
 def my_exception(self, filename, msg, lineno, offset, text):
@@ -176,14 +177,15 @@ Checker.okidoki = []
 pym.Message.to_list = my_to_list
 
 
-#python_files = glob.glob('../sparx/bin/sxgui_cter.py')
+#python_files = glob.glob('../sparx/bin/sxchains.py')
 #python_files = glob.glob('../sparx/libpy/applications.py')
 rounds = 0
 while True:
     rounds += 1
     ok = 0
-    fatal = 0
-    confusion = 0
+    fatal = [0, []]
+    confusion = [0, []]
+    syntax = [0, []]
     for file_name in python_files:
         print('######################################')
         print(file_name)
@@ -313,6 +315,8 @@ while True:
                         need_intervention = True
             if stop:
                 if need_intervention:
+                    syntax[0] += 1
+                    syntax[1].append(file_name)
                     print('Needs manual intervention!')
                 break
             else:
@@ -321,7 +325,7 @@ while True:
         fatal_list = []
         ok_list = []
         confusion_list = []
-        for line_number, column, name in Checker.okidoki:
+        for line_number, column, name in sorted(Checker.okidoki):
             mod_list = []
             for key, values in lib_modules.items():
                 for val in values:
@@ -385,13 +389,17 @@ while True:
 
         print('Typos that needs to be resolved:')
         template = 'name: {2:>25s}, line: {0: 6d}, column: {1: 6d}, module(s): {3}'
-        fatal += len(fatal_list)
+        fatal[0] += len(fatal_list)
+        if len(fatal_list):
+            fatal[1].append(file_name)
         for entry in fatal_list:
             print(template.format(*entry))
 
         print('')
         print('Confusion list:')
-        confusion += len(confusion_list)
+        confusion[0] += len(confusion_list)
+        if len(confusion_list):
+            confusion[1].append(file_name)
         for entry in confusion_list:
             print(template.format(*entry))
         print('')
@@ -498,7 +506,7 @@ while True:
             elif line.startswith("class") or line.startswith('def'):
                 if not first_1 and not first_2:
                     pass
-            if '#IMPORTIMPORTIMPORT' in line:
+            if '#IMPORTIMPORTIMPORT' in line and not options.leave_imports:
                 remove_indices.append(idx)
 
 
@@ -520,6 +528,7 @@ while True:
     print('FATAL:', fatal)
     print('CONFUSION:', confusion)
     print('RESOLVED:', ok)
+    print('SYNTAX:', syntax)
     if ok == 0:
         print('Resolved after', rounds, 'rounds')
         break
