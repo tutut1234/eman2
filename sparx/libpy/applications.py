@@ -3925,13 +3925,12 @@ def Xali3d_MPI_chunks(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, 
 	mask2D  = model_circle(last_ring,nx,nx) - model_circle(first_ring,nx,nx)
 
 	fscmask = mask3D  #model_circle(last_ring,nx,nx,nx)  For a fancy mask circle would work better  PAP 7/21/11
-	if CTF:
-		from reconstruction import rec3D_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI
+	from filter         import filt_ctf
 
 	if myid == main_node:
-       		if file_type(stack) == "bdb":
+		if file_type(stack) == "bdb":
 			from EMAN2db import db_open_dict
 			dummy = db_open_dict(stack, True)
 		active = EMUtil.get_all_attributes(stack, 'active')
@@ -4444,10 +4443,9 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 	mask2D  = model_circle(last_ring,nx,nx) - model_circle(first_ring,nx,nx)
 
 	fscmask = mask3D  #model_circle(last_ring,nx,nx,nx)  For a fancy mask circle would work better  PAP 7/21/11
-	if CTF:
-		from reconstruction import rec3D_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI
+	from filter         import filt_ctf
+	from reconstruction import rec3D_MPI_noCTF
 
 	if myid == main_node:
 		if file_type(stack) == "bdb":
@@ -6193,10 +6191,9 @@ def ali3dlocal_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs 
 	mask2D  = model_circle(last_ring,nx,nx) - model_circle(first_ring,nx,nx)
 
 	fscmask = mask3D  #model_circle(last_ring,nx,nx,nx)  For a fancy mask circle would work better  PAP 7/21/11
-	if CTF:
-		from reconstruction import rec3D_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI
+	from filter         import filt_ctf
 
 	if myid == main_node:
 		if file_type(stack) == "bdb":
@@ -6549,10 +6546,9 @@ def ali3dpsi_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 	mask2D  = model_circle(last_ring,nx,nx) - model_circle(first_ring,nx,nx)
 
 	fscmask = mask3D  #model_circle(last_ring,nx,nx,nx)  For a fancy mask circle would work better  PAP 7/21/11
-	if CTF:
-		from reconstruction import rec3D_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI
+	from filter         import filt_ctf
+	from reconstruction import rec3D_MPI_noCTF
 
 	if myid == main_node:
 		if file_type(stack) == "bdb":
@@ -6807,10 +6803,9 @@ def Xali3d_shc0MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs 
 	mask2D  = model_circle(last_ring,nx,nx) - model_circle(first_ring,nx,nx)
 
 	fscmask = mask3D  #model_circle(last_ring,nx,nx,nx)  For a fancy mask circle would work better  PAP 7/21/11
-	if CTF:
-		from reconstruction import rec3D_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI
+	from filter         import filt_ctf
+	from reconstruction import rec3D_MPI_noCTF
 
 	if myid == main_node:
 		if file_type(stack) == "bdb":
@@ -7228,10 +7223,9 @@ def ali3d_shcMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 	mask2D  = model_circle(last_ring,nx,nx) - model_circle(first_ring,nx,nx)
 
 	fscmask = mask3D  #model_circle(last_ring,nx,nx,nx)  For a fancy mask circle would work better  PAP 7/21/11
-	if CTF:
-		from reconstruction import rec3D_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI
+	from filter         import filt_ctf
 
 	if myid == main_node:
 		if file_type(stack) == "bdb":
@@ -8646,9 +8640,8 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 
 	if CTF:
 		if(data[0].get_attr("ctf_applied") > 0.0):  ERROR("Kmref_ali3d_MPI does not work for CTF-applied data", "Kmref_ali3d_MPI", 1, myid)
-		from reconstruction import rec3D_MPI
-	else:
-		from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI
+	from reconstruction import rec3D_MPI_noCTF
 
 	if debug:
 		finfo.write( '%d loaded  \n' % len(data) )
@@ -9128,11 +9121,8 @@ def Kmref2_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=
 			get_im(ref_vol, iref).write_image(os.path.join(outdir, "volf0000.hdf"), iref)
 	mpi_barrier( MPI_COMM_WORLD )
 
-	if CTF:
-		#if(data[0].get_attr("ctf_applied") > 0.0):  ERROR("Kmref_ali3d_MPI does not work for CTF-applied data", "Kmref_ali3d_MPI", 1, myid)
-		from reconstruction import rec3D_MPI
-	else:
-		from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI
+	from reconstruction import rec3D_MPI_noCTF
 
 	if debug:
 		finfo.write( '%d loaded  \n' % len(data) )
@@ -9621,9 +9611,8 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 	if(CTF):
 		if(data[0].get_attr("ctf_applied") > 0):
 			ERROR( "local_ali3dm does not work on ctf_applied data", "local_ali3dm_MPI_", 1,myid)
-		from reconstruction import rec3D_MPI
-	else:
-		from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI
+	from reconstruction import rec3D_MPI_noCTF
 	
 
 	#  this is needed for gathering of pixel errors
@@ -10028,9 +10017,8 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 	if(CTF):
 		if(data[0].get_attr("ctf_applied") > 0):
 			ERROR( "local_ali3dm does not work on ctf_applied data", "local_ali3dm_MPI", 1,myid)
-		from reconstruction import rec3D_MPI
-	else:
-		from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI
+	from reconstruction import rec3D_MPI_noCTF
 
 
 	#  this is needed for gathering of pixel errors
@@ -23427,11 +23415,8 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 			
 	mpi_barrier(MPI_COMM_WORLD)
 
-	if CTF:
-		#if(data[0].get_attr("ctf_applied") > 0.0):  ERROR("mref_ali3d_MPI does not work for CTF-applied data", "mref_ali3d_MPI", 1, myid)
-		from reconstruction import rec3D_MPI
-	else:
-		from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI
+	from reconstruction import rec3D_MPI_noCTF
 
 	if debug:
 		finfo.write( '%d loaded  \n' % len(data) )
@@ -24105,11 +24090,8 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 			ref_list[iref].write_image(os.path.join(outdir,"volf0000.hdf"),iref)
 			
 	mpi_barrier( MPI_COMM_WORLD )
-	if CTF:
-		#if(data[0].get_attr_default("ctf_applied",0) > 0):  ERROR("mref_ali3d_MPI does not work for CTF-applied data", "mref_ali3d_MPI", 1, myid)
-		from reconstruction import rec3D_MPI
-	else:
-		from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI
+	from reconstruction import rec3D_MPI_noCTF
 	if debug:
 		finfo.write( '%d loaded  \n' % len(data) )
 		finfo.flush()
@@ -24977,11 +24959,8 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 			ref_list[iref].write_image(os.path.join(outdir,"volf0000.hdf"),iref)
 			
 	mpi_barrier( MPI_COMM_WORLD )
-	if CTF:
-		#if(data[0].get_attr_default("ctf_applied",0) > 0):  ERROR("mref_ali3d_MPI does not work for CTF-applied data", "mref_ali3d_MPI", 1, myid)
-		from reconstruction import rec3D_MPI
-	else:
-		from reconstruction import rec3D_MPI_noCTF
+	from reconstruction import rec3D_MPI
+	from reconstruction import rec3D_MPI_noCTF
 	if debug:
 		finfo.write( '%d loaded  \n' % len(data) )
 		finfo.flush()
