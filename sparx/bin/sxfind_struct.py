@@ -88,6 +88,8 @@ def main():
 				    options.lf, options.hf, options.rand_seed, options.maxit, options.given, options.first_zero, 
 				    weights, options.debug, options.trials)
 			global_def.BATCH = False
+			from mpi import mpi_finalize
+			mpi_finalize()
 		else:
 			from applications import cml_find_structure_main
 			global_def.BATCH = True
@@ -95,9 +97,6 @@ def main():
 				    options.lf, options.hf, options.rand_seed, options.maxit, options.given, options.first_zero, 
 				    weights, options.debug, options.trials)
 			global_def.BATCH = False
-			if options.MPI:
-				from mpi import mpi_finalize
-			mpi_finalize()
 
 
 
