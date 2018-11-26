@@ -2533,7 +2533,7 @@ def get_shrink_data_sorting(partids, partstack, return_real = False, preshift = 
 				ctf_params.apix = ctf_params.apix/shrinkage
 				data[im].set_attr('ctf', ctf_params)
 				data[im].set_attr('ctf_applied', 0)
-			data[im] = fdecimate(data[im], nxinit*npad, nxinit*npad, 1, True, False)
+			data[im] = fdecimate(data[im], Tracker['nxinit']*npad, Tracker['nxinit']*npad, 1, True, False)
 			apix     = Tracker["constants"]["pixel_size"]
 			data[im].set_attr('apix', apix/shrinkage)
 		if not return_real:	data[im].set_attr("padffted",1)
@@ -3154,8 +3154,8 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 				ctf_params.apix = ctf_params.apix/shrinkage
 				rimage.set_attr('ctf', ctf_params)
 				rimage.set_attr('ctf_applied', 0)
-			rimage  = fdecimate(rimage, nxinit*npad, nxinit*npad, 1, True, False)
-			cimage  = fdecimate(cimage, nxinit*npad, nxinit*npad, 1, True, False)
+			rimage  = fdecimate(rimage, Tracker['nxinit']*npad, Tracker['nxinit']*npad, 1, True, False)
+			cimage  = fdecimate(cimage, Tracker['nxinit']*npad, Tracker['nxinit']*npad, 1, True, False)
 			apix   = Tracker["constants"]["pixel_size"]
 			rimage.set_attr('apix', apix/shrinkage)
 		cimage.set_attr("padffted",1)
@@ -3491,8 +3491,8 @@ def create_nrandom_lists_from_given_pids(work_dir, partids, number_of_groups, nu
 def find_smallest_group(clusters):
 	min_size =[len(clusters[0]), [0]]
 	for ic in range(1, len(clusters)):
-		if len(cluster[ic]) < min_size[0]: min_size = [len(clusters[ic]), [ic]]
-		elif len(cluster[ic]) == min_size[0]: min_size[1].append(ic)
+		if len(clusters[ic]) < min_size[0]: min_size = [len(clusters[ic]), [ic]]
+		elif len(clusters[ic]) == min_size[0]: min_size[1].append(ic)
 	if len(min_size[1])>=1: shuffle(min_size[1])
 	return min_size[1][0]
 
@@ -4731,7 +4731,7 @@ def steptwo_mpi(tvol, tweight, treg, cfsc = None, regularized = True, color = 0)
 			Tracker["constants"]["nnxo"], Blockdata["myid_on_node"], color, Blockdata["no_of_processes_per_group"],  Blockdata["shared_comm"], n_iter)
 	'''
 	if( Blockdata["myid_on_node"] == 0 ):
-		print(" iterefa  ",Blockdata["myid"],"   ",strftime("%a, %d %b %Y %H:%M:%S", localtime()),"   ",(time()-at)/60.0)
+		print(" iterefa  ",Blockdata["myid"],"   ",strftime("%a, %d %b %Y %H:%M:%S", localtime()),"   ",time()/60.0)
 		#  Either pad or window in F space to 2*nnxo
 		nx = tvol.get_ysize()
 		if( nx > 2*Tracker["constants"]["nnxo"]):
@@ -4916,7 +4916,7 @@ def recons3d_4nnsorting_group_MPI(myid, main_node, prjlist, random_subset, group
 	else:   do_ctf = 0
 	fftvol = EMData()
 	weight = EMData()
-	try:    qt = projlist[0].get_attr("qt")
+	try:    qt = prjlist[0].get_attr("qt")
 	except: qt = 1.0
 	params = {"size":target_size, "npad":2, "snr":1.0, "sign":1, "symmetry":"c1", \
 	   "refvol":refvol, "fftvol":fftvol, "weight":weight, "do_ctf": do_ctf}
@@ -5714,7 +5714,7 @@ def do3d(procid, data, newparams, refang, rshifts, norm_per_particle, myid, mpi_
 	global Tracker, Blockdata
 	#  Without filtration
 	from reconstruction import recons3d_trl_struct_MPI
-	if (mpi_comm < -1): mpi_comm = MPI_COMM_WORDLD
+	if (mpi_comm < -1): mpi_comm = MPI_COMM_WORLD
 	if (Blockdata["subgroup_myid"]== Blockdata["main_node"]):
 		if( procid == 0 ):
 			if not os.path.exists(os.path.join(Tracker["directory"], "tempdir")):
@@ -7281,7 +7281,7 @@ def output_iter_results(box_dir, ncluster, NACC, NUACC, \
 	nc          = 0
 	NACC        = 0
 	try:
-		with open(os.path.join(current_dir,"freq_cutoff.json"),'r') as fout:
+		with open(os.path.join(box_dir,"freq_cutoff.json"),'r') as fout:
 			freq_cutoff_dict = convert_json_fromunicode(json.load(fout))
 		fout.close()
 	except: freq_cutoff_dict = {}
