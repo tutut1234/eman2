@@ -58,7 +58,7 @@ def my_to_list(self):
     lineno = int(self.lineno) - 1
     col = int(self.col)
     name = re.match(".*'(.*)'", self.message % self.message_args).group(1)
-    return (lineno, col, name)
+    return [lineno, col, name]
 
 
 def my_exception(self, filename, msg, lineno, offset, text):
@@ -176,15 +176,14 @@ Checker.okidoki = []
 pym.Message.to_list = my_to_list
 
 
-#python_files = glob.glob('../sparx/bin/sxchains.py')
+#python_files = glob.glob('../sparx/bin/sxgui_cter.py')
 #python_files = glob.glob('../sparx/libpy/applications.py')
 rounds = 0
 while True:
     rounds += 1
     ok = 0
-    fatal = [0, []]
-    confusion = [0, []]
-    syntax = [0, []]
+    fatal = 0
+    confusion = 0
     for file_name in python_files:
         print('######################################')
         print(file_name)
@@ -314,8 +313,6 @@ while True:
                         need_intervention = True
             if stop:
                 if need_intervention:
-                    syntax[0] += 1
-                    syntax[1].append(file_name)
                     print('Needs manual intervention!')
                 break
             else:
@@ -324,7 +321,7 @@ while True:
         fatal_list = []
         ok_list = []
         confusion_list = []
-        for line_number, column, name in sorted(Checker.okidoki):
+        for line_number, column, name in Checker.okidoki:
             mod_list = []
             for key, values in lib_modules.items():
                 for val in values:
@@ -388,17 +385,13 @@ while True:
 
         print('Typos that needs to be resolved:')
         template = 'name: {2:>25s}, line: {0: 6d}, column: {1: 6d}, module(s): {3}'
-        fatal[0] += len(fatal_list)
-        if len(fatal_list):
-            fatal[1].append(file_name)
+        fatal += len(fatal_list)
         for entry in fatal_list:
             print(template.format(*entry))
 
         print('')
         print('Confusion list:')
-        confusion[0] += len(confusion_list)
-        if len(confusion_list):
-            confusion[1].append(file_name)
+        confusion += len(confusion_list)
         for entry in confusion_list:
             print(template.format(*entry))
         print('')
@@ -527,7 +520,6 @@ while True:
     print('FATAL:', fatal)
     print('CONFUSION:', confusion)
     print('RESOLVED:', ok)
-    print('SYNTAX:', syntax)
     if ok == 0:
         print('Resolved after', rounds, 'rounds')
         break

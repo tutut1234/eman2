@@ -32,20 +32,17 @@ from __future__ import print_function
 #
 #
 
-import development
-import global_def
-import mpi
-import optparse
-import os
-import sys
-import user_functions
-import utilities
 
+import os, sys
+import global_def
+from   global_def     import *
+from   user_functions import *
+from   optparse       import OptionParser
 
 def main():
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + " out_averages outdir --ou=outer_radius --xr=x_range --ts=translation_step --maxit=max_iteration --CTF --snr=SNR --function=user_function_name --Fourvar --ali=kind_of_alignment --center=center_type"
-	parser = optparse.OptionParser(usage,version=global_def.SPARXVERSION)
+	parser = OptionParser(usage,version=SPARXVERSION)
 	parser.add_option("--ou",       type="int",        default=-1,             help="outer radius for rotational correlation < nx/2-1 (set to the radius of the particle)")
 	parser.add_option("--xr",       type="string",       default="4 2",      help="range for translation search in x direction, search is +/xr ")
 	parser.add_option("--ts",       type="string",       default="2 1", help="step of translation search in both directions")
@@ -73,20 +70,25 @@ def main():
     		print("Please run '" + progname + " -h' for detailed options")
 	else:
 		if global_def.CACHE_DISABLE:
-			utilities.disable_bdb_cache()
+			from utilities import disable_bdb_cache
+			disable_bdb_cache()
 
 		if options.MPI:
-			sys.argv = mpi.mpi_init(len(sys.argv),sys.argv)
+			from mpi import mpi_init
+			sys.argv = mpi_init(len(sys.argv),sys.argv)
 
 		global_def.BATCH = True
 		if options.old:
+			from development import realid
 			realid(args[0], args[1], args[2], args[3], options.ou, options.xr, options.ts, options.maxit, options.function, options.snr, options.CTF, options.Fourvar, options.Ng, options.num_ali, options.th_mir, options.th_err, options.dst, options.center, options.CUDA, options.GPUID, options.MPI)
 		else:
+			from development import realignment
 			realignment(args[0], args[1], args[2], options.ou, options.xr, options.ts, options.maxit, options.function, options.snr, options.CTF, options.Fourvar, options.Ng, options.num_ali, options.err_th, options.K, options.dst, options.center, options.CUDA, options.GPUID, options.MPI)
 		global_def.BATCH = False
 		
 		if options.MPI:
-			mpi.mpi_finalize()
+			from mpi import mpi_finalize
+			mpi_finalize()
 
 if __name__ == "__main__":
 	main()

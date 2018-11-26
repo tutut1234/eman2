@@ -32,21 +32,18 @@ from __future__ import print_function
 #
 #
 
-import applications
-import development
-import global_def
-import mpi
-import optparse
-import os
+
+
 import sys
-import utilities
-
-
+import os
+import global_def
+from global_def import *
 
 def main():
+	from   optparse       import OptionParser
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + " filelist outdir  --fl=filter_low_value --aa=filter_fall_off --radccc=radius_ccc  -repair=repairfile --pca --pcamask --pcanvec --MPI"
-	parser = optparse.OptionParser(usage,version=global_def.SPARXVERSION)
+	parser = OptionParser(usage,version=SPARXVERSION)
 	parser.add_option("--fl",             type="float",        default=0.0,       help="cut-off frequency of hyperbolic tangent low-pass Fourier filter")
 	parser.add_option("--aa",             type="float",        default=0.0,       help="fall-off of hyperbolic tangent low-pass Fourier filter")
 	parser.add_option("--radccc",         type="int",          default=-1,        help="radius for ccc calculation")
@@ -67,9 +64,11 @@ def main():
 		outdir = args[-1]
 
 		if global_def.CACHE_DISABLE:
-			utilities.disable_bdb_cache()
+			from utilities import disable_bdb_cache
+			disable_bdb_cache()
 		if options.MPI:
-			sys.argv = mpi.mpi_init( len(sys.argv), sys.argv )
+			from mpi import mpi_init
+			sys.argv = mpi_init( len(sys.argv), sys.argv )
 
 
 			arglist = []
@@ -79,16 +78,20 @@ def main():
 			global_def.BATCH = True
 			
 			if(options.n):
+				from development import var_mpi_new
 				var_mpi_new( files[0], outdir, options.scratch, options.fl, options.aa, options.radccc, False, False, options.repair, options.pca, options.pcamask, options.pcanvec)
 			else:
-				applications.var_mpi( files, outdir, options.fl, options.aa, options.radccc, options.repair, options.pca, options.pcamask, options.pcanvec)
+				from applications import var_mpi
+				var_mpi( files, outdir, options.fl, options.aa, options.radccc, options.repair, options.pca, options.pcamask, options.pcanvec)
 
 			global_def.BATCH = False
-			mpi.mpi_finalize()
+			from mpi import mpi_finalize
+			mpi_finalize()
 		else:
 			global_def.BATCH = True
-			global_def.ERROR("Please use MPI version","sxvar",1)
-			applications.defvar(  files, outdir, options.fl, options.aa, options.radccc, options.repair, options.pca, options.pcamask, options.pcanvec)
+			ERROR("Please use MPI version","sxvar",1)
+			from applications import defvar
+			defvar(  files, outdir, options.fl, options.aa, options.radccc, options.repair, options.pca, options.pcamask, options.pcanvec)
 			global_def.BATCH = False
 
 

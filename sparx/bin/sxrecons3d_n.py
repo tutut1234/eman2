@@ -32,17 +32,14 @@ from __future__ import print_function
 #
 #
 
-import EMAN2
-import EMAN2_cppwrap
-import applications
-import global_def
-import mpi
-import optparse
-import os
-import string
-import sys
-import utilities
 from builtins import range
+import global_def
+from   global_def import *
+from   optparse import OptionParser
+from   string import atoi,replace
+from   EMAN2 import EMUtil
+import os
+import sys
 
 def main():
 	arglist = []
@@ -51,7 +48,7 @@ def main():
 
 	progname = os.path.basename( arglist[0] )
 	usage = progname + " prj_stack volume [begin end step] --CTF --npad=ntimes_padding --list=file --group=ID --snr=SNR --sym=symmetry --verbose=(0|1) --xysize --MPI"
-	parser = optparse.OptionParser(usage, version=global_def.SPARXVERSION)
+	parser = OptionParser(usage, version=SPARXVERSION)
 
 	parser.add_option("--CTF",                    action="store_true",   default=False, help="apply CTF correction")
 	parser.add_option("--snr",                    type="float",	         default=1.0,   help="Signal-to-Noise Ratio" )
@@ -74,50 +71,54 @@ def main():
 
 
 	if options.MPI:
-		sys.argv = mpi.mpi_init(len(sys.argv), sys.argv)
+		from mpi import mpi_init
+		sys.argv = mpi_init(len(sys.argv), sys.argv)
 
 	if global_def.CACHE_DISABLE:
-		utilities.disable_bdb_cache()
+		from utilities import disable_bdb_cache
+		disable_bdb_cache()
 
 	if len(args) == 2:
 		prj_stack = args[0]
 		vol_stack = args[1]
-		nimage = EMAN2_cppwrap.EMUtil.get_image_count( prj_stack )
+		nimage = EMUtil.get_image_count( prj_stack )
 		pid_list = list(range(0, nimage))
 	elif len(args) == 5:
 		prj_stack = args[0]
 		vol_stack = args[1]
-		begin = string.atoi( args[2] )
-		end   = string.atoi( args[3] )
-		step  = string.atoi( args[4] )
+		begin = atoi( args[2] )
+		end   = atoi( args[3] )
+		step  = atoi( args[4] )
 		pid_list = list(range(begin, end, step))
 	else:
-		global_def.ERROR("incomplete list of arguments","recon3d_n",1)
+		ERROR("incomplete list of arguments","recon3d_n",1)
 		exit()
 
 	if(options.list and options.group > -1):
-		global_def.ERROR("options group and list cannot be used together","recon3d_n",1)
+		ERROR("options group and list cannot be used together","recon3d_n",1)
 		sys.exit()
 
+	from applications import recons3d_n, recons3d_trl_MPI
 
 	global_def.BATCH = True
 	if options.interpolation_method == "4nn":
-		applications.recons3d_n(prj_stack, pid_list, vol_stack, options.CTF, options.snr, 1, options.npad,\
+		recons3d_n(prj_stack, pid_list, vol_stack, options.CTF, options.snr, 1, options.npad,\
 		 options.sym, options.list, options.group, options.verbose, options.MPI,options.xysize, options.zsize, options.smearstep, options.upweighted, options.compensate,options.chunk_id)
 	elif options.interpolation_method == "tril":
 		if options.MPI is False:
-			global_def.ERROR(" trillinear interpolation reconstruction has MPI version only!")
+			ERROR(" trillinear interpolation reconstruction has MPI version only!")
 			sys.exit()
-		applications.recons3d_trl_MPI(prj_stack, pid_list, vol_stack, options.CTF, options.snr, 1, options.npad,\
+		recons3d_trl_MPI(prj_stack, pid_list, vol_stack, options.CTF, options.snr, 1, options.npad,\
 		 options.sym, options.verbose, options.niter, options.compensate, options.target_window_size)
 		
 	else:
-		global_def.ERROR(" Wrong interpolation method. The current options are 4nn, and tril. 4nn is the defalut one. ")
+		ERROR(" Wrong interpolation method. The current options are 4nn, and tril. 4nn is the defalut one. ")
 		
 	global_def.BATCH = False
 
 	if options.MPI:
-		mpi.mpi_finalize()
+		from mpi import mpi_finalize
+		mpi_finalize()
 
 
 if __name__=="__main__":

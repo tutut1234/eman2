@@ -32,30 +32,27 @@ from __future__ import print_function
 #
 #
 
-import EMAN2
-import EMAN2_cppwrap
-import global_def
-import math
-import numpy
-import optparse
-import os
-import sys
 from builtins import range
+import global_def
+from   global_def import *
+
+from   optparse import OptionParser
 
 
-
+from EMAN2 import *
 
 
 def main():
 
+	import sys
 
 	arglist = []
 	for arg in sys.argv:
 		arglist.append( arg )
 
-	progname = os.os.path.basename(arglist[0])
+	progname = os.path.basename(arglist[0])
 	usage = progname + " eigvol EIG_prefix (output volumes multiplied by sqrt(eigval), if set"
-	parser = optparse.OptionParser(usage,version=global_def.SPARXVERSION)
+	parser = OptionParser(usage,version=SPARXVERSION)
 
 	(options, args) = parser.parse_args( arglist[1:] )
 
@@ -63,20 +60,21 @@ def main():
 		print("usage: " + usage)
 		return None
 
-	nimage = EMAN2_cppwrap.EMUtil.get_image_count( args[0] )
+	from math import sqrt
+	nimage = EMUtil.get_image_count( args[0] )
 
 	for i in range(nimage) :
-	        data = EMAN2_cppwrap.EMData()
+	        data = EMData()
 	        data.read_image( args[0], i )
 
 	        eigval = data.get_attr_default( "eigval", 1.0 )
-	        EMAN2_cppwrap.Util.mul_scalar(data , numpy.sqrt(eigval) )
+	        Util.mul_scalar(data , sqrt(eigval) )
 
 	        fname = args[1] + ("%04d_pos.hdf" % (i+1) )
 	        data.write_image( fname )
 
 	        fname = args[1] + ("%04d_neg.hdf" % (i+1) )
-	        EMAN2_cppwrap.Util.mul_scalar(data , -1 )
+	        Util.mul_scalar(data , -1 )
 	        data.write_image( fname )
 
 

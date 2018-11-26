@@ -1,16 +1,13 @@
 #!/usr/bin/env python
-pass#IMPORTIMPORTIMPORT import os
+import os
+from EMAN2 import EMUtil, EMArgumentParser, EMANVERSION
+from applications import header, project3d
+from utilities import get_im, write_header
+from statistics import ccc
 
 # TO DO:
 #	resize the class-averages and re-projections if they have different sizes?
 
-import EMAN2
-import EMAN2_cppwrap
-import EMAN2_meta
-import applications
-import os
-import statistics
-import utilities
 def runcheck(classavgstack, recon, outdir, inangles=None, selectdoc=None, displayYN=False, 
 			 projstack='proj.hdf', outangles='angles.txt', outstack='comp-proj-reproj.hdf', normstack='comp-proj-reproj-norm.hdf'):
 	
@@ -32,7 +29,7 @@ def runcheck(classavgstack, recon, outdir, inangles=None, selectdoc=None, displa
 	normstack = os.path.join(outdir, normstack)
 	
 	# Get number of images
-	nimg0 = EMAN2_cppwrap.EMUtil.get_image_count(classavgstack)
+	nimg0 = EMUtil.get_image_count(classavgstack)
 	#print("nimg0: %s" % nimg0)
 	
 	# In case class averages include discarded images, apply selection file
@@ -57,13 +54,13 @@ def runcheck(classavgstack, recon, outdir, inangles=None, selectdoc=None, displa
 	if inangles:
 		cmd6="sxheader.py %s --params=xform.projection --import=%s" % (classavgstack, inangles)
 		print cmd6
-		applications.header(classavgstack, 'xform.projection', fimport=inangles)
+		header(classavgstack, 'xform.projection', fimport=inangles)
 	
 	cmd1="sxheader.py %s --params=xform.projection --export=%s" % (classavgstack, outangles) 
 	print cmd1
 	#os.system(cmd1)
 	try:
-		applications.header(classavgstack, 'xform.projection', fexport=outangles)
+		header(classavgstack, 'xform.projection', fexport=outangles)
 	except RuntimeError:
 		print("\nERROR!! No projection angles found in class-average stack header!\n")
 		exit()
@@ -71,21 +68,21 @@ def runcheck(classavgstack, recon, outdir, inangles=None, selectdoc=None, displa
 	cmd2="sxproject3d.py %s %s --angles=%s" % (recon, projstack, outangles)
 	print cmd2
 	#os.system(cmd2)
-	applications.project3d(recon, stack=projstack, listagls=outangles)
+	project3d(recon, stack=projstack, listagls=outangles)
 	
 	imgcounter = 0  # montage will have double the number of images as number of class-averages
 	result=[]
 	
 	# Number of images may have changed
-	nimg1   = EMAN2_cppwrap.EMUtil.get_image_count(classavgstack)
+	nimg1   = EMUtil.get_image_count(classavgstack)
 	
 	for imgnum in xrange(nimg1):
 		#print imgnum
-		classimg = utilities.get_im(classavgstack, imgnum)
+		classimg = get_im(classavgstack, imgnum)
 		ccc1 = classimg.get_attr_default('cross-corr', -1.0)
-		prjimg = utilities.get_im(projstack,imgnum)
+		prjimg = get_im(projstack,imgnum)
 		ccc1 = prjimg.get_attr_default('cross-corr', -1.0)
-		cccoeff = statistics.ccc(prjimg,classimg)
+		cccoeff = ccc(prjimg,classimg)
 		#print imgnum, cccoeff
 		classimg.set_attr_dict({'cross-corr':cccoeff})
 		prjimg.set_attr_dict({'cross-corr':cccoeff})
@@ -97,16 +94,16 @@ def runcheck(classavgstack, recon, outdir, inangles=None, selectdoc=None, displa
 	result1 = sum(result)
 	#print result1
 
-	nimg2   = EMAN2_cppwrap.EMUtil.get_image_count(outstack)
+	nimg2   = EMUtil.get_image_count(outstack)
 	meanccc = result1/nimg1
 	print("Mean CCC is %s" % meanccc)
 	
 	for imgnum in xrange(nimg2):
 		if (imgnum % 2 ==0):
-			prjimg = utilities.get_im(outstack,imgnum)
+			prjimg = get_im(outstack,imgnum)
 			meanccc1 = prjimg.get_attr_default('mean-cross-corr', -1.0)
 			prjimg.set_attr_dict({'mean-cross-corr':meanccc})
-			utilities.write_header(outstack,prjimg,imgnum)
+			write_header(outstack,prjimg,imgnum)
 		if (imgnum % 100) == 0:
 			print imgnum
 	
@@ -143,7 +140,7 @@ if __name__ == "__main__":
 	"""
 	
 	# Command-line arguments
-	parser = EMAN2.EMArgumentParser(usage=usage,version=EMAN2_meta.EMANVERSION)
+	parser = EMArgumentParser(usage=usage,version=EMANVERSION)
 	parser.add_argument('classavgs', help='Input class averages')
 	parser.add_argument('vol3d', help='Input 3D reconstruction')
 	parser.add_argument('--outdir', "-o", type=str, help='Output directory')
