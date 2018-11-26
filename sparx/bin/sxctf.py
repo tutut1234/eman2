@@ -847,17 +847,9 @@ class GUIctf(QtGui.QWidget):
 		"""Implements the CTF fitting dialog using various EMImage and EMPlot2D widgets
 		'data' is a list of (filename,ctf,im_1d,bg_1d,im_2d,bg_2d)
 		"""
-		try:
-			from eman2_gui.emimage2d import EMImage2DWidget
-		except:
-			print("Cannot import EMAN image GUI objects (EMImage2DWidget)")
-			sys.exit(1)
-		try: 
-			from eman2_gui.emplot2d import EMPlot2DWidget
-		except:
-			print("Cannot import EMAN plot GUI objects (is matplotlib installed?)")
-			sys.exit(1)
-		
+		from eman2_gui.emimage2d import EMImage2DWidget
+		from eman2_gui.emplot2d import EMPlot2DWidget
+
 		self.app = weakref.ref(application)
 		
 		QtGui.QWidget.__init__(self,None)
