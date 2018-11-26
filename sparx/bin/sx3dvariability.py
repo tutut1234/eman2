@@ -617,9 +617,8 @@ def main():
 			mx1  = nx2//2 - nx//2
 			my1  = ny2//2 - ny//2
 			reg1 = Region(mx1, my1, nx, ny)
-			if options.CTF: 
-				from utilities import pad
-				from filter import filt_ctf
+			from utilities import pad
+			from filter import filt_ctf
 			from filter import filt_tanl
 			if myid == heavy_load_myid:
 				log_main.add("Start computing 2D aveList and varList. Wait...")
