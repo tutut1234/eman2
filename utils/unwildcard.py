@@ -529,6 +529,6 @@ while True:
     print('CONFUSION:', confusion)
     print('RESOLVED:', ok)
     print('SYNTAX:', syntax)
-    if ok == 0:
+    if ok == 0 or options.silent:
         print('Resolved after', rounds, 'rounds')
         break
