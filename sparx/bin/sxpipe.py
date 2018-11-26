@@ -584,8 +584,7 @@ def resample_micrographs(args):
 	# ------------------------------------------------------------------------------------
 	# Check MPI execution
 	# ------------------------------------------------------------------------------------
-	if SXmpi_run.RUNNING_UNDER_MPI:
-		from mpi import MPI_COMM_WORLD, mpi_barrier, mpi_reduce, MPI_INT, MPI_SUM
+	from mpi import MPI_COMM_WORLD, mpi_barrier, mpi_reduce, MPI_INT, MPI_SUM
 
 	# ------------------------------------------------------------------------------------
 	# Set up SPHIRE global definitions
