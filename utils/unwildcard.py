@@ -102,6 +102,7 @@ bin_files = sorted(glob.glob('../sparx/bin/*.py'))
 
 qtgui_files = [os.path.splitext(os.path.basename(entry))[0] for entry in lib_eman2_files_2]
 
+transform_dict = {}
 
 lib_modules = {}
 lib_modules_ext = {}
@@ -128,6 +129,9 @@ for lib_file in lib_files + lib_eman2_files + lib_eman2_files_2 + lib_eman2_file
         lib_modules[name].append('DATESTAMP')
     elif 'emapplication' in name:
         lib_modules[name].append('get_application')
+
+    if name.startswith('sparx_'):
+        transform_dict[name.replace('sparx_', '')] = name
 
 
 external_modules = [
@@ -183,6 +187,7 @@ rounds = 0
 while True:
     rounds += 1
     ok = 0
+    replace = 0
     fatal = [0, []]
     confusion = [0, []]
     syntax = [0, []]
@@ -266,7 +271,7 @@ while True:
 
         correct_imports = []
         for idx, string, module in file_modules:
-            correct_imports.extend(module)
+            correct_imports.extend([entry for entry in module if entry not in transform_dict])
             if '#IMPORTIMPORTIMPORT' in lines[idx]:
                 continue
             elif lines[idx].strip().startswith('#'):
@@ -325,6 +330,7 @@ while True:
         fatal_list = []
         ok_list = []
         confusion_list = []
+        replace_list = []
         for line_number, column, name in sorted(Checker.okidoki):
             mod_list = []
             for key, values in lib_modules.items():
@@ -341,7 +347,13 @@ while True:
                             mod_list.append(key)
                 mod_list = list(set(mod_list))
 
-                if not mod_list:
+                if name == 'os':
+                    mod_list = ['os']
+                    out_list = replace_list
+                elif name in transform_dict:
+                    mod_list = [transform_dict[name]]
+                    out_list = replace_list
+                elif not mod_list:
                     out_list = fatal_list
                 elif len(mod_list) == 1:
                     out_list = ok_list
@@ -356,9 +368,6 @@ while True:
                     out_list = ok_list
                 elif ['numpy', 'scipy', 'scipy.optimize'] == sorted(mod_list):
                     mod_list = ['numpy']
-                    out_list = ok_list
-                elif name == 'os':
-                    mod_list = ['os']
                     out_list = ok_list
                 else:
                     local_imports = []
@@ -394,6 +403,13 @@ while True:
             fatal[1].append(file_name)
         for entry in fatal_list:
             print(template.format(*entry))
+
+        print('')
+        print('Replace list:')
+        replace += len(replace_list)
+        for entry in replace_list:
+            print(template.format(*entry))
+        print('')
 
         print('')
         print('Confusion list:')
@@ -443,7 +459,22 @@ while True:
                     pass
                 else:
                     continue
-            correct_imports_clean.append(entry)
+            try:
+                lib = transform_dict[entry]
+            except KeyError:
+                lib = entry
+            correct_imports_clean.append(lib)
+        correct_imports_clean = list(set(correct_imports_clean))
+
+        used_modules_clean = []
+        for entry in used_modules:
+            try:
+                lib = transform_dict[entry]
+            except KeyError:
+                lib = entry
+            used_modules_clean.append(lib)
+        used_modules = list(set(used_modules_clean))
+
 
         imports = ['import {0}\n'.format(entry) if entry not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry) for entry in list(set(used_modules))]
         imports.extend(['import {0}\n'.format(entry) if entry.split('.')[-1] not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry.split('.')[-1]) for entry in correct_imports_clean])
@@ -527,10 +558,52 @@ while True:
                 write.write(file_content)
         print('')
 
+        if not ok_list  and replace_list:
+            print('REPLACE')
+            idx_line = 0
+            idx_column = 1
+            idx_name = 2
+            idx_mod = 3
+            len_dict = {}
+            for entry in replace_list:
+                print(template.format(*entry))
+                out = []
+
+                new_line = []
+                current_line = no_import_lines[entry[idx_line]+1]
+                len_name = len(entry[idx_name])
+                len_mod = len(entry[idx_mod][0])
+                len_adjust = len_dict.setdefault(entry[idx_line]+1, 0)
+
+                new_line.append(current_line[:entry[idx_column] + len_adjust])
+                new_line.append(entry[idx_mod][0])
+                new_line.append(current_line[entry[idx_column] + len_name + len_adjust:])
+                no_import_lines[entry[idx_line]+1] = ''.join(new_line)
+                try:
+                    len_dict[entry[idx_line]+1] += len_mod - len_name
+                except KeyError:
+                    len_dict[entry[idx_line]+1] = len_mod - len_name
+            output_lines = []
+            for idx, line in enumerate(no_import_lines):
+                if idx in remove_indices:
+                    pass
+                else:
+                    output_lines.append(line)
+
+            file_content = ''.join(output_lines)
+            with open(os.path.join('new', os.path.basename(file_name)), 'w') as write:
+                write.write(file_content)
+            with open(file_name, 'w') as write:
+                write.write(file_content)
+
     print('FATAL:', fatal)
     print('CONFUSION:', confusion)
     print('RESOLVED:', ok)
+    print('REPLACE:', replace)
     print('SYNTAX:', syntax)
-    if ok == 0 or options.silent:
+    if options.silent:
+        print('Resolved after', rounds, 'rounds')
+        break
+    elif ok == 0 and replace == 0:
         print('Resolved after', rounds, 'rounds')
         break
