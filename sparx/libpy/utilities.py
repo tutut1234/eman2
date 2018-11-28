@@ -1207,8 +1207,8 @@ def get_input_from_string(str_input):
 	"""
 		Extract input numbers from a given string
 	"""
-	from re import split
-	qq = str_input.split(" |,")
+	import re
+	qq = re.split(" |,", str_input.split)
 	for i in range(len(qq)-1, -1, -1):
 		if(qq[i] == ""):  del qq[i]
 	o = []
