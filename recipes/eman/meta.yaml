@@ -9,7 +9,7 @@ requirements:
     {% set reqs_host = [
             "msinttypes",  # [win]
             "python 3.6.*",    # [not osx]
-            "python 3.6.1 2",  # [osx]
+            "python 3.5.6",  # [osx]
             "boost 1.63.*",
             "fftw-mpi",
             "numpy 1.13.*",
@@ -61,11 +61,10 @@ requirements:
         - {{ req }}
         {% endfor %}
 
-    
 test:
   requires:
     - openmpi              # [not win]
-    - eman-deps=15.4
+    - eman-deps=15.7
   
   source_files:
     - examples/mpi_test.py
