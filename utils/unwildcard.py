@@ -113,7 +113,7 @@ for lib_file in lib_files + lib_eman2_files + lib_eman2_files_2 + lib_eman2_file
             for entry in read.readlines()
             if IMPORT_DEF_RE.match(entry)
             ]
-    if 'global_def' == name:
+    if 'sparx_global_def' == name:
         lib_modules[name].append('SPARXVERSION')
         lib_modules[name].append('CACHE_DISABLE')
         lib_modules[name].append('SPARX_MPI_TAG_UNIVERSAL')
@@ -438,6 +438,8 @@ while True:
                 importlib.import_module(entry.split()[0])
             except ImportError:
                 if 'eman2_gui' in entry:
+                    pass
+                elif 'sparx_' in entry:
                     pass
                 else:
                     continue
