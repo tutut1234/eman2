@@ -26,6 +26,23 @@ requirements:
             "configparser",
     ] %}
     
+    {% set reqs_run = [
+            "matplotlib 2.1.*",  # [osx]
+            "matplotlib 1.5.*",  # [not osx]
+            "scipy 1.*",
+            "ipython",
+            "pyqt 4.11.*",
+            "qt >=4.8.6",
+            "pyopengl 3.1.0",
+            "scikit-learn 0.19.*",
+            "bsddb3",          # [not win]
+#            "openmpi 2.0.2",  # [not win]
+#            "pydusa",         # [not win]
+            "nose",
+            "future",
+            "configparser",
+    ] %}
+
     build:
         - cmake
         - {{ compiler('cxx') }}
@@ -34,6 +51,16 @@ requirements:
         {% for req in reqs_host %}
         - {{ req }}
         {% endfor %}
+        
+    run:
+        {% for req in reqs_host %}
+        - {{ req }}
+        {% endfor %}
+        
+        {% for req in reqs_run %}
+        - {{ req }}
+        {% endfor %}
+
     
 test:
   requires:
