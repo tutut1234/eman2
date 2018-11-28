@@ -35,7 +35,7 @@ import subprocess
 import global_def
 from global_def import SPARXVERSION, ERROR
 from optparse import OptionParser, SUPPRESS_HELP
-from sxsummovie import create_summovie_command
+from utilities import create_summovie_command
 
 def main():
 
