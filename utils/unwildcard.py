@@ -52,7 +52,10 @@ options = parser.parse_args()
 def my_report(self, messageClass, *args, **kwargs):
     if pym.UndefinedName == messageClass:
         message = messageClass(self.filename, *args, **kwargs)
-        self.okidoki.append(message.to_list())
+        self.undefined_names.append(message.to_list())
+    elif pym.UnusedImport == messageClass:
+        message = messageClass(self.filename, *args, **kwargs)
+        self.unused_imports.append(message.to_list())
 
 
 def my_to_list(self):
@@ -65,7 +68,7 @@ def my_to_list(self):
 def my_exception(self, filename, msg, lineno, offset, text):
     if msg == 'expected an indented block':
         print(filename, msg, lineno, offset, text.strip())
-        self.okidoki.append([int(lineno)-1, text])
+        self.undefined_names.append([int(lineno)-1, text])
 
 
 def index_search(lines, index, no_index):
@@ -174,10 +177,11 @@ python_files = bin_files + lib_files
 
 modReporter.Reporter.syntaxError = my_exception
 reporter = modReporter._makeDefaultReporter()
-reporter.okidoki = []
+reporter.undefined_names = []
 
 Checker.report = my_report
-Checker.okidoki = []
+Checker.undefined_names = []
+Checker.unused_imports = []
 pym.Message.to_list = my_to_list
 
 
@@ -283,8 +287,9 @@ while True:
         while True:
             stop = False
             need_intervention = False
-            Checker.okidoki = []
-            reporter.okidoki = []
+            Checker.undefined_names = []
+            Checker.unused_imports = []
+            reporter.undefined_names = []
             file_content = ''.join(no_from_import_lines)
             pyfl.check(file_content, file_name, reporter)
 
@@ -297,11 +302,11 @@ while True:
                 with open(os.path.join('no_import', os.path.basename(file_name)), 'w') as write:
                     write.write(file_content)
 
-            if not reporter.okidoki:
+            if not reporter.undefined_names:
                 stop = True
             else:
                 maxi = 30
-                for start_num, text in reporter.okidoki:
+                for start_num, text in reporter.undefined_names:
                     stop_idx = 0
                     for i in range(1, maxi):
                         line = no_from_import_lines[start_num-i]
@@ -331,7 +336,7 @@ while True:
         ok_list = []
         confusion_list = []
         replace_list = []
-        for line_number, column, name in sorted(Checker.okidoki):
+        for line_number, column, name in sorted(Checker.undefined_names):
             mod_list = []
             for key, values in lib_modules.items():
                 for val in values:
@@ -477,8 +482,16 @@ while True:
         used_modules = list(set(used_modules_clean))
 
 
-        imports = ['import {0}\n'.format(entry) if entry not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry) for entry in list(set(used_modules))]
-        imports.extend(['import {0}\n'.format(entry) if entry.split('.')[-1] not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry.split('.')[-1]) for entry in correct_imports_clean])
+        if not replace_list and not ok_list:
+            print('Remove imports', Checker.unused_imports)
+            imports_to_remove = []
+            for _, _, name in Checker.unused_imports:
+                imports_to_remove.append(name)
+            imports = ['import {0}\n'.format(entry) if entry not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry) for entry in list(set(used_modules)) if entry not in imports_to_remove]
+            imports.extend(['import {0}\n'.format(entry) if entry.split('.')[-1] not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry.split('.')[-1]) for entry in correct_imports_clean if entry not in imports_to_remove])
+        else:
+            imports = ['import {0}\n'.format(entry) if entry not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry) for entry in list(set(used_modules))]
+            imports.extend(['import {0}\n'.format(entry) if entry.split('.')[-1] not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry.split('.')[-1]) for entry in correct_imports_clean])
         imports = sorted(list(set(imports)))
         inserted = False
         for idx, entry in enumerate(imports[:]):
