@@ -138,8 +138,8 @@ def tsp(lccc):
             
 			while True: # Will find two random cities sufficiently close by
 				# Two cities n[0] and n[1] are choosen at random
-				n[0] = int((nct)*random.random.rand())     # select one city
-				n[1] = int((nct-1)*random.random.rand())   # select another city, but not the same
+				n[0] = int((nct)*numpy.random.rand())     # select one city
+				n[1] = int((nct-1)*numpy.random.rand())   # select another city, but not the same
 				if (n[1] >= n[0]): n[1] += 1   #
 				if (n[1] < n[0]): (n[0],n[1]) = (n[1],n[0]) # swap, because it must be: n[0]<n[1]
 				nn = (n[0]+nct -n[1]-1) % nct  # number of cities not on the segment n[0]..n[1]
@@ -150,19 +150,19 @@ def tsp(lccc):
 			n[2] = (n[0]-1) % nct  # index before n0  -- see figure in the lecture notes
 			n[3] = (n[1]+1) % nct  # index after n2   -- see figure in the lecture notes
             
-			if Preverse > random.random.rand(): 
+			if Preverse > numpy.random.rand(): 
 				# Here we reverse a segment
 				# What would be the cost to reverse the path between city[n[0]]-city[n[1]]?
 				de = Distance(city[n[2]], city[n[1]], lccc) + Distance(city[n[3]], city[n[0]], lccc)\
 					 - Distance(city[n[2]], city[n[0]], lccc) - Distance(city[n[3]] ,city[n[1]], lccc)
                 
-				if de<0 or numpy.exp(-de/T)>random.random.rand(): # Metropolis
+				if de<0 or numpy.exp(-de/T)>numpy.random.rand(): # Metropolis
 					accepted += 1
 					dist += de
 					reverse(city, n)
 			else:
 				# Here we transpose a segment
-				nc = (n[1]+1+ int(random.random.rand()*(nn-1)))%nct  # Another point outside n[0],n[1] segment. See picture in lecture nodes!
+				nc = (n[1]+1+ int(numpy.random.rand()*(nn-1)))%nct  # Another point outside n[0],n[1] segment. See picture in lecture nodes!
 				n[4] = nc
 				n[5] = (nc+1) % nct
 
@@ -172,7 +172,7 @@ def tsp(lccc):
 				de += Distance( city[n[0]], city[n[4]], lccc) + Distance( city[n[1]], city[n[5]], lccc) \
 						+ Distance( city[n[2]], city[n[3]], lccc)
 
-				if de<0 or numpy.exp(-de/T)>random.random.rand(): # Metropolis
+				if de<0 or numpy.exp(-de/T)>numpy.random.rand(): # Metropolis
 					accepted += 1
 					dist += de
 					city = transpt(city, n)
@@ -328,7 +328,7 @@ def main():
 		lccc = [None]*(lend*(lend-1)/2)
 
 		if  options.pairwiseccc == " " or not os.path.exists(options.pairwiseccc) :
-			st = time()
+			st = time.time()
 			for i in range(lend-1):
 				for j in range(i+1, lend):
 					#  j>i meaning mono entry (i,j) or (j,i) indicates T i->j (from smaller index to larger)
