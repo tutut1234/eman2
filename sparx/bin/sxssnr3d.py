@@ -32,10 +32,12 @@ from __future__ import print_function
 #
 #
 
+import mpi
+import optparse
 import os
-import global_def
-from   global_def import *
-from   optparse import OptionParser
+import sparx_applications
+import sparx_global_def
+import sparx_utilities
 import sys
 
 
@@ -44,7 +46,7 @@ def main():
 	for arg in sys.argv: arglist.append( arg )
 	progname = os.path.basename(arglist[0])
 	usage = progname + " stack <output_volume> <ssnr_text_file> <reference_structure> <2Dmaskfile> --ou=outer_radius --rw=ring_width --npad=padding_times --CTF --MPI --sign=CTF_sign --sym=symmetry --random_angles=0"
-	parser = OptionParser(usage,version=SPARXVERSION)
+	parser = optparse.OptionParser(usage,version=sparx_global_def.SPARXVERSION)
 	parser.add_option("--ou",       type= "int",            default=  -1,      help="  radius of particle (set to int(nx/2)-1)")
 	parser.add_option("--rw",       type= "float",	        default=  1.0,     help="  ring width for calculating Fourier shell/ring correlation (set to 1)")
 	parser.add_option("--npad",     type= "int",            default=  1,       help="  image padding for 3D reconstruction (set to 1)")
@@ -86,21 +88,17 @@ def main():
 			mask      = args[4]
 
 		if options.MPI:
-			from mpi import mpi_init
-			sys.argv = mpi_init(len(sys.argv), sys.argv)
+			sys.argv = mpi.mpi_init(len(sys.argv), sys.argv)
 
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
-			disable_bdb_cache()
+		if sparx_global_def.CACHE_DISABLE:
+			sparx_utilities.disable_bdb_cache()
 
-		from applications import ssnr3d		
-		global_def.BATCH = True
-		ssnr3d(stack, out_vol, ssnr_file, mask, reference, options.ou, options.rw, options.npad, options.CTF, options.sign, options.sym, options.MPI, options.random_angles)
-		global_def.BATCH = False
+		sparx_global_def.BATCH = True
+		sparx_applications.ssnr3d(stack, out_vol, ssnr_file, mask, reference, options.ou, options.rw, options.npad, options.CTF, options.sign, options.sym, options.MPI, options.random_angles)
+		sparx_global_def.BATCH = False
 		
 		if options.MPI:
-			from mpi import mpi_finalize
-			mpi_finalize()
+			mpi.mpi_finalize()
 
 if __name__ == "__main__":
 	main()

@@ -32,19 +32,19 @@ from __future__ import print_function
 #
 #
 
-
-
+import optparse
 import os
-import global_def
-from global_def    import *
-from applications  import  transform2d
-from optparse      import OptionParser
+import sparx_applications
+import sparx_global_def
+import sparx_utilities
 import sys
+
+
 
 def main():
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + " stack_in  stack_out"
-	parser = OptionParser(usage,version=SPARXVERSION)
+	parser = optparse.OptionParser(usage,version=sparx_global_def.SPARXVERSION)
 	parser.add_option("--shift",		action="store_true",	 default=False,	      help="Apply only translation, disregard rotation, useful for centering of data (default False)")
 	parser.add_option("--ignore_mirror",action="store_true",	 default=False,	      help="If centering data with CTF and astigmatism, use option ignore mirror (default False)")
 	parser.add_option("--method",		type="string"      ,	 default="quadratic", help="Interpolation method (default linear)")
@@ -53,12 +53,11 @@ def main():
     		print("usage: " + usage)
     		print("Please run '" + progname + " -h' for detailed options")
 	else:
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
-			disable_bdb_cache()
-		global_def.BATCH = True
-		transform2d(args[0], args[1], options.shift, options.ignore_mirror, options.method)
-		global_def.BATCH = False
+		if sparx_global_def.CACHE_DISABLE:
+			sparx_utilities.disable_bdb_cache()
+		sparx_global_def.BATCH = True
+		sparx_applications.transform2d(args[0], args[1], options.shift, options.ignore_mirror, options.method)
+		sparx_global_def.BATCH = False
 
 if __name__ == "__main__":
 	main()

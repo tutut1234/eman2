@@ -32,19 +32,19 @@ from __future__ import print_function
 #
 #
 
+import optparse
+import os
+import sparx_global_def
+import sparx_utilities
+import sys
 from future import standard_library
 standard_library.install_aliases()
-import os
-import global_def
-from   global_def import *
-from   optparse import OptionParser
-import sys, configparser
 
 def main():
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + " configure_file.cfg"
 
-	parser = OptionParser(usage,version=SPARXVERSION)
+	parser = optparse.OptionParser(usage,version=sparx_global_def.SPARXVERSION)
 	(options, args) = parser.parse_args()
 
 	if len(args) != 1:
@@ -52,14 +52,12 @@ def main():
 		print("Please run '" + progname + " -h' for detailed options")
 		sys.exit()
 
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
-		disable_bdb_cache()
+	if sparx_global_def.CACHE_DISABLE:
+		sparx_utilities.disable_bdb_cache()
 
-	from development import ali2d_mref
-	global_def.BATCH = True
+	sparx_global_def.BATCH = True
 	ali2d_mref(args[0])
-	global_def.BATCH = False
+	sparx_global_def.BATCH = False
 
 
 if __name__ == "__main__":

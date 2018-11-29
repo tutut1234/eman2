@@ -32,17 +32,18 @@ from __future__ import print_function
 #
 #
 
-
+import optparse
 import os
-import global_def
-from   global_def import *
-from   optparse import OptionParser
+import sparx_applications
+import sparx_global_def
+import sparx_utilities
 import sys
+
 def main():
 	
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + " stack dendoname <maskfile> --link=kind_of_link --dist=kind_of_dist --dissimilar"
-	parser = OptionParser(usage,version=SPARXVERSION)
+	parser = optparse.OptionParser(usage,version=sparx_global_def.SPARXVERSION)
 	parser.add_option("--link",       type='string',       default="single",     help="Kind of linkage: single, complete, average (default single)")
 	parser.add_option("--dist",       type='string',       default="sim_SqEuc",  help="Kind of distance: SqEuc, CCC (default SqEuc)")
 	parser.add_option("--dissimilar", action='store_true', default=False,        help="Change the distance to the negative value (default False)")
@@ -64,13 +65,11 @@ def main():
 		if len(args) == 2: maskname = None
 		else:              maskname = args[2]
 
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
-			disable_bdb_cache()
-		from  applications  import  HAC_clustering
-		global_def.BATCH = True
-		HAC_clustering(args[0], args[1], maskname, options.link, options.dist, options.dissimilar)
-		global_def.BATCH = False
+		if sparx_global_def.CACHE_DISABLE:
+			sparx_utilities.disable_bdb_cache()
+		sparx_global_def.BATCH = True
+		sparx_applications.HAC_clustering(args[0], args[1], maskname, options.link, options.dist, options.dissimilar)
+		sparx_global_def.BATCH = False
 
 if __name__ == "__main__":
 	        main()

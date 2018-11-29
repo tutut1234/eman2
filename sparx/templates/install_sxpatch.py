@@ -33,9 +33,12 @@ from __future__ import print_function
 # ========================================================================================
 # Python Standard Libraries
 from __future__ import print_function
-import sys
-import os
 import argparse
+import glob
+import os
+import shutil
+import sys
+import time
 
 # ========================================================================================
 # Helper Functions
@@ -54,24 +57,19 @@ def get_cmd_line():
 # Print progress message with time stamp
 # ----------------------------------------------------------------------------------------
 def print_progress(message):
-	from time import strftime, localtime
-	time_stamp = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
+	time_stamp = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime()) + " =>"
 	print(time_stamp, message)
 
 # ----------------------------------------------------------------------------------------
 # Generate backup root directory name with current local time
 # ----------------------------------------------------------------------------------------
 def get_backup_root_dir_name():
-	from time import strftime, localtime
-	return strftime("backup_%Y%m%d_%H%M%S", localtime())
+	return time.strftime("backup_%Y%m%d_%H%M%S", time.localtime())
 
 # ----------------------------------------------------------------------------------------
 # Do the actual installation
 # ----------------------------------------------------------------------------------------
 def install_patch_src_files(patch_src_root_dir_path, patch_src_subdir_rpath, backup_root_dir_path, install_dir_path, install_subdir_rpath, python_script_directive=None):
-	import glob
-	import shutil
-	import stat
 	
 	print_progress("Checking \'%s\' subdirectory..." % patch_src_subdir_rpath)
 	patch_src_subdir_rpath = os.path.join(patch_src_root_dir_path, patch_src_subdir_rpath)
@@ -156,7 +154,6 @@ def install_patch_src_files(patch_src_root_dir_path, patch_src_subdir_rpath, bac
 # 
 # ----------------------------------------------------------------------------------------
 def install_sxpatch(args):
-	from distutils.spawn import find_executable
 	
 	install_dir_path = args.install_dir_path
 	if install_dir_path is None:

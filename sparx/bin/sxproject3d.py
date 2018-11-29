@@ -32,17 +32,18 @@ from __future__ import print_function
 #
 #
 
-
+import optparse
 import os
-import global_def
-from   global_def import *
-from   optparse import OptionParser
+import sparx_applications
+import sparx_global_def
+import sparx_utilities
 import sys
+
 
 def main():
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + " volume stack  <maskfile> --delta=angular_step --method=S --phiEqpsi=Minus --symmetry=c1 --angles=angles.txt --CTF=ctf.txt --noise=s"
-	parser = OptionParser(usage,version=SPARXVERSION)
+	parser = optparse.OptionParser(usage,version=sparx_global_def.SPARXVERSION)
 	parser.add_option("--delta",    type="float",   default=2,       help="angular step ")
 	parser.add_option("--phiEqpsi", type="string",  default="Minus", help="if Minus, psi is set to minus phi (default), if Zero, set to zero ")
 	parser.add_option("--method",   type="string",  default="S",     help="method of quasi-uniformly distributed Eulerian angles S (default) or P")
@@ -63,14 +64,12 @@ def main():
 		else:
 			mask = args[2]
 			
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
-			disable_bdb_cache()
-		from   applications import project3d
-		global_def.BATCH = True
-		project3d(args[0], args[1], mask, options.delta, options.method, options.phiEqpsi, options.symmetry, options.angles, \
+		if sparx_global_def.CACHE_DISABLE:
+			sparx_utilities.disable_bdb_cache()
+		sparx_global_def.BATCH = True
+		sparx_applications.project3d(args[0], args[1], mask, options.delta, options.method, options.phiEqpsi, options.symmetry, options.angles, \
 		  listctfs=options.CTF, noise=options.noise, realsp=options.realspace, trillinear=options.tril)
-		global_def.BATCH = False
+		sparx_global_def.BATCH = False
 
 if __name__ == "__main__":
 	main()

@@ -32,10 +32,12 @@ from __future__ import print_function
 #
 #
 
+import mpi
+import optparse
 import os
-import global_def
-from global_def import *
-from optparse import OptionParser
+import sparx_applications
+import sparx_global_def
+import sparx_utilities
 import sys
 def main():
 	arglist = []
@@ -43,7 +45,7 @@ def main():
 		arglist.append( arg )
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + " data_stack reference_stack outdir <maskfile> --ir=inner_radius --ou=outer_radius --rs=ring_step --xr=x_range --yr=y_range  --ts=translation_step --center=center_type --maxit=max_iteration --CTF --snr=SNR --function=user_function_name --rand_seed=random_seed --MPI"
-	parser = OptionParser(usage,version=SPARXVERSION)
+	parser = optparse.OptionParser(usage,version=sparx_global_def.SPARXVERSION)
 	parser.add_option("--ir", type="float", default=1, help="  inner radius for rotational correlation > 0 (set to 1)")
 	parser.add_option("--ou", type="float", default=-1, help="  outer radius for rotational correlation < nx/2-1 (set to the radius of the particle)")
 	parser.add_option("--rs", type="float", default=1, help="  step between rings in rotational correlation > 0 (set to 1)" )
@@ -69,27 +71,22 @@ def main():
 		else:
 			mask = args[3]
 
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
-			disable_bdb_cache()
+		if sparx_global_def.CACHE_DISABLE:
+			sparx_utilities.disable_bdb_cache()
 		
 		if options.MPI:
-			from mpi import mpi_init
-			sys.argv = mpi_init(len(sys.argv), sys.argv)
+			sys.argv = mpi.mpi_init(len(sys.argv), sys.argv)
 
-		global_def.BATCH = True
+		sparx_global_def.BATCH = True
 		if options.EQ:
-			from development import mrefeq_ali2df
 			#print  "  calling MPI",options.MPI,options.function,options.rand_seed
 			#print  args
 			mrefeq_ali2df(args[0], args[1], mask, options.ir, options.ou, options.rs, options.xr, options.yr, options.ts, options.center, options.maxit, options.CTF, options.snr, options.function, options.rand_seed, options.MPI)
 		else:
-			from applications import mref_ali2d
-			mref_ali2d(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr, options.yr, options.ts, options.center, options.maxit, options.CTF, options.snr, options.function, options.rand_seed, options.MPI)
-		global_def.BATCH = False
+			sparx_applications.mref_ali2d(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr, options.yr, options.ts, options.center, options.maxit, options.CTF, options.snr, options.function, options.rand_seed, options.MPI)
+		sparx_global_def.BATCH = False
 		if options.MPI:
-			from mpi import mpi_finalize
-			mpi_finalize()
+			mpi.mpi_finalize()
 
 
 if __name__ == "__main__":

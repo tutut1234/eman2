@@ -32,10 +32,13 @@ from __future__ import print_function
 #
 #
 
-from builtins import range
-from   EMAN2        import *
-from   sparx        import *
+import EMAN2_cppwrap
+import sparx_applications
+import sparx_fundamentals
+import sparx_statistics
+import sparx_utilities
 import sys
+from builtins import range
 
 if len(sys.argv) != 5:
     print('search_alivol.py <vol_to_align.hdf> <ref_vol.hdf> <name_vol_aligned.hdf> <radius_mask>')
@@ -48,17 +51,17 @@ name_ali = sys.argv[3]
 rad      = int(sys.argv[4])
 name_mir = 'tmp_vol_m.hdf'
 
-im = EMData()
+im = EMAN2_cppwrap.EMData()
 im.read_image(name_ref, 0, True)
-mask = model_circle(rad, im.get_xsize(), im.get_ysize(), im.get_zsize()) 
+mask = sparx_utilities.model_circle(rad, im.get_xsize(), im.get_ysize(), im.get_zsize()) 
 
 # create the mirror of the volume
-vol = get_im(name_vol)
-vol = mirror(vol)
+vol = sparx_utilities.get_im(name_vol)
+vol = sparx_fundamentals.mirror(vol)
 vol.write_image(name_mir)
 
 # define list of angles ~ 15 angles (phi, theta, psi)
-agls      = even_angles(40, 0.0, 179.9, 0.0, 359.9, 'P')
+agls      = sparx_utilities.even_angles(40, 0.0, 179.9, 0.0, 359.9, 'P')
 size_agls = len(agls)
 
 cc  = [0]     * size_agls
@@ -69,23 +72,23 @@ for n in range(size_agls): # another loop over Psi
     # set the value of phi, theta, and psi in the header of the volume
     im.read_image(name_vol, 0, True)
     im.set_attr_dict({'phi': agls[n][0], 'theta': agls[n][1], 'psi': 0, 's3x': 0, 's3y':0, 's3z': 0, 'scale': 1})
-    im.write_image(name_vol, 0, EMUtil.ImageType.IMAGE_HDF, True)
+    im.write_image(name_vol, 0, EMAN2_cppwrap.EMUtil.ImageType.IMAGE_HDF, True)
 
     # search the alignment
-    ali_vol_rotate(name_vol, name_ref, 20, rad)
+    sparx_applications.ali_vol_rotate(name_vol, name_ref, 20, rad)
 
     # read the new value of orientation
-    im  = get_im(name_vol)
+    im  = sparx_utilities.get_im(name_vol)
 
     # apply the orientation on the volume
-    vol_ali = rot_shift3D(im, im.get_attr('phi'), im.get_attr('theta'), im.get_attr('psi'))
+    vol_ali = sparx_fundamentals.rot_shift3D(im, im.get_attr('phi'), im.get_attr('theta'), im.get_attr('psi'))
     vol_ali.write_image(name_ali)
 
     # compute the cross correlation between the ref and the new orientation of the vol
     #val_cc = imgstat([name_ali, name_ref], True, '', False, (dic['nx'] / 2) - 2)
-    tmp_ali = get_im(name_ali)
-    tmp_ref = get_im(name_ref)
-    val_cc = ccc(tmp_ali, tmp_ref, mask)
+    tmp_ali = sparx_utilities.get_im(name_ali)
+    tmp_ref = sparx_utilities.get_im(name_ref)
+    val_cc = sparx_statistics.ccc(tmp_ali, tmp_ref, mask)
 
     # to display the result
     print('================================')
@@ -96,23 +99,23 @@ for n in range(size_agls): # another loop over Psi
     # set the value of phi, theta, and psi in the header of the volume
     im.read_image(name_mir, 0, True)
     im.set_attr_dict({'phi': agls[n][0], 'theta': agls[n][1], 'psi': 0, 's3x': 0, 's3y':0, 's3z': 0, 'scale': 1})
-    im.write_image(name_mir, 0, EMUtil.ImageType.IMAGE_HDF, True)
+    im.write_image(name_mir, 0, EMAN2_cppwrap.EMUtil.ImageType.IMAGE_HDF, True)
 
     # search the alignment
-    ali_vol_rotate(name_mir, name_ref, 20, rad)
+    sparx_applications.ali_vol_rotate(name_mir, name_ref, 20, rad)
 
     # read the new value of orientation
-    im  = get_im(name_mir)
+    im  = sparx_utilities.get_im(name_mir)
 
     # apply the orientation on the volume
-    vol_ali = rot_shift3D(im, im.get_attr('phi'), im.get_attr('theta'), im.get_attr('psi'))
+    vol_ali = sparx_fundamentals.rot_shift3D(im, im.get_attr('phi'), im.get_attr('theta'), im.get_attr('psi'))
     vol_ali.write_image(name_ali)
 
     # compute the cross correlation between the ref and the new orientation of the vol
     #n_val_cc = imgstat([name_ali, name_ref], True, '', False, (dic['nx'] / 2) - 2)
-    tmp_ali = get_im(name_ali)
-    tmp_ref = get_im(name_ref)
-    n_val_cc = ccc(tmp_ali, tmp_ref, mask)
+    tmp_ali = sparx_utilities.get_im(name_ali)
+    tmp_ref = sparx_utilities.get_im(name_ref)
+    n_val_cc = sparx_statistics.ccc(tmp_ali, tmp_ref, mask)
 
     # to display the result
     print('================================')
@@ -151,21 +154,21 @@ for n in psi:
     # set the value of phi, theta, and psi in the header of the volume
     im.read_image(name_vol, 0, True)
     im.set_attr_dict({'phi': phi, 'theta': theta, 'psi': n, 's3x': 0, 's3y':0, 's3z': 0, 'scale': 1})
-    im.write_image(name_vol, 0, EMUtil.ImageType.IMAGE_HDF, True)
+    im.write_image(name_vol, 0, EMAN2_cppwrap.EMUtil.ImageType.IMAGE_HDF, True)
 
     # search the alignment
-    ali_vol_rotate(name_vol, name_ref, 20, rad)
+    sparx_applications.ali_vol_rotate(name_vol, name_ref, 20, rad)
 
     # read the new value of orientation
-    im  = get_im(name_vol)
+    im  = sparx_utilities.get_im(name_vol)
 
     # apply the orientation on the volume
-    vol_ali = rot_shift3D(im, im.get_attr('phi'), im.get_attr('theta'), im.get_attr('psi'))
+    vol_ali = sparx_fundamentals.rot_shift3D(im, im.get_attr('phi'), im.get_attr('theta'), im.get_attr('psi'))
     vol_ali.write_image(name_ali)
 
-    tmp_ali = get_im(name_ali)
-    tmp_ref = get_im(name_ref)
-    val_cc = ccc(tmp_ali, tmp_ref, mask)
+    tmp_ali = sparx_utilities.get_im(name_ali)
+    tmp_ref = sparx_utilities.get_im(name_ref)
+    val_cc = sparx_statistics.ccc(tmp_ali, tmp_ref, mask)
 
     # to display the result
     print('================================')
@@ -180,16 +183,16 @@ for n in psi:
 #---- assignt the best start orientation on the volume ----
 im.read_image(name_vol, 0, True)
 im.set_attr_dict({'phi': phi, 'theta': theta, 'psi': best_pos, 's3x': 0, 's3y':0, 's3z': 0, 'scale': 1})
-im.write_image(name_vol, 0, EMUtil.ImageType.IMAGE_HDF, True)
+im.write_image(name_vol, 0, EMAN2_cppwrap.EMUtil.ImageType.IMAGE_HDF, True)
 
 # search the alignment
-ali_vol_rotate(name_vol, name_ref, 1.0, rad)
+sparx_applications.ali_vol_rotate(name_vol, name_ref, 1.0, rad)
 
 # read the new value of orientation
-im  = get_im(name_vol)
+im  = sparx_utilities.get_im(name_vol)
 
 # apply the orientation on the volume
-vol_ali = rot_shift3D(im, im.get_attr('phi'), im.get_attr('theta'), im.get_attr('psi'))
+vol_ali = sparx_fundamentals.rot_shift3D(im, im.get_attr('phi'), im.get_attr('theta'), im.get_attr('psi'))
 vol_ali.write_image(name_ali)
 
 # print the end infos
