@@ -29,17 +29,17 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
 
-from utilities       import *
-from filter          import *
-from projection      import *
-from fundamentals    import *
-from statistics      import *
-from alignment       import *
-from morphology      import *
-from reconstruction  import *
-from applications    import *
-from user_functions  import *
-from global_def      import *
-from pixel_error     import *
-from development     import *
-from multi_shc       import *
+from sparx_utilities       import *
+from sparx_filter          import *
+from sparx_projection      import *
+from sparx_fundamentals    import *
+from sparx_statistics      import *
+from sparx_alignment       import *
+from sparx_morphology      import *
+from sparx_reconstruction  import *
+from sparx_applications    import *
+from sparx_user_functions  import *
+from sparx_global_def      import *
+from sparx_pixel_error     import *
+from sparx_development     import *
+from sparx_multi_shc       import *
