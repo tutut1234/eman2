@@ -406,9 +406,11 @@ while True:
 
         print('')
         print('Replace list:')
+        used_modules = []
         replace += len(replace_list)
         for entry in replace_list:
             print(template.format(*entry))
+            used_modules.extend(entry[idx_mod])
         print('')
 
         print('')
@@ -421,7 +423,6 @@ while True:
         print('')
 
         print('RESOLVED THINGS:')
-        used_modules = []
         ok += len(ok_list)
         idx_line = 0
         idx_column = 1
