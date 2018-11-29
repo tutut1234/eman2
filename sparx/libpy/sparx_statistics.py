@@ -418,7 +418,7 @@ def sum_oe(data, mode = "a", CTF = False, ctf_2_sum = None, ctf_eo_sum = False, 
 		If ctf_eo_sum is True, then compute ctf^2 in odd and even form
 		If return_params is True, then return ali2d.xform parameters
 	"""
-	if CTF: sparx_global_def.ERROR("This function was disabled as it does not treat astigmatism properly","sum_oe",1)
+	if CTF: sparx_global_def.ERROR("This function was disabled as it does not treat astigmatism properly","sum_oe",0)
 	n      = len(data)
 	if return_params: params_list = [None]*n
 	if CTF:
