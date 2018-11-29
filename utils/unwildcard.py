@@ -130,6 +130,16 @@ for lib_file in lib_files + lib_files_2 + lib_eman2_files + lib_eman2_files_2 + 
         lib_modules[name].append('MPI')
         lib_modules[name].append('LOGFILE')
         lib_modules[name].append('SPARX_DOCUMENTATION_WEBSITE')
+    elif 'global_def' == name:
+        lib_modules[name].append('SPARXVERSION')
+        lib_modules[name].append('CACHE_DISABLE')
+        lib_modules[name].append('SPARX_MPI_TAG_UNIVERSAL')
+        lib_modules[name].append('interpolation_method_2D')
+        lib_modules[name].append('Eulerian_Angles')
+        lib_modules[name].append('BATCH')
+        lib_modules[name].append('MPI')
+        lib_modules[name].append('LOGFILE')
+        lib_modules[name].append('SPARX_DOCUMENTATION_WEBSITE')
     elif 'EMAN2_meta' == name:
         lib_modules[name].append('EMANVERSION')
         lib_modules[name].append('DATESTAMP')
@@ -199,6 +209,8 @@ while True:
     confusion = [0, []]
     syntax = [0, []]
     for file_name in python_files:
+        if 'sparx.py' in file_name:
+            continue
         print('######################################')
         print(file_name)
 
