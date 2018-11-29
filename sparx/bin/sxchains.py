@@ -37,7 +37,6 @@ import copy
 import numpy
 import optparse
 import os
-import random
 import sparx_alignment
 import sparx_fundamentals
 import sparx_global_def

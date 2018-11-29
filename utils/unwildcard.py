@@ -54,8 +54,9 @@ def my_report(self, messageClass, *args, **kwargs):
         message = messageClass(self.filename, *args, **kwargs)
         self.undefined_names.append(message.to_list())
     elif pym.UnusedImport == messageClass:
-        message = messageClass(self.filename, *args, **kwargs)
-        self.unused_imports.append(message.to_list())
+        if 'sparx.py' not in self.filename:
+            message = messageClass(self.filename, *args, **kwargs)
+            self.unused_imports.append(message.to_list())
 
 
 def my_to_list(self):
@@ -490,7 +491,8 @@ while True:
             print('Remove imports', Checker.unused_imports)
             imports_to_remove = []
             for _, _, name in Checker.unused_imports:
-                imports_to_remove.append(name)
+                if name not in ('matplotlib'):
+                    imports_to_remove.append(name)
             imports = ['import {0}\n'.format(entry) if entry not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry) for entry in list(set(used_modules)) if entry not in imports_to_remove]
             imports.extend(['import {0}\n'.format(entry) if entry.split('.')[-1] not in qtgui_files else 'import eman2_gui.{0} as {0}\n'.format(entry.split('.')[-1]) for entry in correct_imports_clean if entry not in imports_to_remove])
         else:
