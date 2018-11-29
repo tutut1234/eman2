@@ -121,8 +121,8 @@ e2boxer.py ????.mrc --boxsize=256
 	(options, args) = parser.parse_args()
 
 	if options.cter:
-		from global_def import SPARXVERSION
-		import global_def
+		from sparx_global_def import SPARXVERSION
+		import sparx_global_def
 		if len(args) <2 or len(args) > 3:
 			print("see usage")
 			sys.exit()
@@ -149,15 +149,15 @@ e2boxer.py ????.mrc --boxsize=256
 			from mpi import mpi_init, mpi_finalize
 			sys.argv = mpi_init(len(sys.argv), sys.argv)
 
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sparx_global_def.CACHE_DISABLE:
+			from sparx_utilities import disable_bdb_cache
 			disable_bdb_cache()
 
-		from morphology import cter
-		global_def.BATCH = True
+		from sparx_morphology import cter
+		sparx_global_def.BATCH = True
 		cter(stack, out1, out2, options.indir, options.nameroot, options.micsuffix, options.wn, \
 			voltage=300.0, Pixel_size=options.apix, Cs = options.Cs, wgh=options.ac, kboot=options.kboot, MPI=options.MPI, DEBug = options.debug)
-		global_def.BATCH = False
+		sparx_global_def.BATCH = False
 
 		if options.MPI:
 			from mpi import mpi_finalize
@@ -2404,7 +2404,7 @@ class GaussPanel(object):
 		# calculate ctf values with ctf_get
 		#print "starting CTF estimation"
 		# get the current image
-		from utilities import get_im
+		from sparx_utilities import get_im
 		#image_name = self.target().boxable.get_image_name()
 		#img = BigImageCache.get_image_directly( image_name )
 		image_name = self.target().target().file_names[0]
@@ -2435,16 +2435,16 @@ class GaussPanel(object):
 			return
 
 		# print "determine power spectrum"
-		from fundamentals import welch_pw2
+		from sparx_fundamentals import welch_pw2
 		# XXX: check image dimensions, especially box size for welch_pw2!
 		power_sp = welch_pw2(img, win_size=ctf_window_size, overlp_x=ctf_overlap_size, overlp_y=ctf_overlap_size,
 				     edge_x=ctf_edge_size, edge_y=ctf_edge_size)
-		from fundamentals import rot_avg_table
+		from sparx_fundamentals import rot_avg_table
 		avg_sp = rot_avg_table(power_sp)
 		del power_sp
 
 		# print "determine ctf"
-		from morphology import defocus_gett
+		from sparx_morphology import defocus_gett
 
 
 		input_pixel_size = float(self.pixel_input_edit.text())
@@ -2475,7 +2475,7 @@ class GaussPanel(object):
 
 		# XXX: wgh?? amp_cont static to 0?
 		# set image properties, in order to save ctf values
-		from utilities import set_ctf
+		from sparx_utilities import set_ctf
 		set_ctf(img, [defocus, ctf_cs, ctf_volt, input_pixel_size, 0, ctf_ampcont])
 		# and rewrite image
 		img.write_image(image_name)
@@ -2522,7 +2522,7 @@ class GaussPanel(object):
 
 		print("Starting CTER")
 		# get the current image
-		from utilities import get_im
+		from sparx_utilities import get_im
 		#image_name = self.target().boxable.get_image_name()
 		#img = BigImageCache.get_image_directly( image_name )
 		image_name = self.target().target().file_names[0]
@@ -2558,7 +2558,7 @@ class GaussPanel(object):
 			print("Please remove or rename %s and or %s"%(outpwrot,outpartres))
 			return
 
-		from morphology import cter
+		from sparx_morphology import cter
 		defocus, ast_amp, ast_agl, error_defocus, error_astamp, error_astagl = cter(None, outpwrot, outpartres, None, None, ctf_window_size, voltage=ctf_volt, Pixel_size=input_pixel_size, Cs = ctf_cs, wgh=ctf_ampcont, kboot=ctf_kboot, MPI=False, DEBug= False, overlap_x = ctf_overlap_size, overlap_y = ctf_overlap_size, edge_x = ctf_edge_size, edge_y = ctf_edge_size, guimic=image_name)
 
 		self.estdef.setText(str(defocus))
@@ -2581,7 +2581,7 @@ class GaussPanel(object):
 
 		# XXX: wgh?? amp_cont static to 0?
 		# set image properties, in order to save ctf values
-		from utilities import set_ctf
+		from sparx_utilities import set_ctf
 		set_ctf(img, [defocus, ctf_cs, ctf_volt, input_pixel_size, 0, ctf_ampcont, ast_amp, ast_agl])
 		# and rewrite image
 		img.write_image(image_name)
@@ -2741,7 +2741,7 @@ class GaussBoxer(object):
 		small_img /= sigma
 
 		if(self.use_variance):
-			from morphology import power
+			from sparx_morphology import power
 			small_img = power(small_img, 2.0)
 			print("using variance")
 
@@ -2898,7 +2898,7 @@ class GaussBoxer(object):
 		small_img.set_attr("subsample_rate",subsample_rate)
 		small_img.set_attr("frequency_cutoff",frequency_cutoff)
 		small_img.set_attr("template_min",template_min)
-		from utilities import generate_ctf
+		from sparx_utilities import generate_ctf
 		try:
 			ctf_dict = img.get_attr("ctf")
 			ctf_dict.apix = self.pixel_output
@@ -3001,7 +3001,7 @@ class GaussBoxer(object):
 		small_img /= sigma
 
 		if(self.use_variance):
-			from morphology import power
+			from sparx_morphology import power
 			small_img = power(small_img, 2.0)
 			print("using variance")
 
@@ -3037,7 +3037,7 @@ class GaussBoxer(object):
 	# take care of case where estimated ctf is saved into downsampled micrograph from which particles are picked.
 	def auto_ctf(self,image_name,ctf_params):
 
-		from utilities import get_im
+		from sparx_utilities import get_im
 		img = get_im(image_name)
 		ctf_volt = ctf_params['ctf_volt']
 		ctf_window = ctf_params['ctf_window']
@@ -3050,19 +3050,19 @@ class GaussBoxer(object):
 		self.pixel_input = ctf_params['pixel_input']
 		self.pixel_output = ctf_params['pixel_output']
 
-		from fundamentals import welch_pw2
+		from sparx_fundamentals import welch_pw2
 		# XXX: check image dimensions, especially box size for welch_pw2!
 		power_sp = welch_pw2(img,win_size=ctf_window,overlp_x=ctf_overlap,overlp_y=ctf_overlap,edge_x=ctf_edge,edge_y=ctf_edge)
 
-		from fundamentals import rot_avg_table
+		from sparx_fundamentals import rot_avg_table
 		avg_sp = rot_avg_table(power_sp)
 		del power_sp
 
-		from morphology import defocus_gett
+		from sparx_morphology import defocus_gett
 		defocus = defocus_gett(avg_sp,voltage=ctf_volt,Pixel_size=self.pixel_input,Cs=ctf_Cs,wgh=ctf_ampcont, f_start=ctf_fstart,f_stop=ctf_fstop)
 
 		# set image properties, in order to save ctf values
-		from utilities import set_ctf, generate_ctf
+		from sparx_utilities import set_ctf, generate_ctf
 		ctf_tuple = [defocus,ctf_Cs,ctf_volt,self.pixel_output,0,ctf_ampcont]
 		set_ctf(img, ctf_tuple)
 		img.write_image(image_name, 0)
@@ -3289,7 +3289,7 @@ class CTFInspectorWidget(QtGui.QWidget):
 			steph = old_div(float(h-2*hborder), float(sizeh))
 
 			import math
-			from utilities import read_text_file
+			from sparx_utilities import read_text_file
 			ctfdata2 = read_text_file("procpw.txt",3)
 
 			if ((self.i_start is not None) and (self.i_stop is not None)):
