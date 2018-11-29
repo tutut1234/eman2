@@ -98,10 +98,12 @@ IMPORT_FIND_SYNTAX_RE = re.compile("^\s*(if|else|try|except).*:")
 
 
 lib_files = sorted(glob.glob('../sparx/libpy/*.py'))
+lib_files_2 = sorted(glob.glob('../sparx/templates/sxgui_template.py'))
 lib_eman2_files = sorted(glob.glob('../libpyEM/*.py'))
 lib_eman2_files_2 = sorted(glob.glob('../libpyEM/qtgui/*.py'))
 lib_eman2_files_3 = sorted(glob.glob('../libpyEM/*.py.in'))
 bin_files = sorted(glob.glob('../sparx/bin/*.py'))
+bin_files_2 = sorted(glob.glob('../sparx/templates/*.py'))
 
 qtgui_files = [os.path.splitext(os.path.basename(entry))[0] for entry in lib_eman2_files_2]
 
@@ -109,7 +111,7 @@ transform_dict = {}
 
 lib_modules = {}
 lib_modules_ext = {}
-for lib_file in lib_files + lib_eman2_files + lib_eman2_files_2 + lib_eman2_files_3:
+for lib_file in lib_files + lib_files_2 + lib_eman2_files + lib_eman2_files_2 + lib_eman2_files_3:
     name = os.path.splitext(os.path.basename(lib_file))[0].replace('.py', '')
     with open(lib_file) as read:
         lib_modules[name] = [
@@ -173,7 +175,7 @@ for entry in external_modules:
     importlib.import_module(entry)
     lib_modules_ext[entry] = dir(sys.modules[entry])
 
-python_files = bin_files + lib_files
+python_files = bin_files + lib_files + bin_files_2
 
 modReporter.Reporter.syntaxError = my_exception
 reporter = modReporter._makeDefaultReporter()
@@ -462,6 +464,8 @@ while True:
                 if 'eman2_gui' in entry:
                     pass
                 elif 'sparx_' in entry:
+                    pass
+                elif 'sxgui_template' in entry:
                     pass
                 else:
                     continue
