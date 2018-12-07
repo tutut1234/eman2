@@ -44,7 +44,7 @@
 using namespace boost::python;
 
 #if PY_MAJOR_VERSION >= 3
-int
+void *
 #else
 void
 #endif
