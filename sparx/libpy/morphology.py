@@ -2626,9 +2626,24 @@ def cter_mrk(input_image_path, output_directory, selection_list = None, wn = 512
 				except:		pwrot2 = [0.0] * lnsb
 				#  #1 - rotational averages without astigmatism, #2 - with astigmatism
 				lnsb = min(len(crot2),len(pwrot1),len(crot2),len(pwrot2))
-				write_text_file([list(range(lnsb)), [float(i)/wn/pixel_size for i in range(lnsb)], pwrot1, crot1, pwrot2, crot2], os.path.join(outpwrot, "%s_rotinf.txt"%(img_basename_root)))
 				
-				#
+				# Apply background and envelope to theoretical profile
+				first_nonzero = next(i for i in range(len(pwrot2)) if pwrot2[i] > 0)  # fit is weird if leading zero elements
+				pwrot2_envl = defocus_baseline_fit(pwrot2, first_nonzero, lnsb, 5, 2).tolist()
+				#write_text_file([list(range(lnsb)), [float(i)/wn/pixel_size for i in range(lnsb)], pwrot2, pwrot2_envl], 'pwrot2_envl.txt')
+				pwrot2_bkgd = defocus_baseline_fit(pwrot2, first_nonzero+1, lnsb, 2, 3).tolist()
+				#write_text_file([list(range(lnsb)), [float(i)/wn/pixel_size for i in range(lnsb)], pwrot2, pwrot2_bkgd], 'pwrot2_bkgd.txt')
+				crot2_bkgd = defocus_baseline_fit(crot2,0,lnsb,3,3)
+				#write_text_file([list(range(lnsb)), [float(i)/wn/pixel_size for i in range(lnsb)], crot2, crot2_bkgd], 'crot2_bkgd.txt')
+				
+				pwrot2_minus_bkgd = np.subtract(pwrot2, pwrot2_bkgd).tolist()
+				crot2_minus_bkgd = np.subtract(crot2, crot2_bkgd)
+				envl_minus_bkgd = np.subtract(pwrot2_envl, pwrot2_bkgd)
+				crot2_times_envl = np.multiply(crot2_minus_bkgd, envl_minus_bkgd).tolist()
+				# (If I subtract the background and then try to fit the envelope, I get weird answers. --Tapu)
+				
+				write_text_file([list(range(lnsb)), [float(i)/wn/pixel_size for i in range(lnsb)], pwrot1, crot1, pwrot2, crot2, pwrot2_minus_bkgd, crot2_times_envl], os.path.join(outpwrot, "%s_rotinf.txt"%(img_basename_root)))
+				
 				# NOTE: 2016/03/23 Toshio Moriya
 				# Compute mean of extrema differences (differences at peak & trough) between 
 				# (1) experimental rotational average with astigmatism (pwrot2)
