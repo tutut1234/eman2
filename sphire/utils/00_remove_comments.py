@@ -37,7 +37,10 @@ import glob
 USED_FOLDER = ('bin', 'libpy', 'templates')
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 NO_COMMENTS_DIR = os.path.join(CURRENT_DIR, 'NO_COMMENTS')
-shutil.rmtree(NO_COMMENTS_DIR)
+try:
+    shutil.rmtree(NO_COMMENTS_DIR)
+except OSError:
+    pass
 
 # Regular expressions
 BLOCK_STRING_SINGLE_START_RE = re.compile('\s*\'\'\'')
@@ -52,6 +55,7 @@ INDENT_RE = re.compile('^(\s*)')
 
 FILE_NAME = None
 PRINT_LINE = None
+
 def print_all_info(**kwargs):
     if PRINT_LINE:
         if kwargs['line_idx'] in PRINT_LINE:
