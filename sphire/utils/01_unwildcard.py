@@ -50,44 +50,29 @@ IGNORE_FILES = (
     'sparx.py'
     )
 IGNORE_MODULES = (
-    '__future__'
+    '__future__',
+    'buildins',
     )
 EXTERNAL_LIBS = (
     'EMAN2_cppwrap',
     )
-#EXTERNAL_LIBS = (
-#    'subprocess',
-#    'random',
-#    'mpi',
-#    'sys',
-#    'traceback',
-#    'time',
-#    'numpy',
-#    'numpy.random',
-#    'math',
-#    'operator',
-#    'optparse',
-#    'sets',
-#    'copy',
-#    'inspect',
-#    'scipy',
-#    'scipy.optimize',
-#    'scipy.stats',
-#    'datetime',
-#    'heapq',
-#    'matplotlib',
-#    'os',
-#    'string',
-#    'builtins',
-#    'shutil',
-#    'glob',
-#    'types',
-#    'pickle',
-#    'zlib',
-#    'struct',
-#    'fractions',
-#    'socket',
-#    )
+
+IGNORE_LIST = (
+    'os',
+    'global_def',
+    'mpi',
+    'collections',
+    'six',
+    'json',
+    'EMAN2db',
+    'numpy',
+    'shutil',
+    'logging',
+    )
+
+REPLACE_DICT = {
+    'np': 'numpy',
+    }
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 NO_IMPORTS_DIR = os.path.join(CURRENT_DIR, 'NO_IMPORTS')
@@ -115,6 +100,59 @@ MULTILINE_RE = re.compile('.*\\\s*$')
 
 FILE_NAME = None
 PRINT_LINE = None
+def my_to_list(self):
+    lineno = int(self.lineno) - 1
+    col = int(self.col)
+    name = re.match(".*'(.*)'", self.message % self.message_args).group(1)
+    return (lineno, col, name)
+
+
+def my_exception(self, filename, msg, lineno, offset, text):
+    if msg == 'expected an indented block':
+        print(filename, msg, lineno, offset, text.strip())
+        self.indent_error.append([int(lineno)-1, text])
+
+
+ERRORS = {}
+def my_report(self, messageClass, *args, **kwargs):
+    if pym.UndefinedName == messageClass:
+        message = messageClass(self.filename, *args, **kwargs)
+        self.undefined_names.append(message.to_list())
+    elif pym.UnusedImport == messageClass:
+        if self.filename not in IGNORE_FILES:
+            message = messageClass(self.filename, *args, **kwargs)
+            self.unused_imports.append(message.to_list())
+    elif pym.UnusedVariable == messageClass:
+        message = messageClass(self.filename, *args, **kwargs)
+        self.unused_var.append(message.to_list())
+    elif pym.RedefinedInListComp == messageClass:
+        message = messageClass(self.filename, *args, **kwargs)
+        self.shadowed_var.append(message.to_list())
+    elif pym.RedefinedWhileUnused == messageClass:
+        message = messageClass(self.filename, *args, **kwargs)
+        self.dublicated_funcs.append(message.to_list())
+    else:
+        if self.filename not in IGNORE_FILES:
+            print(messageClass(self.filename, *args, **kwargs))
+            ERRORS[str(messageClass)] = messageClass(self.filename, *args, **kwargs).to_list()
+
+
+def reset_lists():
+    GLOBAL_CHECKER.undefined_names = []
+    GLOBAL_CHECKER.unused_imports = []
+    GLOBAL_CHECKER.unused_var = []
+    GLOBAL_CHECKER.shadowed_var = []
+    GLOBAL_CHECKER.dublicated_funcs = []
+
+modReporter.Reporter.syntaxError = my_exception
+GLOBAL_REPORTER = modReporter._makeDefaultReporter()
+GLOBAL_REPORTER.indent_error = []
+
+GLOBAL_CHECKER = Checker
+GLOBAL_CHECKER.report = my_report
+pym.Message.to_list = my_to_list
+
+
 def print_all_info(**kwargs):
     if PRINT_LINE:
         if kwargs['line_idx'] in PRINT_LINE:
@@ -132,29 +170,6 @@ def get_file_dict():
         files_dir = os.path.join(CURRENT_DIR, '../..', folder_name, '*.py*')
         file_dict[folder_name] = sorted(glob.glob(files_dir))
     return file_dict
-
-
-def my_report(self, messageClass, *args, **kwargs):
-    if pym.UndefinedName == messageClass:
-        message = messageClass(self.filename, *args, **kwargs)
-        self.undefined_names.append(message.to_list())
-    elif pym.UnusedImport == messageClass:
-        if self.filename not in IGNORE_FILES:
-            message = messageClass(self.filename, *args, **kwargs)
-            self.unused_imports.append(message.to_list())
-
-
-def my_to_list(self):
-    lineno = int(self.lineno) - 1
-    col = int(self.col)
-    name = re.match(".*'(.*)'", self.message % self.message_args).group(1)
-    return (lineno, col, name)
-
-
-def my_exception(self, filename, msg, lineno, offset, text):
-    if msg == 'expected an indented block':
-        print(filename, msg, lineno, offset, text.strip())
-        self.undefined_names.append([int(lineno)-1, text])
 
 
 def get_external_libs(external_libs, lib_modules=None):
@@ -200,6 +215,31 @@ def get_library_funcs(file_dict):
             elif 'EMAN2_meta' == name:
                 lib_modules[name].append('EMANVERSION')
                 lib_modules[name].append('DATESTAMP')
+            elif 'EMAN2' == name:
+                lib_modules[name].append('HOMEDB')
+                lib_modules[name].append('T')
+                lib_modules[name].append('bispec_invar_parm')
+                lib_modules[name].append('outplaceprocs')
+                lib_modules[name].append('this_file_dirname')
+                lib_modules[name].append('GUIMode')
+                lib_modules[name].append('app')
+                lib_modules[name].append('GUIbeingdragged')
+                lib_modules[name].append('originalstdout')
+                lib_modules[name].append('to_numpy')
+                lib_modules[name].append('from_numpy')
+                lib_modules[name].append('file_mode_imap')
+                lib_modules[name].append('file_mode_intmap')
+                lib_modules[name].append('file_mode_range')
+                lib_modules[name].append('good_box_sizes')
+                lib_modules[name].append('parseparmobj1')
+                lib_modules[name].append('parseparmobj2')
+                lib_modules[name].append('parseparmobj3')
+                lib_modules[name].append('parseparmobj4')
+                lib_modules[name].append('parseparmobj_ob')
+                lib_modules[name].append('parseparmobj_logical')
+                lib_modules[name].append('parseparmobj_op_words')
+                lib_modules[name].append('parseparmobj_logical_words')
+                lib_modules[name].append('glut_inited')
             elif 'emapplication' in name:
                 lib_modules[name].append('get_application')
 
@@ -275,15 +315,34 @@ def remove_imports(file_dict, lib_modules):
                 for idx in multiline_idx:
                     lines[idx] = '\n'
                 try:
-                    local_imports[file_path] = get_external_libs(set(local_modules), lib_modules)
+                    local_imports[basename] = get_external_libs(set(local_modules), lib_modules)
                 except:
                     print(file_path)
                     raise
             else:
-                pass
+                local_imports[basename] = {}
 
             with open(output_file_name, 'w') as write:
                 write.write(''.join(lines))
+    return local_imports
+
+
+def identify_missing(file_dict):
+    local_imports = {}
+    for key, file_names in file_dict.items():
+        if key in USED_FOLDER_EMAN2:
+            local_imports[key] = []
+            continue
+        input_dir = os.path.join(NO_IMPORTS_DIR, key)
+        for file_path in file_names:
+            basename = os.path.basename(file_path)
+            input_file_path = os.path.join(input_dir, basename)
+            reset_lists()
+            with open(input_file_path) as read:
+                file_content = read.read()
+            pyfl.check(file_content, basename, GLOBAL_REPORTER)
+            local_imports[basename] = GLOBAL_CHECKER.undefined_names
+
     return local_imports
 
 
@@ -293,14 +352,43 @@ def index_search(lines, index, no_index):
         index_search(lines, index+1, no_index)
 
 
-modReporter.Reporter.syntaxError = my_exception
-reporter = modReporter._makeDefaultReporter()
-reporter.undefined_names = []
+def fix_missing(file_dict, missing_modules_local, lib_modules, lib_modules_ext, lib_modules_local):
+    local_imports = {}
+    for key, file_names in file_dict.items():
+        if key in USED_FOLDER_EMAN2:
+            continue
+        output_dir = os.path.join(NO_WILDCARDS_DIR, key)
+        try:
+            os.makedirs(output_dir)
+        except OSError:
+            pass
+        for file_path in file_names:
+            basename = os.path.basename(file_path)
+            output_file_name = os.path.join(output_dir, basename)
+            with open(file_path) as read:
+                lines = read.readlines()
+            for missing in missing_modules_local[basename]:
+                matches = []
+                dicts = [lib_modules, lib_modules_ext, lib_modules_local[basename]]
+                for dictionary in dicts:
+                    for key, values in dictionary.items():
+                        for val in values:
+                            if val == missing[2]:
+                                matches.append(key)
+                ignore = False
+                if not matches:
+                    if missing[2] in IGNORE_LIST:
+                        matches = [missing[2]]
+                        ignore = True
+                    elif missing[2] in REPLACE_DICT:
+                        matches = [REPLACE_DICT[missing[2]]]
+                    else:
+                        print('NO MATCHES FOUND FOR:', basename, missing)
+                elif len(matches) == 1:
+                    pass
+                else:
+                    pass
 
-Checker.report = my_report
-Checker.undefined_names = []
-Checker.unused_imports = []
-pym.Message.to_list = my_to_list
 
 def main():
     file_dict = get_file_dict()
@@ -313,6 +401,10 @@ def main():
 
     # Remove all imports from files
     lib_modules_local = remove_imports(file_dict, lib_modules)
+
+    missing_modules_local = identify_missing(file_dict)
+
+    fix_missing(file_dict, missing_modules_local, lib_modules, lib_modules_ext, lib_modules_local)
 
 if __name__ == '__main__':
     main()
