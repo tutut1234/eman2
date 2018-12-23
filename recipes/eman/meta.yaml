@@ -56,6 +56,9 @@ requirements:
         {% for package in resolved_packages('host') %}
         - {{ package }}
         {% endfor %}
+        {% for req in reqs_run %}
+        - {{ req }}
+        {% endfor %}
 
     
 test:
