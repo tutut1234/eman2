@@ -61,34 +61,39 @@ EXTERNAL_LIBS = (
     'EMAN2_cppwrap',
     )
 
-IGNORE_RE_DICT = {
-    'sys': '[^\w]sys\.',
-    'random': '[^\w]random\.',
-    'os': '[^\w]os\.',
-    'global_def': '[^\w]global_def\.',
-    'mpi': '[^\w]mpi\.',
-    'collections': '[^\w]collections\.',
-    're': '[^\w]re\.',
-    'six': '[^\w]six\.',
-    'json': '[^\w]json\.',
-    'EMAN2db': '[^\w]EMAN2db\.',
-    'numpy': '[^\w]numpy\.',
-    'shutil': '[^\w]shutil\.',
-    'logging': '[^\w]logging\.',
-    'argparse': '[^\w]argparse\.',
-    'configparser': '[^\w]configparser\.',
-    'user_functions': '[^\w]user_functions\.',
-    'pickle': '[^\w]pickle\.',
-    'time': '[^\w]time\.',
-    'string': '[^\w]string\.',
-    'subprocess': '[^\w]subprocess\.',
-    'fundamentals': '[^\w]fundamentals\.',
-    'types': '[^\w]types\.',
-    'EMAN2': '[^\w]EMAN2\.',
-    'EMAN2_cppwrap': '[^\w]EMAN2_cppwrap\.',
-    'operator': '[^\w]operator\.',
-    'errno': '[^\w]errno\.',
-    }
+IGNORE_LIST = (
+    'sys',
+    'random',
+    'os',
+    'global_def',
+    'traceback',
+    'mpi',
+    'collections',
+    're',
+    'six',
+    'json',
+    'EMAN2db',
+    'numpy',
+    'shutil',
+    'logging',
+    'argparse',
+    'configparser',
+    'user_functions',
+    'pickle',
+    'time',
+    'string',
+    'subprocess',
+    'fundamentals',
+    'types',
+    'EMAN2',
+    'EMAN2_cppwrap',
+    'operator',
+    'errno',
+    'global_def',
+    )
+IGNORE_RE_DICT = {}
+for entry in IGNORE_LIST:
+    IGNORE_RE_DICT[entry] = '(?:[^\w]|^){0}\.'.format(entry)
 
 REPLACE_DICT = {
     'np': ['numpy', 'numpy'],
@@ -498,7 +503,8 @@ def fix_missing(file_dict, missing_modules_local, lib_modules, lib_modules_ext, 
                         replace = REPLACE_DICT[missing[2]][0]
                     elif matches:
                         print('CONFUSION', basename, missing, matches)
-                        print(lines[missing[0]-1])
+                    else:
+                        print('TYPO', basename, missing, matches)
 
 
 
