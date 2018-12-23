@@ -1,0 +1,7 @@
+python:
+  - 3.6.2  # [not osx]
+  - 3.6.2  # [osx]
+
+pin_run_as_build:
+    python:
+      max_pin: x.x.x.x
