@@ -59,6 +59,8 @@ IGNORE_MODULES = (
     )
 EXTERNAL_LIBS = (
     'EMAN2_cppwrap',
+    'PyQt4.QtCore',
+    'PyQt4.QtGui',
     )
 
 IGNORE_LIST = (
@@ -142,7 +144,7 @@ RE_DICT = {
     'zeros': [['(?:[^\w]|^)zeros\(', 'numpy']],
     'fmin': [['(?:[^\w]|^)fmin\(', 'scipy.optimize']],
     'split': [['(?:[^\w]|^)split\([\s\w]+(?:,\s*(?:\'|").*?|\s*)\)', 'string'], ['(?:[^\w]|^)split\((?:\'|").*?\)', 're']],
-    'power': [['(?:[^\w]|^)power\(verr.*?\)', 'numpy'], ['(?:[^\w]|^)power\(periodogram.*?\)', 'morphology']],
+    'power': [['(?:[^\w]|^)power\(verr.*?\)', 'numpy'], ['(?:[^\w]|^)power\(periodogram.*?\)', 'morphology'], ['(?:[^\w]|^)power\(EMAN2_cppwrap\.periodogram.*?\)', 'morphology']],
     'square': [['(?:[^\w]|^)square\(', 'morphology']],
     'loads': [['(?:[^\w]|^)loads\(', 'pickle']],
     'dumps': [['(?:[^\w]|^)dumps\(', 'pickle']],
@@ -443,21 +445,23 @@ def index_search(lines, index, no_index):
 
 
 def fix_missing(file_dict, missing_modules_local, lib_modules, lib_modules_ext, lib_modules_local):
-    local_imports = {}
     for key, file_names in file_dict.items():
         if key in USED_FOLDER_EMAN2:
             continue
         output_dir = os.path.join(NO_WILDCARDS_DIR, key)
+        input_dir = os.path.join(NO_IMPORTS_DIR, key)
         try:
             os.makedirs(output_dir)
         except OSError:
             pass
         for file_path in file_names:
+            local_imports = []
             basename = os.path.basename(file_path)
-            output_file_name = os.path.join(output_dir, basename)
-            with open(file_path) as read:
+            output_file_path = os.path.join(output_dir, basename)
+            input_file_path = os.path.join(input_dir, basename)
+            with open(input_file_path) as read:
                 lines = read.readlines()
-            for missing in missing_modules_local[basename]:
+            for missing in reversed(sorted(missing_modules_local[basename])):
                 matches = []
                 dicts = [lib_modules, lib_modules_ext, lib_modules_local[basename]]
                 for dictionary in dicts:
@@ -469,13 +473,15 @@ def fix_missing(file_dict, missing_modules_local, lib_modules, lib_modules_ext, 
                 replace = False
                 if 'development' in matches:
                     matches.remove('development')
+                if 'PyQt4.Qt' in matches:
+                    matches.remove('PyQt4.Qt')
                 for entry in matches[:]:
                     if 'eman2_gui.' in entry:
                         matches.remove(entry)
 
                 search_line = lines[missing[0]-1][max(missing[1]-1, 0):]
                 if len(matches) == 1 or len(set(matches)) == 1:
-                    used_module = missing[2]
+                    used_module = matches[0]
                 else:
                     try:
                         match_ignore = re.match(IGNORE_RE_DICT[missing[2]], search_line)
@@ -502,10 +508,24 @@ def fix_missing(file_dict, missing_modules_local, lib_modules, lib_modules_ext, 
                         used_module = REPLACE_DICT[missing[2]][1]
                         replace = REPLACE_DICT[missing[2]][0]
                     elif matches:
-                        print('CONFUSION', basename, missing, matches)
+                        #print('CONFUSION', basename, missing, matches)
+                        continue
                     else:
-                        print('TYPO', basename, missing, matches)
+                        #print('TYPO', basename, missing, matches)
+                        continue
 
+                local_imports.append(used_module)
+                if used_module in EMAN2_GUI_DICT:
+                    used_module = EMAN2_GUI_DICT[used_module]
+                if not ignore and not replace:
+                    lines[missing[0]-1] = '{0}{1}.{2}'.format(lines[missing[0]-1][:missing[1]], used_module, lines[missing[0]-1][missing[1]:])
+                elif replace:
+                    lines[missing[0]-1] = '{0}{1}.{2}'.format(lines[missing[0]-1][:missing[1]], used_module, lines[missing[0]-1][missing[1] + len(missing[2]) + 1:])
+
+            with open(output_file_path, 'w') as write:
+                write.write(''.join(lines))
+            with open(output_file_path + '_imports', 'w') as write:
+                write.write('\n'.join(sorted(list(set(local_imports)))))
 
 
 def main():
