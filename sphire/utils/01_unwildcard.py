@@ -46,6 +46,8 @@ USED_FOLDER_EMAN2 = ('libpyEM', 'libpyEM/qtgui')
 BIN_FOLDER = ('bin', 'templates')
 LIB_FOLDER = ('libpy', 'templates', 'libpyEM', 'libpyEM/qtgui')
 
+EMAN2_GUI_DICT = {}
+
 IGNORE_FILES = (
     'sparx.py'
     )
@@ -59,28 +61,34 @@ EXTERNAL_LIBS = (
     'EMAN2_cppwrap',
     )
 
-IGNORE_LIST = (
-    'sys',
-    'os',
-    'global_def',
-    'mpi',
-    'collections',
-    're',
-    'six',
-    'json',
-    'EMAN2db',
-    'numpy',
-    'shutil',
-    'logging',
-    'argparse',
-    'configparser',
-    'user_functions',
-    'pickle',
-    'string',
-    'subprocess',
-    'fundamentals',
-    'EMAN2',
-    )
+IGNORE_RE_DICT = {
+    'sys': '[^\w]sys\.',
+    'random': '[^\w]random\.',
+    'os': '[^\w]os\.',
+    'global_def': '[^\w]global_def\.',
+    'mpi': '[^\w]mpi\.',
+    'collections': '[^\w]collections\.',
+    're': '[^\w]re\.',
+    'six': '[^\w]six\.',
+    'json': '[^\w]json\.',
+    'EMAN2db': '[^\w]EMAN2db\.',
+    'numpy': '[^\w]numpy\.',
+    'shutil': '[^\w]shutil\.',
+    'logging': '[^\w]logging\.',
+    'argparse': '[^\w]argparse\.',
+    'configparser': '[^\w]configparser\.',
+    'user_functions': '[^\w]user_functions\.',
+    'pickle': '[^\w]pickle\.',
+    'time': '[^\w]time\.',
+    'string': '[^\w]string\.',
+    'subprocess': '[^\w]subprocess\.',
+    'fundamentals': '[^\w]fundamentals\.',
+    'types': '[^\w]types\.',
+    'EMAN2': '[^\w]EMAN2\.',
+    'EMAN2_cppwrap': '[^\w]EMAN2_cppwrap\.',
+    'operator': '[^\w]operator\.',
+    'errno': '[^\w]errno\.',
+    }
 
 REPLACE_DICT = {
     'np': ['numpy', 'numpy'],
@@ -88,21 +96,52 @@ REPLACE_DICT = {
     'stats': ['scipy.stats', 'scipy.stats'],
     'plt': ['matplotlib.pyplot', 'matplotlib.pyplot'],
     'scipy_spatial': ['scipy.spatial', 'scipy.spatial'],
-    'sqrt': ['numpy.sqrt', 'numpy'],
-    'ceil': ['numpy.ceil', 'ceil'],
     'pylab': ['matplotlib.pyplot', 'matplotlib.pyplot'],
-    'strftime': ['time.strftime', 'time'],
-    'localtime': ['time.localtime', 'time'],
     }
 
 RE_DICT = {
-    'random': ['[^\w]random\(', 'random'],
-    'time': ['[^\w]time\(', 'time'],
-    'Qt': ['[^\w]Qt\.', 'PyQt4.QtCore'],
-    }
-
-DECISION_DICT = {
-    'mathnumpy': 'numpy',
+    'strftime': [['[^\w]strftime\(', 'time']],
+    'localtime': [['[^\w]localtime\(', 'time']],
+    'random': [['[^\w]random\(', 'random']],
+    'randint': [['[^\w]randint\(', 'random']],
+    'seed': [['[^\w]seed\(', 'random']],
+    'time': [['[^\w]time\(', 'time']],
+    'Qt': [['[^\w]Qt\.', 'PyQt4.QtCore']],
+    'QtCore': [['[^\w]QtCore\.', 'PyQt4']],
+    'QtGui': [['[^\w]QtGui\.', 'PyQt4']],
+    'fft': [['[^\w]fft\(', 'fundamentals']],
+    'pad': [['[^\w]pad\(', 'utilities']],
+    'path': [['[^\w]path\.(?:join|exists|isfile|realpath|basename)\(', 'os']],
+    'Set': [['[^\w]Set\(', 'sets']],
+    'copy': [['[^\w]copy\.(?:deepcopy|copy)\(', 'copy']],
+    'array': [['[^\w]array\(', 'numpy']],
+    'sin': [['[^\w]sin\(', 'numpy']],
+    'tanh': [['[^\w]tanh\(', 'numpy']],
+    'cos': [['[^\w]cos\(', 'numpy']],
+    'log': [['[^\w]log\(', 'numpy']],
+    'pi': [['[^\w]pi[^\w]', 'numpy']],
+    'sqrt': [['[^\w]sqrt\(', 'numpy']],
+    'radians': [['[^\w]radians\(', 'numpy']],
+    'exp': [['[^\w]exp\(', 'numpy']],
+    'copysign': [['[^\w]copysign\(', 'numpy']],
+    'log': [['[^\w]log\(', 'numpy']],
+    'ceil': [['[^\w]ceil\(', 'numpy']],
+    'degrees': [['[^\w]degrees\(', 'numpy']],
+    'floor': [['[^\w]floor\(', 'numpy']],
+    'tan': [['[^\w]tan\(', 'numpy']],
+    'log10': [['[^\w]log10\(', 'numpy']],
+    'fmod': [['[^\w]fmod\(', 'numpy']],
+    'argsort': [['[^\w]argsort\(', 'numpy']],
+    'log2': [['[^\w]log2\(', 'alignment']],
+    'linalg': [['[^\w]linalg\.', 'numpy']],
+    'zeros': [['[^\w]zeros\(', 'numpy']],
+    'fmin': [['[^\w]fmin\(', 'scipy.optimize']],
+    'split': [['[^\w]split\([\s\w]+(?:,\s*(?:\'|").*?|\s*)\)', 'string'], ['[^\w]split\((?:\'|").*?\)', 're']],
+    'power': [['[^\w]power\(verr.*?\)', 'numpy'], ['[^\w]power\(periodogram.*?\)', 'morphology']],
+    'square': [['[^\w]square\(', 'morphology']],
+    'loads': [['[^\w]loads\(', 'pickle']],
+    'dumps': [['[^\w]dumps\(', 'pickle']],
+    'compress': [['[^\w]compress\(', 'zlib']],
     }
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -200,6 +239,10 @@ def get_file_dict():
     for folder_name in USED_FOLDER_EMAN2:
         files_dir = os.path.join(CURRENT_DIR, '../..', folder_name, '*.py*')
         file_dict[folder_name] = [entry for entry in sorted(glob.glob(files_dir)) if not entry.endswith('.pyc')]
+        if 'qtgui' in folder_name:
+            for file_path in file_dict[folder_name]:
+                mod_name = os.path.splitext(os.path.basename(file_path))[0]
+                EMAN2_GUI_DICT[mod_name] = 'eman2_gui.{0}'.format(mod_name)
     return file_dict
 
 
@@ -421,33 +464,42 @@ def fix_missing(file_dict, missing_modules_local, lib_modules, lib_modules_ext, 
                 replace = False
                 if 'development' in matches:
                     matches.remove('development')
-                if not matches:
-                    if missing[2] in IGNORE_LIST or missing[2] in EXTERNAL_LIBS:
+                for entry in matches[:]:
+                    if 'eman2_gui.' in entry:
+                        matches.remove(entry)
+
+                search_line = lines[missing[0]-1][max(missing[1]-1, 0):]
+                if len(matches) == 1 or len(set(matches)) == 1:
+                    used_module = missing[2]
+                else:
+                    try:
+                        match_ignore = re.match(IGNORE_RE_DICT[missing[2]], search_line)
+                    except KeyError:
+                        match_ignore = None
+                    try:
+                        re_idx = None
+                        for idx, value in enumerate(RE_DICT[missing[2]]):
+                            match_re = re.match(value[0], search_line)
+                            if match_re:
+                                re_idx = idx
+                                break
+                    except KeyError:
+                        match_re = None
+
+                    if match_ignore:
                         used_module = missing[2]
                         ignore = True
+                    elif 'EMAN2_cppwrap' in matches:
+                        used_module = 'EMAN2_cppwrap'
+                    elif match_re:
+                        used_module = RE_DICT[missing[2]][re_idx][1]
                     elif missing[2] in REPLACE_DICT:
                         used_module = REPLACE_DICT[missing[2]][1]
                         replace = REPLACE_DICT[missing[2]][0]
-                    else:
-                        continue
-                elif len(matches) == 1:
-                    used_module = missing[2]
-                else:
-                    if missing[2] in IGNORE_LIST or missing[2] in EXTERNAL_LIBS:
-                        used_module = missing[2]
-                        ignore = True
-                    elif ''.join(sorted(matches)) in DECISION_DICT:
-                        used_module = DECISION_DICT[''.join(sorted(matches))]
-                    elif 'EMAN2_cppwrap' in matches:
-                        used_module = 'EMAN2_cppwrap'
-                    elif missing[2] in RE_DICT:
-                        search_line = lines[missing[0]][missing[1]-1:missing[1]+len(missing[2])+1]
-                        used_module = RE_DICT[missing[2]][1]
-                        if not re.match(RE_DICT[missing[2]][0], search_line):
-                            ignore = True
-                    else:
+                    elif matches:
                         print('CONFUSION', basename, missing, matches)
                         print(lines[missing[0]-1])
+
 
 
 def main():
