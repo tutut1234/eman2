@@ -60,10 +60,12 @@ EXTERNAL_LIBS = (
     )
 
 IGNORE_LIST = (
+    'sys',
     'os',
     'global_def',
     'mpi',
     'collections',
+    're',
     'six',
     'json',
     'EMAN2db',
@@ -93,6 +95,16 @@ REPLACE_DICT = {
     'localtime': ['time.localtime', 'time'],
     }
 
+RE_DICT = {
+    'random': ['[^\w]random\(', 'random'],
+    'time': ['[^\w]time\(', 'time'],
+    'Qt': ['[^\w]Qt\.', 'PyQt4.QtCore'],
+    }
+
+DECISION_DICT = {
+    'mathnumpy': 'numpy',
+    }
+
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 NO_IMPORTS_DIR = os.path.join(CURRENT_DIR, 'NO_IMPORTS')
 try:
@@ -120,7 +132,7 @@ MULTILINE_RE = re.compile('.*\\\s*$')
 FILE_NAME = None
 PRINT_LINE = None
 def my_to_list(self):
-    lineno = int(self.lineno) - 1
+    lineno = int(self.lineno)
     col = int(self.col)
     name = re.match(".*'(.*)'", self.message % self.message_args).group(1)
     return (lineno, col, name)
@@ -129,7 +141,7 @@ def my_to_list(self):
 def my_exception(self, filename, msg, lineno, offset, text):
     if msg == 'expected an indented block':
         print(filename, msg, lineno, offset, text.strip())
-        self.indent_error.append([int(lineno)-1, text])
+        self.indent_error.append([int(lineno), text])
 
 
 ERRORS = {}
@@ -324,12 +336,18 @@ def remove_imports(file_dict, lib_modules):
                                 break
                         if do_continue:
                             continue
-                        new_line = '{0}pass#IMPORTIMPORTIMPORT {1}\n'.format(
-                            indent,
-                            '\n{0}'.format(indent).join(
-                                [entry.strip() for entry in content.split(';')]
+                        if ';' in content:
+                            split_content = content.split(';')
+                            new_line = '{0}{1}; pass#IMPORTIMPORTIMPORT {2}\n'.format(
+                                indent,
+                                '; '.join([entry.strip() for entry in split_content[1:]]),
+                                split_content[0].strip(),
                                 )
-                            )
+                        else:
+                            new_line = '{0}pass#IMPORTIMPORTIMPORT {1}\n'.format(
+                                indent,
+                                content.strip(),
+                                )
                         lines[line_idx] = new_line
                         idx = 0
                         while MULTILINE_RE.match(lines[line_idx+idx]):
@@ -400,18 +418,36 @@ def fix_missing(file_dict, missing_modules_local, lib_modules, lib_modules_ext, 
                             if val == missing[2]:
                                 matches.append(key)
                 ignore = False
+                replace = False
+                if 'development' in matches:
+                    matches.remove('development')
                 if not matches:
                     if missing[2] in IGNORE_LIST or missing[2] in EXTERNAL_LIBS:
-                        matches = [missing[2]]
+                        used_module = missing[2]
                         ignore = True
                     elif missing[2] in REPLACE_DICT:
-                        matches = [REPLACE_DICT[missing[2]]]
+                        used_module = REPLACE_DICT[missing[2]][1]
+                        replace = REPLACE_DICT[missing[2]][0]
                     else:
-                        print('NO MATCHES FOUND FOR:', basename, missing)
+                        continue
                 elif len(matches) == 1:
-                    pass
+                    used_module = missing[2]
                 else:
-                    pass
+                    if missing[2] in IGNORE_LIST or missing[2] in EXTERNAL_LIBS:
+                        used_module = missing[2]
+                        ignore = True
+                    elif ''.join(sorted(matches)) in DECISION_DICT:
+                        used_module = DECISION_DICT[''.join(sorted(matches))]
+                    elif 'EMAN2_cppwrap' in matches:
+                        used_module = 'EMAN2_cppwrap'
+                    elif missing[2] in RE_DICT:
+                        search_line = lines[missing[0]][missing[1]-1:missing[1]+len(missing[2])+1]
+                        used_module = RE_DICT[missing[2]][1]
+                        if not re.match(RE_DICT[missing[2]][0], search_line):
+                            ignore = True
+                    else:
+                        print('CONFUSION', basename, missing, matches)
+                        print(lines[missing[0]-1])
 
 
 def main():
