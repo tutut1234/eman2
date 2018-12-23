@@ -184,13 +184,17 @@ def main():
                         do_write = True
 
                 if (comment1 or comment2 or do_write) and begin:
+                    string = INDENT_RE.match(line).group(1)
                     if is_first:
-                        string = INDENT_RE.match(line).group(1)
                         used_lines.append('{0}"""Multiline Comment{1}"""\n'.format(string, comment))
                         comments_lines.append('{0}{1}\n'.format(line.strip(), comment))
                         comment += 1
                         wrote_comment = True
                     else:
+                        if line.strip():
+                            used_lines.append('{0}#MULTILINEMULTILINEMULTILINE {1}\n'.format(string, comment-1))
+                        else:
+                            used_lines.append('\n')
                         comments_lines.append(line)
                         wrote_comment = True
                 else:

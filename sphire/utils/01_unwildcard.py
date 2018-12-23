@@ -52,6 +52,8 @@ IGNORE_FILES = (
 IGNORE_MODULES = (
     '__future__',
     'buildins',
+    'matplotlib.backends',
+    'ipython',
     )
 EXTERNAL_LIBS = (
     'EMAN2_cppwrap',
@@ -68,10 +70,27 @@ IGNORE_LIST = (
     'numpy',
     'shutil',
     'logging',
+    'argparse',
+    'configparser',
+    'user_functions',
+    'pickle',
+    'string',
+    'subprocess',
+    'fundamentals',
+    'EMAN2',
     )
 
 REPLACE_DICT = {
-    'np': 'numpy',
+    'np': ['numpy', 'numpy'],
+    'interpolate': ['scipy.interpolate', 'scipy.interpolate'],
+    'stats': ['scipy.stats', 'scipy.stats'],
+    'plt': ['matplotlib.pyplot', 'matplotlib.pyplot'],
+    'scipy_spatial': ['scipy.spatial', 'scipy.spatial'],
+    'sqrt': ['numpy.sqrt', 'numpy'],
+    'ceil': ['numpy.ceil', 'ceil'],
+    'pylab': ['matplotlib.pyplot', 'matplotlib.pyplot'],
+    'strftime': ['time.strftime', 'time'],
+    'localtime': ['time.localtime', 'time'],
     }
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -168,7 +187,7 @@ def get_file_dict():
         file_dict[folder_name] = sorted(glob.glob(files_dir))
     for folder_name in USED_FOLDER_EMAN2:
         files_dir = os.path.join(CURRENT_DIR, '../..', folder_name, '*.py*')
-        file_dict[folder_name] = sorted(glob.glob(files_dir))
+        file_dict[folder_name] = [entry for entry in sorted(glob.glob(files_dir)) if not entry.endswith('.pyc')]
     return file_dict
 
 
@@ -298,7 +317,12 @@ def remove_imports(file_dict, lib_modules):
                         elif match.group(4) is not None:
                             module = match.group(4)
                         assert module is not None
-                        if module in IGNORE_MODULES:
+                        do_continue = False
+                        for ignored_module in IGNORE_MODULES:
+                            if ignored_module.lower() in module.lower():
+                                do_continue = True
+                                break
+                        if do_continue:
                             continue
                         new_line = '{0}pass#IMPORTIMPORTIMPORT {1}\n'.format(
                             indent,
@@ -377,7 +401,7 @@ def fix_missing(file_dict, missing_modules_local, lib_modules, lib_modules_ext, 
                                 matches.append(key)
                 ignore = False
                 if not matches:
-                    if missing[2] in IGNORE_LIST:
+                    if missing[2] in IGNORE_LIST or missing[2] in EXTERNAL_LIBS:
                         matches = [missing[2]]
                         ignore = True
                     elif missing[2] in REPLACE_DICT:
