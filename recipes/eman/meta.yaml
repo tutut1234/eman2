@@ -64,7 +64,6 @@ requirements:
 test:
   requires:
     - openmpi              # [not win]
-    - eman-deps=15.3
   
   source_files:
     - examples/mpi_test.py
