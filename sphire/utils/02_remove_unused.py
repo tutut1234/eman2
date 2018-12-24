@@ -49,12 +49,17 @@ try:
 except OSError:
     pass
 
+GLOBAL_RE = re.compile('^\w')
 FUNCDEF_RE = re.compile('^(?:def|class)\s+([^\(]+)')
 SPARX_FUNC_RE = re.compile('(?:(?<=[^\w])|^)({0})\.([\w]+)'.format('|'.join([
     os.path.splitext(os.path.basename(entry))[0]
     for entry in glob.glob('{0}/*.py'.format(LIB_DIR))
     if 'sparx.py' not in entry
     ])))
+COMMENT_RE = re.compile("^\s*#")
+EMPTY_RE = re.compile("^\s*$")
+BLOCK_STRING_SINGLE_RE = re.compile('\'\'\'')
+BLOCK_STRING_DOUBLE_RE = re.compile('"""')
 
 
 def get_file_dict():
@@ -72,29 +77,80 @@ def import_functions(file_dict):
     function_dict = {}
     for key, file_names in file_dict.items():
         for file_path in file_names:
-            basename = os.path.basename(file_path)
-            assert basename not in function_dict
-            function_dict.setdefault(basename, {})['double_funcs'] = []
-            function_dict.setdefault(basename, {})['used_funcs'] = []
+            module = os.path.splitext(os.path.basename(file_path))[0]
+            assert module not in function_dict
+            function_dict.setdefault(module, {})['double_funcs'] = []
+            function_dict.setdefault(module, {})['global_lines'] = []
+            function_dict.setdefault(module, {})['used_funcs'] = []
             with open(file_path) as read:
                 lines = read.readlines()
+            comment1 = False
+            comment2 = False
             current_func = None
             for line in lines:
-                match_line = FUNCDEF_RE.match(line)
-                if match_line:
-                    current_func = match_line.group(1)
-                    if current_func in function_dict[basename]:
-                        function_dict[basename]['double_funcs'].append(current_func)
-                    function_dict[basename][current_func] = []
-                if current_func is None:
+                if COMMENT_RE.match(line) or EMPTY_RE.match(line):
                     continue
-                function_dict[basename][current_func].append(line)
+                match_line = FUNCDEF_RE.match(line)
+                match_global = GLOBAL_RE.match(line)
+                match_block_1 = BLOCK_STRING_SINGLE_RE.findall(line)
+                match_block_2 = BLOCK_STRING_DOUBLE_RE.findall(line)
+
+                do_final = False
+                if match_block_1 and not comment1 and not comment2:
+                    if len(match_block_1) % 2 == 1:
+                        comment1 = True
+                elif match_block_2 and not comment1 and not comment2:
+                    if len(match_block_2) % 2 == 1:
+                        comment2 = True
+                elif match_block_1:
+                    comment1 = False
+                    do_final = True
+                elif match_block_2:
+                    comment2 = False
+                    do_final = True
+
+                if not comment1 and not comment2 and not do_final:
+                    if match_line:
+                        current_func = match_line.group(1)
+                        if current_func in function_dict[module]:
+                            function_dict[module]['double_funcs'].append(current_func)
+                        function_dict[module][current_func] = []
+                    elif match_global:
+                        current_func = 'global_lines'
+                    assert current_func is not None, line
+                    function_dict[module][current_func].append(line)
 
     return function_dict
 
 
-def recursive_used_search(module, function, function_dict):
-    pass
+def recursive_used_search(module, function, module_re_dict, function_dict):
+    found_functions = []
+    for line in function:
+        sparx_match = SPARX_FUNC_RE.findall(line)
+        if module_re_dict[module] is None:
+            function_match = []
+        else:
+            function_match = module_re_dict[module].findall(line)
+
+        for sparx_module, sparx_function in sparx_match:
+            if sparx_function in function_dict[sparx_module]:
+                found_functions.append((sparx_module, sparx_function))
+            else:
+                print('UNKNOWN FUNCTION', sparx_module, sparx_function)
+
+        for module_function in function_match:
+            if module_function in function_dict[module]:
+                found_functions.append((module, module_function))
+            else:
+                print('UNKNOWN FUNCTION', module_function)
+
+    found_functions = set(found_functions)
+    for used_module, used_function in found_functions:
+        if used_function in function_dict[used_module]['used_funcs']:
+            continue
+        else:
+            function_dict[used_module]['used_funcs'].append(used_function)
+        recursive_used_search(used_module, function_dict[used_module][used_function], module_re_dict, function_dict)
 
 
 def main():
@@ -102,13 +158,24 @@ def main():
 
     function_dict = import_functions(file_dict)
 
-    for key in file_dict['bin']:
-        basename = os.path.basename(key)
-        try:
-            function_dict[basename]['main']
-        except:
-            print(key)
+    module_re_dict = {}
+    for module, functions in function_dict.items():
+        usable_functions = [
+            entry
+            for entry in functions
+            if entry not in ('used_funcs', 'double_funcs', 'global_lines')
+            ]
+        if usable_functions:
+            module_re_dict[module] = re.compile('(?:(?<=[^\w])|^)({0})(?=[^\w]|$)'.format('|'.join(usable_functions)))
+        else:
+            module_re_dict[module] = None
 
+    for key in file_dict['bin']:
+        module = os.path.splitext(os.path.basename(key))[0]
+        recursive_used_search(module, function_dict[module]['global_lines'], module_re_dict, function_dict)
+
+    for key in function_dict:
+        print(function_dict[key]['used_funcs'])
 
 if __name__ == '__main__':
     main()
