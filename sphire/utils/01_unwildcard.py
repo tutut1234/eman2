@@ -524,7 +524,7 @@ def fix_missing(file_dict, missing_modules_local, lib_modules, lib_modules_ext, 
             with open(output_file_path, 'w') as write:
                 write.write(''.join(lines))
             with open(output_file_path + '_imports', 'w') as write:
-                write.write('\n'.join(sorted(list(set(local_imports)))))
+                write.write(''.join(['{0}\n'.format(entry) for entry in sorted(list(set(local_imports)))]))
 
 
 def main():
