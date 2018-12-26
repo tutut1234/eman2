@@ -45,6 +45,11 @@ CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 LIB_DIR = os.path.join(CURRENT_DIR, '..', 'libpy')
 
 NO_WILDCARDS_DIR = os.path.join(CURRENT_DIR, '01_NO_WILDCARDS')
+NO_USED = os.path.join(CURRENT_DIR, '02_NO_USED')
+try:
+    shutil.rmtree(NO_USED) 
+except OSError:
+    pass
 NO_UNUSED = os.path.join(CURRENT_DIR, '02_NO_UNUSED')
 try:
     shutil.rmtree(NO_UNUSED) 
@@ -86,6 +91,7 @@ KNOWN_UNKNOWN = {
 SKIP_MODULES = (
     'user_functions',
     'sparx',
+    'sxgui_template',
     )
 
 
@@ -194,7 +200,11 @@ def remove_unused(file_path, folder, function_dict):
     basename = os.path.basename(file_path)
     module = os.path.splitext(basename)[0]
     dir_used = os.path.join(NO_UNUSED, folder)
-    dir_unused = os.path.join(dir_used, 'UNUSED')
+    dir_unused = os.path.join(NO_USED, folder)
+    try:
+        os.makedirs(dir_used)
+    except OSError:
+        pass
     try:
         os.makedirs(dir_unused)
     except OSError:
