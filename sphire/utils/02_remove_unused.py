@@ -212,19 +212,49 @@ def remove_unused(file_path, folder, function_dict):
     if module in SKIP_MODULES:
         used_list = lines
     else:
+        first = True
+        comment1 = False
+        comment2 = False
         for line in lines:
+            do_final = False
+            match_line = FUNCDEF_RE.match(line)
+            match_global = GLOBAL_RE.match(line)
+            match_block_1 = BLOCK_STRING_SINGLE_RE.findall(line)
+            match_block_2 = BLOCK_STRING_DOUBLE_RE.findall(line)
+
+            do_final = False
+            if match_block_1 and not comment1 and not comment2:
+                if len(match_block_1) % 2 == 1:
+                    comment1 = True
+            elif match_block_2 and not comment1 and not comment2:
+                if len(match_block_2) % 2 == 1:
+                    comment2 = True
+            elif match_block_1:
+                comment1 = False
+                do_final = True
+            elif match_block_2:
+                comment2 = False
+                do_final = True
+
             match_func = FUNCDEF_RE.match(line)
             match_global = NO_INDENT_RE.match(line)
-            if match_func:
+            match_comment = NO_INDENT_RE.match(line)
+            if comment1 or comment2 or do_final:
+                pass
+            elif match_func:
                 if match_func.group(1) in function_dict[module]['used_funcs']:
                     is_unused = False
                 else:
                     is_unused = True
-            elif match_global:
+            elif match_global and not COMMENT_RE.match(line):
                 is_unused = False
 
             if is_unused:
+                if first:
+                    first = False
+                    unused_list.append('from __future__ import print_function\n')
                 unused_list.append(line)
+                used_list.append('\n')
             else:
                 used_list.append(line)
 
