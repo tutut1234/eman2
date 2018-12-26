@@ -54,6 +54,7 @@ IGNORE_FILES = (
 IGNORE_MODULES = (
     '__future__',
     'buildins',
+    'future',
     'matplotlib.backends',
     'ipython',
     )
@@ -152,17 +153,13 @@ RE_DICT = {
     }
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
-NO_IMPORTS_DIR = os.path.join(CURRENT_DIR, 'NO_IMPORTS')
+NO_COMMENTS_DIR = os.path.join(CURRENT_DIR, '00_NO_COMMENTS')
+NO_IMPORTS_DIR = os.path.join(CURRENT_DIR, '01_NO_IMPORTS')
 try:
     shutil.rmtree(NO_IMPORTS_DIR) 
 except OSError:
     pass
-NO_PLACEHOLD_DIR = os.path.join(CURRENT_DIR, 'NO_PLACEHOLD')
-try:
-    shutil.rmtree(NO_PLACEHOLD_DIR) 
-except OSError:
-    pass
-NO_WILDCARDS_DIR = os.path.join(CURRENT_DIR, 'NO_WILDCARDS')
+NO_WILDCARDS_DIR = os.path.join(CURRENT_DIR, '01_NO_WILDCARDS')
 try:
     shutil.rmtree(NO_WILDCARDS_DIR) 
 except OSError:
@@ -241,7 +238,7 @@ def print_all_info(**kwargs):
 def get_file_dict():
     file_dict = {}
     for folder_name in USED_FOLDER:
-        files_dir = os.path.join(CURRENT_DIR, 'NO_COMMENTS', folder_name, '*.py')
+        files_dir = os.path.join(CURRENT_DIR, NO_COMMENTS_DIR, folder_name, '*.py')
         file_dict[folder_name] = sorted(glob.glob(files_dir))
     for folder_name in USED_FOLDER_EMAN2:
         files_dir = os.path.join(CURRENT_DIR, '../..', folder_name, '*.py*')
@@ -284,6 +281,8 @@ def get_library_funcs(file_dict):
                 if FUNCDEF_RE.match(entry)
                 ]
             if 'global_def' in name:
+                lib_modules[name].append('IS_LOGFILE_OPEN')
+                lib_modules[name].append('LOGFILE_HANDLE')
                 lib_modules[name].append('SPARXVERSION')
                 lib_modules[name].append('CACHE_DISABLE')
                 lib_modules[name].append('SPARX_MPI_TAG_UNIVERSAL')

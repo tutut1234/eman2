@@ -36,7 +36,7 @@ import glob
 
 USED_FOLDER = ('bin', 'libpy', 'templates')
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
-NO_COMMENTS_DIR = os.path.join(CURRENT_DIR, 'NO_COMMENTS')
+NO_COMMENTS_DIR = os.path.join(CURRENT_DIR, '00_NO_COMMENTS')
 try:
     shutil.rmtree(NO_COMMENTS_DIR)
 except OSError:

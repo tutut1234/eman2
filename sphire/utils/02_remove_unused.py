@@ -43,12 +43,15 @@ LIB_FOLDER = ('libpy', 'templates', 'libpyEM', 'libpyEM/qtgui')
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 LIB_DIR = os.path.join(CURRENT_DIR, '..', 'libpy')
-NO_UNUSED = os.path.join(CURRENT_DIR, 'NO_IMPORTS')
+
+NO_WILDCARDS_DIR = os.path.join(CURRENT_DIR, '01_NO_WILDCARDS')
+NO_UNUSED = os.path.join(CURRENT_DIR, '02_NO_UNUSED')
 try:
     shutil.rmtree(NO_UNUSED) 
 except OSError:
     pass
 
+NO_INDENT_RE = re.compile('^(?:[^\s])')
 GLOBAL_RE = re.compile('^\w')
 FUNCDEF_RE = re.compile('^(?:def|class)\s+([^\(]+)')
 SPARX_FUNC_RE = re.compile('(?:(?<=[^\w])|^)({0})\.([\w]+)'.format('|'.join([
@@ -61,11 +64,35 @@ EMPTY_RE = re.compile("^\s*$")
 BLOCK_STRING_SINGLE_RE = re.compile('\'\'\'')
 BLOCK_STRING_DOUBLE_RE = re.compile('"""')
 
+KNOWN_UNKNOWN = {
+    'user_functions' : (
+        'factory',
+        ),
+    'global_def' : (
+        'SPARXVERSION',
+        'CACHE_DISABLE',
+        'SPARX_MPI_TAG_UNIVERSAL',
+        'interpolation_method_2D',
+        'Eulerian_Angles',
+        'BATCH',
+        'MPI',
+        'LOGFILE',
+        'SPARX_DOCUMENTATION_WEBSITE',
+        'IS_LOGFILE_OPEN',
+        'LOGFILE_HANDLE',
+        ),
+    }
+
+SKIP_MODULES = (
+    'user_functions',
+    'sparx',
+    )
+
 
 def get_file_dict():
     file_dict = {}
     for folder_name in USED_FOLDER:
-        files_dir = os.path.join(CURRENT_DIR, 'NO_WILDCARDS', folder_name, '*.py')
+        files_dir = os.path.join(CURRENT_DIR, NO_WILDCARDS_DIR, folder_name, '*.py')
         file_dict[folder_name] = sorted(glob.glob(files_dir))
     for folder_name in USED_FOLDER_EMAN2:
         files_dir = os.path.join(CURRENT_DIR, '../..', folder_name, '*.py*')
@@ -125,7 +152,7 @@ def import_functions(file_dict):
 
 def recursive_used_search(module, function, module_re_dict, function_dict):
     found_functions = []
-    for line in function:
+    for idx, line in enumerate(function):
         sparx_match = SPARX_FUNC_RE.findall(line)
         if module_re_dict[module] is None:
             function_match = []
@@ -136,13 +163,23 @@ def recursive_used_search(module, function, module_re_dict, function_dict):
             if sparx_function in function_dict[sparx_module]:
                 found_functions.append((sparx_module, sparx_function))
             else:
-                print('UNKNOWN FUNCTION', sparx_module, sparx_function)
+                try:
+                    is_known = bool(sparx_function in KNOWN_UNKNOWN[sparx_module])
+                except KeyError:
+                    is_known = False
+                if not is_known:
+                    print('UNKNOWN FUNCTION', sparx_module, sparx_function, line.strip(), idx)
 
         for module_function in function_match:
             if module_function in function_dict[module]:
                 found_functions.append((module, module_function))
             else:
-                print('UNKNOWN FUNCTION', module_function)
+                try:
+                    is_known = bool(module_function in KNOWN_UNKNOWN[module])
+                except KeyError:
+                    is_known = False
+                if not is_known:
+                    print('UNKNOWN FUNCTION', module, module_function, line.strip(), idx)
 
     found_functions = set(found_functions)
     for used_module, used_function in found_functions:
@@ -151,6 +188,52 @@ def recursive_used_search(module, function, module_re_dict, function_dict):
         else:
             function_dict[used_module]['used_funcs'].append(used_function)
         recursive_used_search(used_module, function_dict[used_module][used_function], module_re_dict, function_dict)
+
+
+def remove_unused(file_path, folder, function_dict):
+    basename = os.path.basename(file_path)
+    module = os.path.splitext(basename)[0]
+    dir_used = os.path.join(NO_UNUSED, folder)
+    dir_unused = os.path.join(dir_used, 'UNUSED')
+    try:
+        os.makedirs(dir_unused)
+    except OSError:
+        pass
+    file_path_used = os.path.join(dir_used, basename)
+    file_path_unused = os.path.join(dir_unused, basename)
+
+    with open(file_path, 'r') as read:
+        lines = read.readlines()
+
+    used_list = []
+    unused_list = []
+    is_unused = False
+
+    if module in SKIP_MODULES:
+        used_list = lines
+    else:
+        for line in lines:
+            match_func = FUNCDEF_RE.match(line)
+            match_global = NO_INDENT_RE.match(line)
+            if match_func:
+                if match_func.group(1) in function_dict[module]['used_funcs']:
+                    is_unused = False
+                else:
+                    is_unused = True
+            elif match_global:
+                is_unused = False
+
+            if is_unused:
+                unused_list.append(line)
+            else:
+                used_list.append(line)
+
+    if used_list:
+        with open(file_path_used, 'w') as write:
+            write.write(''.join(used_list))
+    if unused_list:
+        with open(file_path_unused, 'w') as write:
+            write.write(''.join(unused_list))
 
 
 def main():
@@ -170,12 +253,15 @@ def main():
         else:
             module_re_dict[module] = None
 
-    for key in file_dict['bin']:
+    for key in file_dict['bin'] + file_dict['templates']:
         module = os.path.splitext(os.path.basename(key))[0]
         recursive_used_search(module, function_dict[module]['global_lines'], module_re_dict, function_dict)
 
-    for key in function_dict:
-        print(function_dict[key]['used_funcs'])
+    for key in file_dict:
+        if key not in USED_FOLDER:
+            continue
+        for file_path in file_dict[key]:
+            remove_unused(file_path, key, function_dict)
 
 if __name__ == '__main__':
     main()
