@@ -55,9 +55,9 @@ def isBinaryBuild() {
 
 def testPackage() {
     if(SLAVE_OS != 'win')
-        sh "bash tests/test_binary_installation.sh ${INSTALLERS_DIR} eman2.${SLAVE_OS}.sh"
+        echo "bash tests/test_binary_installation.sh ${INSTALLERS_DIR} eman2.${SLAVE_OS}.sh"
     else
-        sh 'ci_support/test_wrapper.sh'
+        echo 'ci_support/test_wrapper.sh'
 }
 
 def deployPackage() {
@@ -71,7 +71,7 @@ def deployPackage() {
     }
     
     if(SLAVE_OS != 'win')
-        sh "rsync -avzh --stats ${INSTALLERS_DIR}/eman2.${SLAVE_OS}.sh ${DEPLOY_DEST}/" + upload_dir + "/eman2." + JOB_NAME.toLowerCase() + "." + upload_ext + ".sh"
+        echo "rsync -avzh --stats ${INSTALLERS_DIR}/eman2.${SLAVE_OS}.sh ${DEPLOY_DEST}/" + upload_dir + "/eman2." + JOB_NAME.toLowerCase() + "." + upload_ext + ".sh"
     else
         bat 'ci_support\\rsync_wrapper.bat ' + upload_dir + ' ' + upload_ext
 }
@@ -126,13 +126,13 @@ pipeline {
       }
       
       steps {
-        sh 'source $(conda info --root)/bin/activate eman-deps-14.0 && bash ci_support/build_no_recipe.sh'
+        echo 'source $(conda info --root)/bin/activate eman-deps-14.0 && bash ci_support/build_no_recipe.sh'
       }
     }
     
     stage('build-recipe') {
       steps {
-        sh 'bash ci_support/build_recipe.sh'
+        echo 'bash ci_support/build_recipe.sh'
       }
     }
     
@@ -142,7 +142,7 @@ pipeline {
       }
       
       steps {
-        sh "bash ci_support/package.sh ${INSTALLERS_DIR} " + '${WORKSPACE}/ci_support/'
+        echo "bash ci_support/package.sh ${INSTALLERS_DIR} " + '${WORKSPACE}/ci_support/'
       }
     }
     
