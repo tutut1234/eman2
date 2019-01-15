@@ -7,8 +7,8 @@ env:
   global:
     - MINICONDA_FILE="Miniconda3-latest-MacOSX-x86_64.sh"
   matrix:
-    - build_scrt="build_recipe.sh"
-    - build_scrt="build_no_recipe.sh"
+    - CONFIG=2.7
+    - CONFIG=3.6.2_0
 
 
 before_install:
@@ -23,4 +23,4 @@ before_install:
 
 
 script:
-  - bash ci_support/${build_scrt}
+  - bash ci_support/build_recipe.sh ./recipes/eman/py_${CONFIG}.yaml

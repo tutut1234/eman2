@@ -9,7 +9,7 @@ requirements:
     {% set reqs_host = [
             "msinttypes",  # [win]
             "python 3.6.2",    # [not osx]
-            "python 3.6.2",  # [osx]
+            "python",  # [osx]
             "boost 1.63.*",
             "fftw-mpi",
             "numpy 1.13.*",
