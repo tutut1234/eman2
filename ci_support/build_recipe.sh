@@ -12,7 +12,6 @@ export CPU_COUNT=2
 
 conda info -a
 conda list
-conda render recipes/eman
 conda build purge-all
 
 conda build recipes/eman -c cryoem -c defaults -c conda-forge --quiet
