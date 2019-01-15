@@ -7,8 +7,15 @@ env:
   global:
     - MINICONDA_FILE="Miniconda3-latest-MacOSX-x86_64.sh"
   matrix:
-    - build_scrt="build_recipe.sh"
-    - build_scrt="build_no_recipe.sh"
+    - CONFIG=2.7
+    - CONFIG=3.6.2=0
+    - CONFIG=3.6.1=2
+    - CONFIG=3.6.1=0
+    - CONFIG=3.6.0
+    - CONFIG=3.5.6
+    - CONFIG=3.5.5=*_3
+    - CONFIG=3.5.5=*_1
+    - CONFIG=3.5.5=*_0
 
 
 before_install:
@@ -23,4 +30,4 @@ before_install:
 
 
 script:
-  - bash ci_support/${build_scrt}
+  - bash ci_support/build_recipe.sh ${CONFIG}

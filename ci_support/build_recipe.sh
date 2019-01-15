@@ -14,4 +14,6 @@ conda info -a
 conda list
 conda build purge-all
 
-conda build recipes/eman -c cryoem -c defaults -c conda-forge
+sed -e "s/CONFIG/${CONFIG}/" recipes/eman/conda_build_config.yaml.templ > conda_build_config.yaml
+
+conda build recipes/eman -c cryoem -c defaults -c conda-forge -m conda_build_config.yaml
