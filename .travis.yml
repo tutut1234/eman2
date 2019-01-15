@@ -9,6 +9,8 @@ env:
   matrix:
     - CONFIG=2.7
     - CONFIG=3.6.2_0
+    - CONFIG=3.6.1_2
+    - CONFIG=3.6.1_0
 
 
 before_install:
