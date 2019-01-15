@@ -22,6 +22,8 @@ requirements:
             "libtiff 4.0.9 hafacce9_0",  # [win]
             "libpng 1.6.34",
             "zlib",
+            "future",
+            "configparser",
     ] %}
     
     build:
