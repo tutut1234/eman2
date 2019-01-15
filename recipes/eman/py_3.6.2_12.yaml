@@ -1,0 +1,7 @@
+
+python:
+  - 3.6.2=*_12
+
+pin_run_as_build:
+    python:
+      max_pin: x.x.x.x
