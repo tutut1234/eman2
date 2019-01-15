@@ -1,27 +1,15 @@
 version: 2
 
 jobs:
-  build_no_recipe:
-    machine: true
-    environment:
-      MINICONDA_FILE: "Miniconda3-latest-Linux-x86_64.sh"
-    steps:
-      - run: sudo apt-get update && sudo apt-get install freeglut3-dev
-      - checkout
-      - run: bash ci_support/build_no_recipe.sh
-
   build_recipe:
     machine: true
     environment:
       MINICONDA_FILE: "Miniconda3-latest-Linux-x86_64.sh"
     steps:
-      - run: sudo apt-get update && sudo apt-get install freeglut3-dev
-      - checkout
-      - run: bash ci_support/build_recipe.sh
+      - run: bash -c "echo"
 
 workflows:
   version: 2
   build_recipe_and_no_recipe:
     jobs:
-      - build_no_recipe
       - build_recipe
