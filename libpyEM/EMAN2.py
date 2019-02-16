@@ -426,12 +426,6 @@ def get_prefixed_directories(prefix,wd=e2getcwd()):
 def get_image_directory(image_file=""):
 	return os.path.join(e2getinstalldir(), "images", image_file)
 
-def get_dtag():
-#	pfrm = get_platform()
-#	if pfrm == "Windows": return "\\"
-#	else: return "/"
-	return "/"
-
 def get_files_and_directories(path=".",include_hidden=False):
 	dirs = []
 	files = []

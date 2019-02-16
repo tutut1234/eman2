@@ -36,7 +36,7 @@ from __future__ import absolute_import
 
 from builtins import range
 from builtins import object
-from EMAN2 import get_image_directory, get_dtag, EMData, \
+from EMAN2 import get_image_directory, EMData, \
 	get_files_and_directories, db_open_dict, remove_file, \
 	remove_directories_from_name, Util, EMUtil, IMAGE_UNKNOWN, base_name, \
 	file_exists, base_name
