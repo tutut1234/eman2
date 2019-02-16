@@ -423,10 +423,8 @@ def get_prefixed_directories(prefix,wd=e2getcwd()):
 
 	return dirs
 
-def get_image_directory():
-	dtag = get_dtag()
-	
-	return e2getinstalldir()+ dtag + "images" + dtag
+def get_image_directory(image_file=""):
+	return os.path.join(e2getinstalldir(), "images", image_file)
 
 def get_dtag():
 #	pfrm = get_platform()
