@@ -206,8 +206,8 @@ class SXGuiCter(QtGui.QWidget):
 		# 
 		self.round_ndigits = 15
 		
-#		self.setWindowIcon(QtGui.QIcon(get_image_directory() + "ctf.png"))
-		self.setWindowIcon(QtGui.QIcon(get_image_directory()+"sparxicon.png"))
+#		self.setWindowIcon(QtGui.QIcon(get_image_directory("ctf.png")))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("sparxicon.png")))
 
 #		# NOTE: 2016/03/08 Toshio Moriya
 #		# Checked the following window flags and found out ...

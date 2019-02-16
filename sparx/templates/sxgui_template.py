@@ -4347,7 +4347,7 @@ def main():
 	# 		print "MRK_DEBUG: !!!USING THE STYLE: %s!!!" % str(key)
 	# print "MRK_DEBUG:"
 
-	sxapp.setWindowIcon(QIcon(get_image_directory()+"sxgui_icon_sphire.png"))
+	sxapp.setWindowIcon(QIcon(get_image_directory("sxgui_icon_sphire.png")))
 
 	sxapp_font = sxapp.font()
 	sxapp_font_info = QFontInfo(sxapp.font())
