@@ -1607,7 +1607,7 @@ class EMSymChoiceDialog(QtGui.QDialog):
 		'''
 		QtGui.QDialog.__init__(self)		
 		self.setWindowTitle("Choose Distribution Parameters")
-		self.setWindowIcon(QtGui.QIcon(get_image_directory() + "eulerxplor.png"))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("eulerxplor.png")))
 
 		self.vbl = QtGui.QVBoxLayout(self)
 		self.vbl.setMargin(0)
@@ -1667,7 +1667,7 @@ class EMSymInspector(QtGui.QWidget):
 	def __init__(self,target,enable_trace=True,enable_og=True) :
 		self.busy = True
 		QtGui.QWidget.__init__(self,None)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory() + "eulerxplor.png"))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("eulerxplor.png")))
 		self.target=weakref.ref(target)
 		
 		self.score_options_hbl  = None # will eventually be a combo 

@@ -442,7 +442,7 @@ class EM3DSliceInspector(QtGui.QWidget):
 	def __init__(self,target) :
 		self.busy = False
 		QtGui.QWidget.__init__(self,None)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory() +"desktop.png"))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("desktop.png")))
 		self.transform_panel = EMTransformPanel(target,self)
 		self.target=weakref.ref(target)
 		

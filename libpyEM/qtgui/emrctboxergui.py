@@ -50,7 +50,7 @@ class ControlPannel(QtGui.QWidget):
 		self.mediator = mediator
 		self.db = js_open_dict("info/emboxerrctgui.json")
 		self.qualitydb = js_open_dict("e2boxercache/quality.json")
-		self.setWindowIcon(QtGui.QIcon(get_image_directory() +"green_boxes.png"))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("green_boxes.png")))
 		self.setWindowTitle("e2RCTboxer")
 		
 		# Here is where additional tools can be added

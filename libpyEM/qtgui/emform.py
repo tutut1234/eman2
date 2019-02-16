@@ -101,7 +101,7 @@ class EMOrientationDistDialog(EMButtonDialog):
 	In short, liable to break if someone makes changes to the code.
 	'''
 	def __init__(self):
-		EMButtonDialog.__init__(self,desc_short="Interactive Parameters",desc_long="Interact with the unit sphere to determine your orientation distribution parameters",icon=QtGui.QIcon(get_image_directory() + "eulerxplor.png"))
+		EMButtonDialog.__init__(self,desc_short="Interactive Parameters",desc_long="Interact with the unit sphere to determine your orientation distribution parameters",icon=QtGui.QIcon(get_image_directory("eulerxplor.png")))
 		
 	def on_button(self,unused=None):
 		'''

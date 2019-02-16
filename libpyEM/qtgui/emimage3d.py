@@ -132,7 +132,7 @@ class EMImage3DWidget(EMGLWidget, EMLightsDrawer, EMGLProjectionViewMatrices):
 		if isinstance(self.data,EMData):
 			self.set_cam_z_from_fov_image(self.get_fov(),self.data)
 		
-		self.qt_parent.setWindowIcon(QtGui.QIcon(get_image_directory() +"single_image_3d.png"))
+		self.qt_parent.setWindowIcon(QtGui.QIcon(get_image_directory("single_image_3d.png")))
 		#End from get_qt_widget
 		
 		self.updateGL() #Solves "error, OpenGL seems not to be initialized" message
@@ -596,7 +596,7 @@ class EMImageInspector3D(QtGui.QWidget):
 	def __init__(self,target) :
 		QtGui.QWidget.__init__(self,None)
 		self.target=weakref.ref(target)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory() +"desktop.png"))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("desktop.png")))
 		
 		self.vbl = QtGui.QVBoxLayout(self)
 		self.vbl.setMargin(0)

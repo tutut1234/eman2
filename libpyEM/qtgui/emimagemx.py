@@ -2221,7 +2221,7 @@ class EMGLScrollBar(object):
 class EMImageInspectorMX(QtGui.QWidget):
 	def __init__(self,target, allow_opt_button=False):
 		QtGui.QWidget.__init__(self,None)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory() +"multiple_images.png"))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("multiple_images.png")))
 
 		self.target=weakref.ref(target)
 		self.busy = 1

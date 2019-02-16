@@ -658,7 +658,7 @@ class EraseTool(EMBoxingTool):
 
 	def icon(self):
 		from PyQt4 import QtGui
-		return QtGui.QIcon(get_image_directory() + "boxer_erase.png")
+		return QtGui.QIcon(get_image_directory("boxer_erase.png"))
 
 	def get_widget(self):
 		if self.panel_object == None:
@@ -765,7 +765,7 @@ class ManualBoxingTool(object):
 
 	def icon(self):
 		from PyQt4 import QtGui
-		return QtGui.QIcon(get_image_directory() + "white_box.png")
+		return QtGui.QIcon(get_image_directory("white_box.png"))
 
 
 	def set_panel_object(self,panel): self.panel_object = panel
@@ -2374,7 +2374,7 @@ class EMBoxerInspector(QtGui.QWidget):
 		self.dynamic_box_button_widget = None # this will be used to dynamic add widgets as the buttons are changed
 		self.ptcl_display_dict = None # this will be a dict mapping the names in the
 		QtGui.QWidget.__init__(self,None)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory() +"green_boxes.png"))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("green_boxes.png")))
 		self.setWindowTitle("e2boxer")
 		self.target=weakref.ref(target)
 

@@ -121,7 +121,7 @@ class EMHistogramWidget(EMGLWidget):
 		fmt.setDoubleBuffer(True);
 		EMGLWidget.__init__(self, parent=parent, winid=winid)
 		self.setFormat(fmt)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory() +"plot.png"))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("plot.png")))
 		self.axes={}
 		self.pparm={}			# nbins,color,histtype,orient,align,alpha,width,norm,cumul,logy,stacked
 		self.inspector=None
@@ -836,7 +836,7 @@ class EMHistogramInspector(QtGui.QWidget):
 
 	def __init__(self,target) :
 		QtGui.QWidget.__init__(self,None)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory() +"plot.png"))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("plot.png")))
 		self.target=weakref.ref(target)
 
 		vbl0=QtGui.QVBoxLayout(self)

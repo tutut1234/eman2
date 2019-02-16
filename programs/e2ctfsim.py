@@ -137,7 +137,7 @@ class GUIctfsim(QtGui.QWidget):
 			self.applyim=EMImage2DWidget(application=self.app())
 
 		QtGui.QWidget.__init__(self,None)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory() + "ctf.png"))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("ctf.png")))
 
 		self.data=[]
 		self.curset=0

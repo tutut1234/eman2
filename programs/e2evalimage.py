@@ -135,7 +135,7 @@ class GUIEvalImage(QtGui.QWidget):
 			sys.exit(1)
 
 		QtGui.QWidget.__init__(self,None)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory() + "ctf.png"))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("ctf.png")))
 
 		self.nodir=not usefoldername
 		self.data=None
