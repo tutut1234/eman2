@@ -462,11 +462,10 @@ def numbered_bdb(bdb_url):
 
 	useful_info = db_parse_path(bdb_url)
 
-	d = get_dtag()
-	file_name_begin = useful_info[0] + d + "EMAN2DB" + d + useful_info[1] + "_"
+	file_name_begin = useful_info[0] + "/EMAN2DB/" + useful_info[1] + "_"
 
-	for i in range(0,10):
-		for j in range(0,10):
+	for i in range(10):
+		for j in range(10):
 			name = file_name_begin+str(i)+str(j)+".bdb"
 			if os.path.exists(name): continue
 			else:
