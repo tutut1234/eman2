@@ -160,7 +160,7 @@ class SXLogoButton(QtGui.QLabel):
 		super(SXLogoButton, self).__init__(parent)
 
 		# Width of logo image
-		logo_file_path = '{0}{1}'.format(get_image_directory(), imagename)
+		logo_file_path = '{0}{1}'.format(get_image_path(), imagename)
 
 		# Style of widget
 		self.setFixedSize(logo_width, logo_width)
@@ -206,8 +206,8 @@ class SXGuiCter(QtGui.QWidget):
 		# 
 		self.round_ndigits = 15
 		
-#		self.setWindowIcon(QtGui.QIcon(get_image_directory("ctf.png")))
-		self.setWindowIcon(QtGui.QIcon(get_image_directory("sparxicon.png")))
+#		self.setWindowIcon(QtGui.QIcon(get_image_path("ctf.png")))
+		self.setWindowIcon(QtGui.QIcon(get_image_path("sparxicon.png")))
 
 #		# NOTE: 2016/03/08 Toshio Moriya
 #		# Checked the following window flags and found out ...
@@ -706,7 +706,7 @@ class SXGuiCter(QtGui.QWidget):
 		mainwidget.setObjectName("MainWidgetObject")
 		
 		# Color scheme
-		background_image_file_path = '{0}sxgui_background.png'.format(get_image_directory())
+		background_image_file_path = '{0}sxgui_background.png'.format(get_image_path())
 		mainwidget.setStyleSheet("QWidget#MainWidgetObject {{background-image: url('{0}')}}".format(background_image_file_path))
 		mainlayout = QtGui.QHBoxLayout(mainwidget)
 		mainlayout.setContentsMargins(12,12,12,12)

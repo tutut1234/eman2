@@ -36,7 +36,7 @@ from __future__ import division
 from past.utils import old_div
 from builtins import range
 from builtins import object
-from EMAN2 import PDBReader, get_image_directory
+from EMAN2 import PDBReader, get_image_path
 from libpyGLUtils2 import *
 from OpenGL.GL import *
 from OpenGL.GLU import *

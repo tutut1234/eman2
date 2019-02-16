@@ -2319,7 +2319,7 @@ class GUIctf(QtGui.QWidget):
 		self.highdensity=highdensity
 
 		QtGui.QWidget.__init__(self,None)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory("ctf.png")))
+		self.setWindowIcon(QtGui.QIcon(get_image_path("ctf.png")))
 
 		self.data=data
 		self.curset=0

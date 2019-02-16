@@ -38,7 +38,7 @@ from builtins import object
 from PyQt4 import QtGui, QtCore, QtOpenGL
 import sys
 from .emimageutil import EMParentWin
-from EMAN2 import remove_directories_from_name, get_image_directory,get_3d_font_renderer, E2end,get_platform
+from EMAN2 import remove_directories_from_name, get_image_path,get_3d_font_renderer, E2end,get_platform
 import EMAN2db
 import weakref
 from libpyGLUtils2 import *
@@ -370,7 +370,7 @@ class EMApp(QtGui.QApplication):
 class EMProgressDialog(QtGui.QProgressDialog):
 	def __init__(self,label_text,cancel_button_text, minimum, maximum, parent = None):
 		QtGui.QProgressDialog.__init__(self,label_text,cancel_button_text, minimum, maximum, parent)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory("eman.png")))
+		self.setWindowIcon(QtGui.QIcon(get_image_path("eman.png")))
 
 
 def error(msg,title="Almost"):
@@ -387,7 +387,7 @@ class EMErrorMessageDisplay(object):
 		'''
 		msg = QtGui.QMessageBox()
 		msg.setWindowTitle(title)
-		msg.setWindowIcon(QtGui.QIcon(get_image_directory("eman.png")))
+		msg.setWindowIcon(QtGui.QIcon(get_image_path("eman.png")))
 		mes = ""
 		if isinstance(error_message,tuple): error_message=list(error_message)
 		if isinstance(error_message,list):

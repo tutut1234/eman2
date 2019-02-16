@@ -36,7 +36,7 @@ from __future__ import absolute_import
 
 from builtins import range
 from builtins import object
-from EMAN2 import get_image_directory, EMData, \
+from EMAN2 import get_image_path, EMData, \
 	get_files_and_directories, db_open_dict, remove_file, \
 	remove_directories_from_name, Util, EMUtil, IMAGE_UNKNOWN, base_name, \
 	file_exists, base_name
@@ -302,7 +302,7 @@ def EMSelectorBaseTemplate(Type):
 			self.hbl.setSpacing(6)
 			self.hbl.setObjectName("hbl")
 			
-			self.setWindowIcon(QtGui.QIcon(get_image_directory("display_icon.png")))
+			self.setWindowIcon(QtGui.QIcon(get_image_path("display_icon.png")))
 			
 			self.__init_filter_combo()
 			
@@ -1444,7 +1444,7 @@ class EMListItem(QtGui.QListWidgetItem):
 	def get_icon(self):
 		'''Supply your own Icon'''
 		if EMListItem.ICON == None:
-			EMListItem.ICON = QtGui.QIcon(get_image_directory("File.png"))
+			EMListItem.ICON = QtGui.QIcon(get_image_path("File.png"))
 		return EMListItem.ICON
 
 	def get_attr_dict(self):
@@ -1503,7 +1503,7 @@ class EMUpArrowItem(EMListItem):
 		Supply your own Icon
 		'''
 		if EMUpArrowItem.ICON == None:
-			EMUpArrowItem.ICON = QtGui.QIcon(get_image_directory("up_arrow.png"))
+			EMUpArrowItem.ICON = QtGui.QIcon(get_image_path("up_arrow.png"))
 		return EMUpArrowItem.ICON
 	
 	def get_name(self): return EMUpArrowItem.NAME
@@ -1572,7 +1572,7 @@ class EM2DStackItem(EMDataListItem,EMStack2DCapableMixin):
 	def get_icon(self):
 		'''Supply your own Icon	'''
 		if EM2DStackItem.ICON == None:
-			EM2DStackItem.ICON = QtGui.QIcon(get_image_directory("multiple_images.png"))
+			EM2DStackItem.ICON = QtGui.QIcon(get_image_path("multiple_images.png"))
 		return EM2DStackItem.ICON
 	
 	def emdata_save_as_url(self): return self.delegate.emdata_save_as_url(self.get_url())
@@ -1617,7 +1617,7 @@ class EM3DStackItem(EMDataListItem):
 		Supply your own Icon
 		'''
 		if EM3DStackItem.ICON == None:
-			EM3DStackItem.ICON = QtGui.QIcon(get_image_directory("multiple_images_3d.png"))
+			EM3DStackItem.ICON = QtGui.QIcon(get_image_path("multiple_images_3d.png"))
 		return EM3DStackItem.ICON
 	# no preview for this item as of Feb 2009
 	def get_data(self):
@@ -1645,7 +1645,7 @@ class EM2DImageItem(EMDataListItem):
 		Supply your own Icon
 		'''
 		if EM2DImageItem.ICON == None:
-			EM2DImageItem.ICON = QtGui.QIcon(get_image_directory("single_image.png"))
+			EM2DImageItem.ICON = QtGui.QIcon(get_image_path("single_image.png"))
 		return EM2DImageItem.ICON
 
 	def get_metadata(self):
@@ -1679,7 +1679,7 @@ class EM3DImageItem(EM2DImageItem,EMStack2DCapableMixin):
 		Supply your own Icon
 		'''
 		if EM3DImageItem.ICON == None:
-			EM3DImageItem.ICON = QtGui.QIcon(get_image_directory("single_image_3d.png"))
+			EM3DImageItem.ICON = QtGui.QIcon(get_image_path("single_image_3d.png"))
 		return EM3DImageItem.ICON
 	
 	def default_view_action(self):
@@ -1762,7 +1762,7 @@ class EMFSPlotItem(EMListItem):
 		Supply your own Icon
 		'''
 		if EMFSPlotItem.ICON == None:
-			EMFSPlotItem.ICON = QtGui.QIcon(get_image_directory("plot.png"))
+			EMFSPlotItem.ICON = QtGui.QIcon(get_image_path("plot.png"))
 		return EMFSPlotItem.ICON
 	
 	def get_data(self):
@@ -1792,7 +1792,7 @@ class EMFSFolderItem(EMListItem):
 		Supply your own Icon
 		'''
 		if EMFSFolderItem.ICON == None:
-			EMFSFolderItem.ICON = QtGui.QIcon(get_image_directory("Folder.png"))
+			EMFSFolderItem.ICON = QtGui.QIcon(get_image_path("Folder.png"))
 		return EMFSFolderItem.ICON
 	
 	def get_url(self): return self.full_path
@@ -2087,7 +2087,7 @@ class EMBDBFolderItem(EMListItem):
 		Supply your own Icon
 		'''
 		if EMBDBFolderItem.ICON == None:
-			EMBDBFolderItem.ICON = QtGui.QIcon(get_image_directory("database.png"))
+			EMBDBFolderItem.ICON = QtGui.QIcon(get_image_path("database.png"))
 
 		return EMBDBFolderItem.ICON
 	
@@ -2108,7 +2108,7 @@ class EMBDBDirectoryItem(EMListItem):
 		Supply your own Icon
 		'''
 		if EMBDBDirectoryItem.ICON == None:
-			EMBDBDirectoryItem.ICON = QtGui.QIcon(get_image_directory("Folder.png"))
+			EMBDBDirectoryItem.ICON = QtGui.QIcon(get_image_path("Folder.png"))
 
 		return EMBDBDirectoryItem.ICON
 	
@@ -2128,7 +2128,7 @@ class EMBDBItem(EMListItem):
 		Supply your own Icon
 		'''
 		if EMBDBItem.ICON == None:
-			EMBDBItem.ICON = QtGui.QIcon(get_image_directory("database.png"))
+			EMBDBItem.ICON = QtGui.QIcon(get_image_path("database.png"))
 
 		return EMBDBItem.ICON
 
@@ -2170,7 +2170,7 @@ class EMBDBDictItem(EMListItem):
 		Supply your own Icon
 		'''
 		if EMBDBDictItem.ICON == None:
-			EMBDBDictItem.ICON = QtGui.QIcon(get_image_directory("Bag.png"))
+			EMBDBDictItem.ICON = QtGui.QIcon(get_image_path("Bag.png"))
 
 		return EMBDBDictItem.ICON
 

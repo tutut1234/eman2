@@ -177,7 +177,7 @@ class MorphBoxingTool(EMBoxingTool):
 
 	def icon(self):
 		from PyQt4 import QtGui
-		return QtGui.QIcon(get_image_directory("white_box.png"))
+		return QtGui.QIcon(get_image_path("white_box.png"))
 
 	def set_panel_object(self,panel): self.panel_object = panel
 	def unique_name(self): return MorphBoxingTool.BOX_TYPE

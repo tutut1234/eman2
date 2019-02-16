@@ -53,7 +53,7 @@ points in terms of figuring out how to adapt this code to application specific n
 from optparse import OptionParser
 from .emapplication import EMApp,get_application
 from pyemtbx.boxertools import BigImageCache,BinaryCircleImageCache,Cache
-from EMAN2 import file_exists,EMANVERSION,gimme_image_dimensions2D,EMData,get_image_directory,Region,file_exists,gimme_image_dimensions3D,abs_path,get_platform,base_name
+from EMAN2 import file_exists,EMANVERSION,gimme_image_dimensions2D,EMData,get_image_path,Region,file_exists,gimme_image_dimensions3D,abs_path,get_platform,base_name
 from EMAN2db import db_open_dict,db_check_dict,db_close_dict
 from EMAN2jsondb import *
 from EMAN2 import *
@@ -658,7 +658,7 @@ class EraseTool(EMBoxingTool):
 
 	def icon(self):
 		from PyQt4 import QtGui
-		return QtGui.QIcon(get_image_directory("boxer_erase.png"))
+		return QtGui.QIcon(get_image_path("boxer_erase.png"))
 
 	def get_widget(self):
 		if self.panel_object == None:
@@ -765,7 +765,7 @@ class ManualBoxingTool(object):
 
 	def icon(self):
 		from PyQt4 import QtGui
-		return QtGui.QIcon(get_image_directory("white_box.png"))
+		return QtGui.QIcon(get_image_path("white_box.png"))
 
 
 	def set_panel_object(self,panel): self.panel_object = panel
@@ -2374,7 +2374,7 @@ class EMBoxerInspector(QtGui.QWidget):
 		self.dynamic_box_button_widget = None # this will be used to dynamic add widgets as the buttons are changed
 		self.ptcl_display_dict = None # this will be a dict mapping the names in the
 		QtGui.QWidget.__init__(self,None)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory("green_boxes.png")))
+		self.setWindowIcon(QtGui.QIcon(get_image_path("green_boxes.png")))
 		self.setWindowTitle("e2boxer")
 		self.target=weakref.ref(target)
 

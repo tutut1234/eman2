@@ -120,7 +120,7 @@ class EMPlot3DWidget(EMGLWidget):
 		fmt.setDoubleBuffer(True);
 		EMGLWidget.__init__(self, parent=parent, winid=winid)
 		self.setFormat(fmt)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory("plot.png")))
+		self.setWindowIcon(QtGui.QIcon(get_image_path("plot.png")))
 
 		self.axes={}
 		self.pparm={}			# color,line,linetype,linewidth,sym,symtype,symsize
@@ -1707,7 +1707,7 @@ class EMPlot3DInspector(QtGui.QWidget):
 
 	def __init__(self,target) :
 		QtGui.QWidget.__init__(self,None)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory("plot.png")))
+		self.setWindowIcon(QtGui.QIcon(get_image_path("plot.png")))
 		self.target=weakref.ref(target)
 		vbl0=QtGui.QVBoxLayout(self)
 

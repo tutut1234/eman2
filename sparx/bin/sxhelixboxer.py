@@ -33,7 +33,7 @@ from __future__ import print_function
 #
 
 from builtins import range
-from EMAN2 import get_image_directory, Transform, Region, EMANVERSION, EMData, E2init, E2end, EMArgumentParser
+from EMAN2 import get_image_path, Transform, Region, EMANVERSION, EMData, E2init, E2end, EMArgumentParser
 from EMAN2db import db_open_dict, db_check_dict, db_close_dict
 from math import *
 import sys
@@ -1056,7 +1056,7 @@ if ENABLE_GUI:
 
 			self.saveext=saveext
 			self.app = app
-			self.setWindowIcon(QtGui.QIcon(get_image_directory("green_boxes.png")))
+			self.setWindowIcon(QtGui.QIcon(get_image_path("green_boxes.png")))
 			self.setWindowTitle("sxhelixboxer")
 
 			self.main_image = None #Will be an EMImage2DWidget instance

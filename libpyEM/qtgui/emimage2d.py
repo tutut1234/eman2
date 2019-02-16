@@ -189,7 +189,7 @@ class EMImage2DWidget(EMGLWidget):
 		self.circle_dl = None # used for a circle list, for displaying circled particles, for example
 
 		self.setAcceptDrops(True) #TODO: figure out the purpose of this (moved) line of code
-		self.setWindowIcon(QtGui.QIcon(get_image_directory("single_image.png"))) #TODO: figure out why this icon doesn't work
+		self.setWindowIcon(QtGui.QIcon(get_image_path("single_image.png"))) #TODO: figure out why this icon doesn't work
 
 		if image : self.set_data(image)
 #		else:self.__load_display_settings_from_db()
@@ -2235,7 +2235,7 @@ class EMImageInspector2D(QtGui.QWidget):
 		#self.gammas.setValue(1.0)
 		self.vbl.addWidget(self.gammas)
 
-		self.setWindowIcon(QtGui.QIcon(get_image_directory("eman.png")))
+		self.setWindowIcon(QtGui.QIcon(get_image_path("eman.png")))
 
 		self.lowlim=0
 		self.highlim=1.0

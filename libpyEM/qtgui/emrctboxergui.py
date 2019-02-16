@@ -34,7 +34,7 @@ from __future__ import absolute_import
 #
 #
 from builtins import range
-from EMAN2 import get_image_directory, dump_processors_list
+from EMAN2 import get_image_path, dump_processors_list
 from PyQt4 import QtCore, QtGui
 from .emrctstrategy import Strategy2IMGMan, Strategy2IMGPair
 from EMAN2jsondb import js_open_dict
@@ -50,7 +50,7 @@ class ControlPannel(QtGui.QWidget):
 		self.mediator = mediator
 		self.db = js_open_dict("info/emboxerrctgui.json")
 		self.qualitydb = js_open_dict("e2boxercache/quality.json")
-		self.setWindowIcon(QtGui.QIcon(get_image_directory("green_boxes.png")))
+		self.setWindowIcon(QtGui.QIcon(get_image_path("green_boxes.png")))
 		self.setWindowTitle("e2RCTboxer")
 		
 		# Here is where additional tools can be added

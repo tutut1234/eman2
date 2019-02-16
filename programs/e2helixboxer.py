@@ -976,7 +976,7 @@ if ENABLE_GUI:
 
 			self.saveext=saveext
 			self.app = app
-			self.setWindowIcon(QtGui.QIcon(get_image_directory("green_boxes.png")))
+			self.setWindowIcon(QtGui.QIcon(get_image_path("green_boxes.png")))
 			self.setWindowTitle("e2helixboxer")
 
 			self.main_image = None #Will be an EMImage2DWidget instance
