@@ -435,32 +435,21 @@ def get_dtag():
 	return "/"
 
 def get_files_and_directories(path=".",include_hidden=False):
-	if path == ".": l_path = "./"
-	else: l_path = path
-	if len(l_path) == 0: path = get_dtag()
-	elif l_path[-1] not in ["/","\\"]: l_path += get_dtag()
-
 	dirs = []
 	files = []
-	try:
-		entries = os.listdir(l_path)
-	except: # something is wrong with the path
-		#print "path failed",l_path
+
+	if not os.path.isdir(path):
 		return dirs,files
+	
+	for name in os.listdir(path):
+		if not include_hidden and name.startswith("."):
+			continue
 
-	for name in entries:
-		if len(name) == 0: continue
-		if not include_hidden:
-			if name[0] == ".":
-				continue
-
-		try:
-			if os.path.isdir(l_path+name):
-				dirs.append(name)
-			else:
-				files.append(name)
-		except:
-			pass # something was wrong with the directory
+		if os.path.isdir(os.path.join(path, name)):
+			dirs.append(name)
+		else:
+			files.append(name)
+		
 	return dirs,files
 
 
