@@ -516,7 +516,7 @@ class EMFileExistsDialog(QtGui.QDialog):
 		'''
 		QtGui.QDialog.__init__(self,None)
 		self.resize(480,320)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory() + "/eman.png"))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("eman.png")))
 		self.setWindowTitle("File already exists")
 		self.appendable_types = ["hed","img","spi","hdf"] #image types that can be stacks - TODO bdb ?
 		

@@ -370,7 +370,7 @@ class EMApp(QtGui.QApplication):
 class EMProgressDialog(QtGui.QProgressDialog):
 	def __init__(self,label_text,cancel_button_text, minimum, maximum, parent = None):
 		QtGui.QProgressDialog.__init__(self,label_text,cancel_button_text, minimum, maximum, parent)
-		self.setWindowIcon(QtGui.QIcon(get_image_directory() + "/eman.png"))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("eman.png")))
 
 
 def error(msg,title="Almost"):
@@ -387,7 +387,7 @@ class EMErrorMessageDisplay(object):
 		'''
 		msg = QtGui.QMessageBox()
 		msg.setWindowTitle(title)
-		msg.setWindowIcon(QtGui.QIcon(get_image_directory() + "/eman.png"))
+		msg.setWindowIcon(QtGui.QIcon(get_image_directory("eman.png")))
 		mes = ""
 		if isinstance(error_message,tuple): error_message=list(error_message)
 		if isinstance(error_message,list):

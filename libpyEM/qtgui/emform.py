@@ -665,7 +665,7 @@ class EM2DFileTable(EMFileTable):
 		see EMFileTable for comments on parameters
 		'''
 		EMFileTable.__init__(self,listed_names,name,desc_short,desc_long,single_selection)
-		self.icon = QtGui.QIcon(get_image_directory() + "/single_image.png")
+		self.icon = QtGui.QIcon(get_image_directory("single_image.png"))
 		self.display_module = None
 		self.module_events_manager = None
 	
@@ -710,7 +710,7 @@ class EM3DFileTable(EM2DFileTable):
 		see EMFileTable for comments on parameters
 		'''
 		EM2DFileTable.__init__(self,listed_names,name,desc_short,desc_long,single_selection)
-		self.icon = QtGui.QIcon(get_image_directory() + "/single_image_3d.png")
+		self.icon = QtGui.QIcon(get_image_directory("single_image_3d.png"))
 	
 
 class EMTomographicFileTable(EMFileTable):
@@ -723,7 +723,7 @@ class EMTomographicFileTable(EMFileTable):
 		see EMFileTable for comments on parameters
 		'''
 		EMFileTable.__init__(self,listed_names,name,desc_short,desc_long,single_selection,enable_save)
-		self.icon = QtGui.QIcon(get_image_directory() + "/single_image_3d.png")
+		self.icon = QtGui.QIcon(get_image_directory("single_image_3d.png"))
 	
 	def table_item_double_clicked(self,item):
 		''' Just pass because it's probably a really big image'''
@@ -735,7 +735,7 @@ class EM2DStackTable(EMFileTable):
 		see EMFileTable for comments on parameters
 		'''
 		EMFileTable.__init__(self,listed_names,name,desc_short,desc_long,single_selection,enable_save)
-		self.icon = QtGui.QIcon(get_image_directory() + "/multiple_images.png")
+		self.icon = QtGui.QIcon(get_image_directory("multiple_images.png"))
 		self.display_module = None
 		self.module_events_manager = None
 		if enable_save: self.context_menu_data["Save As"] = EM2DStackTable.save_as
@@ -795,7 +795,7 @@ class EMPlotTable(EMFileTable):
 		see EMFileTable for comments on parameters
 		'''
 		EMFileTable.__init__(self,listed_names,name,desc_short,desc_long,single_selection)
-		self.icon = QtGui.QIcon(get_image_directory() + "/plot.png")
+		self.icon = QtGui.QIcon(get_image_directory("plot.png"))
 		self.display_module = None
 		self.module_events_manager = None
 	
@@ -850,7 +850,7 @@ class EM2DStackExamineTable(EM2DStackTable):
 		see EMFileTable for comments on parameters
 		'''
 		EM2DStackTable.__init__(self,listed_names,name,desc_short,desc_long,single_selection)
-		self.icon = QtGui.QIcon(get_image_directory() + "/multiple_images.png")
+		self.icon = QtGui.QIcon(get_image_directory("multiple_images.png"))
 		self.display_module = None
 		self.module_events_manager = None
 		self.context_menu_data["Save As"] = EM2DStackTable.save_as
@@ -1104,7 +1104,7 @@ class EMFormWidget(QtGui.QWidget):
 		self.output_writers = [] # used to register output write objects, for the purpose of returning the results
 		self.name_widget_map = {} # used to map parameter names to qt widgets - used by booleans to automatically disable and enable widgets
 		self.__init_icons()
-		self.setWindowIcon(QtGui.QIcon(get_image_directory() + "/desktop.png"))
+		self.setWindowIcon(QtGui.QIcon(get_image_directory("desktop.png")))
 
 		self.auto_incorporate = {}
 		self.auto_incorporate["float"] = IncorpFloat()
@@ -1135,10 +1135,10 @@ class EMFormWidget(QtGui.QWidget):
 #		self.deleteLater()
 		
 	def __init_icons(self):
-		self.emdata_icon = QtGui.QIcon(get_image_directory() + "/single_image.png")
-		self.emdata_3d_icon = QtGui.QIcon(get_image_directory() + "/single_image_3d.png")
-		self.emdata_matrix_icon = QtGui.QIcon(get_image_directory() + "/multiple_images.png")
-		self.plot_icon = QtGui.QIcon(get_image_directory() + "/plot.png")
+		self.emdata_icon = QtGui.QIcon(get_image_directory("single_image.png"))
+		self.emdata_3d_icon = QtGui.QIcon(get_image_directory("single_image_3d.png"))
+		self.emdata_matrix_icon = QtGui.QIcon(get_image_directory("multiple_images.png"))
+		self.plot_icon = QtGui.QIcon(get_image_directory("plot.png"))
 	
 	def closeEvent(self, event):
 		self.emform_close.emit()
