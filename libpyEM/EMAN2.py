@@ -423,7 +423,7 @@ def get_prefixed_directories(prefix,wd=e2getcwd()):
 
 	return dirs
 
-def get_image_directory(image_file=""):
+def get_image_path(image_file=""):
 	return os.path.join(e2getinstalldir(), "images", image_file)
 
 def get_files_and_directories(path=".",include_hidden=False):
