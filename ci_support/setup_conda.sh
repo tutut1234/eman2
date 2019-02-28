@@ -16,5 +16,5 @@ conda config --set show_channel_urls true
 conda update conda -c defaults --yes
 conda install conda-build -c defaults --yes
 conda install cmake=3.9 -c defaults --yes
-conda install eman-deps=13.0 -c cryoem -c defaults -c conda-forge --yes
+conda install eman-deps=14.0 -c cryoem -c defaults -c conda-forge --yes
 conda clean --all --yes

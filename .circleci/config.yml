@@ -6,12 +6,9 @@ jobs:
     steps:
       - run: sudo apt-get update && sudo apt-get install freeglut3-dev
       - checkout
-      - restore_cache:
-          keys:
-            - mini-eman-deps-11.0
       - run: source ci_support/setup_conda.sh
       - save_cache:
-          key: mini-eman-deps-13.0
+          key: mini-eman-deps-14.0
           paths:
             - ~/miniconda2
 
