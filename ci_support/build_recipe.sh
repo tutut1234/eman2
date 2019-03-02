@@ -14,4 +14,4 @@ conda info -a
 conda list
 conda build purge-all
 
-conda build recipes/eman -c cryoem -c defaults -c conda-forge
+conda build recipes/eman -c cryoem/label/dev -c cryoem -c defaults -c conda-forge
