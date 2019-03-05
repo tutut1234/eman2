@@ -34,7 +34,7 @@ requirements:
             "pyqt 5.*",
             "pyopengl 3.1.0",
             "scikit-learn 0.19.*",
-            "bsddb3",          # [not win]
+            "bsddb3",          # [not win and py3k]
 #            "openmpi 2.0.2",  # [not win]
 #            "pydusa",         # [not win]
             "nose",
