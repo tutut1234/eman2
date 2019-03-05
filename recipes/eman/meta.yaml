@@ -28,12 +28,10 @@ requirements:
     ] %}
     
     {% set reqs_run = [
-            "matplotlib 2.1.*",  # [osx]
-            "matplotlib 1.5.*",  # [not osx]
+            "matplotlib",
             "scipy 1.*",
             "ipython",
-            "pyqt 4.11.*",
-            "qt >=4.8.6",
+            "pyqt 5.*",
             "pyopengl 3.1.0",
             "scikit-learn 0.19.*",
             "bsddb3",          # [not win]
