@@ -69,6 +69,7 @@ BOOST_PYTHON_MODULE(libpyTypeConverter2)
     ;
 
 
+    Py_Initialize();
     init_numpy();
 	python::numeric::array::set_module_and_type("numpy", "ndarray");
 
