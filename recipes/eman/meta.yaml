@@ -50,13 +50,13 @@ requirements:
         {% for req in reqs_host %}
         - {{ req }}
         {% endfor %}
+        {% for req in reqs_run %}
+        - {{ req }}
+        {% endfor %}
         
     run:
         {% for package in resolved_packages('host') %}
         - {{ package }}
-        {% endfor %}
-        {% for req in reqs_run %}
-        - {{ req }}
         {% endfor %}
 
     
