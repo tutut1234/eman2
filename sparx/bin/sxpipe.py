@@ -2980,7 +2980,6 @@ def angular_distribution(args):
 	data_cart = to_cartesian(data)
 
 	#markus(args, data, data_cart, sym_class)
-
 	occupy, eva = angular_histogram(sym_class.reduce_anglesets(data_params.tolist(), inc_mirror=1), angstep = args.delta, sym= symmetry, method=args.method)
 #		for i,q in enumerate(eva):  print(i,q)
 	radius_array = numpy.array(occupy)
