@@ -470,10 +470,11 @@ class symclass_mod(object):
 
 
 
-    def symmetry_related(self, angles, tolistconv=True):
+    def symmetry_related(self, angles, mirror = 1 , tolistconv=True):
 
         sang_new = numpy.atleast_2d(numpy.array(angles, numpy.float64)).repeat(self.nsym, axis=0)
         if (self.sym[0] == "c"):
+
             qt = old_div(360.0, self.nsym)
             angles_1_n0_n180 = (sang_new[:, 1] != 0) & (sang_new[:, 1] != 180)
             # if angles_1_0.any():
@@ -507,9 +508,7 @@ class symclass_mod(object):
             sang_new[angles_1_0_180 & mask_0_180, 0] = 0
             sang_new[angles_1_0_180 & mask_0_180, 1] =  (sang_new[angles_1_0_180 & mask_0_180, 1] + 180 ) % 360.0
             sang_new[angles_1_0_180 & mask_0_180, 2] = (sang_new[angles_1_0_180 & mask_0_180, 2] + 180 * (nsm % 2)) % 360.0
-
             """For 90 degress"""
-
             for i in range(nsm):
                 mask_90[i::self.nsym] = True
             sang_new[angles_1_90 & mask_90, 0] = sang_new[angles_1_90 & mask_90, 0] + \
@@ -519,12 +518,9 @@ class symclass_mod(object):
                                                      self.nsym,
                                                      axis=0
                                                  ).flatten()
-
             """ For the rest of the cases"""
             for i in range(self.nsym):
                 mask__phi[i::self.nsym] = True
-
-
             # For phi values
             sang_new[angles_not90 & mask__phi, 0] = sang_new[angles_not90 & mask__phi, 0] + \
                                                  numpy.repeat(
@@ -533,14 +529,10 @@ class symclass_mod(object):
                                                      self.nsym,
                                                      axis=0
                                                  ).flatten()
-
             for i in range(nsm):
                 mask__theta[i::self.nsym] = True
-
             # For new theta values
             sang_new[angles_not90 &   ~mask__theta, 1] = 180 - sang_new[angles_not90 &   ~mask__theta, 1]
-
-
 
             mask_0_180 = numpy.zeros(sang_new.shape[0], dtype=numpy.bool)
             mask_0_180[::self.nsym] = True
@@ -556,6 +548,41 @@ class symclass_mod(object):
 
         # For oct, tet and icos
         else:
+
+            if (self.sym == "tet") :
+                inside_values = (
+                    (self.brackets[0][0], self.brackets[0][1], 180, 0),
+                    (self.brackets[0][0], 180 - self.brackets[0][1], 180, 60),
+                    (self.brackets[0][0], 0, self.brackets[0][0], 0),
+                    (self.brackets[0][0], 180 - self.brackets[0][3], self.brackets[0][0], 0),
+                    (self.brackets[0][0], 180, self.brackets[0][0], 0),
+                    (self.brackets[0][0], self.brackets[0][3], self.brackets[0][0], 60),
+                )
+            elif(self.sym == "oct") :
+                inside_values = (
+                    # (self.brackets[0][0], 0, self.brackets[0][0], 0),
+                    # (self.brackets[0][0], 180 - self.brackets[0][3], self.brackets[0][0], 0),
+                    # (self.brackets[0][0], self.brackets[0][1], 180, 0),
+                    # (self.brackets[0][0], 180 - self.brackets[0][1], 180, 36),
+                    # (self.brackets[0][0], 180, self.brackets[0][0], 0),
+                    # (self.brackets[0][0], self.brackets[0][3], self.brackets[0][0], 36),
+                )
+            elif(self.sym == "icos"):
+                inside_values = (
+                    (self.brackets[0][0], 180, self.brackets[0][0], 0),
+                    (self.brackets[0][0], 0, self.brackets[0][0], 0),
+                    (self.brackets[0][2], 90 - self.brackets[0][3], self.brackets[0][0], 0),
+                    # (self.brackets[0][0], self.brackets[0][1], 180, 0),
+                    # (self.brackets[0][0], 180 - self.brackets[0][1], 180, 36),
+
+                    # (self.brackets[0][0], 180 - self.brackets[0][3], self.brackets[0][0], 0),
+
+                    # (self.brackets[0][0], self.brackets[0][3], self.brackets[0][0], 36),
+                )
+            else :
+                raise NameError("Symmetry unknown")
+
+
             sang_mod = numpy.array(angles, numpy.float64).repeat(self.nsym, axis = 0)
             matrices = self.rotmatrix(sang_mod)
 
@@ -571,118 +598,59 @@ class symclass_mod(object):
                     (sang_mod.shape[0] // self.nsym, 1, 1)).reshape(
                     matrices.shape[0], matrices.shape[1], 1, matrices.shape[2], ), -3)
 
-            sang_new = self.recmat(matrices_mod, sang_mod)
+            sang_new = numpy.round(self.recmat(matrices_mod, sang_mod),12)
+            sang_new_mod = sang_new.copy()
+            sang_new_mod[:, 0] = numpy.round(sang_new_mod[:, 0], 12) % 360.0
 
-            inside_values = (
-                (self.brackets[0][0], self.brackets[0][1], 180, 0),
-                (self.brackets[0][0], 180 - self.brackets[0][1], 180, 60),
-                (self.brackets[0][0], 0, self.brackets[0][0], 0),
-                (self.brackets[0][0], 180 - self.brackets[0][3], self.brackets[0][0], 0),
-                (self.brackets[0][0], 180, self.brackets[0][0], 0),
-                (self.brackets[0][0], self.brackets[0][3], self.brackets[0][0], 60),
-            )
+
             masks_good = []
             masks_bad = []
-            for phi, theta, psi, offset in inside_values:
-                phi_good = 0 == numpy.round(sang_new[:,0]+offset, 6 ) % numpy.round(phi, 6)
-                theta_good = numpy.round(theta, 6) == numpy.round(sang_new[:,1], 6)
-                psi_good = sang_new[:,2] < psi
-                masks_good.append(phi_good & theta_good & psi_good)
-                psi_bad = sang_new[:,2] >= psi
-                masks_bad.append(phi_good & theta_good & psi_bad)
+            idx = 0
 
-            mask_good = numpy.zeros(sang_new.shape[0], numpy.bool)
+            theta_0_or_180 = (sang_new_mod[:,1] == 0) | (sang_new_mod[:,1] == 180)
+            for phi, theta, psi, offset in inside_values:
+
+                phi_0_180 = numpy.round(sang_new_mod[:, 0] + offset, 6) < numpy.round(phi, 6)
+                phi_not_0_180 = 0 == numpy.round(sang_new_mod[:,0] + offset, 6 ) % numpy.round(phi, 6)
+                phi_good = numpy.logical_xor(
+                    phi_0_180 & theta_0_or_180,
+                    phi_not_0_180 & ~theta_0_or_180
+                )
+                theta_good = numpy.round(sang_new_mod[:,1], 6) == numpy.round(theta, 6)
+                psi_good = numpy.round(sang_new_mod[:,2], 6) < numpy.round(psi, 6)
+                masks_good.append(phi_good & theta_good & psi_good)
+
+                phi_bad_0_180 = numpy.round(sang_new_mod[:, 0] + offset, 6) >= numpy.round(phi, 6)
+                phi_bad = numpy.logical_xor(
+                    phi_bad_0_180 & theta_0_or_180,
+                    phi_not_0_180 & ~theta_0_or_180
+                )
+                psi_bad_not_0_180 = numpy.round(sang_new_mod[:,2], 6) >= numpy.round(psi, 6)
+                psi_bad = numpy.logical_xor(
+                    psi_good & theta_0_or_180,
+                    psi_bad_not_0_180 & ~theta_0_or_180
+                )
+
+                masks_bad.append(phi_bad & theta_good & psi_bad)
+
+            mask_good = numpy.zeros(sang_new_mod.shape[0], numpy.bool)
             for entry in masks_good:
                 mask_good = numpy.logical_or(mask_good, entry)
 
-            mask_bad = numpy.zeros(sang_new.shape[0], numpy.bool)
+            mask_bad = numpy.zeros(sang_new_mod.shape[0], numpy.bool)
             for entry in masks_bad:
                 mask_bad = numpy.logical_or(mask_bad, entry)
 
-            mask_not_special = ~numpy.logical_or(numpy.logical_xor(mask_good, mask_bad), numpy.logical_and(mask_good, mask_bad))
+            mask_not_special = ~numpy.logical_or(
+                numpy.logical_xor(mask_good, mask_bad),
+                numpy.logical_and(mask_good, mask_bad)
+            )
             maski = numpy.logical_or(mask_good, mask_not_special)
 
-            mask_brackets_0_1 = (numpy.round(self.brackets[0][1], 6) == numpy.round(sang_new[:,1], 6)) \
-                                & (0 == numpy.round(sang_new[:,0], 6)%numpy.round(self.brackets[0][2], 6)) \
-                                & (sang_new[:,2] < 180)
-
-            mask_brackets_0_1_b = (numpy.round(self.brackets[0][1], 6) == numpy.round(sang_new[:, 1], 6)) \
-                                & (0 == numpy.round(sang_new[:, 0], 6) % numpy.round(self.brackets[0][2], 6)) \
-                                & (sang_new[:, 2] >= 180)
-
-            mask_brackets_0_1_2 = (numpy.round(180 - self.brackets[0][1], 6) == numpy.round(sang_new[:, 1], 6)) \
-                                & (0 == numpy.round(sang_new[:, 0]+60, 6) % numpy.round(self.brackets[0][0], 6)) \
-                                & (numpy.round(sang_new[:, 2], 6) < 180)
-
-            mask_brackets_0_1_2_b = (numpy.round(180 - self.brackets[0][1], 6) == numpy.round(sang_new[:, 1], 6)) \
-                                  & (0 == numpy.round(sang_new[:, 0] + 60, 6) % numpy.round(self.brackets[0][0], 6)) \
-                                  & (numpy.round(sang_new[:, 2], 6) >= 180)
-
-            mask_theta_0_1 = (0 == numpy.round(sang_new[:,1], 6) ) \
-                             & (numpy.round(sang_new[:, 2], 6) <= numpy.round(self.brackets[0][0], 6)) \
-                             & (numpy.round(sang_new[:, 0], 6) < numpy.round(self.brackets[0][0], 6))
-
-            mask_theta_0_1_b = (0 == numpy.round(sang_new[:, 1], 6)) \
-                             & (numpy.round(sang_new[:, 2], 6) <= numpy.round(self.brackets[0][0], 6)) \
-                             & (numpy.round(sang_new[:, 0], 6) >= numpy.round(self.brackets[0][0], 6))
-
-            mask_theta_0_1_2 = (numpy.round(180 - self.brackets[0][3], 6) == numpy.round(sang_new[:, 1], 6))  \
-                             & (0 == numpy.round(sang_new[:, 0], 6)  % numpy.round(self.brackets[0][0], 6) ) \
-                             &  (numpy.round(sang_new[:, 2], 6) < numpy.round(self.brackets[0][0], 6))
-
-            mask_theta_0_1_2_b = (numpy.round(180 - self.brackets[0][3], 6) == numpy.round(sang_new[:, 1], 6)) \
-                               & (0 == numpy.round(sang_new[:, 0], 6) % numpy.round(self.brackets[0][0], 6)) \
-                               & (numpy.round(sang_new[:, 2], 6) >= numpy.round(self.brackets[0][0], 6))
-
-            mask_theta_180_1 = (180 == numpy.round(sang_new[:, 1], 6)) \
-                               & (numpy.round(sang_new[:, 2], 6) <= numpy.round(self.brackets[0][0], 6)) \
-                               & (numpy.round(sang_new[:, 0], 6) < numpy.round(self.brackets[0][0], 6))
-
-            mask_theta_180_1_b = (180 == numpy.round(sang_new[:, 1], 6)) \
-                               & (numpy.round(sang_new[:, 2], 6) <= numpy.round(self.brackets[0][0], 6)) \
-                               & (numpy.round(sang_new[:, 0], 6) >= numpy.round(self.brackets[0][0], 6))
-
-            mask_theta_180_1_2 = (numpy.round(self.brackets[0][3], 6) == numpy.round(sang_new[:, 1], 6)) \
-                               & (0 == numpy.round(sang_new[:, 0]+60, 6) % numpy.round(self.brackets[0][0], 6)) \
-                               & (numpy.round(sang_new[:, 2], 6) < numpy.round(self.brackets[0][0], 6))
-
-            mask_theta_180_1_2_b = (numpy.round(self.brackets[0][3], 6) == numpy.round(sang_new[:, 1], 6)) \
-                                 & (0 == numpy.round(sang_new[:, 0] + 60, 6) % numpy.round(self.brackets[0][0], 6)) \
-                                 & (numpy.round(sang_new[:, 2], 6) >= numpy.round(self.brackets[0][0], 6))
-
-            MA = numpy.logical_or(mask_theta_180_1, mask_theta_180_1_2)
-
-            MC = numpy.logical_or(mask_theta_0_1, mask_theta_0_1_2)
-
-            ME = numpy.logical_or(mask_brackets_0_1, mask_brackets_0_1_2)
-
-            MACE = numpy.logical_or(numpy.logical_or(MA, MC), ME)
-
-            MB = numpy.logical_or(mask_theta_180_1_b, mask_theta_180_1_2_b)
-
-            MD = numpy.logical_or(mask_theta_0_1_b, mask_theta_0_1_2_b)
-
-            MF = numpy.logical_or(mask_brackets_0_1_b, mask_brackets_0_1_2_b)
-
-            MBDF = numpy.logical_or(numpy.logical_or(MB, MD), MF)
-
-            MG = ~numpy.logical_or(numpy.logical_xor(MACE, MBDF), numpy.logical_and(MACE, MBDF))
-
-            maski = numpy.logical_or(MACE, MG)
-
-
-            # maski = numpy.logical_xor(maski, numpy.ones(maski.shape[0], dtype=numpy.bool))
-            # print(maski)
-            # maski = numpy.logical_or(
-            #     (mask_brackets_0_1 | mask_brackets_0_1_2),
-            #     numpy.logical_or(
-            #         (mask_theta_0_1 | mask_theta_0_1_2),
-            #         (mask_theta_180_1 | mask_theta_180_1_2)
-            #     )
-            # )
-
+        print(sang_new)
         sang_new = sang_new[maski]
         sang_new %= 360
+        print(maski)
         print(sang_new)
         if tolistconv:
             return sang_new.tolist()
@@ -2268,7 +2236,7 @@ class TestSymClassReduceAngleSets(unittest.TestCase):
         # angles = [[120.0, 54.735610317245346, 65]]
 
         # angles = [[0,0,0], [0,180,0], [120.0, 54.735610317245346, 65], [60.0, 180-54.735610317245346, 65]]
-        angles = [[60, 0, 0]]
+        angles = [[ 0, 0, 0]]
         # angles = [[0, 0, 0], [0, 180, 0], [0, 90, 0], [90, 0, 0], [90, 90, 0], [90, 180, 0]]
 
         # angles = [ [ 45,45,20]  , [ 25,90,45] ,[ 90,25,45] ]
@@ -2279,12 +2247,14 @@ class TestSymClassReduceAngleSets(unittest.TestCase):
         # print("Hello")
         results = []
         for ang in angles:
-            results.extend(fu.symclass('tet').symmetry_related(ang))
+            results.extend(fu.symclass('icos').symmetry_related(ang))
         print("first phase done ")
-        expected_results = symclass_mod('tet').symmetry_related(angles)
+        expected_results = symclass_mod('icos').symmetry_related(angles)
         print("Hello")
-        print(symclass_mod('tet').brackets)
-        # print(expected_results)
+        print(symclass_mod('icos').brackets)
+
+
+        print(expected_results)
         # print(results)
         #
         # print(numpy.array(angles).shape)
