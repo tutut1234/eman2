@@ -470,120 +470,89 @@ class symclass_mod(object):
 
 
 
-    def symmetry_related(self, angles, mirror = 1 , tolistconv=True):
+    def symmetry_related(self, angles, return_mirror=0, tolistconv=True):
 
-        sang_new = numpy.atleast_2d(numpy.array(angles, numpy.float64)).repeat(self.nsym, axis=0)
-        if (self.sym[0] == "c"):
-
-            qt = old_div(360.0, self.nsym)
-            angles_1_n0_n180 = (sang_new[:, 1] != 0) & (sang_new[:, 1] != 180)
-            # if angles_1_0.any():
-            sang_new[angles_1_n0_n180, 0] = sang_new[angles_1_n0_n180, 0]  + \
-                numpy.repeat(
-                    [numpy.arange(self.nsym) * qt],
-                    sang_new[angles_1_n0_n180].shape[0]//self.nsym,
-                    axis=0
-                ).flatten()
-
-            mask = numpy.zeros(sang_new.shape[0])
-            mask[::self.nsym] = True
-            maski = numpy.logical_or(angles_1_n0_n180, mask)
-
-
-        elif(self.sym[0] == "d"):
-            nsm = old_div(self.nsym, 2)
-            qt = old_div(360.0, nsm)
-
-            angles_1_0_180 = numpy.logical_or( (sang_new[:,1] == 0) , (sang_new[:, 1] == 180))
-            angles_1_90 = (sang_new[:, 1] == 90) &  ~angles_1_0_180  #   (sang_new[:, 1] != 0) & (sang_new[:, 1] != 180)
-            angles_not90 = ~angles_1_90 & ~angles_1_0_180
-
-            """For zero and 180 case"""
-            mask_0_180 = numpy.zeros(sang_new.shape[0], dtype=numpy.bool)
-            mask_90 = numpy.zeros(sang_new.shape[0], dtype=numpy.bool)
-            mask__phi = numpy.zeros(sang_new.shape[0], dtype=numpy.bool)
-            mask__theta = numpy.zeros(sang_new.shape[0], dtype=numpy.bool)
-
-            mask_0_180[1::self.nsym] = True
-            sang_new[angles_1_0_180 & mask_0_180, 0] = 0
-            sang_new[angles_1_0_180 & mask_0_180, 1] =  (sang_new[angles_1_0_180 & mask_0_180, 1] + 180 ) % 360.0
-            sang_new[angles_1_0_180 & mask_0_180, 2] = (sang_new[angles_1_0_180 & mask_0_180, 2] + 180 * (nsm % 2)) % 360.0
-            """For 90 degress"""
-            for i in range(nsm):
-                mask_90[i::self.nsym] = True
-            sang_new[angles_1_90 & mask_90, 0] = sang_new[angles_1_90 & mask_90, 0] + \
-                                                 numpy.repeat(
-                                                     [numpy.arange(0, nsm) * qt],
-                                                     sang_new[angles_1_90].shape[0] //
-                                                     self.nsym,
-                                                     axis=0
-                                                 ).flatten()
-            """ For the rest of the cases"""
-            for i in range(self.nsym):
-                mask__phi[i::self.nsym] = True
-            # For phi values
-            sang_new[angles_not90 & mask__phi, 0] = sang_new[angles_not90 & mask__phi, 0] + \
-                                                 numpy.repeat(
-                                                     [numpy.arange(0,self.nsym) * qt],
-                                                     sang_new[angles_not90].shape[0] //
-                                                     self.nsym,
-                                                     axis=0
-                                                 ).flatten()
-            for i in range(nsm):
-                mask__theta[i::self.nsym] = True
-            # For new theta values
-            sang_new[angles_not90 &   ~mask__theta, 1] = 180 - sang_new[angles_not90 &   ~mask__theta, 1]
-
-            mask_0_180 = numpy.zeros(sang_new.shape[0], dtype=numpy.bool)
-            mask_0_180[::self.nsym] = True
-            mask_0_180[1::self.nsym] = True
-
-            maski = numpy.logical_or(
-                numpy.logical_or( numpy.logical_and(angles_not90,  mask__phi) ,
-                                  numpy.logical_and(angles_not90, ~mask__theta)),
-                numpy.logical_xor(
-                numpy.logical_and(angles_1_0_180, mask_0_180),
-                numpy.logical_and(angles_1_90, mask_90)
-            ))
-
-        # For oct, tet and icos
+        mirror_list = []
+        if return_mirror == 1:
+            nsym = self.nsym
+            mult = -1
+            mask = numpy.ones(self.nsym, dtype=numpy.bool)
+            mirror_list.append([mult, mask])
+        elif return_mirror == 0:
+            nsym = self.nsym
+            mult = 1
+            mask = numpy.ones(self.nsym, dtype=numpy.bool)
+            mirror_list.append([mult, mask])
         else:
-
-            if (self.sym == "tet") :
-                inside_values = (
-                    (self.brackets[0][0], self.brackets[0][1], 180, 0),
-                    (self.brackets[0][0], 180 - self.brackets[0][1], 180, 60),
-                    (self.brackets[0][0], 0, self.brackets[0][0], 0),
-                    (self.brackets[0][0], 180 - self.brackets[0][3], self.brackets[0][0], 0),
-                    (self.brackets[0][0], 180, self.brackets[0][0], 0),
-                    (self.brackets[0][0], self.brackets[0][3], self.brackets[0][0], 60),
-                )
-            elif(self.sym == "oct") :
-                inside_values = (
-                    # (self.brackets[0][0], 0, self.brackets[0][0], 0),
-                    # (self.brackets[0][0], 180 - self.brackets[0][3], self.brackets[0][0], 0),
-                    # (self.brackets[0][0], self.brackets[0][1], 180, 0),
-                    # (self.brackets[0][0], 180 - self.brackets[0][1], 180, 36),
-                    # (self.brackets[0][0], 180, self.brackets[0][0], 0),
-                    # (self.brackets[0][0], self.brackets[0][3], self.brackets[0][0], 36),
-                )
-            elif(self.sym == "icos"):
-                inside_values = (
-                    (self.brackets[0][0], 180, self.brackets[0][0], 0),
-                    (self.brackets[0][0], 0, self.brackets[0][0], 0),
-                    (self.brackets[0][2], 90 - self.brackets[0][3], self.brackets[0][0], 0),
-                    # (self.brackets[0][0], self.brackets[0][1], 180, 0),
-                    # (self.brackets[0][0], 180 - self.brackets[0][1], 180, 36),
-
-                    # (self.brackets[0][0], 180 - self.brackets[0][3], self.brackets[0][0], 0),
-
-                    # (self.brackets[0][0], self.brackets[0][3], self.brackets[0][0], 36),
-                )
-            else :
-                raise NameError("Symmetry unknown")
+            nsym = 2 * self.nsym
+            mult = 1
+            mask = numpy.zeros(2*self.nsym, dtype=numpy.bool)
+            for i in range(self.nsym):
+                mask[i::2*self.nsym] = True
+            mirror_list.append([mult, mask])
+            mirror_list.append([-mult, ~mask])
 
 
-            sang_mod = numpy.array(angles, numpy.float64).repeat(self.nsym, axis = 0)
+        if(self.sym[0] == "c"):
+            inside_values = (
+                (self.brackets[0][0], 0, 180.0, 0),
+                (self.brackets[0][0], 180, 180.0, 0),
+            )
+        elif(self.sym[0] == "d"):
+            inside_values = (
+                (self.brackets[0][0], 0, 180.0, 0),
+                (self.brackets[0][0], 180, 180.0, 0),
+                (self.brackets[0][0], 0, 180.0, self.brackets[0][0]/2.0),
+                (self.brackets[0][0], 180.0, 180.0,self.brackets[0][0]/2.0),
+                (numpy.nan, 90.0, 180.0, 0),
+            )
+        elif (self.sym == "tet") :
+            inside_values = (
+                (self.brackets[0][0], self.brackets[0][1], 180, 0),
+                (self.brackets[0][0], 180 - self.brackets[0][1], 180, 60),
+                (self.brackets[0][0], 0, self.brackets[0][0], 0),
+                (self.brackets[0][0], 180 - self.brackets[0][3], self.brackets[0][0], 0),
+                (self.brackets[0][0], 180, self.brackets[0][0], 0),
+                (self.brackets[0][0], self.brackets[0][3], self.brackets[0][0], 60),
+            )
+        elif(self.sym == "oct") :
+            inside_values = (
+                (self.brackets[0][2], 180, self.brackets[0][2], 0),
+                (self.brackets[0][2], 0, self.brackets[0][2], 0),
+                (self.brackets[0][2], 2 * self.brackets[0][1], self.brackets[0][2], 0),
+                (self.brackets[0][2], 2 * self.brackets[0][1], 180, 45),
+                (self.brackets[0][2], 3 * self.brackets[0][1], 180, 0),
+                (self.brackets[0][2], self.brackets[0][1], 180, 0),
+                (self.brackets[0][2], self.brackets[0][3], 120, 45),
+                (self.brackets[0][2], 180 - self.brackets[0][3], 120, 45),
+            )
+        elif(self.sym == "icos"):
+            inside_values = (
+                (self.brackets[0][2], 180, self.brackets[0][2], 0),
+                (self.brackets[0][2], 0, self.brackets[0][2], 0),
+                (self.brackets[0][2], 2 * self.brackets[0][1], self.brackets[0][2], 0),
+                (self.brackets[0][2], 180 - 2 * self.brackets[0][1], self.brackets[0][2], self.brackets[0][0]),
+                (self.brackets[0][2], self.brackets[0][3], 60, self.brackets[0][0]),
+                (self.brackets[0][2], self.brackets[0][3]+2*self.brackets[0][1], 120, 0),
+                (self.brackets[0][2], 180 - self.brackets[0][3] - 2 * self.brackets[0][1], 120, self.brackets[0][0]),
+                (self.brackets[0][2], 180 - self.brackets[0][3], 120, 0),
+                (self.brackets[0][2], self.brackets[0][1], 180, 0),
+                (self.brackets[0][2], 90 - self.brackets[0][1], 180, self.brackets[0][0]),
+                (self.brackets[0][0], 90, 180, self.brackets[0][0]/2.0),
+                (self.brackets[0][2], 180 - self.brackets[0][1], 180, self.brackets[0][0]),
+                (self.brackets[0][2], 90 + self.brackets[0][1], 180, 0),
+            )
+        else :
+            raise NameError("Symmetry unknown")
+
+        sang_new_raw = numpy.atleast_2d(numpy.array(angles, numpy.float64)).repeat(nsym, axis=0)
+        final_masks = []
+        for multiplier, sang_mask in mirror_list:
+
+            #
+            # sang_mod = numpy.array(angles, numpy.float64).repeat(self.nsym, axis = 0)
+            sang_mod = sang_new_raw[sang_mask]
+
             matrices = self.rotmatrix(sang_mod)
 
             matrices_mod = numpy.sum(
@@ -594,13 +563,13 @@ class symclass_mod(object):
                     1
                 ) *
                 numpy.tile(
-                    numpy.array(self.symatrix, numpy.float64)[ numpy.arange(self.nsym) ],
+                    multiplier * numpy.array(self.symatrix, numpy.float64),
                     (sang_mod.shape[0] // self.nsym, 1, 1)).reshape(
                     matrices.shape[0], matrices.shape[1], 1, matrices.shape[2], ), -3)
 
             sang_new = numpy.round(self.recmat(matrices_mod, sang_mod),12)
             sang_new_mod = sang_new.copy()
-            sang_new_mod[:, 0] = numpy.round(sang_new_mod[:, 0], 12) % 360.0
+            sang_new_mod = numpy.round(sang_new_mod, 12) % 360.0
 
 
             masks_good = []
@@ -610,21 +579,27 @@ class symclass_mod(object):
             theta_0_or_180 = (sang_new_mod[:,1] == 0) | (sang_new_mod[:,1] == 180)
             for phi, theta, psi, offset in inside_values:
 
-                phi_0_180 = numpy.round(sang_new_mod[:, 0] + offset, 6) < numpy.round(phi, 6)
-                phi_not_0_180 = 0 == numpy.round(sang_new_mod[:,0] + offset, 6 ) % numpy.round(phi, 6)
-                phi_good = numpy.logical_xor(
-                    phi_0_180 & theta_0_or_180,
-                    phi_not_0_180 & ~theta_0_or_180
-                )
+                if not numpy.isnan(phi):
+                    phi_0_180 = numpy.round(sang_new_mod[:, 0] - offset, 6) < numpy.round(phi, 6)
+                    phi_not_0_180 = 0 == numpy.round(sang_new_mod[:,0] - offset, 6 ) % numpy.round(phi, 6)
+                    phi_good = numpy.logical_xor(
+                        phi_0_180 & theta_0_or_180,
+                        phi_not_0_180 & ~theta_0_or_180
+                    )
+                else:
+                    phi_good = numpy.ones(sang_new_mod.shape[0], dtype=numpy.bool)
                 theta_good = numpy.round(sang_new_mod[:,1], 6) == numpy.round(theta, 6)
                 psi_good = numpy.round(sang_new_mod[:,2], 6) < numpy.round(psi, 6)
                 masks_good.append(phi_good & theta_good & psi_good)
+                if not numpy.isnan(phi):
+                    phi_bad_0_180 = numpy.round(sang_new_mod[:, 0] - offset, 6) >= numpy.round(phi, 6)
+                    phi_bad = numpy.logical_xor(
+                        phi_bad_0_180 & theta_0_or_180,
+                        phi_not_0_180 & ~theta_0_or_180
+                    )
+                else:
+                    phi_bad = numpy.ones(sang_new_mod.shape[0], dtype=numpy.bool)
 
-                phi_bad_0_180 = numpy.round(sang_new_mod[:, 0] + offset, 6) >= numpy.round(phi, 6)
-                phi_bad = numpy.logical_xor(
-                    phi_bad_0_180 & theta_0_or_180,
-                    phi_not_0_180 & ~theta_0_or_180
-                )
                 psi_bad_not_0_180 = numpy.round(sang_new_mod[:,2], 6) >= numpy.round(psi, 6)
                 psi_bad = numpy.logical_xor(
                     psi_good & theta_0_or_180,
@@ -647,11 +622,18 @@ class symclass_mod(object):
             )
             maski = numpy.logical_or(mask_good, mask_not_special)
 
-        print(sang_new)
-        sang_new = sang_new[maski]
+            sang_new_raw[sang_mask] = sang_new_mod
+            final_masks.append(maski)
+
+        final_mask = numpy.zeros(nsym, dtype=numpy.bool)
+        for entry in final_masks:
+            final_mask = numpy.logical_or(final_mask, entry)
+
+        sang_new = sang_new_raw[final_mask]
         sang_new %= 360
-        print(maski)
-        print(sang_new)
+
+        print(numpy.array(sang_new))
+        print(numpy.array(sang_new).shape)
         if tolistconv:
             return sang_new.tolist()
         else:
@@ -696,7 +678,7 @@ class symclass_mod(object):
 
 
     @staticmethod
-    def recmat(mat, sang_new):
+    def recmat(mat, out=None):
         pass#IMPORTIMPORTIMPORT from math import acos,asin,atan2,degrees,pi
         def sign(x):
             return_array = numpy.sign(x)
@@ -711,41 +693,49 @@ class symclass_mod(object):
         # mask_2_2_0 = mat[:, 2, 2] == 0.0
         theta_2_2 = numpy.arccos(mat[:, 2, 2])
         st = sign(theta_2_2)
+        if out is None:
+            output_array = numpy.empty((mat.shape[0], 3), dtype=numpy.float64)
+        else:
+            output_array = out
 
-        sang_new[mask_2_2_1 & mask_0_0_0, 0] = numpy.degrees(numpy.arcsin(mat[mask_2_2_1 & mask_0_0_0, 0, 1]))
-        sang_new[mask_2_2_1 & ~mask_0_0_0, 0] = numpy.degrees(numpy.arctan2(
+
+        output_array[mask_2_2_1 & mask_0_0_0, 0] = numpy.degrees(numpy.arcsin(mat[mask_2_2_1 & mask_0_0_0, 0, 1]))
+        output_array[mask_2_2_1 & ~mask_0_0_0, 0] = numpy.degrees(numpy.arctan2(
             mat[mask_2_2_1 & ~mask_0_0_0, 0, 1],
             mat[mask_2_2_1 & ~mask_0_0_0, 0, 0]
         ))
-        sang_new[mask_2_2_1 & ~mask_2_2_m1, 1] = numpy.degrees(0.0)  # theta
-        sang_new[mask_2_2_1 & ~mask_2_2_m1 , 2] = numpy.degrees(0.0)  # psi
+        output_array[mask_2_2_1 & ~mask_2_2_m1, 1] = numpy.degrees(0.0)  # theta
+        output_array[mask_2_2_1 & ~mask_2_2_m1 , 2] = numpy.degrees(0.0)  # psi
 
-        sang_new[mask_2_2_m1 &  mask_0_0_0, 0] = numpy.degrees(numpy.arcsin(-mat[mask_2_2_m1 & mask_0_0_0, 0, 1] ))
-        sang_new[mask_2_2_m1 & ~mask_0_0_0, 0] = numpy.degrees(numpy.arctan2(
+        output_array[mask_2_2_m1 &  mask_0_0_0, 0] = numpy.degrees(numpy.arcsin(-mat[mask_2_2_m1 & mask_0_0_0, 0, 1] ))
+        output_array[mask_2_2_m1 & ~mask_0_0_0, 0] = numpy.degrees(numpy.arctan2(
             -mat[mask_2_2_m1 & ~mask_0_0_0, 0, 1],
             -mat[mask_2_2_m1 & ~mask_0_0_0, 0, 0]
         ))
-        sang_new[mask_2_2_m1 & ~mask_2_2_1, 1] = numpy.degrees(numpy.pi)
-        sang_new[mask_2_2_m1 & ~mask_2_2_1, 2] = numpy.degrees(0.0)
+        output_array[mask_2_2_m1 & ~mask_2_2_1, 1] = numpy.degrees(numpy.pi)
+        output_array[mask_2_2_m1 & ~mask_2_2_1, 2] = numpy.degrees(0.0)
 
-        sang_new[~mask_2_2_1 & ~mask_2_2_m1 & mask_2_0_0 & (st != sign(mat[:,2,1])), 0] = numpy.degrees(1.5*numpy.pi)
-        sang_new[~mask_2_2_1 & ~mask_2_2_m1 & mask_2_0_0 & (st == sign(mat[:,2,1])), 0] = numpy.degrees(0.5*numpy.pi)
-        sang_new[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_2_0_0, 0] = numpy.degrees(numpy.arctan2(
+        output_array[~mask_2_2_1 & ~mask_2_2_m1 & mask_2_0_0 & (st != sign(mat[:,2,1])), 0] = numpy.degrees(1.5*numpy.pi)
+        output_array[~mask_2_2_1 & ~mask_2_2_m1 & mask_2_0_0 & (st == sign(mat[:,2,1])), 0] = numpy.degrees(0.5*numpy.pi)
+        output_array[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_2_0_0, 0] = numpy.degrees(numpy.arctan2(
             st[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_2_0_0] * mat[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_2_0_0, 2, 1],
             st[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_2_0_0] * mat[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_2_0_0, 2, 0]
         ))
-        sang_new[~mask_2_2_1 & ~mask_2_2_m1, 1] = numpy.degrees(theta_2_2[~mask_2_2_1 & ~mask_2_2_m1])
+        output_array[~mask_2_2_1 & ~mask_2_2_m1, 1] = numpy.degrees(theta_2_2[~mask_2_2_1 & ~mask_2_2_m1])
 
-        sang_new[~mask_2_2_1 & ~mask_2_2_m1 & mask_0_2_0 & (st != sign(mat[:,1,2])), 2] = numpy.degrees(1.5*numpy.pi)
-        sang_new[~mask_2_2_1 & ~mask_2_2_m1 & mask_0_2_0 & (st == sign(mat[:, 1, 2])), 2] = numpy.degrees(0.5 * numpy.pi)
+        output_array[~mask_2_2_1 & ~mask_2_2_m1 & mask_0_2_0 & (st != sign(mat[:,1,2])), 2] = numpy.degrees(1.5*numpy.pi)
+        output_array[~mask_2_2_1 & ~mask_2_2_m1 & mask_0_2_0 & (st == sign(mat[:, 1, 2])), 2] = numpy.degrees(0.5 * numpy.pi)
 
-        sang_new[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_0_2_0 , 2] = numpy.degrees(numpy.arctan2(
+        output_array[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_0_2_0 , 2] = numpy.degrees(numpy.arctan2(
             st[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_0_2_0]  * mat[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_0_2_0,  1, 2],
             -st[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_0_2_0] * mat[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_0_2_0, 0, 2]))
 
         # sang_new[~mask_2_2_1 & ~mask_2_2_m1, 2] = numpy.degrees(0.0)
 
-        return sang_new % 360.0
+        numpy.round(output_array, 12, out=output_array)
+        output_array %= 360.0
+        return output_array
+
 
     @staticmethod
     def rotmatrix(angles):
@@ -2236,7 +2226,7 @@ class TestSymClassReduceAngleSets(unittest.TestCase):
         # angles = [[120.0, 54.735610317245346, 65]]
 
         # angles = [[0,0,0], [0,180,0], [120.0, 54.735610317245346, 65], [60.0, 180-54.735610317245346, 65]]
-        angles = [[ 0, 0, 0]]
+        angles = [[ 71.0,90.0, 0]]
         # angles = [[0, 0, 0], [0, 180, 0], [0, 90, 0], [90, 0, 0], [90, 90, 0], [90, 180, 0]]
 
         # angles = [ [ 45,45,20]  , [ 25,90,45] ,[ 90,25,45] ]
@@ -2247,14 +2237,14 @@ class TestSymClassReduceAngleSets(unittest.TestCase):
         # print("Hello")
         results = []
         for ang in angles:
-            results.extend(fu.symclass('icos').symmetry_related(ang))
+            results.extend(fu.symclass('d5').symmetry_related(ang))
         print("first phase done ")
-        expected_results = symclass_mod('icos').symmetry_related(angles)
+        expected_results = symclass_mod('d5').symmetry_related(angles)
         print("Hello")
-        print(symclass_mod('icos').brackets)
+        print(symclass_mod('d5').brackets)
 
 
-        print(expected_results)
+        # print(expected_results)
         # print(results)
         #
         # print(numpy.array(angles).shape)
