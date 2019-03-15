@@ -397,7 +397,7 @@ class symclass_mod(object):
             self.symangles = []
             for i in range(old_div(self.nsym, 2)):
                 self.symangles.append([0.0, 0.0, i * old_div(360., self.nsym) * 2])
-            for i in range(old_div(self.nsym, 2)):
+            for i in reversed(range(old_div(self.nsym, 2))):
                 self.symangles.append(
                     [0.0, 180.0, (i * old_div(360., self.nsym) * 2 + 180.0 * (int(self.sym[1:]) % 2)) % 360.0])
 
@@ -467,33 +467,38 @@ class symclass_mod(object):
             self.transform.append(
                 EMAN2_cppwrap.Transform({"type": "spider", "phi": args[0], "theta": args[1], "psi": args[2]}))
         self.symatrix = self.rotmatrix(self.symangles)
+        self.round = 12
 
 
 
-    def symmetry_related(self, angles, return_mirror=0, tolistconv=True):
+    def symmetry_related(self, angles, return_mirror=0, neighbors = None,  tolistconv=True):
 
+        symatrix = numpy.array(self.symatrix, numpy.float64)
+        if neighbors is None:
+            symatrix = symatrix
+        else:
+            symatrix = symatrix[neighbors]
+        n_neighbors = symatrix.shape[0]
         mirror_list = []
+        angles = numpy.atleast_2d(numpy.array(angles))
         if return_mirror == 1:
-            nsym = self.nsym
+            nsym = n_neighbors
             mult = -1
-            mask = numpy.ones(self.nsym, dtype=numpy.bool)
+            mask = numpy.ones(nsym*angles.shape[0], dtype=numpy.bool)
             mirror_list.append([mult, mask])
         elif return_mirror == 0:
-            nsym = self.nsym
+            nsym = n_neighbors
             mult = 1
-            mask = numpy.ones(self.nsym, dtype=numpy.bool)
+            mask = numpy.ones(nsym*angles.shape[0], dtype=numpy.bool)
             mirror_list.append([mult, mask])
         else:
-            nsym = 2 * self.nsym
+            nsym = 2 * n_neighbors
             mult = 1
-            mask = numpy.zeros(2*self.nsym, dtype=numpy.bool)
-            for i in range(self.nsym):
-                mask[i::2*self.nsym] = True
-
-            angles_np = numpy.array(angles, numpy.float64)
+            mask = numpy.zeros(nsym*angles.shape[0], dtype=numpy.bool)
+            for i in range(n_neighbors):
+                mask[i::2*n_neighbors] = True
             mirror_list.append([mult, mask])
             mirror_list.append([-mult, ~mask])
-
 
         if(self.sym[0] == "c"):
             inside_values = (
@@ -554,9 +559,15 @@ class symclass_mod(object):
             if return_mirror not in (0, 1) and self.sym[0] == 'd' and multiplier == -1:
                 theta_0_or_180 = (sang_new_raw[:, 1] == 0) | (sang_new_raw[:, 1] == 180)
                 sang_mask[theta_0_or_180] = False
+
+            if return_mirror not in (0, 1) and self.sym[0] == 'i' and multiplier == -1:
+                theta_0 = (sang_new_raw[:, 1] == 0)
+                sang_mask[theta_0] = False
+
+
             sang_mod = sang_new_raw[sang_mask]
 
-            matrices = self.rotmatrix(sang_mod)
+            matrices = self.rotmatrix(sang_mod, tolistconv=False)
 
             matrices_mod = numpy.sum(
                 numpy.transpose(matrices, (0, 2, 1)).reshape(
@@ -566,18 +577,15 @@ class symclass_mod(object):
                     1
                 ) *
                 numpy.tile(
-                    multiplier * numpy.array(self.symatrix, numpy.float64),
-                    (sang_mod.shape[0] // self.nsym, 1, 1)).reshape(
+                    multiplier * symatrix,
+                    (sang_mod.shape[0] // n_neighbors, 1, 1)).reshape(
                     matrices.shape[0], matrices.shape[1], 1, matrices.shape[2], ), -3)
 
-            sang_new = self.recmat(matrices_mod)
+            sang_new = self.recmat(matrices_mod, tolistconv=False)
             theta_0_or_180 = (sang_new[:,1] == 0) | (sang_new[:,1] == 180)
             if return_mirror not in (0, 1) and self.sym[0] != 'c' and multiplier == -1:
-                print(sang_new[~theta_0_or_180, 2])
                 sang_new[~theta_0_or_180, 2] += 180
-                print(sang_new[~theta_0_or_180, 2])
                 sang_new[~theta_0_or_180, 2] %= 360
-                print(sang_new[~theta_0_or_180, 2])
 
             masks_good = []
             masks_bad = []
@@ -586,18 +594,18 @@ class symclass_mod(object):
 
                 if not numpy.isnan(phi):
                     phi_0_180 = numpy.round(sang_new[:, 0] - offset, 6) < numpy.round(phi, 6)
-                    phi_not_0_180 = 0 == numpy.round(sang_new[:,0] - offset, 6 ) % numpy.round(phi, 6)
+                    phi_not_0_180 = 0 == numpy.round(sang_new[:,0] - offset, self.round) % numpy.round(phi, self.round)
                     phi_good = numpy.logical_xor(
                         phi_0_180 & theta_0_or_180,
                         phi_not_0_180 & ~theta_0_or_180
                     )
                 else:
                     phi_good = numpy.ones(sang_new.shape[0], dtype=numpy.bool)
-                theta_good = numpy.round(sang_new[:,1], 6) == numpy.round(theta, 6)
-                psi_good = numpy.round(sang_new[:,2], 6) < numpy.round(psi, 6)
+                theta_good = numpy.round(sang_new[:,1], self.round) == numpy.round(theta, self.round)
+                psi_good = numpy.round(sang_new[:,2], self.round) < numpy.round(psi, self.round)
                 masks_good.append(phi_good & theta_good & psi_good)
                 if not numpy.isnan(phi):
-                    phi_bad_0_180 = numpy.round(sang_new[:, 0] - offset, 6) >= numpy.round(phi, 6)
+                    phi_bad_0_180 = numpy.round(sang_new[:, 0] - offset, self.round) >= numpy.round(phi, self.round)
                     phi_bad = numpy.logical_xor(
                         phi_bad_0_180 & theta_0_or_180,
                         phi_not_0_180 & ~theta_0_or_180
@@ -605,7 +613,7 @@ class symclass_mod(object):
                 else:
                     phi_bad = numpy.ones(sang_new.shape[0], dtype=numpy.bool)
 
-                psi_bad_not_0_180 = numpy.round(sang_new[:,2], 6) >= numpy.round(psi, 6)
+                psi_bad_not_0_180 = numpy.round(sang_new[:,2], self.round) >= numpy.round(psi, self.round)
                 psi_bad = numpy.logical_xor(
                     psi_good & theta_0_or_180,
                     psi_bad_not_0_180 & ~theta_0_or_180
@@ -632,12 +640,31 @@ class symclass_mod(object):
             sang_new_raw[sang_mask] = sang_new
             final_masks.append(output_mask)
 
-        final_mask = numpy.zeros(nsym, dtype=numpy.bool)
+        final_mask = numpy.zeros(nsym*angles.shape[0], dtype=numpy.bool)
         for entry in final_masks:
             final_mask = numpy.logical_or(final_mask, entry)
 
-        sang_new = sang_new_raw[final_mask]
+        if return_mirror not in (0, 1):
+            semi_final_mask = numpy.zeros(sang_new_raw.shape[0], dtype=numpy.bool)
+            mask1 = numpy.zeros(sang_new_raw.shape[0], dtype=numpy.bool)
+            sang_new_cpy = sang_new_raw.copy()
+            sang_new_cpy[:, 2] = 0
+            for i in range(sang_new_raw.shape[0] // nsym):
+                mask1[i*nsym:(i+1)*nsym] = True
+                _, idx = numpy.unique(sang_new_cpy[mask1, :], axis=0, return_index=True)
+                for entry in idx:
+                    semi_final_mask[i*nsym+entry] = True
+                mask1[...] = False
+        else:
+            semi_final_mask = numpy.ones(sang_new_raw.shape[0], dtype=numpy.bool)
+        # print(semi_final_mask)
+        sang_new = sang_new_raw[final_mask & semi_final_mask]
         sang_new %= 360
+
+
+
+
+
 
         if tolistconv:
             return sang_new.tolist()
@@ -645,45 +672,40 @@ class symclass_mod(object):
             return sang_new
 
 
-    def symmetry_neighbors(self, angles, tolistconv = True):
-        if( self.sym[0] == "c" or self.sym[0] == "d" ):
-            temp = e2cpp.Util.symmetry_neighbors(angles,self.sym)
-            nt = old_div(len(temp), 3)
-            mod_angles = numpy.array([[0,0,0]]).repeat(nt, axis=0)
-            mod_angles[:,0] = temp[ 0:len(temp):3 ]
-            mod_angles[:,1] = temp[ 1:len(temp):3 ]
-            mod_angles[:,2] = 0.0
-            return mod_angles.tolist()
+    def symmetry_neighbors(self, angles, return_mirror=0, tolistconv = True):
 
-        #  Note symmetry neighbors below refer to the particular order
-        #   in which this class generates symmetry matrices
-        neighbors = {}
-        neighbors["oct"]  = [0,1,2,3,8,9,12,13]
-        neighbors["tet"]  = [0,1,2,3,4,6,7]
-        neighbors["icos"] = [0,1,2,3,4,6,7,11,12]
-        sang_new = numpy.array(angles,numpy.float64).repeat(len(neighbors[self.sym]), axis=0 )
-        matrices = self.rotmatrix(sang_new)
-        matrices_mod = numpy.sum(
-            numpy.transpose(matrices, (0, 2, 1)).reshape(
-                matrices.shape[0],
-                matrices.shape[1],
-                matrices.shape[2],
-                1
-            ) *
-            numpy.tile(
-                numpy.array(self.symatrix,numpy.float64)[neighbors[self.sym]],
-                (sang_new.shape[0] // len(neighbors[self.sym]), 1, 1)).reshape(
-                matrices.shape[0],matrices.shape[1], 1, matrices.shape[2],), -3 )
-        sang_mod = self.recmat(matrices_mod, sang_new )
+        if self.sym[0] == 'c':
+            if int(self.sym[1:]) > 2:
+                neighbors = [0, 1, -1]
+            elif int(self.sym[1:]) == 2:
+                neighbors = [0, 1]
+            elif int(self.sym[1:]) == 1:
+                neighbors = [0]
 
-        if tolistconv:
-            return sang_mod.tolist()
-        else:
-            return sang_mod
+        if self.sym[0] == 'd':
+            if int(self.sym[1:]) >= 3 and int(self.sym[1:]) % 2 != 0:
+                neighbors = [0, 1, self.nsym//2-1, self.nsym//2, -2,-1]
+            elif int(self.sym[1:]) >= 3 and int(self.sym[1:]) % 2 == 0:
+                offset = (self.nsym//2  - 4 ) // 2
+                neighbors = [0, 1, self.nsym//2 -1, self.nsym//2 + offset + 1,self.nsym//2 + offset +2  ,self.nsym//2 + offset + 3]
+            elif int(self.sym[1:]) == 2:
+                neighbors = [0, 1, 2]
+            elif int(self.sym[1:]) == 1:
+                neighbors = [0, 1]
+
+        elif self.sym == 'oct':
+            neighbors  = [0,1,2,3,8,9,12,13]
+        elif self.sym == 'tet':
+            neighbors  = [0,1,2,3,4,6,7]
+        elif self.sym == 'icos':
+            neighbors = [0,1,2,3,4,6,7,11,12]
+        sang_mod = self.symmetry_related(angles, return_mirror=return_mirror, neighbors=neighbors, tolistconv=tolistconv)
+        return sang_mod
+
 
 
     @staticmethod
-    def recmat(mat, out=None):
+    def recmat(mat, out=None, tolistconv = True):
         pass#IMPORTIMPORTIMPORT from math import acos,asin,atan2,degrees,pi
         def sign(x):
             return_array = numpy.sign(x)
@@ -702,7 +724,6 @@ class symclass_mod(object):
             output_array = numpy.empty((mat.shape[0], 3), dtype=numpy.float64)
         else:
             output_array = out
-
 
         output_array[mask_2_2_1 & mask_0_0_0, 0] = numpy.degrees(numpy.arcsin(mat[mask_2_2_1 & mask_0_0_0, 0, 1]))
         output_array[mask_2_2_1 & ~mask_0_0_0, 0] = numpy.degrees(numpy.arctan2(
@@ -735,15 +756,17 @@ class symclass_mod(object):
             st[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_0_2_0]  * mat[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_0_2_0,  1, 2],
             -st[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_0_2_0] * mat[~mask_2_2_1 & ~mask_2_2_m1 & ~mask_0_2_0, 0, 2]))
 
-        # sang_new[~mask_2_2_1 & ~mask_2_2_m1, 2] = numpy.degrees(0.0)
-
         numpy.round(output_array, 12, out=output_array)
         output_array %= 360.0
-        return output_array
+
+        if tolistconv:
+            return output_array.tolist()
+        else:
+            return output_array
 
 
     @staticmethod
-    def rotmatrix(angles):
+    def rotmatrix(angles , tolistconv = True):
 
         newmat = numpy.zeros((len(angles), 3, 3),dtype = numpy.float64)
         index = numpy.arange(len(angles))
@@ -766,14 +789,19 @@ class symclass_mod(object):
         newmat[:,1,2] =  sinpsi[index]*sintheta[index]
         newmat[:,2,2] =            costheta[index]
 
-        return newmat
-
-    def is_in_subunit(self, angles, inc_mirror =1, tolistconv = True):
-
-        if (type(angles[0]) is list):
-            print("lis of list")
+        if tolistconv:
+            return newmat.tolist()
         else:
-            print("single list")
+            return newmat
+
+    def is_in_subunit(self, phi_orig, theta_orig=None, inc_mirror=1, tolistconv = True):
+
+        if theta_orig is None:
+            angles = phi_orig
+            return_single = True
+        else:
+            angles = [phi_orig, theta_orig, 0]
+            return_single = False
 
         """
         Input:  Before it was a projection direction specified by (phi, theta).
@@ -785,14 +813,15 @@ class symclass_mod(object):
         """
         pass  # IMPORTIMPORTIMPORT from math import degrees, radians, sin, cos, tan, atan, acos, sqrt
 
-        angles = numpy.array(angles)
+        angles = numpy.atleast_2d(numpy.array(angles))
+
         condstat = numpy.zeros(numpy.shape(angles)[0], dtype = bool  )
 
         phi = angles[:,0]
         phi_0 =   phi >= 0.0
         phi_ld_br_inmirr_0 = phi < self.brackets[inc_mirror][0]
-        phi_ld_br_1_0 = phi < self.brackets[1][0]
-        theta = angles[:, 1]
+        phi_ld_br_1_0 = phi < self.brackets[inc_mirror][0]
+        theta = numpy.round(angles[:, 1], self.round)
         theta_ldeq_br_incmirr_1 = theta  <= self.brackets[inc_mirror][1]
         theta_ldeq_br_incmirr_3 = theta <= self.brackets[inc_mirror][3]
         theta_180 =  (numpy.logical_and(theta ==180 , inc_mirror))
@@ -821,21 +850,49 @@ class symclass_mod(object):
 
         elif ((self.sym[:3] == "oct") or (self.sym[:4] == "icos")):
             tmphi = numpy.minimum(phi, self.brackets[inc_mirror][2] - phi)
-            baldwin_lower_alt_bound = \
-                old_div(
-                    (old_div(numpy.sin(numpy.radians(old_div(self.brackets[inc_mirror][2], 2.0) - tmphi)), numpy.tan(
-                        numpy.radians(self.brackets[inc_mirror][1])))
-                     + old_div(numpy.sin(numpy.radians(tmphi)),
-                               numpy.tan(numpy.radians(self.brackets[inc_mirror][3])))),
-                    numpy.sin(numpy.radians(old_div(self.brackets[inc_mirror][2], 2.0))))
+            baldwin_lower_alt_bound = old_div(
+                (
+                    old_div(
+                        numpy.sin(numpy.radians(old_div(
+                            self.brackets[inc_mirror][2],
+                            2.0
+                        ) - tmphi)),
+                        numpy.tan(numpy.radians(self.brackets[inc_mirror][1]))
+                    ) +
+                    old_div(
+                        numpy.sin(numpy.radians(tmphi)),
+                        numpy.tan(numpy.radians(self.brackets[inc_mirror][3]))
+                    )
+                ),
+                numpy.sin(numpy.radians(old_div(
+                    self.brackets[inc_mirror][2],2.0)
+                ))
+            )
             baldwin_lower_alt_bound = numpy.degrees(numpy.arctan(old_div(1.0, baldwin_lower_alt_bound)))
 
-            condstat[ phi_0 & phi_ld_br_inmirr_0  & theta_ldeq_br_incmirr_3 & (baldwin_lower_alt_bound > theta)] = True
-            condstat[phi_0 & phi_ld_br_inmirr_0 & theta_ldeq_br_incmirr_3 & ~(baldwin_lower_alt_bound > theta)] = False
-            condstat[theta_0] = True
+            numpy.round(baldwin_lower_alt_bound, self.round, out=baldwin_lower_alt_bound)
+            # print(baldwin_lower_alt_bound)
+            condstat[phi_0 & phi_ld_br_inmirr_0  & theta_ldeq_br_incmirr_3 & (baldwin_lower_alt_bound >= theta)] = True
+            condstat[phi_0 & phi_ld_br_inmirr_0 & theta_ldeq_br_incmirr_3 & ~(baldwin_lower_alt_bound >= theta)] = False
             condstat[~phi_0 & ~phi_ld_br_inmirr_0 & ~theta_ldeq_br_incmirr_3 & ~theta_0 ] = False
+            condstat[theta_0] = True
+            condstat[
+                (theta <= numpy.round(self.brackets[inc_mirror][3], self.round))
+                & (phi == numpy.round(self.brackets[inc_mirror][0], self.round))
+                ] = True
+            condstat[
+                (theta == baldwin_lower_alt_bound)
+                & (phi > self.brackets[0][0])
+                ] = False
+            condstat[phi == numpy.round(self.brackets[inc_mirror][2], self.round)] = False
 
+            condstat[  theta_0  & (phi ==  numpy.round(self.brackets[inc_mirror][3] ,6)) ] = False
+
+
+
+        # & (phi < numpy.round(self.brackets[inc_mirror][2], self.round))
         elif (self.sym[:3] == "tet"):
+            print('ok')
             tmphi = numpy.minimum(phi, self.brackets[inc_mirror][2] - phi)
             baldwin_lower_alt_bound_1 = \
                 old_div(
@@ -843,7 +900,10 @@ class symclass_mod(object):
                              numpy.tan(numpy.radians(self.brackets[inc_mirror][1]))) \
                      + old_div(numpy.sin(numpy.radians(tmphi)), numpy.tan(numpy.radians(self.brackets[inc_mirror][3])))) \
                     , numpy.sin(numpy.radians(old_div(self.brackets[inc_mirror][2], 2.0))))
-            baldwin_lower_alt_bound_1 = numpy.degrees(numpy.arctan(old_div(1.0, baldwin_lower_alt_bound_1)))
+            is_zero = baldwin_lower_alt_bound_1 == 0
+            baldwin_lower_alt_bound_1[~is_zero] = numpy.degrees(numpy.arctan(old_div(1.0, baldwin_lower_alt_bound_1[~is_zero])))
+            baldwin_lower_alt_bound_1[is_zero] = self.brackets[inc_mirror][3]
+            # numpy.round(baldwin_lower_alt_bound_1, self.round, out=baldwin_lower_alt_bound_1)
 
             baldwin_upper_alt_bound_2 = \
                 old_div(
@@ -857,21 +917,36 @@ class symclass_mod(object):
             condstat[phi_0 & phi_ld_br_inmirr_0 & theta_ldeq_br_incmirr_3  & \
                       numpy.logical_and((baldwin_lower_alt_bound_1 > theta) , inc_mirror)] = True
             condstat[phi_0 & phi_ld_br_inmirr_0 & theta_ldeq_br_incmirr_3  & \
-                     ~numpy.logical_and((baldwin_lower_alt_bound_1 > theta) , inc_mirror) & (baldwin_upper_alt_bound_2 < theta)] = False
+                     ~numpy.logical_and((baldwin_lower_alt_bound_1 > theta) , inc_mirror) & (numpy.round(baldwin_upper_alt_bound_2, self.round) <= numpy.round(theta, self.round))] = False
             condstat[ phi_0 & phi_ld_br_inmirr_0 & theta_ldeq_br_incmirr_3  & \
-                     ~numpy.logical_and((baldwin_lower_alt_bound_1 > theta) , inc_mirror) & ~(baldwin_upper_alt_bound_2 < theta)] = True
+                     ~numpy.logical_and((baldwin_lower_alt_bound_1 > theta) , inc_mirror) & ~(numpy.round(baldwin_upper_alt_bound_2, self.round) <= numpy.round(theta, self.round))] = True
             condstat[phi_0 & phi_ld_br_inmirr_0 & theta_ldeq_br_incmirr_3  & ~(baldwin_lower_alt_bound_1 > theta) &  theta_0] = True
             condstat[phi_0 & phi_ld_br_inmirr_0 & theta_ldeq_br_incmirr_3  & ~(baldwin_lower_alt_bound_1 > theta) &  ~theta_0] = False
             condstat[~phi_0 & ~phi_ld_br_inmirr_0 & ~theta_ldeq_br_incmirr_3 &  theta_0] = True
             condstat[~phi_0 & ~phi_ld_br_inmirr_0 & ~theta_ldeq_br_incmirr_3 & ~theta_0] = False
+            condstat[theta_0] = True
+            condstat[
+                (numpy.round(theta, self.round) == numpy.round(baldwin_lower_alt_bound_1, self.round))
+                & (phi > self.brackets[0][0] / 2.0)
+                ] = False
+            condstat[
+                (numpy.round(theta, self.round) == numpy.round(baldwin_upper_alt_bound_2, self.round))
+                & (theta < self.brackets[inc_mirror][3])
+                ] = True
 
         else:
             global_def.ERROR("unknown symmetry", "symclass: is_in_subunit", 1)
 
+
         if tolistconv:
-            return condstat.tolist()
+            condstat = condstat.tolist()
         else:
+            condstat = condstat
+
+        if return_single:
             return condstat
+        else:
+            return condstat[0][0]
 
 
     def reduce_anglesets(self, angles,inc_mirror=1, tolistconv = True):
@@ -881,10 +956,18 @@ class symclass_mod(object):
                 inc_mirror = 0 consider mirror directions as outside of unique range.
           It will map all triplets to the first asymmetric subunit.
         """
+        if inc_mirror == 1:
+           return_mirror = 0
+        else:
+           return_mirror = 2
 
-        sym_angles = self.symmetry_related(angles)
-        print(sym_angles)
-        subunits   = self.is_in_subunit(sym_angles, inc_mirror)
+
+        sym_angles = self.symmetry_related(angles, return_mirror = return_mirror, tolistconv=False)
+
+        sym_angles = sym_angles.tolist()
+
+        subunits   = self.is_in_subunit(sym_angles, inc_mirror = inc_mirror)
+
         reduced_anglesets = numpy.array(sym_angles)[subunits]
 
         if tolistconv:
@@ -2227,77 +2310,69 @@ class TestSymClassReduceAngleSets(unittest.TestCase):
     def test_reduce_anglesets_new_oct_sym_mirror_theta_smaller_equals_90_degrees_should_return_True(self):
         # angles = [[entry, thet, psi]for entry in range(120) for thet in range(0,55) for psi in range(20)   ]
 
-        # angles = [[idx1, idx2, 0] for idx1 in range(120) for idx2 in range(55)]
-        # angles = [[120.0, 54.735610317245346, 65]]
+        angles = [[idx1, idx2, 0] for idx1 in range(72) for idx2 in range(39)]
+        angles = [[60, 35.264389682754654, 0]]
+        # angles = [[60,  70.528779365509308 * idx/360., 0] for idx in range(360)]
+        sym = 'tet'
+        s1 = fu.symclass(sym)
+        s2 = symclass_mod(sym)
+        # angles = s1.even_angles(1.0, inc_mirror=1)
 
-        # angles = [[0,0,0], [0,180,0], [120.0, 54.735610317245346, 65], [60.0, 180-54.735610317245346, 65]]
-        angles = [[60.0, 70.528779365509308, 0]]
-        # angles = [[0, 0, 0], [0, 180, 0], [0, 90, 0], [90, 0, 0], [90, 90, 0], [90, 180, 0]]
-
-        # angles = [ [ 45,45,20]  , [ 25,90,45] ,[ 90,25,45] ]
-
-        # results = fu.symclass('oct').reduce_anglesets(angles, inc_mirror=1)
-        # print("first phase done ")
-        # expected_results = symclass_mod('oct').reduce_anglesets(angles, inc_mirror=1)
-        # print("Hello")
         results = []
+        expected_results = []
+        sum = 0
         for ang in angles:
-            results.extend(fu.symclass('oct').symmetry_related(ang))
-        print("first phase done ")
-        expected_results = symclass_mod('oct').symmetry_related(angles, return_mirror=-1)
-        print("Hello")
-        print(symclass_mod('oct').brackets)
-        print(numpy.array(expected_results))
+            r= s1.reduce_anglesets(ang, inc_mirror=0)
+            results.append(r)
+            a = s2.reduce_anglesets([ang], inc_mirror=0)
+            sum += len(a)
+        #     print(s2.symmetry_related([ang]))
+        #     print(ang)
+        #     print(a)
+        #     print(r)
+        #     print('')
+        # print(s2.brackets)
+        # print(sum)
+        # results = s1.symmetry_related(angles)
+        # print('kk', numpy.array(s2.symmetry_related(angles, return_mirror=1)))
 
+        expected_results = s2.reduce_anglesets(angles, inc_mirror=1)
+        # angles = angles + [[0, 0, 0]]
 
-        # print(expected_results)
-        # print(results)
+        # print(s2.brackets)
+        # # print('b', numpy.array(results))
+        # # print('c', numpy.array(expected_results))
+        print(numpy.array(angles).shape)
+        print(numpy.array(results).shape)
+        print(numpy.array(expected_results).shape)
         #
-        # print(numpy.array(angles).shape)
-        # print(numpy.array(results).shape)
-        # print(numpy.array(expected_results).shape)
+        # # print(numpy.array(s2.symmetry_related([angles[1]], return_mirror=0)))
         #
         # for i in range(len(results)) :
+        #     print(angles[i])
         #     print(results[i])
         #     print(expected_results[i])
         #     print(" ")
-
+        #
         # with open('angles.txt', 'w') as write:
         #     for entry in angles:
         #         write.write('\t'.join([str(e) for e in entry]))
         #         write.write('\n')
-        # with open('results.txt', 'w') as write:
-        #     for entry in results:
-        #         write.write('\t'.join([str(e) for e in entry]))
-        #         write.write('\n')
+        # # with open('results.txt', 'w') as write:
+        # #     for entry in results:
+        # #         write.write('\t'.join([str(e) for e in entry]))
+        # #         write.write('\n')
         # with open('expected_results.txt', 'w') as write:
         #     for entry in expected_results:
         #         write.write('\t'.join([str(e) for e in entry]))
         #         write.write('\n')
         # import os
         # os.system('rm -r angles_dir')
-        # os.system('sxpipe.py angular_distribution angles.txt angles_dir --delta 0.5 --sym=c1_full')
-        # os.system('rm -r results_dir')
-        # os.system('sxpipe.py angular_distribution results.txt results_dir --delta=0.5 --sym=c1_full')
-        # os.system('rm -r expected_results_dir')
-        # os.system('sxpipe.py angular_distribution expected_results.txt expected_results_dir --delta=0.5 --sym=c1_full')
-        #
-
-
-
-
-        # for i in range (len(return_values)):
-        #      if ~(numpy.isclose(numpy.array(return_values)[i], numpy.array(expected_return_values)[i] , atol = 1 ).all())   :
-        #          print(i)
-        #          print(angles[i//symclass_mod('tet').nsym])
-        #          print(expected_return_values[i])
-        #          print(return_values[i])
-
-
-        # for i in range(  len( results) ) :
-        #     if results[i]  != expected_results[i] :
-        #         print(i , angles[i], results[i] ,expected_results[i]  )
-
+        # os.system('sxpipe.py angular_distribution angles.txt angles_dir --delta 3.75 --sym=c1_full')
+        # # os.system('rm -r results_dir')
+        # # os.system('sxpipe.py angular_distribution results.txt results_dir --delta=0.5 --sym=c1_full')
+        # os.system('rm -r expected_results_dir_0')
+        # os.system('sxpipe.py angular_distribution expected_results.txt expected_results_dir_0 --delta=3.75 --sym=c1_full')
 
         self.assertTrue(numpy.isclose(numpy.array(results), numpy.array(expected_results), atol=1).all())
 
