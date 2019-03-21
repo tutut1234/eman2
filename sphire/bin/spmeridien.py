@@ -119,8 +119,8 @@ import json
 from   sys 	import exit
 from   time import localtime, strftime, sleep, time
 
-import ms_helix_sphire
-import ms_helix_fundamentals
+import sp_helix_sphire
+import sp_helix_fundamentals
 
 global Tracker, Blockdata
 global  target_theta, refang
@@ -7086,7 +7086,7 @@ def calculate_prior_values(tracker, blockdata, outlier_file, chunk_file, params_
 	# Calculate outliers
 	if(blockdata["myid"] == blockdata["main_node"] ):
 		# Calculate priors
-		outliers, new_param, new_index = ms_helix_fundamentals.calculate_priors(
+		outliers, new_param, new_index = sp_helix_fundamentals.calculate_priors(
 			tracker=Tracker,
 			params_file=params_file,
 			index_file=chunk_file,
@@ -7393,7 +7393,7 @@ def main():
 				Constants['stack_prior_fmt'] = None
 				Constants['stack_prior_dtype'] = None
 			else:
-				Constants['stack_prior'] = ms_helix_sphire.import_sphire_stack(args[0], options.group_id)
+				Constants['stack_prior'] = sp_helix_sphire.import_sphire_stack(args[0], options.group_id)
 				Constants['stack_prior_fmt'] = prior_stack_fmt(Constants['stack_prior'])
 				Constants['stack_prior_dtype'] = Constants['stack_prior'].dtype.descr
 
