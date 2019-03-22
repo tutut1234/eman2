@@ -1716,13 +1716,21 @@ class SXCmdWidget(QWidget):
 			if file_path:
 				file_path = SXLookFeelConst.format_path(file_path)
 		elif file_format == "params_any_json":
-			file_path = str(QFileDialog.getOpenFileName(self, "Select JSON file", SXLookFeelConst.file_dialog_dir, "JSON files (*.json);; All files (*)", options = QFileDialog.DontUseNativeDialog))
+			name = QFileDialog.getOpenFileName(self, "Select JSON file", SXLookFeelConst.file_dialog_dir, "JSON files (*.json);; All files (*)", options = QFileDialog.DontUseNativeDialog)
+			if isinstance(name, tuple):
+				file_path = str(name[0])
+			else:
+				file_path = str(name)
 			# Use relative path.
 			if file_path:
 				file_path = SXLookFeelConst.format_path(file_path)
 		elif file_format == "params_any_h5":
-			file_path = str(QFileDialog.getOpenFileName(self, "Select h5 file", SXLookFeelConst.file_dialog_dir, "h5 files (*.h5);; All files (*)", options = QFileDialog.DontUseNativeDialog))
+			name = QFileDialog.getOpenFileName(self, "Select h5 file", SXLookFeelConst.file_dialog_dir, "h5 files (*.h5);; All files (*)", options = QFileDialog.DontUseNativeDialog)
 			# Use relative path.
+			if isinstance(name, tuple):
+				file_path = str(name[0])
+			else:
+				file_path = str(name)
 			if file_path:
 				file_path = SXLookFeelConst.format_path(file_path)
 		elif file_format == "spectrum1d":
