@@ -63,6 +63,10 @@ def main():
 
 	(options,args) = parser.parse_args( arglist[1:] )
 
+	if not options.fprint:
+		global_def.print_timestamp( "Start" )
+		global_def.write_command()
+
 	if len(args) != 1 :
 		sxprint( "Usage: " + usage )
 		ERROR( "Invalid number of parameters provided. Please see usage information above." )
@@ -79,9 +83,8 @@ def main():
 	from sp_applications import header
 	header(args[0], options.params, options.zero, options.one, options.set, options.randomize, options.rand_alpha, options.fimport, options.fexport, \
 	options.fprint, options.backup, options.suffix, options.restore, options.delete, options.consecutive)
+	if not options.fprint:
+		global_def.print_timestamp( "Finish" )
 
 if __name__ == "__main__":
-	sp_global_def.print_timestamp( "Start" )
-	sp_global_def.write_command()
 	main()
-	sp_global_def.print_timestamp( "Finish" )
