@@ -43,7 +43,7 @@ mpirun -np 12 sp_unblur.py  path/to/unblur  'Movies/*' unblur_out_dir  --pixel_s
   ; %%--%%selection_file : Movie selection file: Specify a name of micrograph movie selection list text file. The file extension must be '.txt'. If this is not provided, all files matched with the micrograph movie name pattern will be processed. (This option is specific to SPHIRE, and not directly used by Unblur and Summovie executables.) (default none)
 
   ; %%--%%pixel_size : Pixel size [A]: The pixel size of input micrographs. (default 1.0)
-  ; %%--%%bin_factor : Bin factor : Output bin factor. (default required float)
+  ; %%--%%bin_factor : Bin factor : Output bin factor. (default 1.0)
 
   ; %%--%%voltage : Microscope voltage [kV]: The acceleration voltage of microscope used for imaging. (default 300.0) : %%--%%skip_dose_adjustment==True
   ; %%--%%exposure_per_frame : Per frame exposure [e/A^2]: The electron dose per frame in e/A^2. (default 1.0) : %%--%%skip_dose_adjustment==True
