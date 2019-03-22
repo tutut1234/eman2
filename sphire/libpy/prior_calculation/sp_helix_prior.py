@@ -32,7 +32,7 @@ import scipy.stats as so
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import ms_helix_lib as mhl
+import sp_helix_lib as mhl
 
 fit_index = 0
 

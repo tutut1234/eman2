@@ -27,8 +27,8 @@ along with this program; if not, write to the free software
 foundation, inc., 59 temple place, suite 330, boston, ma  02111-1307 usa
 """
 
-import ms_helix_prior as mhp
-import ms_helix_lib as mhl
+import sp_helix_prior as mhp
+import sp_helix_lib as mhl
 
 
 def calculate_priors(

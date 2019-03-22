@@ -33,9 +33,9 @@ import numpy.lib.recfunctions as rec
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import ms_helix_sphire as mhs
-import ms_helix_relion as mhr
-import ms_helix_prior as mhp
+import sp_helix_sphire as mhs
+import sp_helix_relion as mhr
+import sp_helix_prior as mhp
 
 
 def identify_outliers(prior_tracker):
@@ -131,7 +131,7 @@ def import_data_sphire(tracker, group_id, symclass, params_file=None, index_file
         prior_tracker['segment_id'] = "segment_id"
     else:
         print ("ERROR: 'filament_id, segment_id and data_n' or 'filament and data_n' have to be present in the bdb header")
-        print ("\t\t you should not be here because I prevent this kind of error in 'ms_helix_sphire.py' in the 'import_sphire_stack' function")
+        print ("\t\t you should not be here because I prevent this kind of error in 'sp_helix_sphire.py' in the 'import_sphire_stack' function")
         exit(1)
 
 
