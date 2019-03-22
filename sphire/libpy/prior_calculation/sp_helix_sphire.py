@@ -1,4 +1,4 @@
-import sparx as sp
+import sp_sparx as sp
 import numpy as np
 import shutil
 
