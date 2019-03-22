@@ -16,7 +16,7 @@ from sp_logger import Logger, BaseLogger_Files, BaseLogger_Print
 import shutil
 import numpy as np
 from sp_alignment import Numrinit, ringwe, search_range, align2d, align2d_scf, align2d_direct3
-from sp_global_def import Util
+from sp_global_def import Util, sxprint
 import glob
 from sp_pixel_error import angle_diff
 import argparse
@@ -253,13 +253,13 @@ def main_proj_compare(classavgstack, reconfile, outdir, options, mode='viper', p
 		# You need either input angles (mode viper) or to calculate them on the fly (mode projmatch)
 		if mode=='viper':
 			sp_global_def.ERROR("\nERROR!! Input alignment parameters not specified.", __file__, 1)
-			print('Type %s --help to see available options\n' % os.path.basename(__file__))
+			sxprint('Type %s --help to see available options\n' % os.path.basename(__file__))
 			exit()
 	
 	# Check if inputs exist
 	check(classavgstack, verbose=verbose)
 	check(reconfile, verbose=verbose)
-	if verbose: print('')
+	if verbose: sxprint('')
 	
 	# Check that dimensions of images and volume agree (maybe rescale volume)
 	voldim = EMAN2.EMData(reconfile).get_xsize()
@@ -272,7 +272,7 @@ def main_proj_compare(classavgstack, reconfile, outdir, options, mode='viper', p
 			msg  = 'The command to resize the volume will be of the form:\n'
 			msg += 'e2proc3d.py %s resized_vol.hdf --scale=%1.5f --clip=%s,%s,%s\n' % (reconfile, scale, imgdim, imgdim, imgdim)
 			msg += 'Check the file in the ISAC directory named "README_shrink_ratio.txt" for confirmation.\n'
-			print(msg)
+			sxprint(msg)
 			exit()
 	
 	#  Here if you want to be fancy, there should be an option to chose the projection method,
@@ -285,7 +285,7 @@ def main_proj_compare(classavgstack, reconfile, outdir, options, mode='viper', p
 		method_num = 0
 	else:
 		sp_global_def.ERROR("\nERROR!! Valid projection methods are: trilinear (default), gridding, and nn (nearest neighbor).", __file__, 1)
-		print('Usage:\n%s' % USAGE)
+		sxprint('Usage:\n%s' % USAGE)
 		exit()
 	
 	# Set output directory and log file name
@@ -308,7 +308,7 @@ def main_proj_compare(classavgstack, reconfile, outdir, options, mode='viper', p
 			cmd = "e2proc2d.py %s %s --list=%s" % (classavgstack, newclasses, selectdoc)
 			print_log_msg(cmd, log, verbose)
 			os.system(cmd)
-			print('')
+			sxprint('')
 			
 			# Update class-averages
 			classavgstack = newclasses
@@ -375,7 +375,7 @@ def main_proj_compare(classavgstack, reconfile, outdir, options, mode='viper', p
 			continueTF = False
 	
 		if not continueTF:
-			print('Type %s --help to see available options\n' % os.path.basename(__file__))
+			sxprint('Type %s --help to see available options\n' % os.path.basename(__file__))
 			exit()
 		
 		if not options.classdocs or options.outliers:
@@ -411,12 +411,12 @@ def main_proj_compare(classavgstack, reconfile, outdir, options, mode='viper', p
 
 	# Optionally pop up e2display
 	if displayYN:
-		print('Opening montage')
+		sxprint('Opening montage')
 		cmd = "e2display.py %s\n" % compstack
-		print(cmd)
+		sxprint(cmd)
 		os.system(cmd)
 	
-	print("Done!")
+	sxprint("Done!")
 	
 def check(file, verbose=True):
 	"""
@@ -428,9 +428,9 @@ def check(file, verbose=True):
 	"""
 	
 	if os.path.exists(file):
-		if verbose: print("Found %s" % file)
+		if verbose: sxprint("Found %s" % file)
 	else:
-		print("ERROR!! %s doesn't exist!\n" % file)
+		sxprint("ERROR!! %s doesn't exist!\n" % file)
 		exit()
 
 def prepare_outdir_log(outdir='.', verbose=False, is_main=True):
@@ -449,9 +449,9 @@ def prepare_outdir_log(outdir='.', verbose=False, is_main=True):
 	# Create directory if it doesn't exist
 	if is_main:
 		if os.path.isdir(outdir):
-			print("Writing to output directory: %s" % outdir)
+			sxprint("Writing to output directory: %s" % outdir)
 		else:
-			print("Created output directory: %s" % outdir)
+			sxprint("Created output directory: %s" % outdir)
 			os.makedirs(outdir)  # os.mkdir() can only operate one directory deep
 		sp_global_def.write_command(outdir)
 
@@ -471,11 +471,11 @@ def prepare_outdir_log(outdir='.', verbose=False, is_main=True):
 		else:
 			log = Logger(base_logger=BaseLogger_Files(), file_name=logname)
 	except TypeError:
-		if is_main: print("WARNING: Using old sp_logger.py library")
+		if is_main: sxprint("WARNING: Using old sp_logger.py library")
 		log = Logger(base_logger=BaseLogger_Files())#, file_name=logname)
 		logname = 'log.txt'
 		
-	if is_main: print("Writing log file to %s\n" % logname)
+	if is_main: sxprint("Writing log file to %s\n" % logname)
 	
 	if is_main:
 		progbase = os.path.basename(__file__).split('.')[0].upper()
@@ -502,7 +502,7 @@ def print_log_msg(msg, log=None, verbose=False, is_main=True):
 	"""
 	
 	if is_main:
-		if verbose: print(msg)
+		if verbose: sxprint(msg)
 		if log: log.add(msg)
 
 def apsh(refimgs, imgs2align, outangles=None, refanglesdoc=None, outaligndoc=None, outerradius=-1, 
@@ -965,7 +965,6 @@ def compare_projs(reconfile, classavgstack, inputanglesdoc, outdir, interpolatio
 	del angleslist
 	meanccc = sum(ccclist)/nimg1
 	print_log_msg("Average CCC is %s\n" % meanccc, log, verbose)
-	exit()
 	
 	nimg2 = EMAN2.EMUtil.get_image_count(compstack)
 	
@@ -1067,7 +1066,7 @@ if __name__ == "__main__":
 		selectdoc = options.partselect
 	else:
 		sp_global_def.ERROR("\nERROR!! Valid mode not specified. Valid modes are: viper, projmatch, and meridien.", __file__, 1)
-		print('Type %s --help to see available options\n' % os.path.basename(__file__))
+		sxprint('Type %s --help to see available options\n' % os.path.basename(__file__))
 		exit()
 
 	main_proj_compare(options.classavgs, options.vol3d, outdir, options, mode=options.mode, prjmethod=options.prjmethod, 
