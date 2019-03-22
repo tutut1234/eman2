@@ -1164,7 +1164,6 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 			# Create output directory
 			assert not os.path.exists(root_out_dir)
 			os.makedirs(root_out_dir)
-			sp_global_def.write_command(root_out_dir)
 			# Open the consistency check file
 			mic_consistency_check_info_path = os.path.join(
 				root_out_dir,
@@ -1257,10 +1256,10 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 		# --------------------------------------------------------------------------------
 		# Check MPI error condition
 		# --------------------------------------------------------------------------------
-		if error_status is None and len(valid_mic_id_substr_list) < n_mpi_procs:
-			error_status = ( "Number of MPI processes (%d) supplied by --np in mpirun cannot be greater than %d (number of valid micrographs that satisfy all criteria to be processed)." 
-							 % (n_mpi_procs, len(valid_mic_id_substr_list)), getframeinfo(currentframe()) )
-			break
+		#if error_status is None and len(valid_mic_id_substr_list) < n_mpi_procs:
+		#	error_status = ( "Number of MPI processes (%d) supplied by --np in mpirun cannot be greater than %d (number of valid micrographs that satisfy all criteria to be processed)." 
+		#					 % (n_mpi_procs, len(valid_mic_id_substr_list)), getframeinfo(currentframe()) )
+		#	break
 		break
 
 
@@ -1396,7 +1395,7 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 		#
 		if not os.path.exists(root_out_dir):
 			os.makedirs(root_out_dir)
-			sp_global_def.write_command(root_out_dir)
+		sp_global_def.write_command(root_out_dir)
 		assert not os.path.exists(reject_out_of_boundary_dir), "MRK_DEBUG"
 		os.mkdir(reject_out_of_boundary_dir)
 
@@ -1983,7 +1982,6 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 
 if __name__ == "__main__":
 	sp_global_def.print_timestamp("Start")
-	sp_global_def.write_command()
 	main()
 	sp_global_def.print_timestamp("Finish")
 	mpi.mpi_finalize()
