@@ -1898,6 +1898,8 @@ class symclass(object):
 		else:
 			return_single = False
 
+		mat[mat > 1] = 1
+		mat[mat < -1] = -1
 		mask_2_2_1 = mat[:, 2, 2] == 1.0
 		mask_0_0_0 = mat[:, 0, 0] == 0.0
 		mask_2_2_m1 = mat[:, 2, 2] == -1.0
