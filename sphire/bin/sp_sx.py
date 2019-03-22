@@ -3,5 +3,6 @@ from __future__ import print_function
 
 import os
 
-e2real = os.path.join(os.path.abspath(os.path.dirname(__file__)), "sx_real.py")
-os.execlp("ipython","ipython","-i",e2real)
+spreal = os.path.join(os.path.abspath(os.path.dirname(__file__)), "sp_real.py")
+ipython = os.path.join(os.path.abspath(os.path.dirname(__file__)), "ipython")
+os.execlp(ipython,"ipython","-i",spreal)
