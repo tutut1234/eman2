@@ -49,7 +49,7 @@ import json
 
 global Tracker, Blockdata
 
-mpi_init(0, [])
+mpi.mpi_init(0, [])
 
 
 # ----------------------------------------------------------------------------
@@ -184,7 +184,7 @@ def main():
 	Blockdata["nproc"]     = nproc
 	Blockdata["myid"]      = myid
 	Blockdata["main_node"] = 0
-	Blockdata["shared_comm"]                    = mpi.mpi_comm_split_type(mpi.MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED,  0, MPI_INFO_NULL)
+	Blockdata["shared_comm"]                    = mpi.mpi_comm_split_type(mpi.MPI_COMM_WORLD, mpi.MPI_COMM_TYPE_SHARED,  0, mpi.MPI_INFO_NULL)
 	Blockdata["myid_on_node"]                   = mpi.mpi_comm_rank(Blockdata["shared_comm"])
 	Blockdata["no_of_processes_per_group"]      = mpi.mpi_comm_size(Blockdata["shared_comm"])
 	masters_from_groups_vs_everything_else_comm = mpi.mpi_comm_split( mpi.MPI_COMM_WORLD, Blockdata["main_node"] == Blockdata["myid_on_node"], Blockdata["myid_on_node"])
@@ -254,12 +254,11 @@ def main():
 			timestring = strftime("_%d_%b_%Y_%H_%M_%S", localtime())
 			masterdir ="sharpen_"+Tracker["constants"]["isac_dir"]
 			os.makedirs(masterdir)
-			sp_global_def.write_command(masterdir)
 		else:
 			if os.path.exists(masterdir): sxprint("%s already exists"%masterdir)
 			else:
 				os.makedirs(masterdir)
-				sp_global_def.write_command(masterdir)
+		sp_global_def.write_command(masterdir)
 		subdir_path = os.path.join(masterdir, "ali2d_local_params_avg")
 		if not os.path.exists(subdir_path): os.mkdir(subdir_path)
 		subdir_path = os.path.join(masterdir, "params_avg")
