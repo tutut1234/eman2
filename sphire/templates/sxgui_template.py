@@ -356,7 +356,7 @@ class SXLookFeelConst(object):
 		
 		if not current_settings_exist and not older_settings_exist:
 			create_settings_dir = raw_input(
-					"\nSettings directory for current SPHIRE version %s doesn't exist\nWould you like to create a new project directory and continue? [y/n] " 
+					"\nSettings directory for current SPHIRE version %s doesn't exist\nWould you like to create a new project directory and continue?\nYou need to run the sphire command in the foreground (without &) to answer this question\n[y/n] " 
 					% SXLookFeelConst.project_dir)
 			if create_settings_dir.lower() == 'n':
 				print("\nbye bye")
@@ -4632,7 +4632,7 @@ def main():
 	sxapp.setStyleSheet("QToolTip {font-size:%dpt;}" % (new_point_size));
 
 	# Initialise a singleton class for look & feel constants
-	version_string = '1.2_rc7'
+	version_string = '1.2_rc8'
 	SXLookFeelConst.initialise(sxapp, version_string)
 
 	# Define the main window (class SXMainWindow)

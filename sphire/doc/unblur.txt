@@ -13,6 +13,7 @@ Usage in command line
 \\
 ===== Typical usage =====
 
+sp_unblur exists in both MPI and non-MPI versions (Running MPI version does not require --MPI flag). 
 
 Run unblur with dose adjustment
 
