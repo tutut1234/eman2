@@ -453,7 +453,8 @@ def prepare_outdir_log(outdir='.', verbose=False, is_main=True):
 		else:
 			print("Created output directory: %s" % outdir)
 			os.makedirs(outdir)  # os.mkdir() can only operate one directory deep
-			
+		sp_global_def.write_command(outdir)
+
 	logname = "log_" + datetime.now().strftime("%Y%m%d_%H%M%S") +  ".txt"
 	logname = os.path.join(outdir, logname)
 	
@@ -1044,6 +1045,7 @@ def insert_image(smallimg, largeimage, xoffset, yoffset):
 			largeimage.set_value_at(xoffset+xcoord, yoffset+ycoord, getpixel)
 
 if __name__ == "__main__":
+	sp_global_def.print_timestamp( "Start" )
 	options = parse_command_line()
 	
 	##print args, options  # (Everything is in options.)
@@ -1071,3 +1073,4 @@ if __name__ == "__main__":
 	main_proj_compare(options.classavgs, options.vol3d, outdir, options, mode=options.mode, prjmethod=options.prjmethod, 
 			  classangles=options.classangles, partangles=options.partangles, selectdoc=selectdoc, 
 			  verbose=options.verbose, displayYN=options.display)
+	sp_global_def.print_timestamp( "Finish" )

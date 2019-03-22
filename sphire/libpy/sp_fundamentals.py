@@ -1860,6 +1860,9 @@ class symclass(object):
 		if len(matrix1.shape) != 3:
 			matrix1 = numpy.expand_dims(matrix1, axis=0)
 			matrix2 = numpy.expand_dims(matrix2, axis=0)
+			return_single = True
+		else:
+			return_single = False
 		m1 = numpy.transpose(matrix1, (0, 2, 1)).reshape(
 			matrix1.shape[0],
 			matrix1.shape[1],
@@ -1874,7 +1877,11 @@ class symclass(object):
 			)
 		matrices_mod = numpy.sum(m1 * m2, axis=-3)
 		if tolistconv:
-			return matrices_mod.tolist()
+			matrices_mod = matrices_mod.tolist()
+		else:
+			matrices_mod = matrices_mod
+		if return_single:
+			return matrices_mod[0]
 		else:
 			return matrices_mod
 
@@ -1886,7 +1893,10 @@ class symclass(object):
 			return return_array
 		mat = numpy.array(mat)
 		if len(mat.shape) != 3:
-			matrix1 = numpy.expand_dims(mat, axis=0)
+			return_single = True
+			mat = numpy.expand_dims(mat, axis=0)
+		else:
+			return_single = False
 
 		mask_2_2_1 = mat[:, 2, 2] == 1.0
 		mask_0_0_0 = mat[:, 0, 0] == 0.0
@@ -1936,9 +1946,14 @@ class symclass(object):
 		output_array %= 360.0
 
 		if tolistconv:
-			return output_array.tolist()
+			output_array = output_array.tolist()
+		else:
+			output_array = output_array
+		if return_single:
+			return output_array[0]
 		else:
 			return output_array
+
 
 	@classmethod
 	def rotate_params(cls, params, transf, tolistconv=True):
