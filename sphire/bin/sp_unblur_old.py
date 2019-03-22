@@ -33,11 +33,11 @@ from numpy import genfromtxt
 import numpy
 import time
 import subprocess
-import global_def
-from global_def import sxprint, ERROR
-from global_def import SPARXVERSION, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
+from sp_global_def import SPARXVERSION, ERROR
 from optparse import OptionParser, SUPPRESS_HELP
-from utilities import create_summovie_command
+from sp_utilities import create_summovie_command
 
 def main():
 
@@ -133,7 +133,7 @@ def main():
     # list of the options and the arguments
     (options, args) = parser.parse_args(argv[1:])
 
-    global_def.BATCH = True
+    sp_global_def.BATCH = True
 
     # If there arent enough arguments, stop the script
     if len(args) != 3:
@@ -193,7 +193,7 @@ def main():
     # Create output directorys
     if not path.exists(output_dir):
         os.makedirs(output_dir)
-        global_def.write_command(output_dir)
+        sp_global_def.write_command(output_dir)
     if not path.exists(uncorrected_path):
         mkdir(uncorrected_path)
     if not path.exists(shift_path):
@@ -233,7 +233,7 @@ def main():
 
     sxprint('All Done!')
 
-    global_def.BATCH = False
+    sp_global_def.BATCH = False
 
 
 def run_unblur(
@@ -665,6 +665,6 @@ def create_unblur_command(
 
 
 if __name__ == '__main__':
-    global_def.print_timestamp( "Start" )
+    sp_global_def.print_timestamp( "Start" )
     main()
-    global_def.print_timestamp( "Finish" )
+    sp_global_def.print_timestamp( "Finish" )

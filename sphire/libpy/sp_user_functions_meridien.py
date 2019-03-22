@@ -51,9 +51,9 @@ def do_volume_mask(ref_data):
 
 
 	if Tracker["constants"]["mask3D"] is None:
-		vol = morphology.cosinemask(vol, radius=Tracker["constants"]["radius"])
+		vol = sp_morphology.cosinemask(vol, radius=Tracker["constants"]["radius"])
 	else:
-		EMAN2_cppwrap.Util.mul_img(vol, utilities.get_im(Tracker["constants"]["mask3D"]))
+		EMAN2_cppwrap.Util.mul_img(vol, sp_utilities.get_im(Tracker["constants"]["mask3D"]))
 
 	return vol
 
@@ -121,7 +121,7 @@ def ai_spa( Tracker, fff, anger, shifter, do_local, chout = False):
 
 	elif Tracker["mainiteration"] == 1 and do_local:
 		if chout:
-			global_def.sxprint(ai_string)
+			sp_global_def.sxprint(ai_string)
 		Tracker["state"]		= "PRIMARY LOCAL"
 		Tracker["currentres"]	= l05
 		Tracker["fsc143"]		= l01
@@ -135,7 +135,7 @@ def ai_spa( Tracker, fff, anger, shifter, do_local, chout = False):
 		Tracker["shifter"]				= 1.0e23
 		Tracker["constants"]["best"] = Tracker["mainiteration"]
 		if chout:
-			global_def.sxprint( "ITERATION  #%2d. Resolution achieved       : %3d/%3d pixels, %5.2fA/%5.2fA." % (
+			sp_global_def.sxprint( "ITERATION  #%2d. Resolution achieved       : %3d/%3d pixels, %5.2fA/%5.2fA." % (
 				Tracker["mainiteration"],
 				Tracker["currentres"],
 				Tracker["fsc143"],
@@ -145,7 +145,7 @@ def ai_spa( Tracker, fff, anger, shifter, do_local, chout = False):
 
 	else:
 		if chout:
-			global_def.sxprint(ai_string)
+			sp_global_def.sxprint(ai_string)
 
 		if Tracker["mainiteration"] == 2 and not do_local:
 			Tracker["state"] = "PRIMARY"
@@ -188,7 +188,7 @@ def ai_spa( Tracker, fff, anger, shifter, do_local, chout = False):
 
 		#  figure changes in params
 		if chout:
-			global_def.sxprint("  Incoming  parameters  {0:10.3f}  {1:10.3f}  {2:10.3f}  {3:10.3f}   {4}".format(
+			sp_global_def.sxprint("  Incoming  parameters  {0:10.3f}  {1:10.3f}  {2:10.3f}  {3:10.3f}   {4}".format(
 				Tracker["anger"],
 				anger,
 				Tracker["shifter"],
@@ -214,7 +214,7 @@ def ai_spa( Tracker, fff, anger, shifter, do_local, chout = False):
 			tmp = min(2*inc, Tracker["constants"]["nnxo"] )  #  Cannot exceed image size
 
 		if chout:
-			global_def.sxprint("  IN AI: nxstep, large at Nyq, outcoming current res, adjusted current, inc, estimated image size",Tracker["nxstep"],Tracker["large_at_Nyquist"],Tracker["currentres"],inc,tmp)
+			sp_global_def.sxprint("  IN AI: nxstep, large at Nyq, outcoming current res, adjusted current, inc, estimated image size",Tracker["nxstep"],Tracker["large_at_Nyquist"],Tracker["currentres"],inc,tmp)
 
 		Tracker["nxinit"] = int(tmp)
 		Tracker["changed_delta"] = False
@@ -224,18 +224,18 @@ def ai_spa( Tracker, fff, anger, shifter, do_local, chout = False):
 				if Tracker["state"] == "PRIMARY LOCAL":
 					step_range, step = compute_search_params(Tracker["acc_trans"], Tracker["shifter"], Tracker["xr"])
 					if chout:
-						global_def.sxprint("  Computed  pares  ",Tracker["anger"] ,anger,Tracker["shifter"],shifter, Tracker["xr"], step_range, step)
+						sp_global_def.sxprint("  Computed  pares  ",Tracker["anger"] ,anger,Tracker["shifter"],shifter, Tracker["xr"], step_range, step)
 					Tracker["xr"] = step_range
 					Tracker["ts"] = step
 					Tracker["state"] = "RESTRICTED"
 				else:
 					keepgoing = 0
 					if chout:
-						global_def.sxprint("Convergence criterion A is reached (angular step delta smaller than 3/4 changes in angles))")
+						sp_global_def.sxprint("Convergence criterion A is reached (angular step delta smaller than 3/4 changes in angles))")
 			else:
 				step_range, step = compute_search_params(Tracker["acc_trans"], Tracker["shifter"], Tracker["xr"])
 				if chout:
-					global_def.sxprint("  Computed  pares  ",Tracker["anger"] ,anger,Tracker["shifter"],shifter, Tracker["xr"], step_range, step)
+					sp_global_def.sxprint("  Computed  pares  ",Tracker["anger"] ,anger,Tracker["shifter"],shifter, Tracker["xr"], step_range, step)
 				Tracker["xr"] = step_range
 				Tracker["ts"] = step
 				Tracker["delta"] /= 2.0
@@ -251,12 +251,12 @@ def ai_spa( Tracker, fff, anger, shifter, do_local, chout = False):
 					if Tracker["state"] == "PRIMARY":
 						Tracker["state"] = "EXHAUSTIVE"
 				if chout:
-					global_def.sxprint("  IN AI there was reset due to no changes, adjust stuff  ",Tracker["no_improvement"],Tracker["no_params_changes"],Tracker["delta"],Tracker["xr"],Tracker["ts"], Tracker["state"])
+					sp_global_def.sxprint("  IN AI there was reset due to no changes, adjust stuff  ",Tracker["no_improvement"],Tracker["no_params_changes"],Tracker["delta"],Tracker["xr"],Tracker["ts"], Tracker["state"])
 				# check convergence before reset
 				if Tracker["state"] == "FINAL" and Tracker["no_improvement"] >= Tracker["constants"]["limit_improvement"]:
 					keepgoing = 0
 					if chout:
-						global_def.sxprint("Convergence criterion B is reached (angular step delta smaller than the limit imposed by the structure radius)")
+						sp_global_def.sxprint("Convergence criterion B is reached (angular step delta smaller than the limit imposed by the structure radius)")
 				Tracker["no_improvement"]		= 0
 				Tracker["no_params_changes"]	= 0
 				Tracker["anger"]				= 1.0e23
@@ -266,9 +266,9 @@ from builtins import range
 from builtins import object
 
 import numpy
-import global_def
-import morphology
-import utilities
+import sp_global_def
+import sp_morphology
+import sp_utilities
 import EMAN2_cppwrap
 from past.utils import old_div
 

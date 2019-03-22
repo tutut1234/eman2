@@ -36,11 +36,11 @@ from __future__ import print_function
 from builtins import range
 from builtins import object
 from EMAN2 import *
-from sparx import *
-from logger import Logger, BaseLogger_Files
+from sp_sparx import *
+from sp_logger import Logger, BaseLogger_Files
 
-import global_def
-from global_def import sxprint, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
 import os
 import sys
@@ -50,14 +50,14 @@ import string
 from   sys import exit
 from   time import localtime, strftime
 
-from utilities import write_text_row, drop_image, model_gauss_noise, get_im, set_params_proj, wrap_mpi_bcast, model_circle
-import user_functions
-from applications import MPI_start_end
+from sp_utilities import write_text_row, drop_image, model_gauss_noise, get_im, set_params_proj, wrap_mpi_bcast, model_circle
+import sp_user_functions
+from sp_applications import MPI_start_end
 from optparse import OptionParser
-from global_def import SPARXVERSION
+from sp_global_def import SPARXVERSION
 from EMAN2 import EMData
-from multi_shc import multi_shc, do_volume
-from logger import Logger, BaseLogger_Files
+from sp_multi_shc import multi_shc, do_volume
+from sp_logger import Logger, BaseLogger_Files
 import sys
 import os
 import time
@@ -350,7 +350,7 @@ def main():
 
 	#  INPUT PARAMETERS
 	radi  = options.ou
-	global_def.BATCH = True
+	sp_global_def.BATCH = True
 	ali3d_options.ir     = options.ir
 	ali3d_options.rs     = options.rs
 	ali3d_options.ou     = options.ou
@@ -414,7 +414,7 @@ def main():
 		li = len(masterdir)
 		cmd = "{} {}".format("mkdir -p", masterdir)
 		junk = cmdexecute(cmd)
-		global_def.write_command(masterdir)
+		sp_global_def.write_command(masterdir)
 	else:
 		li = 0
 
@@ -463,7 +463,7 @@ def main():
 
 
 if __name__=="__main__":
-	global_def.print_timestamp( "Start" )
+	sp_global_def.print_timestamp( "Start" )
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

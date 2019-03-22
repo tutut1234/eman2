@@ -52,27 +52,27 @@ import random as rnd
 
 # EMAN2 & sparx base
 import EMAN2 as E2  #  <----------------------- TODO: get rid of this
-from sparx import * #  <----------------------- TODO: get rid of this
+from sp_sparx import * #  <----------------------- TODO: get rid of this
 
 import mpi  # NOTE: this needs to be imported AFTER the EMAN2 import
 
 # EMAN2 & sparx general utility
-import global_def
+import sp_global_def
 import optparse
-import fundamentals 
-import utilities as util
+import sp_fundamentals 
+import sp_utilities as util
 
-from logger import Logger, BaseLogger_Files
-from global_def import ERROR, EMData, sxprint, SPARXVERSION
+from sp_logger import Logger, BaseLogger_Files
+from sp_global_def import ERROR, EMData, sxprint, SPARXVERSION
 
 # EMAN2 & sparx specific packages
-import isac
-import alignment as align
-import applications as apps
-import statistics as stats
+import sp_isac
+import sp_alignment as align
+import sp_applications as apps
+import sp_statistics as stats
 
-from filter import filt_tanl as filter_tanl
-from pixel_error import multi_align_stability
+from sp_filter import filt_tanl as filter_tanl
+from sp_pixel_error import multi_align_stability
 from EMAN2db import db_open_dict as E2_db_open_dict
 
 #=================================================================[ mpi setup ]
@@ -124,8 +124,8 @@ Blockdata["color"], Blockdata["no_of_groups"], balanced_processor_load_on_nodes 
 																											  Blockdata["shared_comm"], 
 																											  Blockdata["myid_on_node"], 
 																											  masters_from_groups_vs_everything_else_comm )
-global_def.BATCH = True
-global_def.MPI   = True
+sp_global_def.BATCH = True
+sp_global_def.MPI   = True
 
 NAME_OF_JSON_STATE_FILE = "my_state.json"
 NAME_OF_ORIGINAL_IMAGE_INDEX = "originalid"
@@ -228,11 +228,11 @@ def normalize_particle_images( aligned_images, shrink_ratio, target_radius, targ
 	for im in range( len(aligned_images) ):
 		
 		# apply any available alignment parameters
-		aligned_images[im] = fundamentals.rot_shift2D( aligned_images[im], 0, align_params[im][1], align_params[im][2], 0 )
+		aligned_images[im] = sp_fundamentals.rot_shift2D( aligned_images[im], 0, align_params[im][1], align_params[im][2], 0 )
 		
 		# resample if necessary
 		if shrink_ratio != 1.0:
-			aligned_images[im] = fundamentals.resample( aligned_images[im], shrink_ratio )
+			aligned_images[im] = sp_fundamentals.resample( aligned_images[im], shrink_ratio )
 		
 		# crop images if necessary
 		if new_dim > target_dim:
@@ -425,7 +425,7 @@ def iter_isac_pap(alldata, ir, ou, rs, xr, yr, ts, maxit, CTF, snr, dst, FL, FH,
 	#------------------------------------------------------[ generate random averages for each group ]
 
 	if key == group_main_node:
-		refi = isac.generate_random_averages(data, K, 9023)
+		refi = sp_isac.generate_random_averages(data, K, 9023)
 	else:
 		refi = [util.model_blank(nx, nx) for i in range(K)]
 
@@ -1375,9 +1375,9 @@ def main(args):
 		return 1
 
 	# TODO: what does this do?
-	if global_def.CACHE_DISABLE:
+	if sp_global_def.CACHE_DISABLE:
 		util.disable_bdb_cache()
-	global_def.BATCH = True
+	sp_global_def.BATCH = True
 
 	#------------------------------------------------------[ master directory setup ]
 
@@ -1399,7 +1399,7 @@ def main(args):
 				cmd = "{} {}".format("mkdir -p", Blockdata["masterdir"])
 				junk = cmdexecute(cmd)
 			li = 0
-		global_def.write_command(Blockdata["masterdir"])
+		sp_global_def.write_command(Blockdata["masterdir"])
 	else:
 		li = 0
 
@@ -1476,7 +1476,7 @@ def main(args):
 
 	# get total number of images (nima) and broadcast
 	if(myid == main_node): 
-		Blockdata["total_nima"] = global_def.EMUtil.get_image_count(Blockdata["stack"])
+		Blockdata["total_nima"] = sp_global_def.EMUtil.get_image_count(Blockdata["stack"])
 	else: 
 		Blockdata["total_nima"] = 0
 
@@ -1869,7 +1869,7 @@ def main(args):
 	return
 
 if __name__=="__main__":
-	global_def.print_timestamp( "Start" )
+	sp_global_def.print_timestamp( "Start" )
 	main(sys.argv[1:])
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

@@ -36,15 +36,15 @@ from __future__ import print_function
 
 from builtins import range
 from builtins import object
-import global_def
-from global_def import sxprint, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
 
-from global_def import *
+from sp_global_def import *
 
 from EMAN2 import *
 from EMAN2db import db_open_dict, db_check_dict
-from sparx import *
+from sp_sparx import *
 from optparse import OptionParser
 from OpenGL import GL,GLUT
 from numpy import *
@@ -99,8 +99,8 @@ images far from focus."""
 
 	if len(args)<1 : parser.error("Input image required")
 	
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 		disable_bdb_cache()
 
 	if options.auto_fit:
@@ -1166,7 +1166,7 @@ class GUIctf(QtGui.QWidget):
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

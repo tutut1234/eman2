@@ -34,19 +34,19 @@ import os
 import sys
 from optparse import OptionParser
 
-import   global_def
-from global_def import sxprint, ERROR
+import   sp_global_def
+from sp_global_def import sxprint, ERROR
 
-from     global_def import *
+from     sp_global_def import *
 from     inspect    import currentframe, getframeinfo
-from     utilities  import if_error_then_all_processes_exit_program
+from     sp_utilities  import if_error_then_all_processes_exit_program
 
 from mpi import mpi_init, mpi_comm_rank, mpi_comm_size, mpi_barrier, MPI_COMM_WORLD
 import mpi
 
 mpi.mpi_init( 0, [] )
 
-global_def.BATCH = True
+sp_global_def.BATCH = True
 
 
 def main():
@@ -136,7 +136,7 @@ Stack Mode - Process a particle stack (Not supported by SPHIRE GUI))::
 		####mpi.mpi_init( 0, [] )
 		my_mpi_proc_id = mpi.mpi_comm_rank(MPI_COMM_WORLD)
 		n_mpi_procs    = mpi.mpi_comm_size(MPI_COMM_WORLD)
-		global_def.MPI = True
+		sp_global_def.MPI = True
 
 	else:
 		my_mpi_proc_id = 0
@@ -145,13 +145,13 @@ Stack Mode - Process a particle stack (Not supported by SPHIRE GUI))::
 	# ------------------------------------------------------------------------------------
 	# Set up SPHIRE global definitions
 	# ------------------------------------------------------------------------------------
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 		disable_bdb_cache()
 
 	# Change the name log file for error message
-	original_logfilename = global_def.LOGFILE
-	global_def.LOGFILE = os.path.splitext(program_name)[0] + '_' + original_logfilename + '.txt'
+	original_logfilename = sp_global_def.LOGFILE
+	sp_global_def.LOGFILE = os.path.splitext(program_name)[0] + '_' + original_logfilename + '.txt'
 
 	# ------------------------------------------------------------------------------------
 	# Check error conditions of arguments and options, then prepare variables for arguments
@@ -224,21 +224,21 @@ Stack Mode - Process a particle stack (Not supported by SPHIRE GUI))::
 
 	if options.vpp:
 		vpp_options = [options.defocus_min,  options.defocus_max,  options.defocus_step,  options.phase_min,  options.phase_max,  options.phase_step]
-		from morphology import cter_vpp
+		from sp_morphology import cter_vpp
 		result = cter_vpp(input_image_path, output_directory, options.selection_list, options.wn, \
 				options.apix, options.Cs, options.voltage, options.ac, freq_start, freq_stop, \
 				options.kboot, options.overlap_x, options.overlap_y, options.edge_x, options.edge_y, \
 				options.check_consistency, options.stack_mode, options.debug_mode, program_name, vpp_options, \
 				RUNNING_UNDER_MPI, main_mpi_proc, my_mpi_proc_id, n_mpi_procs, write_pws=options.pws)
 	elif options.pap:
-		from morphology import cter_pap
+		from sp_morphology import cter_pap
 		result = cter_pap(input_image_path, output_directory, options.selection_list, options.wn, \
 				options.apix, options.Cs, options.voltage, options.ac, freq_start, freq_stop, \
 				options.kboot, options.overlap_x, options.overlap_y, options.edge_x, options.edge_y, \
 				options.check_consistency, options.stack_mode, options.debug_mode, program_name, \
 				RUNNING_UNDER_MPI, main_mpi_proc, my_mpi_proc_id, n_mpi_procs, write_pws=options.pws)
 	else:
-		from morphology import cter_mrk
+		from sp_morphology import cter_mrk
 		result = cter_mrk(input_image_path, output_directory, options.selection_list, options.wn, \
 				options.apix, options.Cs, options.voltage, options.ac, freq_start, freq_stop, \
 				options.kboot, options.overlap_x, options.overlap_y, options.edge_x, options.edge_y, \
@@ -261,7 +261,7 @@ Stack Mode - Process a particle stack (Not supported by SPHIRE GUI))::
 	# ------------------------------------------------------------------------------------
 	# Reset SPHIRE global definitions
 	# ------------------------------------------------------------------------------------
-	global_def.LOGFILE = original_logfilename
+	sp_global_def.LOGFILE = original_logfilename
 	
 	# ------------------------------------------------------------------------------------
 	# Clean up MPI related variables
@@ -273,8 +273,8 @@ Stack Mode - Process a particle stack (Not supported by SPHIRE GUI))::
 	return
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

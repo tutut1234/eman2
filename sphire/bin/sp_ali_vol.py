@@ -34,10 +34,10 @@ from __future__ import print_function
 
 import os
 
-import global_def
-from global_def import sxprint
+import sp_global_def
+from sp_global_def import sxprint
 
-from global_def import *
+from sp_global_def import *
 from optparse import OptionParser
 import sys
 def main():
@@ -51,44 +51,44 @@ def main():
 	parser.add_option("--r",            type='float', default=None, help="  Radius of a spherical mask (nx/2-2)")
 	(options, args) = parser.parse_args()    	
 
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 		disable_bdb_cache()
 
 	if len(args) != 2:
 		sxprint( "Usage: " + usage )
 		sxprint( "Please run \'" + progname + " -h\' for detailed options" )
-		global_def.ERROR( "Invalid number of parameters used. Please see usage information above." )
+		sp_global_def.ERROR( "Invalid number of parameters used. Please see usage information above." )
 		return
 		
 	elif(options.ang_scale != None and options.shift_scale != None and options.mag_scale != None):
-		from applications  import ali_vol_scale
-		global_def.BATCH = True
+		from sp_applications  import ali_vol_scale
+		sp_global_def.BATCH = True
 		ali_vol_scale(args[0], args[1], options.ang_scale, options.shift_scale, options.mag_scale, options.r, options.discrepancy)
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 	elif(options.ang_scale is None and options.shift_scale is None and options.mag_scale != None):
-		from applications  import ali_vol_only_scale
-		global_def.BATCH = True
+		from sp_applications  import ali_vol_only_scale
+		sp_global_def.BATCH = True
 		ali_vol_only_scale(args[0], args[1], options.mag_scale, options.r, options.discrepancy)
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 	elif(options.ang_scale is None and options.shift_scale != None and options.mag_scale is None):
-		from applications  import ali_vol_shift
-		global_def.BATCH = True
+		from sp_applications  import ali_vol_shift
+		sp_global_def.BATCH = True
 		ali_vol_shift(args[0], args[1], options.shift_scale, options.r, options.discrepancy)
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 	elif(options.ang_scale != None and options.shift_scale != None and options.mag_scale is None):
-		from applications  import ali_vol
-		global_def.BATCH = True
+		from sp_applications  import ali_vol
+		sp_global_def.BATCH = True
 		ali_vol(args[0], args[1], options.ang_scale, options.shift_scale, options.r, options.discrepancy)
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 	elif(options.ang_scale != None and options.shift_scale is None and options.mag_scale is None):
-		from applications  import ali_vol_rotate
-		global_def.BATCH = True
+		from sp_applications  import ali_vol_rotate
+		sp_global_def.BATCH = True
 		ali_vol_rotate(args[0], args[1], options.ang_scale, options.r, options.discrepancy)
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 		
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

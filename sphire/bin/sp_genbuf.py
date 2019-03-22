@@ -32,15 +32,15 @@ from __future__ import print_function
 #
 
 from builtins import range
-import global_def
-from global_def import sxprint, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
-from   global_def import *
+from   sp_global_def import *
 
 from   optparse import OptionParser
 
 from EMAN2  import newfile_store
-from utilities import get_im
+from sp_utilities import get_im
 from time import time
 import os
 
@@ -84,8 +84,8 @@ def main():
 
 	prjfile = args[0]
 
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 		disable_bdb_cache()
 
 	bufprefix = args[1]
@@ -94,7 +94,7 @@ def main():
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

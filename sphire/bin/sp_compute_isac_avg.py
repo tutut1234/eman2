@@ -14,16 +14,16 @@ import time
 from   time import localtime, strftime, sleep
 import types
 
-import global_def
-from global_def import sxprint, ERROR, SPARXVERSION
-from global_def import *
+import sp_global_def
+from sp_global_def import sxprint, ERROR, SPARXVERSION
+from sp_global_def import *
 
 from   optparse   import OptionParser
 
-from    sparx      import *
+from    sp_sparx      import *
 from    EMAN2      import *
 from    numpy      import array
-from    logger     import Logger, BaseLogger_Files
+from    sp_logger     import Logger, BaseLogger_Files
 
 import mpi
 
@@ -39,12 +39,12 @@ import json
 
 from optparse   import OptionParser
 from EMAN2      import EMData
-from logger     import Logger, BaseLogger_Files
+from sp_logger     import Logger, BaseLogger_Files
 
-from utilities 		import get_im, bcast_number_to_all, write_text_file, read_text_file, wrap_mpi_bcast, write_text_row
-from utilities 		import cmdexecute
-from filter			import filt_tanl
-import user_functions
+from sp_utilities 		import get_im, bcast_number_to_all, write_text_file, read_text_file, wrap_mpi_bcast, write_text_row
+from sp_utilities 		import cmdexecute
+from sp_filter			import filt_tanl
+import sp_user_functions
 import json
 
 global Tracker, Blockdata
@@ -54,9 +54,9 @@ mpi_init(0, [])
 
 # ----------------------------------------------------------------------------
 def compute_average(mlist, radius, CTF):
-	from morphology   import cosinemask
-	from fundamentals import fft
-	from statistics   import fsc, sum_oe
+	from sp_morphology   import cosinemask
+	from sp_fundamentals import fft
+	from sp_statistics   import fsc, sum_oe
 	if CTF:
 		avge, avgo, ctf_2_sume, ctf_2_sumo, params_list = \
 		     sum_oe(mlist, "a", CTF, None, True, True)
@@ -85,8 +85,8 @@ def compute_average(mlist, radius, CTF):
 		return avge+avgo, frc, params_list
 
 def adjust_pw_to_model(image, pixel_size, roo):
-	from fundamentals import rops_table
-	from filter       import filt_table
+	from sp_fundamentals import rops_table
+	from sp_filter       import filt_table
 	from math         import exp, sqrt
 	c1 =-4.5
 	c2 = 15.0
@@ -124,9 +124,9 @@ def get_optimistic_res(frc):
 	return FH
 	
 def apply_enhancement(avg, B_start, pixel_size, user_defined_Bfactor):
-	from filter       import filt_gaussinv
-	from fundamentals import rot_avg_table
-	from morphology   import compute_bfactor
+	from sp_filter       import filt_gaussinv
+	from sp_fundamentals import rot_avg_table
+	from sp_morphology   import compute_bfactor
 	from EMAN2        import periodogram
 	if user_defined_Bfactor>0.0:
 		global_b = user_defined_Bfactor
@@ -200,8 +200,8 @@ def main():
 	Blockdata["nodes"] = [Blockdata["node_volume"][0]*Blockdata["no_of_processes_per_group"],Blockdata["node_volume"][1]*Blockdata["no_of_processes_per_group"], \
 		 Blockdata["node_volume"][2]*Blockdata["no_of_processes_per_group"]]
 	# End of Blockdata: sorting requires at least three nodes, and the used number of nodes be integer times of three
-	global_def.BATCH = True
-	global_def.MPI   = True
+	sp_global_def.BATCH = True
+	sp_global_def.MPI   = True
 
 
 	if adjust_to_given_pw2:
@@ -254,12 +254,12 @@ def main():
 			timestring = strftime("_%d_%b_%Y_%H_%M_%S", localtime())
 			masterdir ="sharpen_"+Tracker["constants"]["isac_dir"]
 			os.makedirs(masterdir)
-			global_def.write_command(masterdir)
+			sp_global_def.write_command(masterdir)
 		else:
 			if os.path.exists(masterdir): sxprint("%s already exists"%masterdir)
 			else:
 				os.makedirs(masterdir)
-				global_def.write_command(masterdir)
+				sp_global_def.write_command(masterdir)
 		subdir_path = os.path.join(masterdir, "ali2d_local_params_avg")
 		if not os.path.exists(subdir_path): os.mkdir(subdir_path)
 		subdir_path = os.path.join(masterdir, "params_avg")
@@ -534,7 +534,7 @@ def main():
 	return
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
+	sp_global_def.print_timestamp( "Start" )
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

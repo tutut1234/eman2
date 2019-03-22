@@ -41,14 +41,14 @@ import numpy as np
 from EMAN2 import *
 from EMAN2db import *
 from EMAN2jsondb import *
-from sparx import *
-from applications import MPI_start_end
-from morphology import ampcont2angle
+from sp_sparx import *
+from sp_applications import MPI_start_end
+from sp_morphology import ampcont2angle
 from inspect import currentframe, getframeinfo
-from utilities import generate_ctf
-import global_def
-from global_def import sxprint, ERROR
-from global_def import *
+from sp_utilities import generate_ctf
+import sp_global_def
+from sp_global_def import sxprint, ERROR
+from sp_global_def import *
 
 import mpi
 
@@ -326,14 +326,14 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 		# ------------------------------------------------------------------------------------
 		# Set up SPHIRE global definitions
 		# ------------------------------------------------------------------------------------
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 
 		disable_bdb_cache()
 
 		# Change the name log file for error message
-	original_logfilename = global_def.LOGFILE
-	global_def.LOGFILE = (
+	original_logfilename = sp_global_def.LOGFILE
+	sp_global_def.LOGFILE = (
 		os.path.splitext(program_name)[0] + "_" + original_logfilename + ".txt"
 	)
 
@@ -1164,7 +1164,7 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 			# Create output directory
 			assert not os.path.exists(root_out_dir)
 			os.makedirs(root_out_dir)
-			global_def.write_command(root_out_dir)
+			sp_global_def.write_command(root_out_dir)
 			# Open the consistency check file
 			mic_consistency_check_info_path = os.path.join(
 				root_out_dir,
@@ -1396,7 +1396,7 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 		#
 		if not os.path.exists(root_out_dir):
 			os.makedirs(root_out_dir)
-			global_def.write_command(root_out_dir)
+			sp_global_def.write_command(root_out_dir)
 		assert not os.path.exists(reject_out_of_boundary_dir), "MRK_DEBUG"
 		os.mkdir(reject_out_of_boundary_dir)
 
@@ -1822,7 +1822,7 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 
 			n_bins = 10
 			if len(abs_ctf_limit_histogram) >= n_bins:
-				from statistics import hist_list
+				from sp_statistics import hist_list
 
 				cutoff_region, cutoff_counts = hist_list(
 					abs_ctf_limit_histogram, n_bins
@@ -1966,7 +1966,7 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 		# ------------------------------------------------------------------------------------
 		# Reset SPHIRE global definitions
 		# ------------------------------------------------------------------------------------
-	global_def.LOGFILE = original_logfilename
+	sp_global_def.LOGFILE = original_logfilename
 
 	# ------------------------------------------------------------------------------------
 	# Clean up MPI related variables
@@ -1982,10 +1982,10 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 # ========================================================================================
 
 if __name__ == "__main__":
-	global_def.print_timestamp("Start")
-	global_def.write_command()
+	sp_global_def.print_timestamp("Start")
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp("Finish")
+	sp_global_def.print_timestamp("Finish")
 	mpi.mpi_finalize()
 
 # ========================================================================================

@@ -56,8 +56,8 @@ import sys
 import glob
 import numpy
 
-import global_def
-from global_def import ERROR
+import sp_global_def
+from sp_global_def import ERROR
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -4662,7 +4662,7 @@ def _main():
 
 
 if __name__ == '__main__':
-    global_def.print_timestamp( "Start" )
-    global_def.write_command()
+    sp_global_def.print_timestamp( "Start" )
+    sp_global_def.write_command()
     _main()
-    global_def.print_timestamp( "Finish" )
+    sp_global_def.print_timestamp( "Finish" )

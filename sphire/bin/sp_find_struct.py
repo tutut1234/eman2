@@ -33,11 +33,11 @@ from __future__ import print_function
 #
 
 import os
-import global_def
-from global_def import sxprint, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
 
-from   global_def import *
+from   sp_global_def import *
 from   optparse   import OptionParser
 
 import sys
@@ -84,39 +84,39 @@ def main():
 		else:
 			weights = True
 
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sp_global_def.CACHE_DISABLE:
+			from sp_utilities import disable_bdb_cache
 			disable_bdb_cache()
 
 		if options.MPIGA:
-			from development import cml2_main_mpi
-			global_def.BATCH = True
+			from sp_development import cml2_main_mpi
+			sp_global_def.BATCH = True
 			cml2_main_mpi(args[0], args[1], options.ir, options.ou, options.delta, options.dpsi, 
 				      options.lf, options.hf, options.rand_seed, options.maxit, options.given, options.first_zero, 
 				      weights, options.debug, options.maxgen, options.pcross, options.pmut)
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 
 		elif options.MPI:
 
-			from applications import cml_find_structure_MPI2
-			global_def.BATCH = True
+			from sp_applications import cml_find_structure_MPI2
+			sp_global_def.BATCH = True
 			cml_find_structure_MPI2(args[0], args[1], options.ir, options.ou, options.delta, options.dpsi, 
 				    options.lf, options.hf, options.rand_seed, options.maxit, options.given, options.first_zero, 
 				    weights, options.debug, options.trials)
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 			
 		else:
-			from applications import cml_find_structure_main
-			global_def.BATCH = True
+			from sp_applications import cml_find_structure_main
+			sp_global_def.BATCH = True
 			cml_find_structure_main(args[0], args[1], options.ir, options.ou, options.delta, options.dpsi, 
 				    options.lf, options.hf, options.rand_seed, options.maxit, options.given, options.first_zero, 
 				    weights, options.debug, options.trials)
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

@@ -38,7 +38,7 @@ import numpy as np
 import EMAN2db
 import EMAN2
 import sxctf_refine
-import global_def
+import sp_global_def
 
 
 def setup_argparser():
@@ -128,10 +128,10 @@ def _main_():
 			local_bdb_stack[num_particles_relevant - 1] = particle_header
 
 	EMAN2db.db_close_dict(local_bdb_stack)
-	global_def.sxprint("Particles updated/extracted", num_particles_relevant)
+	sp_global_def.sxprint("Particles updated/extracted", num_particles_relevant)
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp("Start")
+	sp_global_def.print_timestamp("Start")
 	_main_()
-	global_def.print_timestamp("Finish")
+	sp_global_def.print_timestamp("Finish")

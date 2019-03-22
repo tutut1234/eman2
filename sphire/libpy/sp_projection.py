@@ -41,8 +41,8 @@ def project(volume, params, radius=-1):
 		proj: generated 2-D projection
 	"""
         # angles phi, theta, psi
-	from fundamentals import rot_shift2D
-	from utilities import set_params_proj
+	from sp_fundamentals import rot_shift2D
+	from sp_utilities import set_params_proj
 	from EMAN2 import Processor
 
 	if(radius>0):	myparams = {"transform":Transform({"type":"spider","phi":params[0],"theta":params[1],"psi":params[2]}), "radius":radius}
@@ -71,7 +71,7 @@ def prl(vol, params, radius, stack = None):
 				either: an in-core stack of generated 2-D projection
 			stack
 	"""
-	from fundamentals import rot_shift2D
+	from sp_fundamentals import rot_shift2D
 	for i in xrange(len(params)):
         	myparams = {"angletype":"SPIDER", "anglelist":params[i][0:3], "radius":radius}
         	proj = vol.project("pawel", myparams)
@@ -99,8 +99,8 @@ def prj(vol, params, stack = None):
 				either: an in-core stack of generated 2-D projections
 			stack
 	"""
-	from utilities  import set_params_proj
-	from projection import prep_vol
+	from sp_utilities  import set_params_proj
+	from sp_projection import prep_vol
 	volft,kb = prep_vol(vol)
 	for i in range(len(params)):
 		proj = prgs(volft, kb, params[i])
@@ -130,8 +130,8 @@ def prgs(volft, kb, params, kbx=None, kby=None):
 			proj: generated 2-D projection
 	"""
 	#  params:  phi, theta, psi, sx, sy
-	from fundamentals import fft
-	from utilities import set_params_proj
+	from sp_fundamentals import fft
+	from sp_utilities import set_params_proj
 	from EMAN2 import Processor
 
 	R = Transform({"type":"spider", "phi":params[0], "theta":params[1], "psi":params[2]})
@@ -167,8 +167,8 @@ def prgl(volft, params, interpolation_method = 0, return_real = True):
 			proj: generated 2-D projection
 	"""
 	#  params:  phi, theta, psi, sx, sy
-	from fundamentals import fft
-	from utilities import set_params_proj, info
+	from sp_fundamentals import fft
+	from sp_utilities import set_params_proj, info
 	from EMAN2 import Processor
 	if(interpolation_method<0 or interpolation_method>1):  ERROR('Unsupported interpolation method', "interpolation_method", 1, 0)
 	npad = volft.get_attr_default("npad",1)
@@ -196,10 +196,10 @@ def prgq( volft, kb, nx, delta, ref_a, sym, MPI=False):
 	  Generate set of projections based on even angles
 	  The command returns list of ffts of projections
 	"""
-	from projection   import prep_vol, prgs
-	from applications import MPI_start_end
-	from utilities    import even_angles, model_blank
-	from fundamentals import fft
+	from sp_projection   import prep_vol, prgs
+	from sp_applications import MPI_start_end
+	from sp_utilities    import even_angles, model_blank
+	from sp_fundamentals import fft
 	# generate list of Eulerian angles for reference projections
 	#  phi, theta, psi
 	mode = "F"
@@ -215,7 +215,7 @@ def prgq( volft, kb, nx, delta, ref_a, sym, MPI=False):
 	else:
 		ncpu = 1
 		myid = 0
-	from applications import MPI_start_end
+	from sp_applications import MPI_start_end
 	ref_start,ref_end = MPI_start_end( num_ref, ncpu, myid )
 
 	prjref = []     # list of (image objects) reference projections in Fourier representation
@@ -227,7 +227,7 @@ def prgq( volft, kb, nx, delta, ref_a, sym, MPI=False):
 		prjref[i] = prgs(volft, kb, [ref_angles[i][0], ref_angles[i][1], ref_angles[i][2], 0.0, 0.0])
 
 	if MPI:
-		from utilities import bcast_EMData_to_all
+		from sp_utilities import bcast_EMData_to_all
 		for i in range(num_ref):
 			for j in range(ncpu):
 				ref_start,ref_end = MPI_start_end(num_ref,ncpu,j)
@@ -241,7 +241,7 @@ def prgq( volft, kb, nx, delta, ref_a, sym, MPI=False):
 
 
 def prgs1d( prjft, kb, params ):
-	from fundamentals import fft
+	from sp_fundamentals import fft
 	from math import cos, sin, pi
 	from EMAN2 import Processor
 
@@ -337,7 +337,7 @@ def prep_vol(vol, npad = 2, interpolation_method = -1):
 	else:
 		# NN and trilinear
 		assert  interpolation_method >= 0
-		from utilities import pad
+		from sp_utilities import pad
 		volft = pad(vol, Mx*npad, My*npad, My*npad, 0.0)
 		volft.set_attr("npad", npad)
 		volft.div_sinc(interpolation_method)
@@ -355,9 +355,9 @@ def gen_rings_ctf( prjref, nx, ctf, numr):
 	  The command returns list of rings
 	"""
 	from math         import sin, cos, pi
-	from fundamentals import fft
-	from alignment    import ringwe
-	from filter       import filt_ctf
+	from sp_fundamentals import fft
+	from sp_alignment    import ringwe
+	from sp_filter       import filt_ctf
 	mode = "F"
 	wr_four  = ringwe(numr, "F")
 	cnx = nx//2 + 1
@@ -392,7 +392,7 @@ def gen_rings_ctf( prjref, nx, ctf, numr):
 # agls: [[phi0, theta0, psi0], [phi1, theta1, psi1], ..., [phin, thetan, psin]]
 def plot_angles(agls, nx = 256):
 	from math      import cos, sin, fmod, pi, radians
-	from utilities import model_blank
+	from sp_utilities import model_blank
 
 	# var
 	im = model_blank(nx, nx)
@@ -469,7 +469,7 @@ def cml_refine_agls_wrap(vec_in, data, flag_weights = False):
 # not used yet
 def cml_refine_agls(Prj, Ori, delta):
 	from copy      import deepcopy
-	from utilities import amoeba
+	from sp_utilities import amoeba
 	global g_n_prj
 	
 	scales = [delta] * (g_n_prj + 2)
@@ -572,7 +572,7 @@ def cml_export_txtagls(outdir, outname, Ori, disc, title):
 
 # init global variables used to a quick acces with many function of common-lines
 def cml_init_global_var(dpsi, delta, nprj, debug):
-	from utilities import even_angles
+	from sp_utilities import even_angles
 
 	global g_anglst, g_d_psi, g_n_psi, g_i_prj, g_n_lines, g_n_prj, g_n_anglst, g_debug, g_seq
 	# TO FIX
@@ -600,8 +600,8 @@ def cml_init_global_var(dpsi, delta, nprj, debug):
 
 # export result obtain by the function find_struct
 def cml_export_struc(stack, outdir, irun, Ori):
-	from projection import plot_angles
-	from utilities  import set_params_proj, get_im
+	from sp_projection import plot_angles
+	from sp_utilities  import set_params_proj, get_im
 
 	global g_n_prj
 	
@@ -621,10 +621,10 @@ def cml_export_struc(stack, outdir, irun, Ori):
 
 # open and transform projections to sinogram
 def cml_open_proj(stack, ir, ou, lf, hf, dpsi = 1):
-	from projection   import cml_sinogram
-	from utilities    import model_circle, get_params_proj, model_blank, get_im
-	from fundamentals import fftip
-	from filter       import filt_tanh
+	from sp_projection   import cml_sinogram
+	from sp_utilities    import model_circle, get_params_proj, model_blank, get_im
+	from sp_fundamentals import fftip
+	from sp_filter       import filt_tanh
 
 	# number of projections
 	if  type(stack) == type(""): nprj = EMUtil.get_image_count(stack)
@@ -688,7 +688,7 @@ def cml_open_proj(stack, ir, ou, lf, hf, dpsi = 1):
 # transform an image to sinogram (mirror include)
 def cml_sinogram(image2D, diameter, d_psi = 1):
 	from math         import cos, sin
-	from fundamentals import fft
+	from sp_fundamentals import fft
 
 	M_PI  = 3.141592653589793238462643383279502884197
 
@@ -728,7 +728,7 @@ def cml_sinogram(image2D, diameter, d_psi = 1):
 # transform an image to sinogram (mirror include)
 def cml_sinogram_shift(image2D, diameter, shifts = [0.0, 0.0], d_psi = 1):
 	from math         import cos, sin
-	from fundamentals import fft
+	from sp_fundamentals import fft
 
 	M_PI  = 3.141592653589793238462643383279502884197
 
@@ -772,7 +772,7 @@ def cml_sinogram_shift(image2D, diameter, shifts = [0.0, 0.0], d_psi = 1):
 
 # write the head of the logfile
 def cml_head_log(stack, outdir, delta, ir, ou, lf, hf, rand_seed, maxit, given, flag_weights, trials, ncpu):
-	from utilities import print_msg
+	from sp_utilities import print_msg
 
 	# call global var
 	global g_anglst, g_n_prj, g_d_psi, g_n_anglst
@@ -796,14 +796,14 @@ def cml_head_log(stack, outdir, delta, ir, ou, lf, hf, rand_seed, maxit, given, 
 
 # write the end of the logfile
 def cml_end_log(Ori):
-	from utilities import print_msg
+	from sp_utilities import print_msg
 	global g_n_prj
 	print_msg('\n\n')
 	for i in range(g_n_prj): print_msg('Projection #%03i: phi %10.5f    theta %10.5f    psi %10.5f\n' % (i, Ori[4*i], Ori[4*i+1], Ori[4*i+2]))
 
 # find structure
 def cml_find_structure(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_weights):
-	from projection import cml_export_progress, cml_disc, cml_export_txtagls
+	from sp_projection import cml_export_progress, cml_disc, cml_export_txtagls
 	import time, sys
 
 	# global vars
@@ -934,7 +934,7 @@ def cml_find_structure(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_w
 
 # find structure
 def cml_find_structure2(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_weights, myid, main_node, number_of_proc):
-	from projection import cml_export_progress, cml_disc, cml_export_txtagls
+	from sp_projection import cml_export_progress, cml_disc, cml_export_txtagls
 	import time, sys
 	from random import shuffle,random
 
@@ -1186,5 +1186,5 @@ def generate_templates(volft, kb, x_half_size, y_half_size, psi_half_size, proje
 
 
 from builtins import range
-from global_def import *
+from sp_global_def import *
 

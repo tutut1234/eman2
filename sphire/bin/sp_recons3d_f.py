@@ -31,13 +31,13 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
 #
-import global_def
-from global_def import sxprint, ERROR
-from   global_def import *
+import sp_global_def
+from sp_global_def import sxprint, ERROR
+from   sp_global_def import *
 import sys
 from   optparse import OptionParser
 import os
-from   utilities import get_image
+from   sp_utilities import get_image
 
 import mpi
 
@@ -78,24 +78,24 @@ def main():
 	else:
 		mask = get_image( args[3] )
 
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 		disable_bdb_cache()
 
 	if(options.list and options.group > -1):
 		ERROR( "Options group and list cannot be used together" )
 		return
 
-	from applications import recons3d_f
+	from sp_applications import recons3d_f
 
-	global_def.BATCH = True
+	sp_global_def.BATCH = True
 	recons3d_f(prj_stack, vol_stack, fsc_curve, mask, options.CTF, options.snr, options.sym, options.list, options.group, options.npad, options.verbose, options.MPI)
-	global_def.BATCH = False
+	sp_global_def.BATCH = False
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

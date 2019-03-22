@@ -40,11 +40,11 @@ import argparse
 
 # SPHIRE/EMAN2 Libraries
 from EMAN2 import *
-from sparx import *
-import global_def
-import utilities
-from global_def import sxprint, ERROR
-from global_def import *
+from sp_sparx import *
+import sp_global_def
+import sp_utilities
+from sp_global_def import sxprint, ERROR
+from sp_global_def import *
 from time import time
 
 # ========================================================================================
@@ -149,7 +149,7 @@ class SXmpi_run(object):
 # 
 # ----------------------------------------------------------------------------------------
 def isac_substack(args):
-	from utilities import get_im, read_text_row, write_text_row, write_text_file, combine_params2, cmdexecute
+	from sp_utilities import get_im, read_text_row, write_text_row, write_text_file, combine_params2, cmdexecute
 	from EMAN2db import db_check_dict
 	# from EMAN2db import db_open_dict, db_check_dict
 	# from e2bdb import makerelpath
@@ -165,7 +165,7 @@ def isac_substack(args):
 		if_error_then_all_processes_exit_program(error_status)
 	
 	# To make the execution exit upon fatal error by ERROR in global_def.py
-	global_def.BATCH = True 
+	sp_global_def.BATCH = True 
 	
 	# Check error conditions of arguments
 	args.input_bdb_stack_path = args.input_bdb_stack_path.strip()
@@ -196,7 +196,7 @@ def isac_substack(args):
 	sxprint(" ")
 	sxprint("Creating output directory {}.".format(args.output_directory))
 	os.makedirs(args.output_directory)
-	global_def.write_command(args.output_directory)
+	sp_global_def.write_command(args.output_directory)
 	# Extract the number of images in the input BDB stack
 	n_fullstack_img = EMUtil.get_image_count(args.input_bdb_stack_path)
 	if n_fullstack_img == 0:
@@ -576,7 +576,7 @@ def isac_substack(args):
 	sxprint(" ")
 	sxprint("Importing the total 2D alignment parameters in the original scale to the header entry...")
 	cmd_line = "sxheader.py {} --import={} --params={}".format( virtual_bdb_substack_path, # target stack
-																isac_substack_total_header_align2d_path, # import alignment parameters from .txt file
+																isac_substack_total_header_align2d_path, # import sp_alignment parameters from .txt file
 																"xform.align2d") # perform the import on the alignment parameters
 	status = cmdexecute(cmd_line)
 	if status == 0: ERROR("\"{}\" execution failed. Exiting...".format(cmd_line), where=subcommand_name) # action=1 - fatal error, exit
@@ -600,7 +600,7 @@ def isac_substack(args):
 	sxprint(" ")
 	sxprint("Importing class membership information (also found in file \'particle_membership.txt\')...")
 	cmd_line = "sxheader.py {} --import={} --params={}".format( virtual_bdb_substack_path, # target stack
-																class_membership_file_path, # import alignment parameters from .txt file
+																class_membership_file_path, # import sp_alignment parameters from .txt file
 																"ISAC_class_id") # perform the import on the alignment parameters
 	status = cmdexecute(cmd_line)
 	if status == 0: 
@@ -634,7 +634,7 @@ def isac_substack(args):
 def resample_micrographs(args):
 	import glob
 	import shutil
-	from applications import MPI_start_end
+	from sp_applications import MPI_start_end
 	from inspect import currentframe, getframeinfo
 
 	# ====================================================================================
@@ -653,14 +653,14 @@ def resample_micrographs(args):
 	# ------------------------------------------------------------------------------------
 	# Set up SPHIRE global definitions
 	# ------------------------------------------------------------------------------------
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 		disable_bdb_cache()
 	
 	# Change the name log file for error message
-	original_logfilename = global_def.LOGFILE
+	original_logfilename = sp_global_def.LOGFILE
 	# global_def.LOGFILE = os.path.splitext(program_name)[0] + "_" + original_logfilename + ".txt"
-	global_def.LOGFILE = os.path.splitext(command_script_basename)[0] + args.subcommand + "_" + original_logfilename + ".txt"
+	sp_global_def.LOGFILE = os.path.splitext(command_script_basename)[0] + args.subcommand + "_" + original_logfilename + ".txt"
 	
 	# # To make the execution exit upon fatal error by ERROR in global_def.py
 	# global_def.BATCH = True 
@@ -1067,7 +1067,7 @@ def resample_micrographs(args):
 	# ------------------------------------------------------------------------------------
 	# Reset SPHIRE global definitions
 	# ------------------------------------------------------------------------------------
-	global_def.LOGFILE = original_logfilename
+	sp_global_def.LOGFILE = original_logfilename
 	
 	sys.stdout.flush()
 
@@ -1101,7 +1101,7 @@ def resample_micrographs(args):
 def organize_micrographs(args):
 	import glob
 	import shutil
-	from utilities import read_text_file
+	from sp_utilities import read_text_file
 	
 	# Define the name of this subcommand
 	# subcommand_name = "organize_micrographs"
@@ -1114,7 +1114,7 @@ def organize_micrographs(args):
 		if_error_then_all_processes_exit_program(error_status)
 	
 	# To make the execution exit upon fatal error by ERROR in global_def.py
-	global_def.BATCH = True 
+	sp_global_def.BATCH = True 
 	
 	# ------------------------------------------------------------------------------------
 	# Prepare the variables for all sections
@@ -1784,7 +1784,7 @@ def restacking(args):
 	# import traceback
 	# import math
 	from EMAN2db   import db_check_dict
-	from utilities import get_im, get_params_proj
+	from sp_utilities import get_im, get_params_proj
 	
 	# ========================================================================================
 	class SX_mic_entry(object):
@@ -1815,7 +1815,7 @@ def restacking(args):
 		if_error_then_all_processes_exit_program(error_status)
 	
 	# To make the execution exit upon fatal error by ERROR in global_def.py
-	global_def.BATCH = True 
+	sp_global_def.BATCH = True 
 	
 	# Check error conditions of arguments
 	if not db_check_dict(args.input_bdb_stack_path, readonly=True):
@@ -2321,7 +2321,7 @@ def restacking(args):
 
 # ----------------------------------------------------------------------------------------
 def moon_eliminator(args):
-	from fundamentals import resample, rot_shift3D
+	from sp_fundamentals import resample, rot_shift3D
 	
 	# Define the name of this subcommand
 	# subcommand_name = "isac_substack"
@@ -2334,7 +2334,7 @@ def moon_eliminator(args):
 		if_error_then_all_processes_exit_program(error_status)
 
 	# To make the execution exit upon fatal error by ERROR in global_def.py
-	global_def.BATCH = True 
+	sp_global_def.BATCH = True 
 	
 	# ------------------------------------------------------------------------------------
 	# Check error conditions
@@ -2669,11 +2669,11 @@ def moon_eliminator(args):
 # rm -r debug_mrkout_sxpipe_desymmetrize_cwd_g1; sxpipe.py desymmetrize bdb:sdata Sort3D/Cluster_001.txt debug_mrkout_sxpipe_desymmetrize_cwd_g1 --check_duplication
 # ----------------------------------------------------------------------------------------
 def desymmetrize(args):
-	from utilities import read_text_file, write_text_file
+	from sp_utilities import read_text_file, write_text_file
 	from EMAN2db import db_check_dict, db_parse_path, db_open_dict
 	
 	# To make the execution exit upon fatal error by ERROR in global_def.py
-	global_def.BATCH = True 
+	sp_global_def.BATCH = True 
 	
 	# Check error conditions
 	subcommand_name = "desymmetrize"
@@ -2854,7 +2854,7 @@ def angular_distribution_batch(args):
 	kwargs = vars(args)
 	del kwargs['func']
 	del kwargs['subcommand']
-	utilities.angular_distribution(**vars(args))
+	sp_utilities.angular_distribution(**vars(args))
 
 
 # ========================================================================================
@@ -3013,9 +3013,9 @@ def main():
 	
 # ----------------------------------------------------------------------------------------
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
+	sp_global_def.print_timestamp( "Start" )
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 
 # ========================================================================================
 # END OF SCRIPT

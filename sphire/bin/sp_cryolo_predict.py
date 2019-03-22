@@ -28,7 +28,7 @@ import argparse
 from json import dump
 import subprocess
 
-import global_def
+import sp_global_def
 
 
 argparser = argparse.ArgumentParser(
@@ -191,7 +191,7 @@ def main():
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

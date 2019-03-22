@@ -34,10 +34,10 @@ from __future__ import print_function
 import os
 import sys
 from optparse import OptionParser
-from global_def import SPARXVERSION
+from sp_global_def import SPARXVERSION
 
-import global_def
-from global_def import sxprint, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
 from builtins import range
 
@@ -170,7 +170,7 @@ def main():
 				ERROR( "Incorrect number of parameters" )
 				return
 
-			from applications import imgstat_hfsc
+			from sp_applications import imgstat_hfsc
 			imgstat_hfsc( args[0], options.hfsc, options.filament_attr)
 			return
 
@@ -195,7 +195,7 @@ def main():
 					ibeg = i
 					filcur = fis
 				i += 1
-			from utilities import write_text_row
+			from sp_utilities import write_text_row
 			write_text_row(inf, options.filinfo)
 			return
 		
@@ -211,9 +211,9 @@ def main():
 				ERROR( "dpp has to be integer multiplicity of the pixel size" )
 				return
 
-			from utilities import get_im
+			from sp_utilities import get_im
 			v = get_im(args[0])
-			from applications import stack_disks
+			from sp_applications import stack_disks
 			ref_ny = options.ref_ny
 			if ref_ny < 0:
 				ref_ny = options.ref_nx
@@ -226,14 +226,14 @@ def main():
 				ERROR( "Incorrect number of parameters" )
 				return
 
-			from development import consistency_params	
+			from sp_development import consistency_params	
 			consistency_params(args[0], options.consistency, options.dphi, options.dp, options.apix,phithr=options.phithr, ythr=options.ythr, THR=options.segthr)
 			return
 
 		rminp = int((float(options.rmin)/options.apix) + 0.5)
 		rmaxp = int((float(options.rmax)/options.apix) + 0.5)
 		
-		from utilities import get_input_from_string, get_im
+		from sp_utilities import get_input_from_string, get_im
 
 		xr = get_input_from_string(options.xr)
 		txs = get_input_from_string(options.txs)
@@ -263,7 +263,7 @@ def main():
 				ERROR( "Helical symmetry paramter rise --dp should not be negative" )
 				return
 
-			from applications import predict_helical_params
+			from sp_applications import predict_helical_params
 			predict_helical_params(args[0], options.dp, options.dphi, options.apix, options.predict_helical)
 			return
 
@@ -277,7 +277,7 @@ def main():
 				ERROR( "Helical symmetry paramter rise --dp should not be negative" )
 				return
 
-			from utilities import get_im, sym_vol
+			from sp_utilities import get_im, sym_vol
 			vol = get_im(args[0])
 			vol = sym_vol(vol, options.sym)
 			hvol = vol.helicise(options.apix, options.dp, options.dphi, options.fract, rmaxp, rminp)
@@ -371,11 +371,11 @@ def main():
 			else:               
 				mask = args[3]
 
-			from applications import volalixshift_MPI
+			from sp_applications import volalixshift_MPI
 			
-			global_def.BATCH = True
+			sp_global_def.BATCH = True
 			volalixshift_MPI(args[0], args[1], args[2], searchxshiftp, options.apix, options.dp, options.dphi, options.fract, rmaxp, rminp, mask, options.maxit, options.CTF, options.snr, options.sym,  options.function, options.npad, options.debug, nearbyp)
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 
 		if options.diskali:
 			#if options.maxit > 1:
@@ -383,14 +383,14 @@ def main():
 			#	sys.exit()
 			if len(args) < 4:  mask = None
 			else:               mask = args[3]
-			global_def.BATCH = True
+			sp_global_def.BATCH = True
 			if(options.sym[:1] == "d" or options.sym[:1] == "D" ):
-				from development import diskaliD_MPI
+				from sp_development import diskaliD_MPI
 				diskaliD_MPI(args[0], args[1], args[2], mask, options.dp, options.dphi, options.apix, options.function, zstepp, options.fract, rmaxp, rminp, options.CTF, options.maxit, options.sym)
 			else:
-				from applications import diskali_MPI
+				from sp_applications import diskali_MPI
 				diskali_MPI(args[0], args[1], args[2], mask, options.dp, options.dphi, options.apix, options.function, zstepp, options.fract, rmaxp, rminp, options.CTF, options.maxit, options.sym)
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 		
 		if options.symsearch:
 		
@@ -401,7 +401,7 @@ def main():
 			
 			if options.dp < 0 or options.dphi < 0:
 				# read helical symmetry parameters from symdoc
-				from utilities import read_text_row
+				from sp_utilities import read_text_row
 				hparams=read_text_row(options.symdoc)
 				dp = hparams[0][0]
 				dphi = hparams[0][1]
@@ -409,18 +409,18 @@ def main():
 				dp   = options.dp
 				dphi = options.dphi
 			
-			from applications import symsearch_MPI
+			from sp_applications import symsearch_MPI
 			if len(args) < 3:	
 				mask = None
 			else:
 				mask= args[2]
-			global_def.BATCH = True
+			sp_global_def.BATCH = True
 			symsearch_MPI(args[0], args[1], mask, dp, options.ndp, options.dp_step, dphi, options.ndphi, options.dphi_step, rminp, rmaxp, options.fract, options.sym, options.function, options.datasym, options.apix, options.debug)
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 			
 		elif len(options.gendisk)> 0:
-			from applications import gendisks_MPI
-			global_def.BATCH = True
+			from sp_applications import gendisks_MPI
+			sp_global_def.BATCH = True
 			if len(args) == 1:  mask3d = None
 			else:               mask3d = args[1]
 			if options.dp < 0:
@@ -428,12 +428,12 @@ def main():
 				return
 				
 			gendisks_MPI(args[0], mask3d, options.ref_nx, options.apix, options.dp, options.dphi, options.fract, rmaxp, rminp, options.CTF, options.function, options.sym, options.gendisk, options.maxerror, options.new_pixel_size, options.match_pixel_rise)
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 		
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

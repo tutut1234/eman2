@@ -44,7 +44,7 @@ from __future__ import print_function
 from builtins import range
 from past.builtins import cmp
 from EMAN2 import *
-from sparx import *
+from sp_sparx import *
 from sys import  *
 import os
 import sys
@@ -53,9 +53,9 @@ import shutil
 from EMAN2db import db_check_dict
 
 from optparse import OptionParser
-import global_def
-from global_def import sxprint, ERROR
-from global_def import  *
+import sp_global_def
+from sp_global_def import sxprint, ERROR
+from sp_global_def import  *
 
 # ========================================================================================
 # Helper Functions
@@ -255,7 +255,7 @@ def main():
 	assert not os.path.exists(dir_path_work), '# Logical Error: The output directory should not exists at this point of code.'
 	sxprint('# Creating work dir...')
 	os.makedirs(dir_path_work)
-	global_def.write_command(dir_path_work)
+	sp_global_def.write_command(dir_path_work)
 	
 	# ------------------------------------------------------------------------------------
 	# STEP 2: Convert RELION parameters to SPHIRE format
@@ -1145,9 +1145,9 @@ def main():
 # ----------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-	global_def.print_timestamp( "Start" )
+	sp_global_def.print_timestamp( "Start" )
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 
 # ========================================================================================
 # END OF SCRIPT

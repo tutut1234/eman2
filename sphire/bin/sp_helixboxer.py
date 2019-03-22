@@ -39,8 +39,8 @@ from math import *
 import sys
 import os
 
-import global_def
-from global_def import sxprint, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
 try:
 	from PyQt4 import QtGui, QtCore
@@ -352,7 +352,7 @@ def get_rotated_particles( micrograph, helix_coords, px_dst = None, px_length = 
 		else:
 			try:
 				from EMAN2 import Util
-				from fundamentals import rot_shift2D
+				from sp_fundamentals import rot_shift2D
 				ptcl = Util.window( micrograph, sidepadded, sidepadded, 1, int(round(centroid[0] - nxc)), int(round(centroid[1] - nyc)), 0) 
 				ptcl = Util.window( rot_shift2D(ptcl, -rot_angle, interpolation_method="gridding"), side1, side1, 1, 0, 0, 0)
 				ptcl["ptcl_helix_coords"] = tuple(helix_coords)
@@ -708,7 +708,7 @@ def db_save_particle_coords(micrograph_filepath, output_filepath = None, px_dst 
 	save_particle_coords(helix_particle_coords_dict, output_filepath, micrograph_filepath, px_length, px_width)
 	
 def db_save_particles(micrograph_filepath, ptcl_filepath = None, px_dst = None, px_length = None, px_width = None, rotated = True, do_edge_norm = False, gridding = False, stack_file_mode = "multiple", do_filt = True, filt_freq = -1):
-	from filter 		import filt_gaussh
+	from sp_filter 		import filt_gaussh
 	
 	micrograph_filename = os.path.basename(micrograph_filepath)
 	micrograph_name = os.path.splitext( micrograph_filename )[0]
@@ -1309,7 +1309,7 @@ if ENABLE_GUI:
 		def calc_ctf_cter(self):
 			# calculate ctf of ORIGINAL micrograph using cter in gui mode
 			# this must mean cter is being calculated on a single micrograph!
-			from utilities import get_im
+			from sp_utilities import get_im
 			
 			print("starting cter")
 			
@@ -1345,7 +1345,7 @@ if ENABLE_GUI:
 				print("Please remove or rename %s and or %s"%(outpwrot,outpartres))
 				return
 			
-			from morphology import cter
+			from sp_morphology import cter
 			defocus, ast_amp, ast_agl, error_defocus, error_astamp, error_astagl = cter(None, outpwrot, outpartres, None, None, ctf_window_size, voltage=ctf_volt, Pixel_size=input_pixel_size, Cs = ctf_cs, wgh=ctf_ampcont, kboot=ctf_kboot, MPI=False, DEBug= False, overlap_x = ctf_overlap_size, overlap_y = ctf_overlap_size, edge_x = ctf_edge_size, edge_y = ctf_edge_size, guimic=image_name)
 		
 			self.estdef.setText(str(defocus))
@@ -1368,7 +1368,7 @@ if ENABLE_GUI:
 			
 			# XXX: wgh?? amp_cont static to 0?
 			# set image properties, in order to save ctf values
-			from utilities import set_ctf
+			from sp_utilities import set_ctf
 			set_ctf(img, [defocus, ctf_cs, ctf_volt, input_pixel_size, 0, ctf_ampcont, ast_amp, ast_agl])
 			# and rewrite image 
 			img.write_image(image_name)
@@ -1540,7 +1540,7 @@ if ENABLE_GUI:
 					micrograph = EMData(self.micrograph_filepath)
 					
 					if self.invert_contrast:
-						from utilities import info, model_blank
+						from sp_utilities import info, model_blank
 						from EMAN2 	   import Util
 						# invert contrast of micrograph so average remains unchanged
 						print("Inverting contrast of micrograph")
@@ -1974,7 +1974,7 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 		windowallmic(dirid='mic', micid='mic', micsuffix='hdf', outdir='out',  pixel_size=1.2, boxsize=200, minseg = 6, outstacknameall='bdb:adata', hcoords_suffix = "_boxes.txt", ptcl_dst=15, inv_contrast=False, new_pixel_size=1.84, rmax = 60.0, topdir='/Users/project')
 	'''
 	import os
-	from utilities      import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg
 	from sxhelixboxer	import windowmic
 	from EMAN2 	        import EMUtil, Util
 	
@@ -2062,7 +2062,7 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 	if len(cutoffhistogram) > 0:		#@ming
 		lhist = 3
 		if len(cutoffhistogram) >= lhist:
-			from statistics import hist_list
+			from sp_statistics import hist_list
 			region,hist = hist_list(cutoffhistogram,lhist)	
 			msg = "      Histogram of cut off frequencies\n      ERROR       number of frequencies\n"
 			print_msg(msg)
@@ -2114,10 +2114,10 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 	       		    two stacks of segments to outdir: mic0_abox_0.hdf	and mic0_abox_1.hdf	 
 	       	    
 	'''
-	from utilities    import pad, model_blank, read_text_row, get_im, print_msg
-	from fundamentals import ramp, resample
-	from filter	  	  import filt_gaussh,filt_tanl
-	from pixel_error  import getnewhelixcoords
+	from sp_utilities    import pad, model_blank, read_text_row, get_im, print_msg
+	from sp_fundamentals import ramp, resample
+	from sp_filter	  	  import filt_gaussh,filt_tanl
+	from sp_pixel_error  import getnewhelixcoords
 	from EMAN2 	      import EMUtil, Util
 	from subprocess   import call
 	
@@ -2153,7 +2153,7 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 
 	## Cut off frequency components higher than CTF limit   @ming
 	img = get_im(micname)
-	from morphology import ctflimit
+	from sp_morphology import ctflimit
 	if limitctf:
 # 			Cut off frequency components higher than CTF limit 
 		q1, q2 = ctflimit(boxsize,ctfs[0],ctfs[1],ctfs[2],new_pixel_size)
@@ -2234,7 +2234,7 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 	#try:      iseg = EMUtil.get_image_count(outstacknameall)
 	#except:   iseg = 0
 	if importctf:
-		from utilities import generate_ctf
+		from sp_utilities import generate_ctf
 		ctfs = generate_ctf(ctfs[:8])
 	#for h in xrange(nhelices):
 	h=0                                                           ## added by@ming
@@ -2266,7 +2266,7 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 					#iseg += 1
 		h+=1			
 if __name__ == '__main__':
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

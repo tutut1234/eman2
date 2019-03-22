@@ -440,7 +440,7 @@ def fpol(image, nnx, nny=1, nnz=1, RetReal = True, normalize = True):
 		Output
 			the output interpolated up image
 	"""
-	from fundamentals import fft
+	from sp_fundamentals import fft
 	
 	nx = image.get_xsize()
 	ny = image.get_ysize()
@@ -492,9 +492,9 @@ def image_decimate(img, decimation=2, fit_to_fft = True, frequency_low=0, freque
 		Window 2D image to FFT-friendly size, apply Butterworth low pass filter,
 		and decimate image by integer factor
 	"""
-	from filter       import filt_btwl
-	from fundamentals import smallprime
-	from utilities    import get_image
+	from sp_filter       import filt_btwl
+	from sp_fundamentals import smallprime
+	from sp_utilities    import get_image
 	if type(img)     == str:	img=get_image(img)
 	nz       = img.get_zsize()
 	if( nz > 1):                    ERROR("This command works only for 2-D images", "image_decimate", 1)
@@ -531,11 +531,11 @@ def resample(img, sub_rate=0.5):
 		fit_to_fft will change the ouput image size to an fft_friendly size
 	"""
 
-	from fundamentals import subsample
-	from utilities    import get_pixel_size, set_pixel_size
+	from sp_fundamentals import subsample
+	from sp_utilities    import get_pixel_size, set_pixel_size
 
 	if type(img) == str:
-		from utilities    import get_image
+		from sp_utilities    import get_image
 		img = get_image(img)
 	nx = img.get_xsize()
 	ny = img.get_ysize()
@@ -571,7 +571,7 @@ def resample(img, sub_rate=0.5):
 				e = e.rot_scale_conv_new_3D(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, kb, sub_rate)
 
 	# Automatically adjust pixel size for ctf parameters
-	from utilities import get_pixel_size, set_pixel_size
+	from sp_utilities import get_pixel_size, set_pixel_size
 	apix = get_pixel_size(e)
 	apix /= sub_rate
 	set_pixel_size(e, apix)
@@ -580,14 +580,14 @@ def resample(img, sub_rate=0.5):
 		cp = cc.get_params("spider")
 		cp["tx"] *= sub_rate
 		cp["ty"] *= sub_rate
-		from utilities import set_params_proj
+		from sp_utilities import set_params_proj
 		set_params_proj(e, [cp["phi"], cp["theta"], cp["psi"], -cp["tx"], -cp["ty"]]) # have to invert as set inverts them again
 	cc = e.get_attr_default("xform.align2d", None)
 	if cc:
 		cp = cc.get_params("2D")
 		cp["tx"] *= sub_rate
 		cp["ty"] *= sub_rate
-		from utilities import set_params2D
+		from sp_utilities import set_params2D
 		set_params2D(e, [cp["alpha"], cp["tx"], cp["ty"], cp["mirror"], cp["scale"]])
 
 	return 	e
@@ -603,11 +603,11 @@ def fdownsample(img, sub_rate=0.5, RetReal = True):
 		fit_to_fft will change the ouput image size to an fft_friendly size
 	"""
 
-	from fundamentals import fdecimate
-	from utilities    import get_pixel_size, set_pixel_size
+	from sp_fundamentals import fdecimate
+	from sp_utilities    import get_pixel_size, set_pixel_size
 
 	if type(img) == str:
-		from utilities    import get_image
+		from sp_utilities    import get_image
 		img = get_image(img)
 	nx = img.get_xsize()
 	if img.is_complex():
@@ -651,7 +651,7 @@ def fdownsample(img, sub_rate=0.5, RetReal = True):
 		"""
 
 	# Automatically adjust pixel size for ctf parameters
-	from utilities import get_pixel_size, set_pixel_size
+	from sp_utilities import get_pixel_size, set_pixel_size
 	apix = get_pixel_size(e)
 	apix /= sub_rate
 	set_pixel_size(e, apix)
@@ -660,14 +660,14 @@ def fdownsample(img, sub_rate=0.5, RetReal = True):
 		cp = cc.get_params("spider")
 		cp["tx"] *= sub_rate
 		cp["ty"] *= sub_rate
-		from utilities import set_params_proj
+		from sp_utilities import set_params_proj
 		set_params_proj(e, [cp["phi"], cp["theta"], cp["psi"], -cp["tx"], -cp["ty"]]) # have to invert as set inverts them again
 	cc = e.get_attr_default("xform.align2d", None)
 	if cc:
 		cp = cc.get_params("2D")
 		cp["tx"] *= sub_rate
 		cp["ty"] *= sub_rate
-		from utilities import set_params2D
+		from sp_utilities import set_params2D
 		set_params2D(e, [cp["alpha"], cp["tx"], cp["ty"], cp["mirror"], cp["scale"]])
 
 	return 	e
@@ -728,7 +728,7 @@ def prepi(image, RetReal = True):
 
 
 def prep_refim_gridding(refim, wr, numr, mode = "F"):
-	from fundamentals import prepi
+	from sp_fundamentals import prepi
 	nx = refim.get_xsize()
 	ny = refim.get_ysize()
 	cnx = nx//2+1
@@ -837,7 +837,7 @@ def rot_avg_image(image_to_be_averaged):
 	Returns a 2-D or 3-D image containing a rotational average of image e
 	"""
 	import types
-	from utilities import get_im
+	from sp_utilities import get_im
 	if type(image_to_be_averaged) is bytes: image_to_be_averaged = get_im(image_to_be_averaged)
 	return image_to_be_averaged.rotavg_i()
 
@@ -860,7 +860,7 @@ def rops(e):
 		Input image can be real or Fourier, can be rectangular
 		output length mapped onto x-dimension length
 	"""
-	from utilities import model_blank
+	from sp_utilities import model_blank
 	table = Util.rotavg_fourier(img)
 	table = table[:len(table)//2]
 	scale = (img.get_xsize() - 2*img.is_complex())*img.get_ysize()*img.get_zsize()
@@ -881,7 +881,7 @@ def rops_textfile(e, filename, lng = False):
 		Input image can be real or Fourier, can be rectangular
 		output length mapped onto x-dimension length
 	"""
-	from utilities import write_text_file
+	from sp_utilities import write_text_file
 	table = Util.rotavg_fourier(img)
 	table = table[:len(table)//2]
 	scale = (img.get_xsize() - 2*img.is_complex())*img.get_ysize()*img.get_zsize()
@@ -919,7 +919,7 @@ def rops_dir(indir, output_dir = "1dpw2_dir"):
 		Calculate 1D rotationally averaged power spectra from
 		image stack listed in a directory
 	"""
-	from utilities import get_im, write_text_file
+	from sp_utilities import get_im, write_text_file
 	import os
 	flist = os.listdir(indir)
 	if os.path.exists(output_dir) is False: os.mkdir(output_dir)
@@ -967,7 +967,7 @@ def gridrot_shift2D(image, ang = 0.0, sx = 0.0, sy = 0.0, scale = 1.0):
 		Rotate and shift an image using gridding in Fourier space.
 	"""
 	from EMAN2 import Processor
-	from fundamentals import fftip, fft
+	from sp_fundamentals import fftip, fft
 
 	nx = image.get_xsize()
 	# split shift into integer and fractional parts
@@ -1011,8 +1011,8 @@ def gridrot_shift2D(image, ang = 0.0, sx = 0.0, sy = 0.0, scale = 1.0):
 		Rotate and shift an image using gridding in Fourier space.
 	"""
 	from EMAN2 import Processor
-	from fundamentals import fftip, fft
-	from utilities import compose_transform2
+	from sp_fundamentals import fftip, fft
+	from sp_utilities import compose_transform2
 
 	nx = image.get_xsize()
 	if( (ang != 0.0) or (scale != 1.0) ):
@@ -1068,7 +1068,7 @@ def ft2polargrid(image, ring_length, nb, ne):
 		resample to polar coordinates using gridding in Fourier space.
 	"""
 	from EMAN2 import Processor
-	from fundamentals import fftip, fft
+	from sp_fundamentals import fftip, fft
 
 	nx = image.get_xsize()
 	# prepare 
@@ -1129,7 +1129,7 @@ def rot_shift2D(img, angle = 0.0, sx = 0.0, sy = 0.0, mirror = 0, scale = 1.0, i
 		return img
 	elif(use_method == "gridding" and mode == "cyclic"): # previous rtshg
 		from math import radians
-		from fundamentals import prepi
+		from sp_fundamentals import prepi
 		o, kb = prepi(img)
 		# gridding rotation
 		o = o.rot_scale_conv_new(radians(angle), sx, sy, kb, scale)
@@ -1137,14 +1137,14 @@ def rot_shift2D(img, angle = 0.0, sx = 0.0, sy = 0.0, mirror = 0, scale = 1.0, i
 		return o
 	elif(use_method == "gridding" and mode == "background"): # previous rtshg
 		from math import radians
-		from fundamentals import prepi
+		from sp_fundamentals import prepi
 		o, kb = prepi(img)
 		# gridding rotation
 		o = o.rot_scale_conv_new_background(radians(angle), sx, sy, kb, scale)
 		if  mirror: o.process_inplace("xform.mirror", {"axis":'x'})
 		return o	
 	elif(use_method == "ftgridding"): # previous rtshg
-		from fundamentals import gridrot_shift2D
+		from sp_fundamentals import gridrot_shift2D
 		img = gridrot_shift2D(img, angle, sx, sy, scale)
 		if  mirror: img.process_inplace("xform.mirror", {"axis":'x'})
 		return img
@@ -1286,14 +1286,14 @@ def welch_pw2(img, win_size=512, overlp_x=50, overlp_y=50, edge_x=0, edge_y=0):
 	""" 
 		Calculate the power spectrum using Welch periodograms (overlapped periodogram)
 	"""
-	from fundamentals import window2d, ramp
+	from sp_fundamentals import window2d, ramp
 	from EMAN2 import periodogram
 	nx = img.get_xsize()
 	ny = img.get_ysize()
 	nx_fft = smallprime(nx)
 	ny_fft = smallprime(ny)
 	x_gaussian_hi = 1./win_size
-	from filter    import filt_gaussh
+	from sp_filter    import filt_gaussh
 	e_fil = filt_gaussh(window2d(img,nx_fft,ny_fft,"l"), x_gaussian_hi)
 	x38 = 100/(100-overlp_x) # normalization of % of the overlap in x 
 	x39 = 100/(100-overlp_y) # normalization of % of the overlap in y
@@ -1334,8 +1334,8 @@ def welch_pw2_tilt_band(img,theta,num_bnd=-1,overlp_y=50,edge_x=0,edge_y=0,win_s
 	win_y = win_x
 	x_gaussian_hi = 1./win_x
 	del img
-	from filter import filt_gaussh
-	from utilities import drop_image, rot_image
+	from sp_filter import filt_gaussh
+	from sp_utilities import drop_image, rot_image
 	# The input img is rotated such that tilt axis is vertical
 	img2  = rot_image(img1,theta, 0, 0, 1.0,1.0)	
 	e_fil = filt_gaussh(img2, x_gaussian_hi)
@@ -1364,14 +1364,14 @@ def tilemic(img, win_size=512, overlp_x=50, overlp_y=50, edge_x=0, edge_y=0):
 	""" 
 		Calculate set of periodograms for tiles.  Returns a list.
 	"""
-	from fundamentals import window2d, ramp
+	from sp_fundamentals import window2d, ramp
 	from EMAN2 import periodogram
 	nx = img.get_xsize()
 	ny = img.get_ysize()
 	nx_fft = smallprime(nx)
 	ny_fft = smallprime(ny)
 	x_gaussian_hi = 1./win_size
-	from filter    import filt_gaussh
+	from sp_filter    import filt_gaussh
 	e_fil = filt_gaussh(window2d(img,nx_fft,ny_fft,"l"), x_gaussian_hi)
 	x38 = 100/(100-overlp_x) # normalization of % of the overlap in x 
 	x39 = 100/(100-overlp_y) # normalization of % of the overlap in y
@@ -1518,7 +1518,7 @@ class symclass(object):
 			self.nsym = int(self.sym[1:])
 
 			if self.nsym < 1:
-				global_def.ERROR("For Cn symmetry, we need n>0", "symclass", 1)
+				sp_global_def.ERROR("For Cn symmetry, we need n>0", "symclass", 1)
 			self.brackets = [
 				[old_div(360., self.nsym), 90.0, old_div(360., self.nsym), 90.0],
 				[old_div(360., self.nsym), 180.0, old_div(360., self.nsym), 180.0]
@@ -1529,7 +1529,7 @@ class symclass(object):
 		elif self.sym[0] == "d":
 			self.nsym = 2 * int(self.sym[1:])
 			if (self.nsym < 1):
-				global_def.ERROR("For Dn symmetry, we need n>0", "symclass", 1)
+				sp_global_def.ERROR("For Dn symmetry, we need n>0", "symclass", 1)
 			self.brackets = [
 				[old_div(360., self.nsym), 90.0, old_div(360., self.nsym), 90.0],
 				[old_div(360., self.nsym) * 2, 90.0, old_div(360., self.nsym) * 2, 90.0]
@@ -1615,7 +1615,7 @@ class symclass(object):
 				self.symangles.append([0.0, 180.0, float(i)])
 
 		else:
-			global_def.ERROR("Unknown symmetry", "symclass", 1)
+			sp_global_def.ERROR("Unknown symmetry", "symclass", 1)
 
 		for args in self.symangles:
 			self.transform.append(EMAN2_cppwrap.Transform({
@@ -2107,7 +2107,7 @@ class symclass(object):
 				] = True
 
 		else:
-			global_def.ERROR("unknown symmetry", "symclass: is_in_subunit", 1)
+			sp_global_def.ERROR("unknown symmetry", "symclass: is_in_subunit", 1)
 
 
 		if tolistconv:
@@ -2316,7 +2316,7 @@ class symclass(object):
 				self.old_even_angles_data[key] = value
 			self.old_even_angles_data['needs_rebuild'] = True
 			from math      import pi, sqrt, cos, acos, tan, sin, radians, degrees
-			from utilities import even_angles_cd
+			from sp_utilities import even_angles_cd
 			angles = []
 			phi2_org = phi2
 			if(phi2_org < 0.0):  phi2_org = self.brackets[1][0] - 1.0e-7 # exclude right border of unit
@@ -2408,8 +2408,8 @@ class symclass(object):
 
 from builtins import range
 from builtins import object
-import global_def
-from global_def import *
+import sp_global_def
+from sp_global_def import *
 from past.utils import old_div
 import numpy
 import EMAN2_cppwrap

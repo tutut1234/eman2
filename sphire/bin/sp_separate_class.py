@@ -3,9 +3,9 @@ from __future__ import print_function
 
 import os
 from EMAN2 import EMUtil, EMArgumentParser, EMANVERSION
-from applications import header
+from sp_applications import header
 from datetime import datetime
-from logger import Logger, BaseLogger_Files, BaseLogger_Print
+from sp_logger import Logger, BaseLogger_Files, BaseLogger_Print
 #from global_def import ERROR
 
 # Set default values (global variables written in ALL CAPS)
@@ -148,7 +148,7 @@ def prepare_log(outdir='.', verbose=False, main=True):
 		else:
 			log = Logger(base_logger=BaseLogger_Files(), file_name=logname)
 	except TypeError:
-		print("WARNING: Using old logger.py library")
+		print("WARNING: Using old sp_logger.py library")
 		log = Logger(base_logger=BaseLogger_Files())#, file_name=logname)
 		logname = 'log.txt'
 		

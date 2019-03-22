@@ -40,26 +40,26 @@ import sys
 from   time import time	
 from   math import sqrt, atan2, tan, pi
 
-import global_def
-from   global_def     import *
-from   global_def import sxprint, ERROR
+import sp_global_def
+from   sp_global_def     import *
+from   sp_global_def import sxprint, ERROR
 
-from user_functions import *
+from sp_user_functions import *
 from optparse       import OptionParser
 
-from applications import MPI_start_end
-from utilities    import model_circle, model_blank, get_image, peak_search, get_im, pad
-from utilities    import reduce_EMData_to_root, bcast_EMData_to_all, send_attr_dict, file_type, bcast_number_to_all, bcast_list_to_all
-from utilities    import get_params2D, set_params2D, chunks_distribution
-from utilities    import print_msg, print_begin_msg, print_end_msg
+from sp_applications import MPI_start_end
+from sp_utilities    import model_circle, model_blank, get_image, peak_search, get_im, pad
+from sp_utilities    import reduce_EMData_to_root, bcast_EMData_to_all, send_attr_dict, file_type, bcast_number_to_all, bcast_list_to_all
+from sp_utilities    import get_params2D, set_params2D, chunks_distribution
+from sp_utilities    import print_msg, print_begin_msg, print_end_msg
 
-from statistics   import varf2d_MPI
+from sp_statistics   import varf2d_MPI
 
-from fundamentals import fft, ccf, rot_shift3D, rot_shift2D, fshift
+from sp_fundamentals import fft, ccf, rot_shift3D, rot_shift2D, fshift
 
 from EMAN2	  	  import Processor
 
-from pixel_error  import ordersegments
+from sp_pixel_error  import ordersegments
 
 import mpi
 
@@ -101,16 +101,16 @@ def main():
 		if len(args) == 1: mask = None
 		else:              mask = args[1]
 			
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sp_global_def.CACHE_DISABLE:
+			from sp_utilities import disable_bdb_cache
 			disable_bdb_cache()
 		
-		global_def.BATCH = True
+		sp_global_def.BATCH = True
 		if options.oneDx:
 			helicalshiftali_MPI(args[0], mask, options.maxit, options.CTF, options.snr, options.Fourvar, options.search_rng)		
 		else:
 			shiftali_MPI(args[0], mask, options.maxit, options.CTF, options.snr, options.Fourvar, options.search_rng, options.oneDx, options.search_rng_y)
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 		
 		return
 
@@ -166,14 +166,14 @@ def shiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fourvar=Fa
 		mask = get_im(maskfile)
 
 	if CTF:
-		from filter import filt_ctf
-		from morphology   import ctf_img
+		from sp_filter import filt_ctf
+		from sp_morphology   import ctf_img
 		ctf_abs_sum = EMData(nx, ny, 1, False)
 		ctf_2_sum = EMData(nx, ny, 1, False)
 	else:
 		ctf_2_sum = None
 
-	from global_def import CACHE_DISABLE
+	from sp_global_def import CACHE_DISABLE
 	if CACHE_DISABLE:
 		data = EMData.read_images(stack, list_of_particles)
 	else:
@@ -358,12 +358,12 @@ def shiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fourvar=Fa
 	mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
 	par_str = ["xform.align2d", "ID"]
 	if myid == main_node:
-		from utilities import file_type
+		from sp_utilities import file_type
 		if(file_type(stack) == "bdb"):
-			from utilities import recv_attr_dict_bdb
+			from sp_utilities import recv_attr_dict_bdb
 			recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 		else:
-			from utilities import recv_attr_dict
+			from sp_utilities import recv_attr_dict
 			recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 		
 	else:           send_attr_dict(main_node, data, par_str, image_start, image_end)
@@ -454,8 +454,8 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 		data[im] = rot_shift2D(data[im], p['alpha'], p['tx'], p['ty'], p['mirror'], p['scale'])
 
 	if CTF:
-		from filter import filt_ctf
-		from morphology   import ctf_img
+		from sp_filter import filt_ctf
+		from sp_morphology   import ctf_img
 		ctf_abs_sum = EMData(nx, ny, 1, False)
 		ctf_2_sum = EMData(nx, ny, 1, False)
 	else:
@@ -464,7 +464,7 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 
 
 
-	from utilities import info
+	from sp_utilities import info
 
 	for im in range(ldata):
 		data[im].set_attr('ID', list_of_particles[im])
@@ -665,12 +665,12 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 	mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
 	par_str = ["xform.align2d", "ID"]
 	if myid == main_node:
-		from utilities import file_type
+		from sp_utilities import file_type
 		if(file_type(stack) == "bdb"):
-			from utilities import recv_attr_dict_bdb
+			from sp_utilities import recv_attr_dict_bdb
 			recv_attr_dict_bdb(main_node, stack, data, par_str, 0, ldata, nproc)
 		else:
-			from utilities import recv_attr_dict
+			from sp_utilities import recv_attr_dict
 			recv_attr_dict(main_node, stack, data, par_str, 0, ldata, nproc)
 	else:           send_attr_dict(main_node, data, par_str, 0, ldata)
 	if myid == main_node: print_end_msg("helical-shiftali_MPI")				
@@ -713,8 +713,8 @@ def gaussian(sigma, a, mu, x):
 	return a*exp(-(x-mu)**2/(2.0*sigma**2))*1.0/(sigma*sqrt(2*pi))
 			
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

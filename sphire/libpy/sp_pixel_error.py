@@ -199,7 +199,7 @@ def align_diff_params(ali_params1, ali_params2):
 	two sets of alignment parameters.	
 	'''
 	from math import cos, sin, pi
-	from utilities import combine_params2
+	from sp_utilities import combine_params2
 	
 	nima = len(ali_params1)
 	nima2 = len(ali_params2)
@@ -268,7 +268,7 @@ def align_diff(data1, data2=None, suffix="_ideal"):
 	This function determines the relative angle, shifts and mirrorness between
 	two list of data
 	'''
-	from utilities import get_params2D
+	from sp_utilities import get_params2D
 	
 	nima = len(data1)
 
@@ -301,7 +301,7 @@ def align_diff_textfile(textfile1, textfile2):
 	This function (2D) determines the relative angle, shifts and mirrorness between
 	the two textfile of alignment parameters
 	'''
-	from utilities import read_text_row
+	from sp_utilities import read_text_row
 	
 	ali1 = read_text_row(textfile1, "", "")
 	ali2 = read_text_row(textfile2, "", "")
@@ -330,7 +330,7 @@ def ave_ali_err(data1, data2=None, r=25, suffix="_ideal"):
 	the two lists of data. It also calculates the mirror consistent
 	rate and average pixel error between two sets of parameters.
 	'''
-	from utilities import get_params2D, combine_params2
+	from sp_utilities import get_params2D, combine_params2
 	from math import sqrt, sin, pi
 	
 	# Determine relative angle, shifts and mirror
@@ -361,7 +361,7 @@ def ave_ali_err_params(ali_params1, ali_params2, r=25):
 	the two sets of alignment parameters. It also calculates the mirror consistent
 	rate and average pixel error between two sets of parameters.
 	'''
-	from utilities import combine_params2
+	from sp_utilities import combine_params2
 	from math import sqrt, sin, pi
 
 	# Determine relative angle, shift and mirror
@@ -389,9 +389,9 @@ def ave_ali_err_textfile(textfile1, textfile2, r=25):
 	the two sets of alignment parameters. It also calculates the mirror consistent
 	rate and average pixel error between two sets of parameters.
 	'''
-	from utilities import combine_params2
+	from sp_utilities import combine_params2
 	from math import sqrt, sin, pi
-	from utilities import read_text_row
+	from sp_utilities import read_text_row
 	
 	ali1 = read_text_row(textfile1, "", "")
 	ali2 = read_text_row(textfile2, "", "")
@@ -499,7 +499,7 @@ def ali_stable_list(ali_params1, ali_params2, pixel_error_threshold, r=25):
 	the two sets of alignment parameters. It then determines whether each image is
 	stable or not and return this information as an int list. (1 is stable and 0 is unstable)
 	'''
-	from utilities import combine_params2
+	from sp_utilities import combine_params2
 	from math import sqrt, sin, pi
 	
 	# Determine relative angle, shift and mirror
@@ -651,8 +651,8 @@ def multi_align_stability(ali_params, mir_stab_thld = 0.0, grp_err_thld = 10000.
 	        return g
 	'''
 
-	from statistics import k_means_stab_bbenum
-	from utilities import combine_params2
+	from sp_statistics import k_means_stab_bbenum
+	from sp_utilities import combine_params2
 	from numpy import array
 	from math import sqrt
 
@@ -828,8 +828,8 @@ def rotate_angleset_to_match(agls1, agls2):
 	  Rotation itself is not returned.
 	  Makes sense only for no symmetry
 	"""
-	from utilities    import rotation_between_anglesets
-	from fundamentals import rotate_params
+	from sp_utilities    import rotation_between_anglesets
+	from sp_fundamentals import rotate_params
 
 	t1 = rotation_between_anglesets(agls1, agls2)
 
@@ -852,7 +852,7 @@ def ordersegments(infilaments, ptclcoords):
 
 	def orderbymodule(xxp,yyp):
 		from math import atan,sin,cos,pi, atan2
-		from statistics import linreg
+		from sp_statistics import linreg
 		nq = len(xxp)
 		xs = sum(xxp)/nq
 		ys = sum(yyp)/nq
@@ -920,7 +920,7 @@ def ordersegments(infilaments, ptclcoords):
 
 def mapcoords(x, y, r, nx, ny):
 	from math 			import ceil, floor
-	from utilities 	import get_dist
+	from sp_utilities 	import get_dist
 	import sys
 	'''
 	Input:
@@ -999,9 +999,9 @@ def consistency_params(stack, dphi, dp, pixel_size, phithr=2.5, ythr=1.5, THR=3)
 		stack        - contains coding of filaments and coordinates of segments ptcl_source_coord
 		fname_params - parameters whose consistency is tested
 	'''
-	from utilities import read_text_row, write_text_row, get_dist
-	from applications import ordersegments
-	from pixel_error import angle_diff
+	from sp_utilities import read_text_row, write_text_row, get_dist
+	from sp_applications import ordersegments
+	from sp_pixel_error import angle_diff
 
 	filaments = ordersegments(stack)
 	ptclcoords = EMUtil.get_all_attributes(stack, 'ptcl_source_coord')
@@ -1107,8 +1107,8 @@ def getnewhelixcoords(hcoordsname, outdir, ratio,nx,ny, newpref="resampled_", bo
 		Returns full path name of file containing new box coordinates
 	"""
 	import os
-	from utilities 		import read_text_row
-	from pixel_error	import mapcoords
+	from sp_utilities 		import read_text_row
+	from sp_pixel_error	import mapcoords
 	
 	fname = (hcoordsname.split('/'))[-1] # name of old coordinates files minus the path
 	newhcoordsname = os.path.join(outdir , newpref+fname) # full path name of new coordinates file to be created
@@ -1147,7 +1147,7 @@ def helical_params_err(params1, params2, fil_list):
 		Returns a list of lists, where each inner list is [fil_ID, avg_phi_err], where fil_ID
 		is filament name, and avg_phi_err is the average phi error for the filament.
 	'''
-	from pixel_error import angle_diff
+	from sp_pixel_error import angle_diff
 	from EMAN2 import Vec2f
 	nima = len(params1)
 	# Identify those where psi agrees
@@ -1329,8 +1329,8 @@ def pixel_error_angle_sets(agls1, agls2, Threshold=1.0e23, r=1.0):
 		      3. Output is a list of lists: If the i-th corresponding pair of eulerian angles on agls2 and agls1 has pixel error (computed using max_3D_pixel_error) less than Threshold, then append the list 
 		       [i, p], where p is the pixel error, into the output list.
 	"""
-	from pixel_error import max_3D_pixel_error
-	from utilities   import read_text_file, rotation_between_anglesets
+	from sp_pixel_error import max_3D_pixel_error
+	from sp_utilities   import read_text_file, rotation_between_anglesets
 	import types
 	
 	N = len(agls1)
@@ -1382,7 +1382,7 @@ def pixel_error_angle_sets(agls1, agls2, Threshold=1.0e23, r=1.0):
 #  See symclass in fundamentals
 
 def reduce_angles_sym(ang, sym = 'c1'):
-	from utilities import get_symt
+	from sp_utilities import get_symt
 	from EMAN2 import Vec2f, Transform, EMData
 	ts = get_symt(sym)
 	ks = len(ts)
@@ -1444,7 +1444,7 @@ def reduce_angles_sym(ang, sym = 'c1'):
 		ERROR("Only C and D symmetries supported","reduce_angles_sym",1)
 
 def apply_sym_angles(ang, sym = 'c1'):
-	from utilities import get_symt
+	from sp_utilities import get_symt
 	from EMAN2 import Vec2f, Transform, EMData
 	na = len(ang)
 	ts = get_symt(sym)
@@ -1600,8 +1600,8 @@ def multi_align_stability(ali_params, mirror_consistency_threshold = 0.75, error
 
 	        return err, err2, err3
 
-	from statistics import k_means_stab_bbenum
-	from utilities import combine_params2
+	from sp_statistics import k_means_stab_bbenum
+	from sp_utilities import combine_params2
 	from numpy import array
 
 	# Find out the subset which is mirror consistent over all runs
@@ -1669,12 +1669,12 @@ def estimate_stability(data1, data2, CTF=False, snr=1.0, last_ring=-1):
 	The third is the cross_correltion coefficient of two averages
 	"""
 
-	from statistics import sum_oe, ccc
-	from fundamentals import fft, rot_shift2D
-	from alignment import align2d
-	from utilities import get_params2D, combine_params2
+	from sp_statistics import sum_oe, ccc
+	from sp_fundamentals import fft, rot_shift2D
+	from sp_alignment import align2d
+	from sp_utilities import get_params2D, combine_params2
 	from math import sin, pi, sqrt
-	from morphology import ctf_img
+	from sp_morphology import ctf_img
 
 	PI_180 = pi/180
 	nima = len(data1)
@@ -1762,4 +1762,4 @@ def max_3D_pixel_errorA(t1, t2, r):
 
 
 from builtins import range
-from global_def import *
+from sp_global_def import *

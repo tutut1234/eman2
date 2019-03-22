@@ -8,14 +8,14 @@ from builtins import range
 import  os
 import  sys
 import  types
-import  global_def
-from    sparx       import *
-from    global_def  import *
-from global_def import sxprint, ERROR
+import  sp_global_def
+from    sp_sparx       import *
+from    sp_global_def  import *
+from sp_global_def import sxprint, ERROR
 from    optparse    import OptionParser
 from    numpy       import array
-from    logger      import Logger, BaseLogger_Files
-from    morphology  import 	get_shrink_3dmask
+from    sp_logger      import Logger, BaseLogger_Files
+from    sp_morphology  import 	get_shrink_3dmask
 
 import mpi
 
@@ -23,16 +23,16 @@ mpi.mpi_init( 0, [] )
 
 
 # utilities
-from utilities      import get_im,bcast_number_to_all,cmdexecute,write_text_file,read_text_file,wrap_mpi_bcast
-from applications   import recons3d_n_MPI, mref_ali3d_MPI, Kmref_ali3d_MPI
-from statistics     import k_means_match_clusters_asg_new,k_means_stab_bbenum
-from reconstruction import rec3D_MPI_noCTF,rec3D_two_chunks_MPI
-from applications   import mref_ali3d_EQ_Kmeans, ali3d_mref_Kmeans_MPI  
+from sp_utilities      import get_im,bcast_number_to_all,cmdexecute,write_text_file,read_text_file,wrap_mpi_bcast
+from sp_applications   import recons3d_n_MPI, mref_ali3d_MPI, Kmref_ali3d_MPI
+from sp_statistics     import k_means_match_clusters_asg_new,k_means_stab_bbenum
+from sp_reconstruction import rec3D_MPI_noCTF,rec3D_two_chunks_MPI
+from sp_applications   import mref_ali3d_EQ_Kmeans, ali3d_mref_Kmeans_MPI  
 
 
 def main():
 	from time import sleep
-	from logger import Logger, BaseLogger_Files
+	from sp_logger import Logger, BaseLogger_Files
 	arglist = []
 	i = 0
 	while( i < len(sys.argv) ):
@@ -97,7 +97,7 @@ def main():
 
 		orgstack                        =args[0]
 		masterdir                       =args[1]
-		global_def.BATCH = True
+		sp_global_def.BATCH = True
 
 		#---initialize MPI related variables
 		nproc     = mpi.mpi_comm_size( mpi.MPI_COMM_WORLD )
@@ -106,7 +106,7 @@ def main():
 		main_node = 0
 
 		# Create the main log file
-		from logger import Logger,BaseLogger_Files
+		from sp_logger import Logger,BaseLogger_Files
 		if myid ==main_node:
 			log_main=Logger(BaseLogger_Files())
 			log_main.prefix=masterdir+"/"
@@ -200,25 +200,25 @@ def main():
 		#--------------------------------------------------------------------
 		
 		# import from utilities
-		from utilities import sample_down_1D_curve,get_initial_ID,remove_small_groups,print_upper_triangular_matrix,print_a_line_with_timestamp
-		from utilities import convertasi,prepare_ptp,print_dict,get_resolution_mrk01,partition_to_groups,partition_independent_runs,get_outliers
-		from utilities import merge_groups, save_alist, margin_of_error, get_margin_of_error, do_two_way_comparison, select_two_runs, get_ali3d_params
-		from utilities import counting_projections, unload_dict, load_dict, get_stat_proj, create_random_list, get_number_of_groups, recons_mref
-		from utilities import apply_low_pass_filter, get_groups_from_partition, get_number_of_groups, get_complementary_elements_total, update_full_dict
-		from utilities import count_chunk_members, set_filter_parameters_from_adjusted_fsc, get_two_chunks_from_stack
+		from sp_utilities import sample_down_1D_curve,get_initial_ID,remove_small_groups,print_upper_triangular_matrix,print_a_line_with_timestamp
+		from sp_utilities import convertasi,prepare_ptp,print_dict,get_resolution_mrk01,partition_to_groups,partition_independent_runs,get_outliers
+		from sp_utilities import merge_groups, save_alist, margin_of_error, get_margin_of_error, do_two_way_comparison, select_two_runs, get_ali3d_params
+		from sp_utilities import counting_projections, unload_dict, load_dict, get_stat_proj, create_random_list, get_number_of_groups, recons_mref
+		from sp_utilities import apply_low_pass_filter, get_groups_from_partition, get_number_of_groups, get_complementary_elements_total, update_full_dict
+		from sp_utilities import count_chunk_members, set_filter_parameters_from_adjusted_fsc, get_two_chunks_from_stack
 		####------------------------------------------------------------------	
 		
 		# another part
-		from utilities import get_class_members, remove_small_groups, get_number_of_groups, get_stable_members_from_two_runs
-		from utilities import two_way_comparison_single, get_leftover_from_stable, get_initial_ID, Kmeans_exhaustive_run
-		from utilities import print_a_line_with_timestamp, split_a_group
+		from sp_utilities import get_class_members, remove_small_groups, get_number_of_groups, get_stable_members_from_two_runs
+		from sp_utilities import two_way_comparison_single, get_leftover_from_stable, get_initial_ID, Kmeans_exhaustive_run
+		from sp_utilities import print_a_line_with_timestamp, split_a_group
 		
 		#
 		# Get the pixel size; if none, set to 1.0, and the original image size
-		from utilities import get_shrink_data_huang
+		from sp_utilities import get_shrink_data_huang
 		from time import sleep
-		import user_functions
-		user_func = user_functions.factory[Tracker["constants"]["user_func"]]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[Tracker["constants"]["user_func"]]
 		if(myid == main_node):
 			line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 			sxprint((line+"Initialization of 3-D sorting"))
@@ -274,7 +274,7 @@ def main():
 				li = 0
 			cmd="{} {}".format("mkdir -p", masterdir)
 			os.system(cmd)			
-			global_def.write_command(masterdir)
+			sp_global_def.write_command(masterdir)
 		else:
 			li=0
 		li = mpi.mpi_bcast( li, 1, mpi.MPI_INT, main_node, mpi.MPI_COMM_WORLD )[0]
@@ -454,7 +454,7 @@ def main():
 			for a in sys.argv: 
 					log_main.add(a)
 			log_main.add("**********************************************************")
-		from filter import filt_tanl
+		from sp_filter import filt_tanl
 		##################### START 3-D sorting ##########################
 		if myid ==main_node:
 			log_main.add("----------3-D sorting  program------- ")
@@ -803,7 +803,7 @@ def main():
 		return
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
+	sp_global_def.print_timestamp( "Start" )
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

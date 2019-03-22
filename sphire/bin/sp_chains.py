@@ -33,15 +33,15 @@ from __future__ import print_function
 #
 
 from builtins import range
-import	global_def
-from global_def import sxprint, ERROR
+import	sp_global_def
+from sp_global_def import sxprint, ERROR
 
-from	global_def 	import *
+from	sp_global_def 	import *
 from	EMAN2 		import EMUtil, parsemodopt, EMAN2Ctf
 from    EMAN2jsondb import js_open_dict
 
-from	utilities 	import *
-from    statistics import mono
+from	sp_utilities 	import *
+from    sp_statistics import mono
 import  os
 
 import sys
@@ -254,7 +254,7 @@ def main():
 
 	(options, args) = parser.parse_args()
 
-	global_def.BATCH = True
+	sp_global_def.BATCH = True
 
 					
 	if options.dd:
@@ -267,9 +267,9 @@ def main():
 		new_stack = args[1]
 
 
-		from utilities import model_circle
-		from statistics import ccc
-		from statistics import mono
+		from sp_utilities import model_circle
+		from sp_statistics import ccc
+		from sp_statistics import mono
 		lend = EMUtil.get_image_count(stack)
 		lccc = [None]*(lend*(lend-1)/2)
 
@@ -305,11 +305,11 @@ def main():
 			ERROR( "Must provide name of input and two output files!" )
 			return
 
-		from utilities import get_params2D, model_circle
-		from fundamentals import rot_shift2D
-		from statistics import ccc
+		from sp_utilities import get_params2D, model_circle
+		from sp_fundamentals import rot_shift2D
+		from sp_statistics import ccc
 		from time import time
-		from alignment import align2d, align2d_scf
+		from sp_alignment import align2d, align2d_scf
 		
 		stack = args[0]
 		new_stack = args[1]
@@ -343,10 +343,10 @@ def main():
 			
 		initial = max(options.initial, 0)
 
-		from statistics import mono
+		from sp_statistics import mono
 		lend = len(d)
 		lccc = [None]*(lend*(lend-1)/2)
-		from utilities import read_text_row
+		from sp_utilities import read_text_row
 
 		if  options.pairwiseccc == " " or not os.path.exists(options.pairwiseccc) :
 			st = time()
@@ -359,7 +359,7 @@ def main():
 				#print "  %4d   %10.1f"%(i,time()-st)
 
 			if((not os.path.exists(options.pairwiseccc)) and (options.pairwiseccc != " ")):
-				from utilities import write_text_row
+				from sp_utilities import write_text_row
 				write_text_row([[initial,0,0,0,0]]+lccc, options.pairwiseccc)
 		elif(os.path.exists(options.pairwiseccc)):
 			lccc = read_text_row(options.pairwiseccc)
@@ -493,7 +493,7 @@ def main():
 
 		lmbd, eigvec = pca(cor)
 
-		from utilities import write_text_file
+		from sp_utilities import write_text_file
 
 		nvec=20
 		print  [lmbd[j] for j in xrange(nvec)]
@@ -579,11 +579,11 @@ def main():
 			ERROR( "Must provide name of input and output file!" )
 			return
 		
-		from utilities import get_params2D, model_circle
-		from fundamentals import rot_shift2D
-		from statistics import ccc
+		from sp_utilities import get_params2D, model_circle
+		from sp_fundamentals import rot_shift2D
+		from sp_statistics import ccc
 		from time import time
-		from alignment import align2d
+		from sp_alignment import align2d
 		
 		stack = args[0]
 		new_stack = args[1]
@@ -713,7 +713,7 @@ def main():
 		
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

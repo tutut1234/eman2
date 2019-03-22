@@ -34,10 +34,10 @@ from __future__ import print_function
 
 
 import os
-import global_def
-from global_def import sxprint
+import sp_global_def
+from sp_global_def import sxprint
 
-from   global_def import *
+from   sp_global_def import *
 from   optparse import OptionParser
 import sys
 
@@ -62,7 +62,7 @@ def main():
 	if len(args) < 1 or len(args) > 2:
 		sxprint( "Usage: " + usage )
 		sxprint( "Please run \'" + progname + " -h\' for detailed options" )
-		global_def.ERROR( "Invalid number of parameters used. Please see usage information above." )
+		sp_global_def.ERROR( "Invalid number of parameters used. Please see usage information above." )
 		return
 		
 	else: 
@@ -72,29 +72,29 @@ def main():
 			name_output = args[1]
 		
 		if options.filament:
-			from development import ave_ali_filament
+			from sp_development import ave_ali_filament
 	
-			if global_def.CACHE_DISABLE:
-				from utilities import disable_bdb_cache
+			if sp_global_def.CACHE_DISABLE:
+				from sp_utilities import disable_bdb_cache
 				disable_bdb_cache()
 	
-			global_def.BATCH = True
+			sp_global_def.BATCH = True
 			ave_ali_filament(args[0], name_output, options.ali)
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 		
 		else:
-			from applications import ave_ali
+			from sp_applications import ave_ali
 	
-			if global_def.CACHE_DISABLE:
-				from utilities import disable_bdb_cache
+			if sp_global_def.CACHE_DISABLE:
+				from sp_utilities import disable_bdb_cache
 				disable_bdb_cache()
 	
-			global_def.BATCH = True
+			sp_global_def.BATCH = True
 			ave_ali(args[0], name_output, options.ali, options.set_size, options.set_members)
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

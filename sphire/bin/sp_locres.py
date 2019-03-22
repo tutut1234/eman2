@@ -32,19 +32,19 @@ from __future__ import print_function
 #
 from builtins import range
 import EMAN2_cppwrap
-import filter
-import fundamentals
-import global_def
-import morphology
+import sp_filter
+import sp_fundamentals
+import sp_global_def
+import sp_morphology
 import mpi
 import optparse
 import numpy
 import os
-import statistics
+import sp_statistics
 import sys
-import utilities
+import sp_utilities
 
-from global_def import sxprint, ERROR
+from sp_global_def import sxprint, ERROR
 
 mpi.mpi_init( 0, [] )
 
@@ -54,7 +54,7 @@ def makeAngRes(freqvol, nx, ny, nz, pxSize, freq_to_real=True):
 	if (pxSize == 1.0):
 		sxprint("Using a value of 1 for the pixel size. Are you sure this is correct?")
 
-	outAngResVol = utilities.model_blank(nx,ny,nz)
+	outAngResVol = sp_utilities.model_blank(nx,ny,nz)
 	data_in = freqvol.get_3dview()
 	data_out = outAngResVol.get_3dview()
 
@@ -104,7 +104,7 @@ def output_volume(freqvol, resolut, apix, outvol, fsc, out_ang_res, nx, ny, nz, 
 			outAngResVol = makeAngRes(freqvol, nx, ny, nz, apix)
 			outAngResVol.write_image(outvol_shifted_ang)
 
-	if(fsc != None): utilities.write_text_row(resolut, fsc)
+	if(fsc != None): sp_utilities.write_text_row(resolut, fsc)
 
 def main():
 	arglist = []
@@ -115,7 +115,7 @@ def main():
 
 	Compute local resolution in real space within area outlined by the maskfile and within regions wn x wn x wn
 	"""
-	parser = optparse.OptionParser(usage,version=global_def.SPARXVERSION)
+	parser = optparse.OptionParser(usage,version=sp_global_def.SPARXVERSION)
 	
 	parser.add_option("--wn",           type="int",           default=7,      help="Size of window within which local real-space FSC is computed. (default 7)")
 	parser.add_option("--step",         type="float",         default= 1.0,   help="Shell step in Fourier size in pixels. (default 1.0)")   
@@ -134,8 +134,8 @@ def main():
 		ERROR( "Invalid number of parameters used. Please see usage information above." )
 		return
 
-	if global_def.CACHE_DISABLE:
-		utilities.disable_bdb_cache()
+	if sp_global_def.CACHE_DISABLE:
+		sp_utilities.disable_bdb_cache()
 
 	res_overall = options.res_overall
 
@@ -144,15 +144,15 @@ def main():
 		number_of_proc = mpi.mpi_comm_size(mpi.MPI_COMM_WORLD)
 		myid = mpi.mpi_comm_rank(mpi.MPI_COMM_WORLD)
 		main_node = 0
-		global_def.MPI = True
+		sp_global_def.MPI = True
 		cutoff = options.cutoff
 
 		nk = int(options.wn)
 
 		if(myid == main_node):
 			#print sys.argv
-			vi = utilities.get_im(sys.argv[1])
-			ui = utilities.get_im(sys.argv[2])
+			vi = sp_utilities.get_im(sys.argv[1])
+			ui = sp_utilities.get_im(sys.argv[2])
 			
 			nx = vi.get_xsize()
 			ny = vi.get_ysize()
@@ -161,33 +161,33 @@ def main():
 		else:
 			dis = [0,0,0,0]
 
-		global_def.BATCH = True
+		sp_global_def.BATCH = True
 
-		dis = utilities.bcast_list_to_all(dis, myid, source_node = main_node)
+		dis = sp_utilities.bcast_list_to_all(dis, myid, source_node = main_node)
 
 		if(myid != main_node):
 			nx = int(dis[0])
 			ny = int(dis[1])
 			nz = int(dis[2])
 
-			vi = utilities.model_blank(nx,ny,nz)
-			ui = utilities.model_blank(nx,ny,nz)
+			vi = sp_utilities.model_blank(nx,ny,nz)
+			ui = sp_utilities.model_blank(nx,ny,nz)
 
 
 		if len(args) == 3:
-			m = utilities.model_circle((min(nx,ny,nz)-nk)//2,nx,ny,nz)
+			m = sp_utilities.model_circle((min(nx,ny,nz)-nk)//2,nx,ny,nz)
 			outvol = args[2]
 		
 		elif len(args) == 4:
 			if(myid == main_node):
-				m = morphology.binarize(utilities.get_im(args[2]), 0.5)
+				m = sp_morphology.binarize(sp_utilities.get_im(args[2]), 0.5)
 			else:
-				m = utilities.model_blank(nx, ny, nz)
+				m = sp_utilities.model_blank(nx, ny, nz)
 			outvol = args[3]
-		utilities.bcast_EMData_to_all(m, myid, main_node)
+		sp_utilities.bcast_EMData_to_all(m, myid, main_node)
 
 		"""Multiline Comment0"""
-		freqvol, resolut = statistics.locres(vi, ui, m, nk, cutoff, options.step, myid, main_node, number_of_proc)
+		freqvol, resolut = sp_statistics.locres(vi, ui, m, nk, cutoff, options.step, myid, main_node, number_of_proc)
 
 		if(myid == 0):
 			# Remove outliers based on the Interquartile range
@@ -195,40 +195,40 @@ def main():
 
 	else:
 		cutoff = options.cutoff
-		vi = utilities.get_im(args[0])
-		ui = utilities.get_im(args[1])
+		vi = sp_utilities.get_im(args[0])
+		ui = sp_utilities.get_im(args[1])
 
 		nn = vi.get_xsize()
 		nk = int(options.wn)
 	
 		if len(args) == 3:
-			m = utilities.model_circle((nn-nk)//2,nn,nn,nn)
+			m = sp_utilities.model_circle((nn-nk)//2,nn,nn,nn)
 			outvol = args[2]
 		
 		elif len(args) == 4:
-			m = morphology.binarize(utilities.get_im(args[2]), 0.5)
+			m = sp_morphology.binarize(sp_utilities.get_im(args[2]), 0.5)
 			outvol = args[3]
 
-		mc = utilities.model_blank(nn,nn,nn,1.0)-m
+		mc = sp_utilities.model_blank(nn,nn,nn,1.0)-m
 
-		vf = fundamentals.fft(vi)
-		uf = fundamentals.fft(ui)
+		vf = sp_fundamentals.fft(vi)
+		uf = sp_fundamentals.fft(ui)
 		"""Multiline Comment1"""
 		lp = int(nn/2/options.step+0.5)
 		step = 0.5/lp
 
-		freqvol = utilities.model_blank(nn,nn,nn)
+		freqvol = sp_utilities.model_blank(nn,nn,nn)
 		resolut = []
 		for i in range(1,lp):
 			fl = step*i
 			fh = fl+step
 			#print(lp,i,step,fl,fh)
-			v = fundamentals.fft(filter.filt_tophatb( vf, fl, fh))
-			u = fundamentals.fft(filter.filt_tophatb( uf, fl, fh))
+			v = sp_fundamentals.fft(sp_filter.filt_tophatb( vf, fl, fh))
+			u = sp_fundamentals.fft(sp_filter.filt_tophatb( uf, fl, fh))
 			tmp1 = EMAN2_cppwrap.Util.muln_img(v,v)
 			tmp2 = EMAN2_cppwrap.Util.muln_img(u,u)
 
-			do = EMAN2_cppwrap.Util.infomask(morphology.square_root(morphology.threshold(EMAN2_cppwrap.Util.muln_img(tmp1,tmp2))),m,True)[0]
+			do = EMAN2_cppwrap.Util.infomask(sp_morphology.square_root(sp_morphology.threshold(EMAN2_cppwrap.Util.muln_img(tmp1,tmp2))),m,True)[0]
 
 
 			tmp3 = EMAN2_cppwrap.Util.muln_img(u,v)
@@ -241,7 +241,7 @@ def main():
 
 			EMAN2_cppwrap.Util.mul_img(tmp1,tmp2)
 
-			tmp1 = morphology.square_root(morphology.threshold(tmp1))
+			tmp1 = sp_morphology.square_root(sp_morphology.threshold(tmp1))
 
 			EMAN2_cppwrap.Util.mul_img(tmp1,m)
 			EMAN2_cppwrap.Util.add_img(tmp1,mc)
@@ -270,8 +270,8 @@ def main():
 		output_volume(freqvol, resolut, options.apix, outvol, options.fsc, options.out_ang_res, nx, ny, nz, res_overall)
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

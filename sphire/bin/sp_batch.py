@@ -36,7 +36,7 @@ import argparse
 import subprocess
 import glob
 import re
-import global_def
+import sp_global_def
 import os
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -46,16 +46,16 @@ parser.add_argument('--hold_flag', type=str, default=None, help='Hold flag for t
 parser.add_argument('--first_hold_number', type=str, default=None, help='Wait number of an already running job')
 args = parser.parse_args()
 
-global_def.BATCH = True
+sp_global_def.BATCH = True
 if not os.path.exists(args.input_run_dir):
-    global_def.ERROR('Input directory does not exist!', 'sxbatch.py', 1)
+    sp_global_def.ERROR('Input directory does not exist!', 'sxbatch.py', 1)
 
 qsub_dict = {
     'qsub': re.compile('Your job (\w+)'),
     'sbatch': re.compile('Submitted batch job (\w+)'),
     }
 if args.submission_command.split()[0] not in qsub_dict and args.hold_flag:
-    global_def.ERROR('Qsub return output not known! Please contact the SPHIRE authors!', 'sxbatch.py', 1)
+    sp_global_def.ERROR('Qsub return output not known! Please contact the SPHIRE authors!', 'sxbatch.py', 1)
 
 if args.first_hold_number:
     prev_hold = args.first_hold_number
@@ -77,4 +77,4 @@ for idx, file_name in enumerate(sorted(glob.glob('{0}/*'.format(args.input_run_d
     else:
         subprocess.Popen(command).wait()
 
-global_def.BATCH = False
+sp_global_def.BATCH = False

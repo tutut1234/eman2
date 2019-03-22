@@ -55,9 +55,9 @@ stack. If indeed only one stack is desired, one could use sxcpy.py to concatenat
 stacks into one stack.
 '''
 
-import	global_def
-from global_def import sxprint, ERROR, SPARX_MPI_TAG_UNIVERSAL
-from	global_def 	import *
+import	sp_global_def
+from sp_global_def import sxprint, ERROR, SPARX_MPI_TAG_UNIVERSAL
+from	sp_global_def 	import *
 
 from	optparse 	import OptionParser
 from	EMAN2 		import EMUtil
@@ -68,11 +68,11 @@ from time import time
 import mpi
 from mpi          import mpi_init, mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
 from mpi          import mpi_barrier, mpi_send, mpi_recv, mpi_bcast, MPI_INT, mpi_finalize, MPI_FLOAT
-from applications import MPI_start_end, within_group_refinement, ali2d_ras
-from pixel_error  import multi_align_stability
-from utilities    import send_EMData, recv_EMData
-from utilities    import get_image, bcast_number_to_all, set_params2D, get_params2D
-from utilities    import group_proj_by_phitheta, model_circle, get_input_from_string
+from sp_applications import MPI_start_end, within_group_refinement, ali2d_ras
+from sp_pixel_error  import multi_align_stability
+from sp_utilities    import send_EMData, recv_EMData
+from sp_utilities    import get_image, bcast_number_to_all, set_params2D, get_params2D
+from sp_utilities    import group_proj_by_phitheta, model_circle, get_input_from_string
 
 mpi.mpi_init( 0, [] )
 
@@ -108,16 +108,16 @@ def main():
 		stack  = args[0]
 		outdir = args[1]
 	else:
-		global_def.ERROR( "Incomplete list of arguments", "sxproj_stability.main", 1, myid=myid )
+		sp_global_def.ERROR( "Incomplete list of arguments", "sxproj_stability.main", 1, myid=myid )
 		return
 	if not options.MPI:
-		global_def.ERROR( "Non-MPI not supported!", "sxproj_stability.main", 1, myid=myid )
+		sp_global_def.ERROR( "Non-MPI not supported!", "sxproj_stability.main", 1, myid=myid )
 		return		 
 
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 		disable_bdb_cache()
-	global_def.BATCH = True
+	sp_global_def.BATCH = True
 
 	img_per_grp = options.img_per_group
 	radius = options.radius
@@ -211,7 +211,7 @@ def main():
 			ERROR( "Angular step for reference projections is required for GEV method" )
 			return
 
-		from utilities import even_angles, nearestk_to_refdir, getvec
+		from sp_utilities import even_angles, nearestk_to_refdir, getvec
 		refproj = even_angles(options.delta)
 		img_begin, img_end = MPI_start_end(len(refproj), number_of_proc, myid)
 		# Now each processor keeps its own share of reference projections
@@ -263,7 +263,7 @@ def main():
 			proj_params.append([phi, theta, psi, s2x, s2y])
 		img_begin, img_end = MPI_start_end(nima, number_of_proc, myid)
 		sxprint("  C  ",myid,"  ",time()-st)
-		from utilities import nearest_proj
+		from sp_utilities import nearest_proj
 		proj_list, mirror_list = nearest_proj(proj_params, img_per_grp, list(range(img_begin, img_begin+1)))#range(img_begin, img_end))
 		refprojdir = proj_params[img_begin: img_end]
 		del proj_params, mirror_list
@@ -275,13 +275,13 @@ def main():
 
 	###########################################################################################################
 	# Begin stability test
-	from utilities import get_params_proj, read_text_file
+	from sp_utilities import get_params_proj, read_text_file
 	#if myid == 0:
 	#	from utilities import read_text_file
 	#	proj_list[0] = map(int, read_text_file("lggrpp0.txt"))
 
 
-	from utilities import model_blank
+	from sp_utilities import model_blank
 	aveList = [model_blank(nx,ny)]*len(proj_list)
 	if options.grouping == "GRP":  refprojdir = [[0.0,0.0,-1.0]]*len(proj_list)
 	for i in range(len(proj_list)):
@@ -289,7 +289,7 @@ def main():
 		class_data = EMData.read_images(stack, proj_list[i])
 		#print "  R  ",myid,"  ",time()-st
 		if options.CTF :
-			from filter import filt_ctf
+			from sp_filter import filt_ctf
 			for im in range(len(class_data)):  #  MEM LEAK!!
 				atemp = class_data[im].copy()
 				btemp = filt_ctf(atemp, atemp.get_attr("ctf"), binary=1)
@@ -341,7 +341,7 @@ def main():
 				members.append(proj_list[i][s[1]])
 				pix_err.append(s[0])
 			# Then put the unstable members into attr 'members' and 'pix_err'
-			from fundamentals import rot_shift2D
+			from sp_fundamentals import rot_shift2D
 			avet.to_zero()
 			if options.grouping == "GRP":
 				aphi = 0.0
@@ -427,12 +427,12 @@ def main():
 			except:
 				mpi_send([-999.0,-999.0,-999.0], 3, MPI_FLOAT, main_node, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 
-	global_def.BATCH = False
+	sp_global_def.BATCH = False
 	mpi_barrier(MPI_COMM_WORLD)
 
 if __name__=="__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

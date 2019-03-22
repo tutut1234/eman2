@@ -33,10 +33,10 @@ from __future__ import print_function
 
 
 import os
-import global_def
-from global_def import sxprint
+import sp_global_def
+from sp_global_def import sxprint
 
-from global_def import *
+from sp_global_def import *
 from optparse import OptionParser
 import sys
 
@@ -91,7 +91,7 @@ def main():
 	if len(args) < 3 or len(args) > 4:
 		sxprint( "Usage: " + usage )
 		sxprint( "Please run \'" + progname + " -h\' for detailed options" )
-		global_def.ERROR( "Invalid number of parameters used. Please see usage information above." )
+		sp_global_def.ERROR( "Invalid number of parameters used. Please see usage information above." )
 		return
 
 	else:
@@ -100,88 +100,88 @@ def main():
 		else:
 			mask = args[3]
 
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sp_global_def.CACHE_DISABLE:
+			from sp_utilities import disable_bdb_cache
 			disable_bdb_cache()
 		#  centering permanently disabled due to the way new polar searches are done
 		center = 0
 		if(options.ns):
-			global_def.BATCH = True
-			from development import  ali3d_saturn
+			sp_global_def.BATCH = True
+			from sp_development import  ali3d_saturn
 			ali3d_saturn(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 				options.yr, options.ts, options.delta, options.an, options.apsi, options.deltapsi, options.startpsi,
 				center, options.maxit, options.CTF, options.snr, options.ref_a, options.sym,
 				options.function, options.Fourvar, options.npad, options.debug, options.MPI, options.stoprnct, gamma=options.gamma)
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 		elif(options.ns2):
-			global_def.BATCH = True
-			from development import  ali3d_saturn2
+			sp_global_def.BATCH = True
+			from sp_development import  ali3d_saturn2
 			ali3d_saturn2(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 				options.yr, options.ts, options.delta, options.an, options.apsi, options.deltapsi, options.startpsi,
 				center, options.maxit, options.CTF, options.snr, options.ref_a, options.sym,
 				options.function, options.Fourvar, options.npad, options.debug, options.MPI, options.stoprnct)
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 		elif(options.shc):
 			if not options.MPI:
 				sxprint("Only MPI version is implemented!!!")
 			else:
-				global_def.BATCH = True
+				sp_global_def.BATCH = True
 				if(options.nsoft == 1):
-					from applications import ali3d_shcMPI
+					from sp_applications import ali3d_shcMPI
 					ali3d_shcMPI(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 					options.yr, options.ts, options.delta, options.an, options.apsi, options.deltapsi, options.startpsi,
 					center, options.maxit, options.CTF, options.snr, options.ref_a, options.sym,
 					options.function, options.Fourvar, options.npad, options.debug, options.stoprnct, gamma=options.gamma)
 				elif(options.nsoft == 0):
-					from applications import ali3d_shc0MPI
+					from sp_applications import ali3d_shc0MPI
 					ali3d_shc0MPI(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 					options.yr, options.ts, options.delta, options.an, options.apsi, options.deltapsi, options.startpsi,
 					center, options.maxit, options.CTF, options.snr, options.ref_a, options.sym,
 					options.function, options.Fourvar, options.npad, options.debug, options.stoprnct, gamma=options.gamma)
 				else:
-					from multi_shc import ali3d_multishc_soft
-					import user_functions
-					options.user_func = user_functions.factory[options.function]
+					from sp_multi_shc import ali3d_multishc_soft
+					import sp_user_functions
+					options.user_func = sp_user_functions.factory[options.function]
 					ali3d_multishc_soft(args[0], args[1], options, mpi_comm = None, log = None, nsoft = options.nsoft )
-				global_def.BATCH = False
+				sp_global_def.BATCH = False
 		elif(options.nh2):
-			global_def.BATCH = True
-			from development import ali3d_shc2
+			sp_global_def.BATCH = True
+			from sp_development import ali3d_shc2
 			ali3d_shc2(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 				options.yr, options.ts, options.delta, options.an, options.apsi, options.deltapsi, options.startpsi,
 				center, options.maxit, options.CTF, options.snr, options.ref_a, options.sym,
 				options.function, options.Fourvar, options.npad, options.debug, options.MPI, options.stoprnct)
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 		elif options.searchpsi:
-			from applications import ali3dpsi_MPI
-			global_def.BATCH = True
+			from sp_applications import ali3dpsi_MPI
+			sp_global_def.BATCH = True
 			ali3dpsi_MPI(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 			options.yr, options.ts, options.delta, options.an, options.apsi, options.deltapsi, options.startpsi,
 			center, options.maxit, options.CTF, options.snr, options.ref_a, options.sym,
 			options.function, options.Fourvar, options.npad, options.debug, options.stoprnct)
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 		else:
 			if options.rantest:
-				from development import ali3d_rantest
-				global_def.BATCH = True
+				from sp_development import ali3d_rantest
+				sp_global_def.BATCH = True
 				ali3d_rantest(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 				options.yr, options.ts, options.delta, options.an, options.deltapsi, options.startpsi,
 				center, options.maxit, options.CTF, options.snr, options.ref_a, options.sym,
 				options.function, options.Fourvar, options.npad, options.debug, options.stoprnct)
-				global_def.BATCH = False
+				sp_global_def.BATCH = False
 			else:
-				from applications import ali3d
-				global_def.BATCH = True
+				from sp_applications import ali3d
+				sp_global_def.BATCH = True
 				ali3d(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
 				options.yr, options.ts, options.delta, options.an, options.apsi, options.deltapsi, options.startpsi,
 				center, options.maxit, options.CTF, options.snr, options.ref_a, options.sym,
 				options.function, options.Fourvar, options.npad, options.debug, options.MPI, options.stoprnct)
-				global_def.BATCH = False
+				sp_global_def.BATCH = False
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

@@ -32,11 +32,11 @@ from __future__ import print_function
 #
 from builtins import range
 from EMAN2 import *
-from sparx import *
-from global_def import SPARX_MPI_TAG_UNIVERSAL
+from sp_sparx import *
+from sp_global_def import SPARX_MPI_TAG_UNIVERSAL
 
-import	global_def
-from global_def import sxprint, ERROR
+import	sp_global_def
+from sp_global_def import sxprint, ERROR
 
 from	optparse 	import OptionParser
 from	EMAN2 		import EMUtil
@@ -115,29 +115,29 @@ def main():
 	from mpi import mpi_comm_rank, mpi_comm_size, mpi_recv, MPI_COMM_WORLD
 	from mpi import mpi_barrier, mpi_reduce, mpi_bcast, mpi_send, MPI_FLOAT, MPI_SUM, MPI_INT, MPI_MAX
 	#from mpi import *
-	from applications   import MPI_start_end
-	from reconstruction import recons3d_em, recons3d_em_MPI
-	from reconstruction	import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
-	from utilities      import print_begin_msg, print_end_msg, print_msg
-	from utilities      import read_text_row, get_image, get_im, wrap_mpi_send, wrap_mpi_recv
-	from utilities      import bcast_EMData_to_all, bcast_number_to_all
-	from utilities      import get_symt
+	from sp_applications   import MPI_start_end
+	from sp_reconstruction import recons3d_em, recons3d_em_MPI
+	from sp_reconstruction	import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities      import read_text_row, get_image, get_im, wrap_mpi_send, wrap_mpi_recv
+	from sp_utilities      import bcast_EMData_to_all, bcast_number_to_all
+	from sp_utilities      import get_symt
 
 	#  This is code for handling symmetries by the above program.  To be incorporated. PAP 01/27/2015
 
 	from EMAN2db import db_open_dict
 
 	# Set up global variables related to bdb cache 
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 		disable_bdb_cache()
 	
 	# Set up global variables related to ERROR function
-	global_def.BATCH = True
+	sp_global_def.BATCH = True
 	
 	# detect if program is running under MPI
 	RUNNING_UNDER_MPI = "OMPI_COMM_WORLD_SIZE" in os.environ
-	if RUNNING_UNDER_MPI: global_def.MPI = True
+	if RUNNING_UNDER_MPI: sp_global_def.MPI = True
 	if options.output_dir =="./": current_output_dir = os.path.abspath(options.output_dir)
 	else: current_output_dir = options.output_dir
 	if options.symmetrize :
@@ -147,9 +147,9 @@ def main():
 
 		if not os.path.exists(current_output_dir):
 			os.makedirs(current_output_dir)
-			global_def.write_command(current_output_dir)
+			sp_global_def.write_command(current_output_dir)
 				
-		from logger import Logger,BaseLogger_Files
+		from sp_logger import Logger,BaseLogger_Files
 		if os.path.exists(os.path.join(current_output_dir, "log.txt")): os.remove(os.path.join(current_output_dir, "log.txt"))
 		log_main=Logger(BaseLogger_Files())
 		log_main.prefix = os.path.join(current_output_dir, "./")
@@ -212,7 +212,7 @@ def main():
 
 	else:
 
-		from fundamentals import window2d
+		from sp_fundamentals import window2d
 		myid           = mpi_comm_rank(MPI_COMM_WORLD)
 		number_of_proc = mpi_comm_size(MPI_COMM_WORLD)
 		main_node      = 0
@@ -292,7 +292,7 @@ def main():
 		img_per_grp = options.img_per_grp
 		#nvec        = options.nvec
 		radiuspca   = options.radiuspca
-		from logger import Logger,BaseLogger_Files
+		from sp_logger import Logger,BaseLogger_Files
 		#if os.path.exists(os.path.join(options.output_dir, "log.txt")): os.remove(os.path.join(options.output_dir, "log.txt"))
 		log_main=Logger(BaseLogger_Files())
 		log_main.prefix = os.path.join(current_output_dir, "./")
@@ -340,7 +340,7 @@ def main():
 						ERROR( "The symmetry provided does not agree with the symmetry of the input stack", myid=myid )
 				except:
 					ERROR( "Input stack is not prepared for symmetry, please follow instructions", myid=myid )
-				from utilities import get_symt
+				from sp_utilities import get_symt
 				i = len(get_symt(options.sym))
 				if((nima/i)*i != nima):
 					ERROR( "The length of the input stack is incorrect for symmetry processing", myid=myid )
@@ -374,7 +374,7 @@ def main():
 		symbaselen = bcast_number_to_all(symbaselen)
 		
 		# check FFT prime number
-		from fundamentals import smallprime
+		from sp_fundamentals import smallprime
 		is_fft_friendly = (nx == smallprime(nx))
 		
 		if not is_fft_friendly:
@@ -411,11 +411,11 @@ def main():
 		
 		"""
 		if options.SND:
-			from projection		import prep_vol, prgs
-			from statistics		import im_diff
-			from utilities		import get_im, model_circle, get_params_proj, set_params_proj
-			from utilities		import get_ctf, generate_ctf
-			from filter			import filt_ctf
+			from sp_projection		import prep_vol, prgs
+			from sp_statistics		import im_diff
+			from sp_utilities		import get_im, model_circle, get_params_proj, set_params_proj
+			from sp_utilities		import get_ctf, generate_ctf
+			from sp_filter			import filt_ctf
 		
 			imgdata = EMData.read_images(stack, range(img_begin, img_end))
 
@@ -451,16 +451,16 @@ def main():
 				else:   varList.append(fdecimate(image, nx,ny))
 				
 		else:
-			from utilities		import bcast_number_to_all, bcast_list_to_all, send_EMData, recv_EMData
-			from utilities		import set_params_proj, get_params_proj, params_3D_2D, get_params2D, set_params2D, compose_transform2
-			from utilities		import model_blank, nearest_proj, model_circle, write_text_row, wrap_mpi_gatherv
-			from applications	import pca
-			from statistics		import avgvar, avgvar_ctf, ccc
-			from filter		    import filt_tanl
-			from morphology		import threshold, square_root
-			from projection 	import project, prep_vol, prgs
+			from sp_utilities		import bcast_number_to_all, bcast_list_to_all, send_EMData, recv_EMData
+			from sp_utilities		import set_params_proj, get_params_proj, params_3D_2D, get_params2D, set_params2D, compose_transform2
+			from sp_utilities		import model_blank, nearest_proj, model_circle, write_text_row, wrap_mpi_gatherv
+			from sp_applications	import pca
+			from sp_statistics		import avgvar, avgvar_ctf, ccc
+			from sp_filter		    import filt_tanl
+			from sp_morphology		import threshold, square_root
+			from sp_projection 	import project, prep_vol, prgs
 			from sets		    import Set
-			from utilities      import wrap_mpi_recv, wrap_mpi_bcast, wrap_mpi_send
+			from sp_utilities      import wrap_mpi_recv, wrap_mpi_bcast, wrap_mpi_send
 			import numpy as np
 			if myid == main_node:
 				t1          = time()
@@ -592,15 +592,15 @@ def main():
 			del vol, imgdata2
 			mpi_barrier(MPI_COMM_WORLD)
 			'''
-			from applications import prepare_2d_forPCA
-			from utilities    import model_blank
+			from sp_applications import prepare_2d_forPCA
+			from sp_utilities    import model_blank
 			from EMAN2        import Transform
 			if not options.no_norm: 
 				mask = model_circle(nx/2-2, nx, nx)
 			if options.CTF: 
-				from utilities import pad
-				from filter import filt_ctf
-			from filter import filt_tanl
+				from sp_utilities import pad
+				from sp_filter import filt_ctf
+			from sp_filter import filt_tanl
 			if myid == heavy_load_myid:
 				log_main.add("Start computing 2D aveList and varList. Wait...")
 				ttt = time()
@@ -678,8 +678,8 @@ def main():
 			del xform_proj_for_2D
 			mpi_barrier(MPI_COMM_WORLD)
 			if options.ave2D:
-				from fundamentals import fpol
-				from applications import header
+				from sp_fundamentals import fpol
+				from sp_applications import header
 				if myid == main_node:
 					log_main.add("Compute ave2D ... ")
 					km = 0
@@ -726,7 +726,7 @@ def main():
 					header(os.path.join(current_output_dir, options.ave2D), params='xform.projection', fimport = os.path.join(current_output_dir, "params.txt"))
 				mpi_barrier(MPI_COMM_WORLD)	
 			if options.ave3D:
-				from fundamentals import fpol
+				from sp_fundamentals import fpol
 				t5 = time()
 				if myid == main_node: log_main.add("Reconstruct ave3D ... ")
 				ave3D = recons3d_4nn_MPI(myid, aveList, symmetry=options.sym, npad=options.npad)
@@ -787,8 +787,8 @@ def main():
 			'''
 			if options.ave3D: del ave3D
 			if options.var2D:
-				from fundamentals import fpol 
-				from applications import header
+				from sp_fundamentals import fpol 
+				from sp_applications import header
 				if myid == main_node:
 					log_main.add("Compute var2D...")
 					km = 0
@@ -812,7 +812,7 @@ def main():
 						send_EMData(varList[im], main_node, im+myid+70000)#  What with the attributes??
 				mpi_barrier(MPI_COMM_WORLD)
 				if myid == main_node:
-					from applications import header
+					from sp_applications import header
 					header(os.path.join(current_output_dir, options.var2D), params = 'xform.projection',fimport = os.path.join(current_output_dir, "params.txt"))
 				mpi_barrier(MPI_COMM_WORLD)
 		if options.var3D:
@@ -823,7 +823,7 @@ def main():
 			res = recons3d_4nn_MPI(myid, varList, symmetry = options.sym, npad=options.npad)
 			#res = recons3d_em_MPI(varList, vol_stack, options.iter, radiusvar, options.abs, True, options.sym, options.squ)
 			if myid == main_node:
-				from fundamentals import fpol
+				from sp_fundamentals import fpol
 				if current_decimate != 1.0: res	= resample(res, 1./current_decimate)
 				res = fpol(res, nnxo, nnxo, nnxo)
 				set_pixel_size(res, 1.0)
@@ -834,12 +834,12 @@ def main():
 				log_main.add("sx3dvariability finishes")
 		
 		if RUNNING_UNDER_MPI: 
-			global_def.MPI = False
+			sp_global_def.MPI = False
 			
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 
 if __name__=="__main__":
-	global_def.print_timestamp( "Start" )
+	sp_global_def.print_timestamp( "Start" )
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

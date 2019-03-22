@@ -4,27 +4,27 @@ from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
 from builtins import range
-import global_def
-from global_def import sxprint, ERROR, SPARXVERSION
-from global_def import *
+import sp_global_def
+from sp_global_def import sxprint, ERROR, SPARXVERSION
+from sp_global_def import *
 
-from utilities import get_im, string_found_in_file, get_latest_directory_increment_value, store_value_of_simple_vars_in_json_file
-from utilities import cmdexecute, if_error_then_all_processes_exit_program, wrap_mpi_bcast
-from utilities import read_text_row, read_text_file, write_text_file, write_text_row, getindexdata#, print_program_start_information
-from multi_shc import find_common_subset, do_volume, multi_shc
+from sp_utilities import get_im, string_found_in_file, get_latest_directory_increment_value, store_value_of_simple_vars_in_json_file
+from sp_utilities import cmdexecute, if_error_then_all_processes_exit_program, wrap_mpi_bcast
+from sp_utilities import read_text_row, read_text_file, write_text_file, write_text_row, getindexdata#, print_program_start_information
+from sp_multi_shc import find_common_subset, do_volume, multi_shc
 
 import string
 import os, sys
 
-from logger import Logger, BaseLogger_Files
-import user_functions
+from sp_logger import Logger, BaseLogger_Files
+import sp_user_functions
 from optparse import OptionParser, SUPPRESS_HELP
 from EMAN2 import EMData
 
 from argparse import Namespace
 
 import mpi
-from applications import cpy
+from sp_applications import cpy
 
 mpi.mpi_init( 0, [] )
 
@@ -47,7 +47,7 @@ DIR_DELIM = os.sep
 def calculate_list_of_independent_viper_run_indices_used_for_outlier_elimination(no_of_viper_runs_analyzed_together, 
 	no_of_viper_runs_analyzed_together_from_user_options, masterdir, rviper_iter, criterion_name, symc, runs_iter):
 
-	from utilities import combinations_of_n_taken_by_k
+	from sp_utilities import combinations_of_n_taken_by_k
 
 	# generate all possible combinations of (no_of_viper_runs_analyzed_together - 1) taken (3 - 1) at a time
 	import itertools
@@ -499,9 +499,9 @@ def calculate_volumes_after_rotation_and_save_them(ali3d_options, rviper_iter, m
 
 	if( mpi_rank == 0):
 		# Align all rotated volumes, calculate their average and save as an overall result
-		from utilities import get_params3D, set_params3D, get_im, model_circle
-		from statistics import ave_var
-		from applications import ali_vol
+		from sp_utilities import get_params3D, set_params3D, get_im, model_circle
+		from sp_statistics import ave_var
+		from sp_applications import ali_vol
 		# vls = [None]*no_of_viper_runs_analyzed_together
 		vls = [None]*len(list_of_independent_viper_run_indices_used_for_outlier_elimination)
 		# for i in xrange(no_of_viper_runs_analyzed_together):
@@ -757,7 +757,7 @@ output_directory: directory name into which the output files will be written.  I
 				cmd = "{} {} {}".format("e2bdb.py", org_stack_location,"--makevstack=" + bdb_stack_location + "_000")
 				junk = cmdexecute(cmd)
 
-				from applications import header
+				from sp_applications import header
 				try:
 					header(bdb_stack_location + "_000", params='original_image_index', fprint=True)
 					sxprint("Images were already indexed!")
@@ -777,7 +777,7 @@ output_directory: directory name into which the output files will be written.  I
 				#cpy(args[0], bdb_stack_location + "_000")  # without subprocess
 
 				if junk:
-					from applications import header
+					from sp_applications import header
 					try:
 						header(bdb_stack_location + "_000", params='original_image_index', fprint=True)
 						sxprint("Images were already indexed!")
@@ -791,7 +791,7 @@ output_directory: directory name into which the output files will be written.  I
 	junk = wrap_mpi_bcast(junk, main_node, mpi.MPI_COMM_WORLD) 
 	if not junk:
 		mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
-		global_def.ERROR('Command failed! {0}. Exit here!'.format(cmd), myid=myid, action=0)
+		sp_global_def.ERROR('Command failed! {0}. Exit here!'.format(cmd), myid=myid, action=0)
 		mpi.mpi_finalize()
 		exit(1)
 	
@@ -803,7 +803,7 @@ output_directory: directory name into which the output files will be written.  I
 	if masterdir[-1] != DIR_DELIM:
 		masterdir += DIR_DELIM
 		
-	global_def.LOGFILE =  os.path.join(masterdir, global_def.LOGFILE)
+	sp_global_def.LOGFILE =  os.path.join(masterdir, sp_global_def.LOGFILE)
 	
 	# send bdb_stack_location to all processes
 	dir_len  = len(bdb_stack_location)*int(myid == main_node)
@@ -825,7 +825,7 @@ output_directory: directory name into which the output files will be written.  I
 
 	if_error_then_all_processes_exit_program(error_status)
 
-	from fundamentals import symclass
+	from sp_fundamentals import symclass
 	symc = symclass(options.sym)
 	
 	# Loop through iterations
@@ -857,7 +857,7 @@ output_directory: directory name into which the output files will be written.  I
 				independent_run_dir = masterdir + DIR_DELIM + NAME_OF_MAIN_DIR + ('%03d' + DIR_DELIM + NAME_OF_RUN_DIR + "%03d" + DIR_DELIM)%(rviper_iter, runs_iter)
 				if run_get_already_processed_viper_runs:
 					cmd = "{} {}".format("mkdir -p", masterdir + DIR_DELIM + NAME_OF_MAIN_DIR + ('%03d' + DIR_DELIM)%(rviper_iter)); junk = cmdexecute(cmd)
-					global_def.write_command(masterdir)
+					sp_global_def.write_command(masterdir)
 					cmd = "{} {}".format("rm -rf", independent_run_dir); junk = cmdexecute(cmd)
 					cmd = "{} {}".format("cp -r", get_already_processed_viper_runs() + " " +  independent_run_dir); junk = cmdexecute(cmd)
 
@@ -889,7 +889,7 @@ output_directory: directory name into which the output files will be written.  I
 
 				log.prefix = independent_run_dir
 
-				options.user_func = user_functions.factory[options.function]
+				options.user_func = sp_user_functions.factory[options.function]
 
 				# for debugging purposes
 				#if (myid == main_node):
@@ -945,7 +945,7 @@ output_directory: directory name into which the output files will be written.  I
 
 
 if __name__=="__main__":
-	global_def.print_timestamp( "Start" )
+	sp_global_def.print_timestamp( "Start" )
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

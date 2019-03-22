@@ -38,9 +38,9 @@ import numpy as np
 
 import EMAN2
 import EMAN2db
-import utilities
-from projection import prep_vol
-import global_def
+import sp_utilities
+from sp_projection import prep_vol
+import sp_global_def
 
 
 def read_meridien_data(meridien_path):
@@ -98,7 +98,7 @@ def write_virtual_bdb_stack(
 	:param number_of_particles: Number of particles to write.
 	:return: None
 	"""
-	global_def.sxprint("Write results to virtual stack...")
+	sp_global_def.sxprint("Write results to virtual stack...")
 
 	if number_of_particles is None:
 		number_of_particles = EMAN2.EMUtil.get_image_count(origin_stack_path)
@@ -112,7 +112,7 @@ def write_virtual_bdb_stack(
 
 		local_bdb_stack[particle_index] = particle_header
 	EMAN2db.db_close_dict(local_bdb_stack)
-	global_def.sxprint("Write results to virtual stack done")
+	sp_global_def.sxprint("Write results to virtual stack done")
 
 
 def read_meridien_params(path):
@@ -145,7 +145,7 @@ def prepare_volume(volume_path, mask=None, resolution=None, pixel_size=None):
 	:param resolution: Resolution of the current reconstruction.
 	:return:
 	"""
-	vol = utilities.get_im(volume_path)
+	vol = sp_utilities.get_im(volume_path)
 	if resolution:
 		vol = vol.process(
 			"filter.lowpass.gauss",
@@ -170,7 +170,7 @@ def read_volume(
 	mask_vol = None
 	vol2 = None
 	if path_mask is not None:
-		mask_vol = utilities.get_im(path_mask)
+		mask_vol = sp_utilities.get_im(path_mask)
 
 	vol1 = prepare_volume(path_vol_1, mask_vol, resolution, pixel_size)
 	if path_vol_2:

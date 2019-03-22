@@ -113,7 +113,7 @@ from builtins import object
 
 import time
 
-from global_def import sxprint
+from sp_global_def import sxprint
 
 #-----------------------------------------------------------[ original Logger ]
 

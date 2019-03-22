@@ -26,7 +26,7 @@ import json
 import sys
 import numpy as np
 
-import global_def
+import sp_global_def
 
 import matplotlib
 matplotlib.use('AGG')
@@ -575,7 +575,7 @@ def run(args=None):
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
-    global_def.print_timestamp( "Start" )
-    global_def.write_command()
+    sp_global_def.print_timestamp( "Start" )
+    sp_global_def.write_command()
     run()
-    global_def.print_timestamp( "Finish" )
+    sp_global_def.print_timestamp( "Finish" )

@@ -37,9 +37,9 @@ from __future__ import print_function
 # 
 
 def ref_ali2d( ref_data ):
-	from utilities    import print_msg
-	from filter       import fit_tanh, filt_tanl
-	from utilities    import center_2D
+	from sp_utilities    import print_msg
+	from sp_filter       import fit_tanh, filt_tanl
+	from sp_utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -66,9 +66,9 @@ def ref_ali2d( ref_data ):
 	return  tavg, cs
 
 def ref_ali2d_c( ref_data ):
-	from utilities    import print_msg
-	from filter       import fit_tanh, filt_tanl
-	from utilities    import center_2D
+	from sp_utilities    import print_msg
+	from sp_filter       import fit_tanh, filt_tanl
+	from sp_utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -93,9 +93,9 @@ def ref_ali2d_c( ref_data ):
 	return  tavg, cs
 
 def julien( ref_data ):
-        from utilities    import print_msg
-        from filter       import fit_tanh, filt_tanl
-        from utilities    import center_2D
+        from sp_utilities    import print_msg
+        from sp_filter       import fit_tanh, filt_tanl
+        from sp_utilities    import center_2D
         #  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
         #  Input: list ref_data
         #   0 - mask
@@ -121,9 +121,9 @@ def julien( ref_data ):
         return  tavg, cs
 
 def ref_ali2d_m( ref_data ):
-	from utilities    import print_msg
-	from filter       import fit_tanh, filt_tanl
-	from utilities    import center_2D
+	from sp_utilities    import print_msg
+	from sp_filter       import fit_tanh, filt_tanl
+	from sp_utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -148,9 +148,9 @@ def ref_ali2d_m( ref_data ):
 	return  tavg, cs
 
 def ref_ali3dm( refdata ):
-	from filter import fit_tanh, filt_tanl
-	from utilities import get_im
-	from fundamentals import rot_shift3D
+	from sp_filter import fit_tanh, filt_tanl
+	from sp_utilities import get_im
+	from sp_fundamentals import rot_shift3D
 	import os
 
 	numref = refdata[0]
@@ -168,9 +168,9 @@ def ref_ali3dm( refdata ):
 		v.write_image(os.path.join(outdir, "volf%04d.hdf"%total_iter), iref)
 		
 def ref_sort3d(refdata):
-	from filter import fit_tanh, filt_tanl
-	from utilities import get_im
-	from fundamentals import rot_shift3D
+	from sp_filter import fit_tanh, filt_tanl
+	from sp_utilities import get_im
+	from sp_fundamentals import rot_shift3D
 	import os
 	numref          = refdata[0]
 	outdir          = refdata[1]
@@ -192,9 +192,9 @@ def ref_sort3d(refdata):
 		v.write_image(os.path.join(outdir, "volf%04d.hdf"%total_iter), iref)
 
 def ref_ali3dm_ali_50S( refdata ):
-	from filter       import fit_tanh, filt_tanl
-	from utilities    import get_im
-	from fundamentals import rot_shift3D
+	from sp_filter       import fit_tanh, filt_tanl
+	from sp_utilities    import get_im
+	from sp_fundamentals import rot_shift3D
 	import  os
 
 	numref     = refdata[0]
@@ -223,8 +223,8 @@ def ref_ali3dm_ali_50S( refdata ):
 		v = filt_tanl(v, flmin, aamin)
 		
 		if ali50s:
-			from utilities    import get_params3D, set_params3D, combine_params3
-			from applications import ali_vol_shift, ali_vol_rotate
+			from sp_utilities    import get_params3D, set_params3D, combine_params3
+			from sp_applications import ali_vol_shift, ali_vol_rotate
 			if iref==0:
 				v50S_ref = alivol_mask_getref( v, mask_50S )
 			else:
@@ -237,9 +237,9 @@ def ref_ali3dm_ali_50S( refdata ):
 		v.write_image(os.path.join(outdir, "volf%04d.hdf"%total_iter), iref)
 
 def ref_random( ref_data ):
-	from utilities    import print_msg
-	from filter       import fit_tanh, filt_tanl
-	from utilities    import center_2D
+	from sp_utilities    import print_msg
+	from sp_filter       import fit_tanh, filt_tanl
+	from sp_utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -278,7 +278,7 @@ def ref_random( ref_data ):
 			ex = exp((float(i)/float(nx))**2/2.0/0.12**2)
 			if(ex>100.): good = False
 		ft.append(ex)
-	from filter import filt_table
+	from sp_filter import filt_table
 	tavg = filt_table(tavg, ft)
 	'''
 	if(ref_data[1] > 0):
@@ -287,10 +287,10 @@ def ref_random( ref_data ):
 	return  tavg, cs
 
 def ref_ali3d( ref_data ):
-	from utilities      import print_msg
-	from filter         import fit_tanh, filt_tanl
-	from fundamentals   import fshift
-	from morphology     import threshold
+	from sp_utilities      import print_msg
+	from sp_filter         import fit_tanh, filt_tanl
+	from sp_fundamentals   import fshift
+	from sp_morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -341,9 +341,9 @@ def ref_ali3d( ref_data ):
 	return  volf, cs
 
 def helical( ref_data ):
-	from utilities      import print_msg
-	from filter         import fit_tanh, filt_tanl
-	from morphology     import threshold
+	from sp_utilities      import print_msg
+	from sp_filter         import fit_tanh, filt_tanl
+	from sp_morphology     import threshold
 	#  Prepare the reference in helical refinement, i.e., low-pass filter .
 	#  Input: list ref_data
 	#   0 - raw volume
@@ -369,9 +369,9 @@ def helical( ref_data ):
 	return  volf#,[0.,0.,0.]
 
 def helical2( ref_data ):
-	from utilities      import print_msg
-	from filter	    import fit_tanh, filt_tanl
-	from morphology     import threshold
+	from sp_utilities      import print_msg
+	from sp_filter	    import fit_tanh, filt_tanl
+	from sp_morphology     import threshold
 	#  Prepare the reference in helical refinement, i.e., low-pass filter.
 	#  Input: list ref_data
 	#  2 - raw volume
@@ -393,10 +393,10 @@ def helical2( ref_data ):
 
 
 def reference3( ref_data ):
-	from utilities      import print_msg
-	from filter         import fit_tanh1, filt_tanl
-	from fundamentals   import fshift
-	from morphology     import threshold
+	from sp_utilities      import print_msg
+	from sp_filter         import fit_tanh1, filt_tanl
+	from sp_fundamentals   import fshift
+	from sp_morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -428,10 +428,10 @@ def reference3( ref_data ):
 	return  volf, cs
 
 def reference4( ref_data ):
-	from utilities      import print_msg
-	from filter         import fit_tanh, filt_tanl, filt_gaussl
-	from fundamentals   import fshift, fft
-	from morphology     import threshold
+	from sp_utilities      import print_msg
+	from sp_filter         import fit_tanh, filt_tanl, filt_gaussl
+	from sp_fundamentals   import fshift, fft
+	from sp_morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -463,10 +463,10 @@ def reference4( ref_data ):
 	return  volf, cs
 
 def ref_aliB_cone( ref_data ):
-	from utilities      import print_msg
-	from filter         import fit_tanh, filt_tanl
-	from fundamentals   import fshift
-	from morphology     import threshold
+	from sp_utilities      import print_msg
+	from sp_filter         import fit_tanh, filt_tanl
+	from sp_fundamentals   import fshift
+	from sp_morphology     import threshold
 	from math           import sqrt
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
@@ -487,12 +487,12 @@ def ref_aliB_cone( ref_data ):
 	volf = threshold(volf)
 	Util.mul_img(volf, ref_data[0])
 
-	from  fundamentals  import  rops_table
+	from  sp_fundamentals  import  rops_table
 	pwem = rops_table(volf)
 	ftb = []
 	for idum in range(len(pwem)):
 		ftb.append(sqrt(ref_data[1][idum]/pwem[idum]))
-	from filter import filt_table
+	from sp_filter import filt_table
 	volf = filt_table(volf, ftb)
 
 	fl, aa = fit_tanh(ref_data[3])
@@ -514,10 +514,10 @@ def ref_aliB_cone( ref_data ):
 	return  volf
 
 def ref_7grp( ref_data ):
-	from utilities      import print_msg
-	from filter         import fit_tanh, filt_tanl, filt_gaussinv
-	from fundamentals   import fshift
-	from morphology     import threshold
+	from sp_utilities      import print_msg
+	from sp_filter         import fit_tanh, filt_tanl, filt_gaussinv
+	from sp_fundamentals   import fshift
+	from sp_morphology     import threshold
 	from math           import sqrt
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
@@ -548,9 +548,9 @@ def ref_7grp( ref_data ):
 	return  volf,cs
 
 def spruce_up( ref_data ):
-	from utilities      import print_msg
-	from filter         import filt_tanl, fit_tanh
-	from morphology     import threshold
+	from sp_utilities      import print_msg
+	from sp_filter         import filt_tanl, fit_tanh
+	from sp_morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -568,12 +568,12 @@ def spruce_up( ref_data ):
 	Util.mul_scalar(volf, 1.0/stat[1])
 	volf = threshold(volf)
 	# Apply B-factor
-	from filter import filt_gaussinv
+	from sp_filter import filt_gaussinv
 	from math import sqrt
 	B = 1.0/sqrt(2.*14.0)
 	volf = filt_gaussinv(volf, B, False)
 	nx = volf.get_xsize()
-	from utilities import model_circle
+	from sp_utilities import model_circle
 	stat = Util.infomask(volf, model_circle(nx//2-2,nx,nx,nx)-model_circle(nx//2-6,nx,nx,nx), True)
 
 	volf -= stat[0]
@@ -588,9 +588,9 @@ def spruce_up( ref_data ):
 	return  volf, cs
 
 def spruce_up_variance( ref_data ):
-	from utilities      import print_msg
-	from filter         import filt_tanl, fit_tanh, filt_gaussl
-	from morphology     import threshold
+	from sp_utilities      import print_msg
+	from sp_filter         import filt_tanl, fit_tanh, filt_gaussl
+	from sp_morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -623,7 +623,7 @@ def spruce_up_variance( ref_data ):
 	volf = volf - stat[0]
 	Util.mul_scalar(volf, 1.0/stat[1])
 
-	from utilities import model_circle
+	from sp_utilities import model_circle
 	nx = volf.get_xsize()
 	stat = Util.infomask(volf, model_circle(nx//2-2,nx,nx,nx)-model_circle(nx//2-6,nx,nx,nx), True)
 
@@ -636,7 +636,7 @@ def spruce_up_variance( ref_data ):
 	return  volf, cs
 
 def minfilt( fscc ):
-	from filter import fit_tanh
+	from sp_filter import fit_tanh
 	numref = len(fscc)
 	flmin = 1.0
 	flmax = -1.0
@@ -652,12 +652,12 @@ def minfilt( fscc ):
 	return flmin,aamin,idmin
 
 def ref_ali3dm_new( refdata ):
-	from utilities    import print_msg
-	from utilities    import model_circle, get_im
-	from filter       import filt_tanl, filt_gaussl, filt_table
-	from morphology   import threshold
-	from fundamentals import rops_table
-	from alignment    import ali_nvol
+	from sp_utilities    import print_msg
+	from sp_utilities    import model_circle, get_im
+	from sp_filter       import filt_tanl, filt_gaussl, filt_table
+	from sp_morphology   import threshold
+	from sp_fundamentals import rops_table
+	from sp_alignment    import ali_nvol
 	from math         import sqrt
 	import   os
 
@@ -705,10 +705,10 @@ def ref_ali3dm_new( refdata ):
 		filt_tanl( vol[i], flmin, aamin ).write_image( os.path.join(outdir, "volf%04d.hdf" % total_iter), i )
 
 def spruce_up_var_m( refdata ):
-	from utilities  import print_msg
-	from utilities  import model_circle, get_im
-	from filter     import filt_tanl, filt_gaussl
-	from morphology import threshold
+	from sp_utilities  import print_msg
+	from sp_utilities  import model_circle, get_im
+	from sp_filter     import filt_tanl, filt_gaussl
+	from sp_morphology import threshold
 	import os
 
 	numref     = refdata[0]
@@ -754,8 +754,8 @@ def spruce_up_var_m( refdata ):
 				v50S_0 = volf.copy()
 				v50S_0 *= mask_50S
 			else:
-				from applications import ali_vol_3
-				from fundamentals import rot_shift3D
+				from sp_applications import ali_vol_3
+				from sp_fundamentals import rot_shift3D
 				v50S_i = volf.copy()
 				v50S_i *= mask_50S
 
@@ -765,9 +765,9 @@ def spruce_up_var_m( refdata ):
 		volf.write_image( os.path.join(outdir, "volf%04d.hdf"%total_iter), i )
 
 def steady( ref_data ):
-	from utilities    import print_msg
-	from filter       import fit_tanh, filt_tanl
-	from utilities    import center_2D
+	from sp_utilities    import print_msg
+	from sp_filter       import fit_tanh, filt_tanl
+	from sp_utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -789,10 +789,10 @@ def steady( ref_data ):
 
 
 def constant( ref_data ):
-	from utilities    import print_msg
-	from filter       import fit_tanh, filt_tanl
-	from utilities    import center_2D
-	from morphology   import threshold
+	from sp_utilities    import print_msg
+	from sp_filter       import fit_tanh, filt_tanl
+	from sp_utilities    import center_2D
+	from sp_morphology   import threshold
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -808,7 +808,7 @@ def constant( ref_data ):
 	aa = 0.1
 	#msg = "Tangent filter:  cut-off frequency = %10.3f        fall-off = %10.3f\n"%(fl, aa)
 	#print_msg(msg)
-	from utilities import model_circle
+	from sp_utilities import model_circle
 	nx = ref_data[2].get_xsize()
 	stat = Util.infomask(ref_data[2], model_circle(nx//2-2,nx,nx), False)
 	ref_data[2] -= stat[0]
@@ -819,10 +819,10 @@ def constant( ref_data ):
 
 
 def temp_dovolume( ref_data ):
-	from utilities      import print_msg, read_text_row
-	from filter         import fit_tanh, filt_tanl
-	from fundamentals   import fshift
-	from morphology     import threshold
+	from sp_utilities      import print_msg, read_text_row
+	from sp_filter         import fit_tanh, filt_tanl
+	from sp_fundamentals   import fshift
+	from sp_morphology     import threshold
 	#  Prepare the reference in 3D alignment, this function corresponds to what do_volume does.
 	#  Input: list ref_data
 	#   0 - mask
@@ -853,9 +853,9 @@ def temp_dovolume( ref_data ):
 	msg = "Tangent filter:  cut-off frequency = %10.3f        fall-off = %10.3f\n"%(fl, aa)
 	print_msg(msg)
 
-	from utilities    import read_text_file
-	from fundamentals import rops_table, fftip, fft
-	from filter       import filt_table, filt_btwl
+	from sp_utilities    import read_text_file
+	from sp_fundamentals import rops_table, fftip, fft
+	from sp_filter       import filt_table, filt_btwl
 	fftip(vol)
 	try:
 		rt = read_text_file( "pwreference.txt" )
@@ -886,10 +886,10 @@ def temp_dovolume( ref_data ):
 
 
 def dovolume( ref_data ):
-	from utilities      import print_msg, read_text_row
-	from filter         import fit_tanh, filt_tanl
-	from fundamentals   import fshift
-	from morphology     import threshold
+	from sp_utilities      import print_msg, read_text_row
+	from sp_filter         import fit_tanh, filt_tanl
+	from sp_fundamentals   import fshift
+	from sp_morphology     import threshold
 	#  Prepare the reference in 3D alignment, this function corresponds to what do_volume does.
 	#  Input: list ref_data
 	#   0 - mask
@@ -920,9 +920,9 @@ def dovolume( ref_data ):
 	msg = "Tangent filter:  cut-off frequency = %10.3f        fall-off = %10.3f\n"%(fl, aa)
 	print_msg(msg)
 
-	from utilities    import read_text_file
-	from fundamentals import rops_table, fftip, fft
-	from filter       import filt_table, filt_btwl
+	from sp_utilities    import read_text_file
+	from sp_fundamentals import rops_table, fftip, fft
+	from sp_filter       import filt_table, filt_btwl
 	fftip(vol)
 	try:
 		rt = read_text_file( "pwreference.txt" )
@@ -959,10 +959,10 @@ def do_volume_mrk02(ref_data):
 	"""
 	from EMAN2          import Util
 	from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
-	from filter         import filt_table
-	from reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
-	from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
-	from fundamentals import rops_table, fftip, fft
+	from sp_filter         import filt_table
+	from sp_reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
+	from sp_utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
+	from sp_fundamentals import rops_table, fftip, fft
 	import types
 
 	# Retrieve the function specific input arguments from ref_data
@@ -991,22 +991,22 @@ def do_volume_mrk02(ref_data):
 		vol = data
 
 	if myid == 0:
-		from morphology import threshold
-		from filter     import filt_tanl, filt_btwl
-		from utilities  import model_circle, get_im
+		from sp_morphology import threshold
+		from sp_filter     import filt_tanl, filt_btwl
+		from sp_utilities  import model_circle, get_im
 		import types
 		nx = vol.get_xsize()
 		if(Tracker["constants"]["mask3D"] == None):
 			mask3D = model_circle(int(Tracker["constants"]["radius"]*float(nx)/float(Tracker["constants"]["nnxo"])+0.5), nx, nx, nx)
 		elif(Tracker["constants"]["mask3D"] == "auto"):
-			from utilities import adaptive_mask
+			from sp_utilities import adaptive_mask
 			mask3D = adaptive_mask(vol)
 		else:
 			if( type(Tracker["constants"]["mask3D"]) == bytes ):  mask3D = get_im(Tracker["constants"]["mask3D"])
 			else:  mask3D = (Tracker["constants"]["mask3D"]).copy()
 			nxm = mask3D.get_xsize()
 			if( nx != nxm):
-				from fundamentals import rot_shift3D
+				from sp_fundamentals import rot_shift3D
 				mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
 				nxm = mask3D.get_xsize()
 				assert(nx == nxm)
@@ -1017,7 +1017,7 @@ def do_volume_mrk02(ref_data):
 		vol = threshold(vol)
 		Util.mul_img(vol, mask3D)
 		if( Tracker["PWadjustment"] ):
-			from utilities    import read_text_file, write_text_file
+			from sp_utilities    import read_text_file, write_text_file
 			rt = read_text_file( Tracker["PWadjustment"] )
 			fftip(vol)
 			ro = rops_table(vol)
@@ -1059,7 +1059,7 @@ def do_volume_mrk02(ref_data):
 			if Tracker["constants"]["sausage"]: vol = fft(vol)
 
 	if local_filter:
-		from morphology import binarize
+		from sp_morphology import binarize
 		if(myid == 0): nx = mask3D.get_xsize()
 		else:  nx = 0
 		nx = bcast_number_to_all(nx, source_node = 0)
@@ -1070,7 +1070,7 @@ def do_volume_mrk02(ref_data):
 			lx = locres.get_xsize()
 			if(lx != nx):
 				if(lx < nx):
-					from fundamentals import fdecimate, rot_shift3D
+					from sp_fundamentals import fdecimate, rot_shift3D
 					mask = Util.window(rot_shift3D(mask,scale=float(lx)/float(nx)),lx,lx,lx)
 					vol = fdecimate(vol, lx,lx,lx)
 				else:  ERROR("local filter cannot be larger than input volume","user function",1)
@@ -1084,12 +1084,12 @@ def do_volume_mrk02(ref_data):
 		lx = bcast_number_to_all(lx, source_node = 0)
 		if( myid != 0 ):  mask = model_blank(lx,lx,lx)
 		bcast_EMData_to_all(mask, myid, 0, comm=mpi_comm)
-		from filter import filterlocal
+		from sp_filter import filterlocal
 		vol = filterlocal( locres, vol, mask, Tracker["falloff"], myid, 0, nproc)
 
 		if myid == 0:
 			if(lx < nx):
-				from fundamentals import fpol
+				from sp_fundamentals import fpol
 				vol = fpol(vol, nx,nx,nx)
 			vol = threshold(vol)
 			vol = filt_btwl(vol, 0.38, 0.5)#  This will have to be corrected.
@@ -1124,10 +1124,10 @@ def do_volume_mrk03(ref_data):
 	"""
 	from EMAN2          import Util
 	from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
-	from filter         import filt_table
-	from reconstruction import recons3d_4nn_MPI, recons3d_4nnw_MPI  #  recons3d_4nn_ctf_MPI
-	from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
-	from fundamentals   import rops_table, fftip, fft
+	from sp_filter         import filt_table
+	from sp_reconstruction import recons3d_4nn_MPI, recons3d_4nnw_MPI  #  recons3d_4nn_ctf_MPI
+	from sp_utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
+	from sp_fundamentals   import rops_table, fftip, fft
 	import types
 
 	# Retrieve the function specific input arguments from ref_data
@@ -1155,22 +1155,22 @@ def do_volume_mrk03(ref_data):
 		vol = data
 
 	if myid == 0:
-		from morphology import threshold
-		from filter     import filt_tanl, filt_btwl
-		from utilities  import model_circle, get_im
+		from sp_morphology import threshold
+		from sp_filter     import filt_tanl, filt_btwl
+		from sp_utilities  import model_circle, get_im
 		import types
 		nx = vol.get_xsize()
 		if(Tracker["constants"]["mask3D"] == None):
 			mask3D = model_circle(int(Tracker["constants"]["radius"]*float(nx)/float(Tracker["constants"]["nnxo"])+0.5), nx, nx, nx)
 		elif(Tracker["constants"]["mask3D"] == "auto"):
-			from utilities import adaptive_mask
+			from sp_utilities import adaptive_mask
 			mask3D = adaptive_mask(vol)
 		else:
 			if( type(Tracker["constants"]["mask3D"]) == bytes ):  mask3D = get_im(Tracker["constants"]["mask3D"])
 			else:  mask3D = (Tracker["constants"]["mask3D"]).copy()
 			nxm = mask3D.get_xsize()
 			if( nx != nxm ):
-				from fundamentals import rot_shift3D
+				from sp_fundamentals import rot_shift3D
 				mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
 				nxm = mask3D.get_xsize()
 				assert(nx == nxm)
@@ -1182,7 +1182,7 @@ def do_volume_mrk03(ref_data):
 				vol = filt_tanl(vol, Tracker["lowpass"], Tracker["falloff"])
 
 	if local_filter:
-		from morphology import binarize
+		from sp_morphology import binarize
 		if(myid == 0): nx = mask3D.get_xsize()
 		else:  nx = 0
 		if( nproc > 1 ): nx = bcast_number_to_all(nx, source_node = 0)
@@ -1193,7 +1193,7 @@ def do_volume_mrk03(ref_data):
 			lx = locres.get_xsize()
 			if(lx != nx):
 				if(lx < nx):
-					from fundamentals import fdecimate, rot_shift3D
+					from sp_fundamentals import fdecimate, rot_shift3D
 					mask = Util.window(rot_shift3D(mask,scale=float(lx)/float(nx)),lx,lx,lx)
 					vol = fdecimate(vol, lx,lx,lx)
 				else:  ERROR("local filter cannot be larger than input volume","user function",1)
@@ -1208,12 +1208,12 @@ def do_volume_mrk03(ref_data):
 			lx = bcast_number_to_all(lx, source_node = 0)
 			if( myid != 0 ):  mask = model_blank(lx,lx,lx)
 			bcast_EMData_to_all(mask, myid, 0, comm=mpi_comm)
-		from filter import filterlocal
+		from sp_filter import filterlocal
 		vol = filterlocal( locres, vol, mask, Tracker["falloff"], myid, 0, nproc)
 
 		if myid == 0:
 			if(lx < nx):
-				from fundamentals import fpol
+				from sp_fundamentals import fpol
 				vol = fpol(vol, nx,nx,nx)
 			vol = threshold(vol)
 			Util.mul_img(vol, mask3D)
@@ -1249,10 +1249,10 @@ def do_volume_mrk04(ref_data):
 	"""
 	from EMAN2          import Util
 	from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
-	from filter         import filt_table
-	from reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
-	from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
-	from fundamentals   import rops_table, fftip, fft
+	from sp_filter         import filt_table
+	from sp_reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
+	from sp_utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
+	from sp_fundamentals   import rops_table, fftip, fft
 	import types
 
 	# Retrieve the function specific input arguments from ref_data
@@ -1279,22 +1279,22 @@ def do_volume_mrk04(ref_data):
 		vol = data
 
 	if myid == 0:
-		from morphology import threshold
-		from filter     import filt_tanl, filt_btwl
-		from utilities  import model_circle, get_im
+		from sp_morphology import threshold
+		from sp_filter     import filt_tanl, filt_btwl
+		from sp_utilities  import model_circle, get_im
 		import types
 		nx = vol.get_xsize()
 		if(Tracker["constants"]["mask3D"] == None):
 			mask3D = model_circle(int(Tracker["constants"]["radius"]*float(nx)/float(Tracker["constants"]["nnxo"])+0.5), nx, nx, nx)
 		elif(Tracker["constants"]["mask3D"] == "auto"):
-			from utilities import adaptive_mask
+			from sp_utilities import adaptive_mask
 			mask3D = adaptive_mask(vol)
 		else:
 			if( type(Tracker["constants"]["mask3D"]) == bytes ):  mask3D = get_im(Tracker["constants"]["mask3D"])
 			else:  mask3D = (Tracker["constants"]["mask3D"]).copy()
 			nxm = mask3D.get_xsize()
 			if( nx != nxm):
-				from fundamentals import rot_shift3D
+				from sp_fundamentals import rot_shift3D
 				mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
 				nxm = mask3D.get_xsize()
 				assert(nx == nxm)
@@ -1306,7 +1306,7 @@ def do_volume_mrk04(ref_data):
 		Util.mul_img(vol, mask3D)
 
 	if local_filter:
-		from morphology import binarize
+		from sp_morphology import binarize
 		if(myid == 0): nx = mask3D.get_xsize()
 		else:  nx = 0
 		if( nproc > 1 ):  nx = bcast_number_to_all(nx, source_node = 0)
@@ -1317,7 +1317,7 @@ def do_volume_mrk04(ref_data):
 			lx = locres.get_xsize()
 			if(lx != nx):
 				if(lx < nx):
-					from fundamentals import fdecimate, rot_shift3D
+					from sp_fundamentals import fdecimate, rot_shift3D
 					mask = Util.window(rot_shift3D(mask,scale=float(lx)/float(nx)),lx,lx,lx)
 					vol = fdecimate(vol, lx,lx,lx)
 				else:  ERROR("local filter cannot be larger than input volume","user function",1)
@@ -1332,12 +1332,12 @@ def do_volume_mrk04(ref_data):
 			lx = bcast_number_to_all(lx, source_node = 0)
 			if( myid != 0 ):  mask = model_blank(lx,lx,lx)
 			bcast_EMData_to_all(mask, myid, 0, comm=mpi_comm)
-		from filter import filterlocal
+		from sp_filter import filterlocal
 		vol = filterlocal( locres, vol, mask, Tracker["falloff"], myid, 0, nproc)
 
 		if myid == 0:
 			if(lx < nx):
-				from fundamentals import fpol
+				from sp_fundamentals import fpol
 				vol = fpol(vol, nx,nx,nx)
 			vol = threshold(vol)
 			vol = filt_btwl(vol, 0.38, 0.5)#  This will have to be corrected.
@@ -1373,32 +1373,32 @@ def do_volume_mrk05(ref_data):
 	"""
 	from EMAN2          import Util
 	from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
-	from filter         import filt_table
-	from reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
-	from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
-	from fundamentals   import rops_table, fftip, fft
+	from sp_filter         import filt_table
+	from sp_reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
+	from sp_utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
+	from sp_fundamentals   import rops_table, fftip, fft
 	import types
 
 	# Retrieve the function specific input arguments from ref_data
 	vol     = ref_data[0]
 	Tracker = ref_data[1]
 	
-	from morphology import threshold
-	from filter     import filt_tanl, filt_btwl
-	from utilities  import model_circle, get_im
+	from sp_morphology import threshold
+	from sp_filter     import filt_tanl, filt_btwl
+	from sp_utilities  import model_circle, get_im
 	import types
 	nx = vol.get_xsize()
 	if(Tracker["constants"]["mask3D"] == None):
 		mask3D = model_circle(int(Tracker["constants"]["radius"]*float(nx)/float(Tracker["constants"]["nnxo"])+0.5), nx, nx, nx)
 	elif(Tracker["constants"]["mask3D"] == "auto"):
-		from utilities import adaptive_mask
+		from sp_utilities import adaptive_mask
 		mask3D = adaptive_mask(vol)
 	else:
 		if( type(Tracker["constants"]["mask3D"]) == bytes ):  mask3D = get_im(Tracker["constants"]["mask3D"])
 		else:  mask3D = (Tracker["constants"]["mask3D"]).copy()
 		nxm = mask3D.get_xsize()
 		if( nx != nxm):
-			from fundamentals import rot_shift3D
+			from sp_fundamentals import rot_shift3D
 			mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
 			nxm = mask3D.get_xsize()
 			assert(nx == nxm)
@@ -1452,8 +1452,8 @@ class factory_class(object):
 		self.contents["constant"]           = constant	 
 
 		# User function used in meridien
-		self.contents["do_volume_mask"]     = user_functions_meridien.do_volume_mask
-		self.contents["ai_spa"]     = user_functions_meridien.ai_spa
+		self.contents["do_volume_mask"]     = sp_user_functions_meridien.do_volume_mask
+		self.contents["ai_spa"]     = sp_user_functions_meridien.ai_spa
 
 	def __getitem__(self,index):
 
@@ -1560,10 +1560,10 @@ def build_user_function(module_name=None,function_name=None,path_name=None):
 
 from builtins import range
 from builtins import object
-from global_def import *
+from sp_global_def import *
 from EMAN2_cppwrap import *
 
-import user_functions_meridien
+import sp_user_functions_meridien
 
 ref_ali2d_counter = -1
 factory=factory_class()

@@ -38,13 +38,13 @@ import shutil
 
 from EMAN2 import *
 from EMAN2db import *
-from sparx import *
-from applications import MPI_start_end
+from sp_sparx import *
+from sp_applications import MPI_start_end
 from inspect import currentframe, getframeinfo
-from utilities import generate_ctf
-import global_def
-from global_def import sxprint, ERROR
-from global_def import *
+from sp_utilities import generate_ctf
+import sp_global_def
+from sp_global_def import sxprint, ERROR
+from sp_global_def import *
 
 import mpi
 
@@ -87,7 +87,7 @@ def is_float(value):
 # ----------------------------------------------------------------------------------------
 def mrk_resample2d(img, sub_rate, target_size = None):
 	"""
-		mrk_resample2d() is based on resample() in fundamentals.py
+		mrk_resample2d() is based on resample() in sp_fundamentals.py
 		However, the following modifications were made
 		(1) Do not automatically adjust some values of header entries below
 		- ctf              : apix
@@ -101,7 +101,7 @@ def mrk_resample2d(img, sub_rate, target_size = None):
 		sub_rate > 1.0, upsampling the image using new gridding interpolation.
 		(??? fit_to_fft will change the ouput image size to an fft_friendly size ???)
 	"""
-	from fundamentals import subsample, prepi
+	from sp_fundamentals import subsample, prepi
 	
 	original_size = img.get_xsize()
 	assert (original_size > 1)
@@ -222,13 +222,13 @@ For negative staining data, use --skip_invert.
 	# ------------------------------------------------------------------------------------
 	# Set up SPHIRE global definitions
 	# ------------------------------------------------------------------------------------
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 		disable_bdb_cache()
 	
 	# Change the name log file for error message
-	original_logfilename = global_def.LOGFILE
-	global_def.LOGFILE = os.path.splitext(program_name)[0] + '_' + original_logfilename + '.txt'
+	original_logfilename = sp_global_def.LOGFILE
+	sp_global_def.LOGFILE = os.path.splitext(program_name)[0] + '_' + original_logfilename + '.txt'
 	
 	# ------------------------------------------------------------------------------------
 	# Print command line
@@ -731,7 +731,7 @@ For negative staining data, use --skip_invert.
 			# Create output directory
 			assert (not os.path.exists(root_out_dir))
 			os.makedirs(root_out_dir)
-			global_def.write_command(root_out_dir)
+			sp_global_def.write_command(root_out_dir)
 			# Open the consistency check file
 			mic_consistency_check_info_path = os.path.join(root_out_dir, "mic_consistency_check_info_%s.txt"%(get_time_stamp_suffix()))
 			sxprint(" ")
@@ -1354,7 +1354,7 @@ For negative staining data, use --skip_invert.
 	# ------------------------------------------------------------------------------------
 	# Reset SPHIRE global definitions
 	# ------------------------------------------------------------------------------------
-	global_def.LOGFILE = original_logfilename
+	sp_global_def.LOGFILE = original_logfilename
 	
 	# ------------------------------------------------------------------------------------
 	# Clean up MPI related variables
@@ -1369,9 +1369,9 @@ For negative staining data, use --skip_invert.
 # Define main function for command line execution
 # ========================================================================================
 if __name__=="__main__":
-	global_def.print_timestamp( "Start" )
+	sp_global_def.print_timestamp( "Start" )
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()
 
 # ========================================================================================

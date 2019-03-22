@@ -35,9 +35,9 @@ from __future__ import print_function
 
 import sys
 import os
-import global_def
-from global_def import sxprint, ERROR
-from global_def import *
+import sp_global_def
+from sp_global_def import sxprint, ERROR
+from sp_global_def import *
 
 import mpi
 
@@ -71,8 +71,8 @@ def main():
 		files = args[0:-1]
 		outdir = args[-1]
 
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sp_global_def.CACHE_DISABLE:
+			from sp_utilities import disable_bdb_cache
 			disable_bdb_cache()
 
 		if options.MPI:
@@ -81,27 +81,27 @@ def main():
 			for arg in sys.argv:
 				arglist.append( arg )
 
-			global_def.BATCH = True
+			sp_global_def.BATCH = True
 			
 			if(options.n):
-				from development import var_mpi_new
+				from sp_development import var_mpi_new
 				var_mpi_new( files[0], outdir, options.scratch, options.fl, options.aa, options.radccc, False, False, options.repair, options.pca, options.pcamask, options.pcanvec)
 			else:
-				from applications import var_mpi
+				from sp_applications import var_mpi
 				var_mpi( files, outdir, options.fl, options.aa, options.radccc, options.repair, options.pca, options.pcamask, options.pcanvec)
 
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 		else:
-			global_def.BATCH = True
+			sp_global_def.BATCH = True
 			ERROR( "Please use MPI version" )
-			from applications import defvar
+			from sp_applications import defvar
 			defvar(  files, outdir, options.fl, options.aa, options.radccc, options.repair, options.pca, options.pcamask, options.pcanvec)
-			global_def.BATCH = False
+			sp_global_def.BATCH = False
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

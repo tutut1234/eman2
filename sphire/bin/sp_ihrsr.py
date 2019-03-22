@@ -34,10 +34,10 @@ from __future__ import print_function
 import os
 import sys
 from optparse import OptionParser
-from global_def import SPARXVERSION
+from sp_global_def import SPARXVERSION
 
-import global_def
-from global_def import sxprint, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
 from builtins import range
 
@@ -106,7 +106,7 @@ def main():
 		rminp = int((float(options.rmin)/options.apix) + 0.5)
 		rmaxp = int((float(options.rmax)/options.apix) + 0.5)
 		
-		from utilities import get_input_from_string, get_im
+		from sp_utilities import get_input_from_string, get_im
 
 		xr = get_input_from_string(options.xr)
 		txs = get_input_from_string(options.txs)
@@ -127,21 +127,21 @@ def main():
 		for i in range(len(y_restrict)):
 			y_restrict2 += " "+str(float(y_restrict[i])/options.apix)
 
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sp_global_def.CACHE_DISABLE:
+			from sp_utilities import disable_bdb_cache
 			disable_bdb_cache()
 
-		from applications import ihrsr
-		global_def.BATCH = True
+		from sp_applications import ihrsr
+		sp_global_def.BATCH = True
 		if len(args) < 4:  mask = None
 		else:               mask = args[3]
 		ihrsr(args[0], args[1], args[2], mask, irp, oup, options.rs, xrp, options.ynumber, txsp, options.delta, options.initial_theta, options.delta_theta, options.an, options.maxit, options.CTF, options.snr, options.dp, options.ndp, options.dp_step, options.dphi, options.ndphi, options.dphi_step, options.psi_max, rminp, rmaxp, options.fract, options.nise, options.npad,options.sym, options.function, options.datasym, options.apix, options.debug, options.MPI, options.WRAP, y_restrict2) 
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

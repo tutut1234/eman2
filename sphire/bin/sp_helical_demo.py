@@ -36,11 +36,11 @@ from __future__ import print_function
 
 from builtins import range
 import os
-import global_def
-from global_def import sxprint, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
-from   global_def     import *
-from   user_functions import *
+from   sp_global_def     import *
+from   sp_user_functions import *
 from   optparse       import OptionParser
 import sys
 
@@ -124,7 +124,7 @@ def main():
 
 		if options.generate_noisycyl:
 
-			from utilities import model_cylinder, model_gauss_noise
+			from sp_utilities import model_cylinder, model_gauss_noise
 			outvol = args[0]
 			boxdims = options.boxsize.split(',')
 
@@ -145,7 +145,7 @@ def main():
 			(model_cylinder(options.rad,nx, ny, nz)*model_gauss_noise(1.0, nx, ny, nz) ).write_image(outvol)
 
 		if options.generate_mask:
-			from utilities import model_blank, pad
+			from sp_utilities import model_blank, pad
 			outvol = args[0]
 			maskdims = options.masksize.split(',')
 
@@ -164,8 +164,8 @@ def main():
 			mask.write_image(outvol)
 		
 		if options.applyparams:
-			from utilities    import get_im, get_params2D, set_params2D
-			from fundamentals import cyclic_shift
+			from sp_utilities    import get_im, get_params2D, set_params2D
+			from sp_fundamentals import cyclic_shift
 			stack = args[0]
 			newstack = args[1]
 			mask = get_im(args[2])
@@ -183,10 +183,10 @@ def main():
 
 def generate_helimic(refvol, outdir, pixel, CTF=False, Cs=2.0,voltage = 200.0, ampcont = 10.0, nonoise = False, rand_seed=14567):
 	
-	from utilities	 import model_blank, model_gauss, model_gauss_noise, pad, get_im
+	from sp_utilities	 import model_blank, model_gauss, model_gauss_noise, pad, get_im
 	from random 	 import random
-	from projection  import prgs, prep_vol
-	from filter	     import filt_gaussl, filt_ctf
+	from sp_projection  import prgs, prep_vol
+	from sp_filter	     import filt_gaussl, filt_ctf
 	from EMAN2 	     import EMAN2Ctf
 	
 	if os.path.exists(outdir):
@@ -219,7 +219,7 @@ def generate_helimic(refvol, outdir, pixel, CTF=False, Cs=2.0,voltage = 200.0, a
 		if CTF :
 			#ctf = EMAN2Ctf()
 			#ctf.from_dict( {"defocus":defocus, "cs":Cs, "voltage":voltage, "apix":pixel, "ampcont":ampcont, "bfactor":0.0} )
-			from utilities import generate_ctf
+			from sp_utilities import generate_ctf
 			ctf = generate_ctf([defocus,2,200,1.84,0.0,ampcont,defocus*0.2,80])   ##@ming   the range of astigmatism amplitude is between 10 percent and 22 percent. 20 percent is a good choice.
 		i = idef - 4
 		for k in range(1):
@@ -361,7 +361,7 @@ def generate_runscript(filename, seg_ny, ptcl_dst, fract):
 	#f.write('mpirun -np 3 sxhelicon_utils.py result_local/volf0011.hdf outsymsearch --symsearch --dp=27.6 --dphi=166.715 --apix=1.84 --fract=%.2f --rmin=0 --rmax=64.0 --datasym=datasym.txt --dp_step=0.92 --ndp=10 --dphi_step=1.0 --ndphi=10 --MPI\n'%(fract))
 	
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

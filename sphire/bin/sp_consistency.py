@@ -35,13 +35,13 @@ from __future__ import print_function
 
 from builtins import range
 from   EMAN2 import *
-from   sparx import *
+from   sp_sparx import *
 import os
-import global_def
-from   global_def import sxprint, ERROR
+import sp_global_def
+from   sp_global_def import sxprint, ERROR
 
 
-from   global_def import *
+from   sp_global_def import *
 from   optparse import OptionParser
 import sys
 from   random import shuffle
@@ -258,8 +258,8 @@ def errors_per_image(params, avgtrans, thresherr=1.0, radius = 1.0):
 
 def average_trans(params):
 	#  Compute average projection params and pixel errors
-	from utilities import getfvec
-	from pixel_error import max_3D_pixel_error
+	from sp_utilities import getfvec
+	from sp_pixel_error import max_3D_pixel_error
 	from math import sqrt, degrees, radians, acos
 	nn = lem(params[0])
 	avgtrans = [None]*nn
@@ -326,7 +326,7 @@ def main():
 	parser.add_option("--chunk",     type="string",       default="",       help="Root of of four chunk files with indeces")
 	parser.add_option("--params",    type="string",       default="",       help="Root of of six parameter file names with refinement results")
 	(options, args) = parser.parse_args(arglist[1:])
-	global_def.BATCH = True
+	sp_global_def.BATCH = True
 	if options.phase == 1 and len(args) == 2:
 		inputbdb = args[0]
 		outdir   = args[1]
@@ -839,11 +839,11 @@ def main():
 		""")
 		sxprint("Please run '" + progname + " -h' for detailed options")
 
-	global_def.BATCH = False
+	sp_global_def.BATCH = False
 
 
 if __name__=="__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

@@ -35,7 +35,7 @@ CTF Refinement with error assessment for SPHIRE
 """
 # pylint: disable=C0330
 import argparse
-import statistics
+import sp_statistics
 import time
 import multiprocessing
 import os
@@ -49,10 +49,10 @@ from scipy import ndimage
 
 import sxctf_refine_plotting
 import sxctf_refine_io
-import filter as fltr
+import sp_filter as fltr
 import EMAN2
-import global_def
-from projection import prgl
+import sp_global_def
+from sp_projection import prgl
 
 
 def create_ctf_list(current_ctf, def_search_range, def_step_size):
@@ -107,7 +107,7 @@ def calc_similarity_real(particle_image, projection_ctf_applied_2d, mask=None):
 	:param mask: Mask for ccc
 	:return: cross correlation coefficient
 	"""
-	ccc = statistics.ccc(particle_image, projection_ctf_applied_2d, mask)
+	ccc = sp_statistics.ccc(particle_image, projection_ctf_applied_2d, mask)
 	return ccc
 
 
@@ -118,7 +118,7 @@ def calc_similarity_complex(particle_image, projection_ctf_applied_2d):
 	:param projection_ctf_applied_2d: CTF filtered 2D Projection
 	:return: fourier shell correlation
 	"""
-	fsc = statistics.fsc(particle_image, projection_ctf_applied_2d)
+	fsc = sp_statistics.fsc(particle_image, projection_ctf_applied_2d)
 	data = np.array(fsc[1])
 	return np.average(data[2:50])
 
@@ -405,7 +405,7 @@ def refine_set(particle_indices):
 
 		import traceback
 
-		global_def.sxprint(
+		sp_global_def.sxprint(
 			"Exception happend for particles in range ",
 			np.min(particle_indices),
 			"-",
@@ -771,7 +771,7 @@ def _main_():
 		params_file_path = args.params_path
 		chunk_file_path = args.chunk
 		if volume2_file_path is None and chunk_file_path is not None:
-			global_def.ERROR(
+			sp_global_def.ERROR(
 				"If chunk file is specified, you need to specify a second volume (-v2)"
 			)
 
@@ -786,10 +786,10 @@ def _main_():
 	output_folder = args.outputdir
 
 	if os.path.exists(output_folder):
-		global_def.ERROR("Output folder already exists. Stop execution.")
+		sp_global_def.ERROR("Output folder already exists. Stop execution.")
 	else:
 		os.makedirs(output_folder)
-		global_def.write_command(output_folder)
+		sp_global_def.write_command(output_folder)
 
 	output_virtual_stack_path = "bdb:" + os.path.join(output_folder, "ctf_refined")
 
@@ -828,7 +828,7 @@ def _main_():
 			number_of_particles_to_read=number_of_particles_to_read,
 		)
 
-	global_def.sxprint("####Start refinement####")
+	sp_global_def.sxprint("####Start refinement####")
 	start = time.time()
 
 	# for chunk in particle_chunks:
@@ -856,7 +856,7 @@ def _main_():
 	#####################################################################
 
 	end = time.time()
-	global_def.sxprint("Time for ", number_of_particles, " Particles:", end - start)
+	sp_global_def.sxprint("Time for ", number_of_particles, " Particles:", end - start)
 
 	# Ouput results
 	refined_ctfs_as_list, refinement_results_per_micrograph = merge_ctf_refinement_results(
@@ -870,7 +870,7 @@ def _main_():
 		number_of_particles=number_of_particles,
 	)
 
-	global_def.sxprint("Write statistics...")
+	sp_global_def.sxprint("Write statistics...")
 	# WRITE STATISTICS
 	if not os.path.exists(output_stats_path):
 		os.makedirs(output_stats_path)
@@ -883,7 +883,7 @@ def _main_():
 		refinement_results_per_micrograph
 	)
 	# Save particle plots
-	global_def.sxprint("Write images...")
+	sp_global_def.sxprint("Write images...")
 	path_output_img = os.path.join(output_stats_path, "img/")
 	if not os.path.exists(path_output_img):
 		os.makedirs(path_output_img)
@@ -895,7 +895,7 @@ def _main_():
 		min_max_ratio=min_max_ratio,
 	)
 
-	global_def.sxprint("Write other...")
+	sp_global_def.sxprint("Write other...")
 	refinement_results_matrix = get_refinement_results_matrix(
 		refinement_results_per_micrograph
 	)
@@ -911,11 +911,11 @@ def _main_():
 		fmt=["%d", "%f", "%f", "%f"],
 	)
 
-	global_def.sxprint("Done")
+	sp_global_def.sxprint("Done")
 
 
 if __name__ == "__main__":
-	global_def.BATCH = True
-	global_def.print_timestamp("Start")
+	sp_global_def.BATCH = True
+	sp_global_def.print_timestamp("Start")
 	_main_()
-	global_def.print_timestamp("Finish")
+	sp_global_def.print_timestamp("Finish")

@@ -36,10 +36,10 @@ from future import standard_library
 standard_library.install_aliases()
 
 import os
-import global_def
-from global_def import sxprint
+import sp_global_def
+from sp_global_def import sxprint
 
-from global_def import *
+from sp_global_def import *
 from optparse import OptionParser
 import sys, configparser
 
@@ -53,21 +53,21 @@ def main():
 	if len(args) != 1:
 		sxprint( "Usage: " + usage )
 		sxprint( "Please run \'" + progname + " -h\' for detailed options" )
-		global_def.ERROR( "Invalid number of parameters used. Please see usage information above." )
+		sp_global_def.ERROR( "Invalid number of parameters used. Please see usage information above." )
 		return
 
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 		disable_bdb_cache()
 
-	from development import ali2d_mref
-	global_def.BATCH = True
+	from sp_development import ali2d_mref
+	sp_global_def.BATCH = True
 	ali2d_mref(args[0])
-	global_def.BATCH = False
+	sp_global_def.BATCH = False
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

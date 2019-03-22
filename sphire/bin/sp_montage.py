@@ -35,16 +35,16 @@ from __future__ import print_function
 
 from builtins import range
 import os
-import global_def
-from global_def import sxprint, ERROR
-from   global_def     import *
-from   user_functions import *
+import sp_global_def
+from sp_global_def import sxprint, ERROR
+from   sp_global_def     import *
+from   sp_user_functions import *
 from   optparse       import OptionParser
 import sys
 
 def write_montage_file(stack, montage_file, N, gx, gy, bg, scale, number, begin_zero):
 
-	from utilities import model_blank
+	from sp_utilities import model_blank
 
 	font = [ "0011100010001010000011000001100000110000011000001100000101000100011100",
 	         "0001000001100001010001001000000100000010000001000000100000010001111111",
@@ -131,17 +131,17 @@ def main():
 		return
 
 	else:
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sp_global_def.CACHE_DISABLE:
+			from sp_utilities import disable_bdb_cache
 			disable_bdb_cache()
 		
-		global_def.BATCH = True
+		sp_global_def.BATCH = True
 		write_montage_file(args[0], args[1], options.N, options.gx, options.gy, options.bg, options.scale, options.number, options.begin_zero)
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

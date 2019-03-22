@@ -34,9 +34,9 @@ from __future__ import print_function
 
 
 import os
-import global_def
-from global_def import sxprint, ERROR
-from   global_def import *
+import sp_global_def
+from sp_global_def import sxprint, ERROR
+from   sp_global_def import *
 from   optparse import OptionParser
 import sys
 
@@ -81,34 +81,34 @@ def main():
 		else:
 			mask = args[2]
 
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sp_global_def.CACHE_DISABLE:
+			from sp_utilities import disable_bdb_cache
 			disable_bdb_cache()
 
 		
-		global_def.BATCH = True
+		sp_global_def.BATCH = True
 		if options.fourvar:
-			from development import nlocal_ali3d_MPI
+			from sp_development import nlocal_ali3d_MPI
 			nlocal_ali3d_MPI(args[0], args[1], mask, options.ou, options.delta, options.ts, options.center, options.maxit,
 			options.CTF, options.snr, options.sym, options.chunk, options.function, options.fourvar,
 			options.npad, options.debug)
 		elif options.scipy_minimization:
 			if options.MPI:
-				from applications import local_ali3d_MPI_scipy_minimization
+				from sp_applications import local_ali3d_MPI_scipy_minimization
 				local_ali3d_MPI_scipy_minimization(args[0], args[1], mask, options.ou, options.delta, options.ts, options.center, options.maxit,
 				options.CTF, options.snr, options.sym, options.chunk, options.function, options.fourvar,
 				options.npad, options.debug)
 		else:
-			from applications import local_ali3d
+			from sp_applications import local_ali3d
 			local_ali3d(args[0], args[1], mask, options.ou, options.delta, options.ts, options.center, options.maxit,
 			options.CTF, options.snr, options.sym, options.chunk, options.function, options.fourvar,
 			options.npad, options.debug, options.MPI)
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

@@ -34,9 +34,9 @@ from __future__ import print_function
 import os
 import sys
 from optparse import OptionParser
-from global_def import SPARXVERSION
-import global_def
-from global_def import sxprint, ERROR
+from sp_global_def import SPARXVERSION
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
 import mpi
 
@@ -98,7 +98,7 @@ def main():
 			
 		if options.dp < 0 or options.dphi < 0:
 			# read helical symmetry parameters from symdoc
-			from utilities import read_text_row
+			from sp_utilities import read_text_row
 			hparams=read_text_row(options.symdoc)
 			dp  = hparams[0][0]
 			dphi = hparams[0][1]
@@ -109,7 +109,7 @@ def main():
 		rminp = int((float(options.rmin)/options.apix) + 0.5)
 		rmaxp = int((float(options.rmax)/options.apix) + 0.5)
 
-		from utilities import get_input_from_string, get_im
+		from sp_utilities import get_input_from_string, get_im
 
 		searchxshiftp = int( (options.searchxshift/options.apix) + 0.5)
 		xwobblep = int( (options.xwobble/options.apix) + 0.5)
@@ -120,8 +120,8 @@ def main():
 			ERROR( "ywobble has to be smaller than dp/2" )
 			return
 
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sp_global_def.CACHE_DISABLE:
+			from sp_utilities import disable_bdb_cache
 			disable_bdb_cache()
 
 		if len(args) < 4:
@@ -129,17 +129,17 @@ def main():
 		else:
 			mask = args[3]
 
-		from applications import ehelix_MPI
-		global_def.BATCH = True
+		from sp_applications import ehelix_MPI
+		sp_global_def.BATCH = True
 		ehelix_MPI(args[0], args[1], args[2], options.seg_ny, options.delta, options.phiwobble, options.psi_max,\
 		 searchxshiftp, xwobblep, ywobble, ystep, options.apix, dp, dphi, options.fract, rmaxp, rminp, not options.nopsisearch,\
 		  mask, options.maxit, options.CTF, options.snr, options.sym,  options.function, options.npad, options.debug, options.slowIO)
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

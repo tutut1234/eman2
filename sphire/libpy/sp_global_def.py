@@ -190,7 +190,7 @@ import inspect
 from EMAN2  import Util, EMData, EMUtil, Transform
 from EMAN2_meta import DATESTAMP
 
-import utilities as util
+import sp_utilities as util
 
 from random import seed
 

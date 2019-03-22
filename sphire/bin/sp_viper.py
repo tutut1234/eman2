@@ -5,20 +5,20 @@ from builtins import range
 import sys
 import os
 
-import global_def
-from global_def import sxprint, ERROR
-from global_def import *
+import sp_global_def
+from sp_global_def import sxprint, ERROR
+from sp_global_def import *
 
-from utilities import if_error_then_all_processes_exit_program, write_text_row, drop_image, model_gauss_noise, get_im, set_params_proj, wrap_mpi_bcast, model_circle, bcast_number_to_all
-from logger import Logger, BaseLogger_Files
-import user_functions
+from sp_utilities import if_error_then_all_processes_exit_program, write_text_row, drop_image, model_gauss_noise, get_im, set_params_proj, wrap_mpi_bcast, model_circle, bcast_number_to_all
+from sp_logger import Logger, BaseLogger_Files
+import sp_user_functions
 import sys
 import os
-from applications import MPI_start_end
+from sp_applications import MPI_start_end
 from optparse import OptionParser, SUPPRESS_HELP
-from global_def import SPARXVERSION
+from sp_global_def import SPARXVERSION
 from EMAN2 import EMData
-from multi_shc import multi_shc
+from sp_multi_shc import multi_shc
 
 import mpi
 
@@ -136,8 +136,8 @@ directory		output directory name: into which the results will be written (if it 
 		if os.path.exists(outdir):
 			ERROR( "Output directory \'%s\' exists, please change the name and restart the program"%outdir, action=0 )
 			error = 1
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 
 
 
@@ -148,7 +148,7 @@ directory		output directory name: into which the results will be written (if it 
 
 	if mpi_rank == 0:
 		os.makedirs(outdir)
-		global_def.write_command(outdir)
+		sp_global_def.write_command(outdir)
 
 	if outdir[-1] != "/":
 		outdir += "/"
@@ -159,17 +159,17 @@ directory		output directory name: into which the results will be written (if it 
 	# else:
 	#ref_vol = None
 
-	options.user_func = user_functions.factory[options.function]
+	options.user_func = sp_user_functions.factory[options.function]
 
 	options.CTF = False
 	options.snr =  1.0
 	options.an  = -1.0
-	from multi_shc import multi_shc
+	from sp_multi_shc import multi_shc
 	out_params, out_vol, out_peaks = multi_shc(all_projs, subset, runs_count, options, mpi_comm=mpi.MPI_COMM_WORLD, log=log)
 
 
 if __name__=="__main__":
-	global_def.print_timestamp( "Start" )
+	sp_global_def.print_timestamp( "Start" )
 	main(sys.argv[1:])
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

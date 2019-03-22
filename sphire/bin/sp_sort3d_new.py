@@ -10,14 +10,14 @@ from builtins import range
 import  os
 import  sys
 import  types
-import  global_def
-from global_def import sxprint, ERROR
-from    global_def import *
+import  sp_global_def
+from sp_global_def import sxprint, ERROR
+from    sp_global_def import *
 from    optparse   import OptionParser
-from    sparx      import *
+from    sp_sparx      import *
 from    EMAN2      import *
 from    numpy      import array
-from    logger     import Logger, BaseLogger_Files
+from    sp_logger     import Logger, BaseLogger_Files
 from mpi   	import  *
 from math  	import  *
 from random import  *
@@ -63,8 +63,8 @@ if(Blockdata["no_of_groups"] > 1): Blockdata["main_shared_nodes"] = [Blockdata["
 else:  Blockdata["main_shared_nodes"] = [0, 1]
 Blockdata["nproc_previous"]  = 0
 # End of Blockdata: sorting requires at least three nodes, and the used number of nodes be integer times of three
-global_def.BATCH = True
-global_def.MPI   = True
+sp_global_def.BATCH = True
+sp_global_def.MPI   = True
 global _proc_status, _scale, is_unix_cluster
 try:			
 	_proc_status = '/proc/%d/status' % os.getpid()
@@ -97,7 +97,7 @@ def create_subgroup():
 	
 def check_mpi_settings(log):
 	global Tracker, Blockdata
-	from   utilities import wrap_mpi_bcast, read_text_file, bcast_number_to_all
+	from   sp_utilities import wrap_mpi_bcast, read_text_file, bcast_number_to_all
 	import os
 	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	current_mpi_settings_is_bad = 0
@@ -185,8 +185,8 @@ def check_mpi_settings(log):
 	return
 def get_sorting_image_size(original_data, partids, sparamstructure, snorm_per_particle, log):
 	global Tracker, Blockdata
-	from utilities    import wrap_mpi_bcast, read_text_file, write_text_file
-	from applications import MPI_start_end
+	from sp_utilities    import wrap_mpi_bcast, read_text_file, write_text_file
+	from sp_applications import MPI_start_end
 	iter = 0
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		msg = "start reconstruction with refinement window_size  %d"%Tracker["nxinit_refinement"]
@@ -245,8 +245,8 @@ def get_sorting_image_size(original_data, partids, sparamstructure, snorm_per_pa
 	
 def compute_noise(image_size):
 	global Tracker, Blockdata
-	from utilities    import get_im, model_blank
-	from fundamentals import fft
+	from sp_utilities    import get_im, model_blank
+	from sp_fundamentals import fft
 	if Tracker["applybckgnoise"]: # from SPARX refinement only
 		tsd = get_im(Tracker["bckgnoise"]) # invert power spectrum 
 		nnx = tsd.get_xsize()
@@ -275,7 +275,7 @@ def compute_noise(image_size):
 ####------major procedure
 def do_EQKmeans_nways_clustering_stable_seeds(workdir, initial_partids, params, sort_res, log_main):
 	global Tracker, Blockdata
-	from utilities import read_text_file, wrap_mpi_bcast, write_text_file
+	from sp_utilities import read_text_file, wrap_mpi_bcast, write_text_file
 	import copy
 	import shutil
 	from math import sqrt
@@ -653,10 +653,10 @@ def get_shrink_data_sorting(partids, partstack, return_real = False, preshift = 
 	# 10142015 --- preshift is set to True when doing 3-D sorting.
 	# chunk_id are set when data is read in
 	global Tracker, Blockdata
-	from utilities      import wrap_mpi_bcast, read_text_row
-	from fundamentals	import resample, fshift
-	from filter			import filt_ctf
-	from applications	import MPI_start_end
+	from sp_utilities      import wrap_mpi_bcast, read_text_row
+	from sp_fundamentals	import resample, fshift
+	from sp_filter			import filt_ctf
+	from sp_applications	import MPI_start_end
 	from EMAN2          import Region
 	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	if( Blockdata["myid"] == Blockdata["main_node"]): sxprint(line,"get_shrink_data_sorting")
@@ -740,9 +740,9 @@ def get_shrink_data_sorting_smearing(partids, partstack, return_real = False, pr
 	# 10142015 --- preshift is set to True when doing 3-D sorting.
 	# chunk_id are set when data is read in
 	global Tracker, Blockdata
-	from fundamentals	import resample, fshift
-	from filter			import filt_ctf
-	from applications	import MPI_start_end
+	from sp_fundamentals	import resample, fshift
+	from sp_filter			import filt_ctf
+	from sp_applications	import MPI_start_end
 	from EMAN2          import Region
 	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	if( Blockdata["myid"] == Blockdata["main_node"]): sxprint(line,"get_shrink_data_sorting")
@@ -826,11 +826,11 @@ def get_data_prep_compare_rec3d(partids, partstack, return_real = False, preshif
 	# So, the lengths of partids and partstack are the same.
 	
 	global Tracker, Blockdata
-	from fundamentals	import resample, fshift, fft
-	from filter			import filt_ctf
-	from applications	import MPI_start_end
+	from sp_fundamentals	import resample, fshift, fft
+	from sp_filter			import filt_ctf
+	from sp_applications	import MPI_start_end
 	from EMAN2          import Region
-	from utilities      import model_circle, wrap_mpi_bcast, get_im, model_blank, set_params_proj
+	from sp_utilities      import model_circle, wrap_mpi_bcast, get_im, model_blank, set_params_proj
 	# functions:
 	# read in data
 	# apply mask, and prepare focus projection if focus3D is specified
@@ -988,10 +988,10 @@ def get_shrink_data_final(nxinit, procid, original_data = None, oldparams = None
 	
 	"""
 	#from fundamentals import resample
-	from utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
-	from fundamentals import fdecimate, fshift, fft
-	from filter       import filt_ctf, filt_table
-	from applications import MPI_start_end
+	from sp_utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
+	from sp_fundamentals import fdecimate, fshift, fft
+	from sp_filter       import filt_ctf, filt_table
+	from sp_applications import MPI_start_end
 	from math         import sqrt
 	
 	mask2D  	= model_circle(Tracker["constants"]["radius"],Tracker["constants"]["nnxo"],Tracker["constants"]["nnxo"])
@@ -1092,11 +1092,11 @@ def read_data_for_sorting(partids, partstack, previous_partstack):
 	# and assign to them parameters from partstack with optional CTF application and shifting of the data.
 	# So, the lengths of partids and partstack are the same.
 	global Tracker, Blockdata
-	from fundamentals	import resample, fshift
-	from filter			import filt_ctf
-	from applications	import MPI_start_end
+	from sp_fundamentals	import resample, fshift
+	from sp_filter			import filt_ctf
+	from sp_applications	import MPI_start_end
 	from EMAN2          import Region
-	from utilities      import wrap_mpi_bcast, read_text_row, get_im, set_params_proj
+	from sp_utilities      import wrap_mpi_bcast, read_text_row, get_im, set_params_proj
 	# functions:
 	# read in data
 	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
@@ -1154,8 +1154,8 @@ def read_data_for_sorting(partids, partstack, previous_partstack):
 ###6 read paramstructure	
 def read_paramstructure_for_sorting(partids, paramstructure_dict_file, paramstructure_dir):
 	global Tracker, Blockdata
-	from utilities    import read_text_row, read_text_file, wrap_mpi_bcast
-	from applications import MPI_start_end
+	from sp_utilities    import read_text_row, read_text_file, wrap_mpi_bcast
+	from sp_applications import MPI_start_end
 	if( Blockdata["myid"] == Blockdata["main_node"]):lcore = read_text_file(partids, -1)
 	else: lcore = 0
 	lcore   = wrap_mpi_bcast(lcore, Blockdata["main_node"])
@@ -1188,8 +1188,8 @@ def read_paramstructure_for_sorting(partids, paramstructure_dict_file, paramstru
 ###7 copy oldparamstructures from meridien	
 def copy_oldparamstructure_from_meridien_MPI(selected_iteration, log):
 	global Tracker, Blockdata
-	from utilities    import read_text_row, cmdexecute, write_text_row, read_text_file,wrap_mpi_bcast
-	from applications import MPI_start_end
+	from sp_utilities    import read_text_row, cmdexecute, write_text_row, read_text_file,wrap_mpi_bcast
+	from sp_applications import MPI_start_end
 	import json
 	Tracker["directory"] = os.path.join(Tracker["constants"]["masterdir"], "main%03d"%selected_iteration)
 	Tracker["paramstructure_dir"] = os.path.join(Tracker["directory"], "oldparamstructure")
@@ -1274,9 +1274,9 @@ def copy_oldparamstructure_from_meridien_MPI(selected_iteration, log):
 	return
 ### 8
 def precalculate_shifted_data_for_recons3D(prjlist, paramstructure, refang, rshifts, delta, avgnorms, nxinit, nnxo, nosmearing, norm_per_particle = None, upweighted=False):
-	from utilities    import random_string, get_im, findall, info, model_blank
-	from filter	      import filt_table
-	from fundamentals import fshift
+	from sp_utilities    import random_string, get_im, findall, info, model_blank
+	from sp_filter	      import filt_table
+	from sp_fundamentals import fshift
 	import types
 	import datetime
 	import copy
@@ -1343,9 +1343,9 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 	#   and assign to them parameters from partstack with optional CTF application and shifting of the data.
 	# So, the lengths of partids and partstack are the same.
 	global Tracker, Blockdata
-	from fundamentals	import resample, fshift, cyclic_shift
-	from filter			import filt_ctf
-	from applications	import MPI_start_end
+	from sp_fundamentals	import resample, fshift, cyclic_shift
+	from sp_filter			import filt_ctf
+	from sp_applications	import MPI_start_end
 	from EMAN2          import Region
 	# functions:
 	# read in data
@@ -1474,9 +1474,9 @@ def downsize_data_for_rec3D(original_data, particle_size, return_real = False, n
 	#   and assign to them parameters from partstack with optional CTF application and shifting of the data.
 	# So, the lengths of partids and partstack are the same.	
 	global Tracker, Blockdata
-	from fundamentals	import resample, fshift
-	from filter			import filt_ctf
-	from applications	import MPI_start_end
+	from sp_fundamentals	import resample, fshift
+	from sp_filter			import filt_ctf
+	from sp_applications	import MPI_start_end
 	from EMAN2          import Region
 	# functions:
 	# read in data
@@ -1532,7 +1532,7 @@ def downsize_data_for_rec3D(original_data, particle_size, return_real = False, n
 ###<<<--- comparison	    
 def compare_two_images_eucd(data, ref_vol):
 	global Tracker, Blockdata
-	from filter import filt_tophatl
+	from sp_filter import filt_tophatl
 	from math   import sqrt
 	peaks   = len(data)*[None]
 	ny      = data[0].get_ysize()
@@ -1551,7 +1551,7 @@ def compare_two_images_eucd(data, ref_vol):
 #
 def compare_two_images_cross(data, ref_vol):
 	global Tracker, Blockdata
-	from filter import filt_tophatl
+	from sp_filter import filt_tophatl
 	from math   import sqrt
 	ny = data[0].get_ysize()
 	peaks   = len(data)*[None]
@@ -1600,7 +1600,7 @@ def create_nrandom_lists(partids):
 	global Tracker, Blockdata
 	import copy
 	import random
-	from   utilities import wrap_mpi_bcast, read_text_file, write_text_file
+	from   sp_utilities import wrap_mpi_bcast, read_text_file, write_text_file
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		Tracker["random_assignment"] = []
 		data_list = read_text_file(partids, -1)
@@ -1721,8 +1721,8 @@ def resize_groups_from_stable_members_mpi(Accounted_on_disk, Unaccounted_on_disk
 ### Two_way comparison
 def do_two_way_comparison_over_nindepruns(log_main):#  multiple way comparison
 	global Tracker, Blockdata
-	from utilities  import read_text_file,write_text_file
-	from statistics import k_means_match_clusters_asg_new
+	from sp_utilities  import read_text_file,write_text_file
+	from sp_statistics import k_means_match_clusters_asg_new
 	from math       import sqrt
 	import os
 	## input Tracker["partition_list"]
@@ -1873,7 +1873,7 @@ def do_two_way_comparison_classes(ptp1, ptp2, total_stack):
 	return  accounted_list, unaccounted_list, new_index, new_list
 #####
 def patch_to_do_k_means_match_clusters_asg_new(ptp1, ptp2):
-	from statistics import k_means_match_clusters_asg_new
+	from sp_statistics import k_means_match_clusters_asg_new
 	# patch ad hoc elements to make equal number of classes for two partitions and thus two_way comparison becomes feasible
 	patch_elements = []
 	if len(ptp1) != len(ptp2):
@@ -2019,8 +2019,8 @@ def merge_classes_into_partition_list(classes_list):
 		
 def get_sorting_all_params(data):
 	global Tracker, Blockdata
-	from utilities    import wrap_mpi_bcast
-	from applications import MPI_start_end
+	from sp_utilities    import wrap_mpi_bcast
+	from sp_applications import MPI_start_end
 	if Blockdata["myid"] == Blockdata["main_node"]:	total_attr_value_list = [[]]*Tracker["total_stack"]
 	else: total_attr_value_list = 0
 	for myproc in range(Blockdata["nproc"]):
@@ -2036,7 +2036,7 @@ def get_sorting_all_params(data):
 	
 def get_sorting_attr_stack(data_in_core):
 	# get partitioned group ID and xform.projection parameters
-	from utilities import get_params_proj
+	from sp_utilities import get_params_proj
 	attr_value_list = []
 	for idat in range(len(data_in_core)): attr_value_list.append([data_in_core[idat].get_attr("group"), get_params_proj(data_in_core[idat],xform = "xform.projection")])
 	return attr_value_list
@@ -2046,7 +2046,7 @@ def fill_in_mpi_list(mpi_list, data_list, index_start, index_end):
 	return mpi_list
 	
 def parsing_sorting_params(partid, sorting_params_list):
-	from utilities import read_text_file
+	from sp_utilities import read_text_file
 	group_list        = []
 	ali3d_params_list = []
 	partid_list       = read_text_file(partid, -1)
@@ -2110,7 +2110,7 @@ def extract_clusters_from_partition(partition_to_be_saved, number_of_cluster):
 def update_data_partition(cdata, rdata, partids):
 	# update particle clustering partitions of independent EQKmeans run
 	global Tracker, Blockdata
-	from utilities import wrap_mpi_bcast
+	from sp_utilities import wrap_mpi_bcast
 	import copy
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		lpartids = read_text_file(partids, -1)
@@ -2257,8 +2257,8 @@ def do_assignment_by_dmatrix_orien_group(peaks, orien_group_members, number_of_g
 	
 def get_orien_assignment_mpi(angle_step, partids, params, log_main):
 	global Tracker, Blockdata
-	from applications import MPI_start_end
-	from utilities    import even_angles, wrap_mpi_recv, wrap_mpi_bcast, wrap_mpi_send, read_text_row, read_text_file, getvec
+	from sp_applications import MPI_start_end
+	from sp_utilities    import even_angles, wrap_mpi_recv, wrap_mpi_bcast, wrap_mpi_send, read_text_row, read_text_file, getvec
 	sym_class = Blockdata["symclass"]
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		msg = " Generate sampling orientations for EQKmeans with step %f   theta1  %f  theta2  %f"%(Tracker["angle_step"], Tracker["tilt1"], Tracker["tilt2"])
@@ -2571,11 +2571,11 @@ def recons3d_4nnsorting_MPI(myid, main_node, prjlist, random_subset, CTF = True,
 		Input
 			list_of_prjlist: list of lists of projections to be included in the reconstruction
 	"""
-	from utilities		import reduce_EMData_to_root, random_string, get_im, findall, model_blank, info, get_params_proj
-	from filter			import filt_table
-	from reconstruction import insert_slices_pdf
-	from fundamentals	import fft
-	from statistics	    import fsc
+	from sp_utilities		import reduce_EMData_to_root, random_string, get_im, findall, model_blank, info, get_params_proj
+	from sp_filter			import filt_table
+	from sp_reconstruction import insert_slices_pdf
+	from sp_fundamentals	import fft
+	from sp_statistics	    import fsc
 	from EMAN2			import Reconstructors
 	from mpi			import MPI_COMM_WORLD, mpi_barrier
 	import types
@@ -2625,14 +2625,14 @@ def recons3d_4nnsorting_group_MPI(myid, main_node, prjlist, random_subset, group
 		Input
 			list_of_prjlist: list of lists of projections to be included in the reconstruction
 	"""
-	from utilities      import reduce_EMData_to_root, random_string, get_im, findall
+	from sp_utilities      import reduce_EMData_to_root, random_string, get_im, findall
 	from EMAN2          import Reconstructors
-	from utilities      import model_blank, info
-	from filter		    import filt_table
+	from sp_utilities      import model_blank, info
+	from sp_filter		    import filt_table
 	from mpi            import MPI_COMM_WORLD, mpi_barrier
-	from statistics     import fsc 
-	from reconstruction import insert_slices_pdf
-	from fundamentals   import fft
+	from sp_statistics     import fsc 
+	from sp_reconstruction import insert_slices_pdf
+	from sp_fundamentals   import fft
 	import datetime, types
 	if mpi_comm == None: mpi_comm = MPI_COMM_WORLD
 	imgsize = prjlist[0].get_ysize()  # It can be Fourier, so take y-size
@@ -2694,7 +2694,7 @@ def do3d_sorting(procid, data):
 	
 def do3d_sorting_groups(particle_ID_index, partstack):
 	global Tracker, Blockdata
-	from utilities import get_im, wrap_mpi_bcast
+	from sp_utilities import get_im, wrap_mpi_bcast
 	data = get_shrink_data_sorting(particle_ID_index, partstack)
 	do3d_sorting_group_insertion(data)
 	mpi_barrier(MPI_COMM_WORLD)
@@ -2834,7 +2834,7 @@ def do3d_sorting_group_insertion(data, randomset=2):
 	
 def do3d_sorting_groups_trl_iter(data, iteration):
 	global Tracker, Blockdata
-	from utilities import get_im, write_text_row, bcast_number_to_all, wrap_mpi_bcast
+	from sp_utilities import get_im, write_text_row, bcast_number_to_all, wrap_mpi_bcast
 	keepgoing = 1
 	if(Blockdata["myid"] == Blockdata["nodes"][0]):
 		if not os.path.exists(os.path.join(Tracker["directory"], "tempdir")): os.mkdir(os.path.join(Tracker["directory"], "tempdir"))
@@ -3232,7 +3232,7 @@ def get_input_from_sparx_ref3d(log_main):# case one
 		
 def get_input_from_datastack(log_main):# Case three
 	global Tracker, Blockdata
-	from utilities import write_text_file, write_text_row, wrap_mpi_bcast
+	from sp_utilities import write_text_file, write_text_row, wrap_mpi_bcast
 	import json
 	from   string import split, atoi
 	from   random import shuffle
@@ -3375,8 +3375,8 @@ def get_input_from_datastack(log_main):# Case three
 # do sparx final reconstruction
 def do_ctrefromsort3d_get_subset_data(masterdir, option_old_refinement_dir, option_selected_cluster, option_selected_iter, shell_line_command, comm=-1):
 	global Tracker, Blockdata
-	from utilities    import get_im, read_text_row, read_text_file, wrap_mpi_bcast, bcast_number_to_all, write_text_row, wrap_mpi_recv
-	from applications import MPI_start_end
+	from sp_utilities    import get_im, read_text_row, read_text_file, wrap_mpi_bcast, bcast_number_to_all, write_text_row, wrap_mpi_recv
+	from sp_applications import MPI_start_end
 	import json
 	if (Blockdata["subgroup_myid"] > -1):
 		orgstack = Tracker["constants"]["orgstack"]
@@ -3878,7 +3878,7 @@ def compute_sigma(projdata, params, first_procid, dryrun = False, myid = -1, mpi
 def do3d(procid, data, newparams, refang, rshifts, norm_per_particle, myid, mpi_comm = -1):
 	global Tracker, Blockdata
 	#  Without filtration
-	from reconstruction import recons3d_trl_struct_MPI
+	from sp_reconstruction import recons3d_trl_struct_MPI
 	if( mpi_comm < -1 ): mpi_comm = MPI_COMM_WORDLD
 	if Blockdata["subgroup_myid"]== Blockdata["main_node"]:
 		if( procid == 0 ):
@@ -3903,7 +3903,7 @@ def getindexdata(partids, partstack, particle_groups, original_data = None, smal
 	# So, the lengths of partids and partstack are the same.
 	#  The read data is properly distributed among MPI threads.
 	if( mpi_comm < 0 ):  mpi_comm = MPI_COMM_WORLD
-	from applications import MPI_start_end
+	from sp_applications import MPI_start_end
 	#  parameters
 	if( myid == 0 ):  partstack = read_text_row(partstack)
 	else:  			  partstack = 0
@@ -3951,7 +3951,7 @@ def getindexdata(partids, partstack, particle_groups, original_data = None, smal
 #######
 def do3d_sorting_groups_rec3d(iteration, masterdir, log_main):
 	global Tracker, Blockdata
-	from utilities import get_im
+	from sp_utilities import get_im
 	# reconstruct final unfiltered volumes from sorted clusters
 	keepgoing = 1
 	#if(Blockdata["myid"] == Blockdata["nodes"][0]):
@@ -4247,10 +4247,10 @@ def recons3d_trl_struct_group_nofsc_shifted_data_partial_MPI(myid, main_node, np
 		partial rec3d for re-assigned particles
 		reconstructor nn4_ctfws
 	"""
-	from utilities    import reduce_EMData_to_root, random_string, get_im, findall, info, model_blank
+	from sp_utilities    import reduce_EMData_to_root, random_string, get_im, findall, info, model_blank
 	from EMAN2        import Reconstructors
-	from filter	      import filt_table
-	from fundamentals import fshift
+	from sp_filter	      import filt_table
+	from sp_fundamentals import fshift
 	from mpi          import MPI_COMM_WORLD, mpi_barrier
 	import types
 	import datetime
@@ -4354,10 +4354,10 @@ def recons3d_trl_struct_group_nofsc_shifted_data_MPI(myid, main_node, prjlist, g
 	  rec3d for pre-shifted data list
 	  reconstructor nn4_ctfw
 	"""
-	from utilities    import reduce_EMData_to_root, random_string, get_im, findall, info, model_blank
+	from sp_utilities    import reduce_EMData_to_root, random_string, get_im, findall, info, model_blank
 	from EMAN2        import Reconstructors
-	from filter	      import filt_table
-	from fundamentals import fshift
+	from sp_filter	      import filt_table
+	from sp_fundamentals import fshift
 	from mpi          import MPI_COMM_WORLD, mpi_barrier
 	import types
 	import datetime
@@ -4406,10 +4406,10 @@ def recons3d_trl_struct_group_MPI(myid, main_node, prjlist, random_subset, group
 			list_of_prjlist: list of lists of projections to be included in the reconstruction
 	"""
 	global Tracker, Blockdata
-	from utilities    import reduce_EMData_to_root, random_string, get_im, findall, model_blank, info
+	from sp_utilities    import reduce_EMData_to_root, random_string, get_im, findall, model_blank, info
 	from EMAN2        import Reconstructors
-	from filter	      import filt_table
-	from fundamentals import fshift
+	from sp_filter	      import filt_table
+	from sp_fundamentals import fshift
 	from mpi          import MPI_COMM_WORLD, mpi_barrier
 	import types
 	import datetime
@@ -4679,13 +4679,13 @@ def recons3d_4nnsorting_group_fsc_MPI(myid, main_node, prjlist, fsc_half, random
 	####	Input
 	####	list_of_prjlist: list of lists of projections to be included in the reconstruction
 	global Tracker, Blockdata
-	from utilities      import reduce_EMData_to_root, random_string, get_im, findall, model_blank, info, get_params_proj
+	from sp_utilities      import reduce_EMData_to_root, random_string, get_im, findall, model_blank, info, get_params_proj
 	from EMAN2          import Reconstructors
-	from filter		    import filt_table
+	from sp_filter		    import filt_table
 	from mpi            import MPI_COMM_WORLD, mpi_barrier
-	from statistics     import fsc 
-	from reconstruction import insert_slices_pdf
-	from fundamentals   import fft
+	from sp_statistics     import fsc 
+	from sp_reconstruction import insert_slices_pdf
+	from sp_fundamentals   import fft
 	import datetime, types
 	import copy
 	if mpi_comm == None: mpi_comm = MPI_COMM_WORLD
@@ -5207,10 +5207,10 @@ def merge_two_unfiltered_maps(map1_file, map2_file, cluster_ID):
 	
 def main():
 	from optparse   import OptionParser
-	from global_def import SPARXVERSION
+	from sp_global_def import SPARXVERSION
 	from EMAN2      import EMData
-	from logger     import Logger, BaseLogger_Files
-	from global_def import ERROR
+	from sp_logger     import Logger, BaseLogger_Files
+	from sp_global_def import ERROR
 	import sys, os, time, shutil
 	global Tracker, Blockdata
 	progname = os.path.basename(sys.argv[0])
@@ -5246,7 +5246,7 @@ def main():
 	parser.add_option("--B_stop",                          type   ="float",         default=0.0,                       help="cutoff frequency in Angstrom for B-factor estimation, cutoff is set to the frequency where fsc < 0.0")
 	parser.add_option("--nofsc_adj",                       action ="store_true",    default=False,                     help="do not multiply sqrt(fsc)")
 	(options, args) = parser.parse_args(sys.argv[1:])
-	from utilities import bcast_number_to_all
+	from sp_utilities import bcast_number_to_all
 	### Sanity check
 	
 	if options.refinement_dir !='':
@@ -5352,16 +5352,16 @@ def main():
 	# 1. import data and refinement parameters from meridien refinement;
 	# 2. given data stack and xform.projection/ctf in header(For simulated test data);
 	#<<<---------------------->>>imported functions<<<---------------------------------------------
-	from statistics 	import k_means_match_clusters_asg_new,k_means_stab_bbenum
-	from utilities 		import get_im,bcast_number_to_all,cmdexecute,write_text_file,read_text_file,wrap_mpi_bcast, get_params_proj, write_text_row
-	from utilities 		import get_number_of_groups
-	from filter			import filt_tanl
+	from sp_statistics 	import k_means_match_clusters_asg_new,k_means_stab_bbenum
+	from sp_utilities 		import get_im,bcast_number_to_all,cmdexecute,write_text_file,read_text_file,wrap_mpi_bcast, get_params_proj, write_text_row
+	from sp_utilities 		import get_number_of_groups
+	from sp_filter			import filt_tanl
 	from time           import sleep
-	from logger         import Logger,BaseLogger_Files
+	from sp_logger         import Logger,BaseLogger_Files
 	import string
 	from string         import split, atoi, atof
 	import json
-	import user_functions
+	import sp_user_functions
 	####--------------------------------------------------------------
 	main_keepgoing 	        = 1
 	main_number_of_clusters = 0 
@@ -5824,8 +5824,8 @@ def main():
 	return
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi_finalize()

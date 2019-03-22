@@ -347,7 +347,7 @@ def golden(func, args=(), brack=None, tol=1.e-4, full_output=0):
 
 	Uses analog of bisection method to decrease the bracketed interval.
 	"""
-	from utilities import bracketing
+	from sp_utilities import bracketing
 	if brack is None:
 		xa,xb,xc,fa,fb,fc,funcalls = bracketing(func, args=args)
 	elif len(brack) == 2:
@@ -511,8 +511,8 @@ def center_2D(
 		7. binarize at ave+sigma and cross-correlate with a circle
 			The function will return centered_image, and shifts
 	"""
-	from utilities import peak_search
-	from fundamentals import fshift
+	from sp_utilities import peak_search
+	from sp_fundamentals import fshift
 	import types
 
 	if type(image_to_be_centered) == bytes:
@@ -529,9 +529,9 @@ def center_2D(
 		return fshift(image_to_be_centered, -cs[0], -cs[1]), cs[0], cs[1]
 
 	elif center_method == 7:
-		from fundamentals import ccf, cyclic_shift
-		from morphology import binarize
-		from utilities import model_blank
+		from sp_fundamentals import ccf, cyclic_shift
+		from sp_morphology import binarize
+		from sp_utilities import model_blank
 		from EMAN2 import rsconvolution
 
 		p = Util.infomask(image_to_be_centered, None, True)
@@ -567,7 +567,7 @@ def center_2D(
 		return cyclic_shift(image_to_be_centered, -shiftx, -shifty), shiftx, shifty
 
 	elif center_method == 5:
-		from fundamentals import rot_avg_image, ccf
+		from sp_fundamentals import rot_avg_image, ccf
 		from math import sqrt
 
 		not_centered = True
@@ -590,7 +590,7 @@ def center_2D(
 		return centered_image, shiftx, shifty
 
 	elif center_method == 6:
-		from morphology import threshold_to_minval
+		from sp_morphology import threshold_to_minval
 
 		nx = image_to_be_centered.get_xsize()
 		ny = image_to_be_centered.get_ysize()
@@ -609,7 +609,7 @@ def center_2D(
 	else:
 		nx = image_to_be_centered.get_xsize()
 		ny = image_to_be_centered.get_ysize()
-		from fundamentals import ccf
+		from sp_fundamentals import ccf
 
 		if center_method == 2:
 			reference = model_gauss(Gauss_radius_inner, nx, ny)
@@ -911,7 +911,7 @@ def create_smooth_mask( radius, img_dim, size=8 ):
 	"""
 	mask = model_circle( radius, img_dim, img_dim )
 	size = size if (radius+size <= img_dim/2) else img_dim/2-radius
-	return morphology.soft_edge( mask, size )
+	return sp_morphology.soft_edge( mask, size )
 
 
 def create_spider_doc(fname, spiderdoc):
@@ -1039,7 +1039,7 @@ def even_angles(
 	"""
 
 	from math import pi, sqrt, cos, acos, tan, sin
-	from utilities import even_angles_cd
+	from sp_utilities import even_angles_cd
 	from string import lower, split
 
 	angles = []
@@ -1314,7 +1314,7 @@ def eigen_images_get(stack, eigenstack, mask, num, avg):
 		and Get eigen images
 	"""
 
-	from utilities import get_image
+	from sp_utilities import get_image
 
 	a = Analyzers.get("pca_large")
 	e = EMData()
@@ -1393,7 +1393,7 @@ def gauss_edge(sharp_edge_image, kernel_size=7, gauss_standard_dev=3):
 		1. The sharp-edge image is convoluted with a gassian kernel
 		2. The convolution normalized
 	"""
-	from utilities import model_gauss
+	from sp_utilities import model_gauss
 	from EMAN2 import rsconvolution
 
 	nz = sharp_edge_image.get_ndim()
@@ -1460,7 +1460,7 @@ def get_sym(symmetry):
 	"""
 	get a list of point-group symmetry angles, symmetry="c3"
 	"""
-	from fundamentals import symclass
+	from sp_fundamentals import symclass
 
 	scl = symclass(symmetry)
 	return scl.symangles
@@ -1470,7 +1470,7 @@ def get_symt(symmetry):
 	"""
 	get a list of point-group symmetry transformations, symmetry="c3"
 	"""
-	from fundamentals import symclass
+	from sp_fundamentals import symclass
 
 	scl = symclass(symmetry)
 	trans = []
@@ -2728,7 +2728,7 @@ def estimate_3D_center_MPI(data, nima, myid, number_of_proc, main_node, mpi_comm
 	from numpy import linalg
 	from mpi import MPI_COMM_WORLD
 	from mpi import mpi_recv, mpi_send, MPI_FLOAT
-	from applications import MPI_start_end
+	from sp_applications import MPI_start_end
 
 	if mpi_comm == None:
 		mpi_comm = MPI_COMM_WORLD
@@ -2895,7 +2895,7 @@ def ttime():
 
 
 def running_time(start_time):
-	from utilities import print_msg
+	from sp_utilities import print_msg
 	from time import time
 
 	time_run = int(time() - start_time)
@@ -2995,7 +2995,7 @@ def bcast_compacted_EMData_all_to_all(list_of_em_objects, myid, comm=-1):
 	header.
 
 	"""
-	from applications import MPI_start_end
+	from sp_applications import MPI_start_end
 	from EMAN2 import EMNumPy
 	from numpy import concatenate, shape, array, split
 	from mpi import mpi_comm_size, mpi_bcast, MPI_FLOAT, MPI_COMM_WORLD
@@ -3113,7 +3113,7 @@ def bcast_compacted_EMData_all_to_all___original(list_of_em_objects, myid, comm=
 	header.
 
 	"""
-	from applications import MPI_start_end
+	from sp_applications import MPI_start_end
 	from EMAN2 import EMNumPy
 	from numpy import concatenate, shape, array, split
 	from mpi import mpi_comm_size, mpi_bcast, MPI_FLOAT, MPI_COMM_WORLD
@@ -3229,7 +3229,7 @@ def gather_compacted_EMData_to_root_with_header_info_for_each_image(
 	header.
 
 	"""
-	from applications import MPI_start_end
+	from sp_applications import MPI_start_end
 	from EMAN2 import EMNumPy
 	from numpy import concatenate, shape, array, split
 	from mpi import mpi_comm_size, mpi_bcast, MPI_FLOAT, MPI_COMM_WORLD
@@ -3847,7 +3847,7 @@ def recv_attr_dict(
 	main_node, stack, data, list_params, image_start, image_end, number_of_proc, comm=-1
 ):
 	import types
-	from utilities import get_arb_params, set_arb_params
+	from sp_utilities import get_arb_params, set_arb_params
 	from mpi import mpi_recv
 	from mpi import MPI_FLOAT, MPI_INT, MPI_COMM_WORLD
 
@@ -3939,7 +3939,7 @@ def recv_attr_dict(
 
 def send_attr_dict(main_node, data, list_params, image_start, image_end, comm=-1):
 	import types
-	from utilities import get_arb_params
+	from sp_utilities import get_arb_params
 	from mpi import mpi_send
 	from mpi import MPI_FLOAT, MPI_INT, MPI_COMM_WORLD
 
@@ -3971,7 +3971,7 @@ def recv_attr_dict_bdb(
 	main_node, stack, data, list_params, image_start, image_end, number_of_proc, comm=-1
 ):
 	import types
-	from utilities import get_arb_params, set_arb_params
+	from sp_utilities import get_arb_params, set_arb_params
 	from mpi import mpi_recv
 	from mpi import MPI_FLOAT, MPI_INT, MPI_COMM_WORLD
 	from EMAN2db import db_open_dict
@@ -4122,17 +4122,17 @@ def print_end_msg(program_name, onscreen=False):
 
 def print_msg(msg):
 	import sys
-	import global_def
+	import sp_global_def
 
-	if global_def.IS_LOGFILE_OPEN == False:
-		global_def.LOGFILE_HANDLE = open(global_def.LOGFILE, "w")
-		global_def.IS_LOGFILE_OPEN = True
-	if global_def.BATCH:
-		global_def.LOGFILE_HANDLE.write(msg)
+	if sp_global_def.IS_LOGFILE_OPEN == False:
+		sp_global_def.LOGFILE_HANDLE = open(sp_global_def.LOGFILE, "w")
+		sp_global_def.IS_LOGFILE_OPEN = True
+	if sp_global_def.BATCH:
+		sp_global_def.LOGFILE_HANDLE.write(msg)
 	else:
 		sys.stdout.write(msg)
-		global_def.LOGFILE_HANDLE.write(msg)
-	global_def.LOGFILE_HANDLE.flush()
+		sp_global_def.LOGFILE_HANDLE.write(msg)
+	sp_global_def.LOGFILE_HANDLE.flush()
 
 
 def read_fsc(filename):
@@ -4212,7 +4212,7 @@ def write_headers(filename, data, lima):
 		i.e., header from data[k] will be written into file number lima[k]
 	  WARNING: this function will open and close DB library!
 	"""
-	from utilities import file_type
+	from sp_utilities import file_type
 	from EMAN2db import db_open_dict
 
 	ftp = file_type(filename)
@@ -4239,7 +4239,7 @@ def write_header(filename, data, lima):
 		i.e., header from data will be written into file number lima
 	  WARNING: this function assums DB library is opened and will NOT close it!
 	"""
-	from utilities import file_type
+	from sp_utilities import file_type
 	from EMAN2db import db_open_dict
 
 	ftp = file_type(filename)
@@ -4440,7 +4440,7 @@ def set_ctf(ima, p):
 	  order of parameters:
 		p = [defocus, cs, voltage, apix, bfactor, ampcont, astigmatism amplitude, astigmatism angle]
 	"""
-	from utilities import generate_ctf
+	from sp_utilities import generate_ctf
 
 	ima.set_attr("ctf", generate_ctf(p))
 
@@ -4518,7 +4518,7 @@ def getang(n):
 """
 getang3 = angle_between_projections_directions
 def getang3(p1,p2):
-	from utilities import getfvec, lacos
+	from sp_utilities import getfvec, lacos
 	n1 = getfvec(p1[0],p1[1])
 	n2 = getfvec(p2[0],p2[1])
 	return lacos(n1[0]*n2[0]+n1[1]*n2[1]+n1[2]*n2[2])
@@ -4565,14 +4565,14 @@ def nearest_fang(vecs, phi, tht):
 	"""
 		vecs = [ [x0,y0,z0], [x1,y1,z1], ...]
 	"""
-	from utilities import getfvec
+	from sp_utilities import getfvec
 
 	vec = getfvec(phi, tht)
 	return Util.nearest_fang(vecs, vec[0], vec[1], vec[2])[0]
 
 
 def nearest_ang(vecs, phi, tht):
-	from utilities import getvec
+	from sp_utilities import getvec
 
 	vec = getvec(phi, tht)
 	return Util.nearest_ang(vecs, vec[0], vec[1], vec[2])
@@ -4620,7 +4620,7 @@ def nearest_many_full_k_projangles(
 	reference_normals, angles, howmany=1, sym_class=None
 ):
 	#
-	from utilities import getfvec, angles_to_normals
+	from sp_utilities import getfvec, angles_to_normals
 
 	# refnormal = normals[:]
 	assignments = [-1] * len(angles)
@@ -4642,11 +4642,11 @@ def nearest_many_full_k_projangles(
 
 def nearestk_projangles(projangles, whichone=0, howmany=1, sym="c1"):
 	# In both cases mirrored should be treated the same way as straight as they carry the same structural information
-	from utilities import getfvec, getvec
+	from sp_utilities import getfvec, getvec
 
 	lookup = list(range(len(projangles)))
 	if sym == "c1":
-		from utilities import getvec
+		from sp_utilities import getvec
 
 		refnormal = [None] * (len(projangles) * 3)
 		for i in range(len(projangles)):
@@ -4669,7 +4669,7 @@ def nearestk_projangles(projangles, whichone=0, howmany=1, sym="c1"):
 			del lookup[k]
 
 	elif sym[:1] == "d":
-		from utilities import get_symt, getvec
+		from sp_utilities import get_symt, getvec
 		from EMAN2 import Transform
 
 		t = get_symt(sym)
@@ -4720,7 +4720,7 @@ def nearestk_projangles(projangles, whichone=0, howmany=1, sym="c1"):
 			del tempan[best_j], lookup[best_j]
 
 	elif sym[:1] == "c":
-		from utilities import get_symt, getvec
+		from sp_utilities import get_symt, getvec
 		from EMAN2 import Transform
 
 		t = get_symt(sym)
@@ -4764,7 +4764,7 @@ def nearestk_projangles(projangles, whichone=0, howmany=1, sym="c1"):
 
 def nearest_full_k_projangles(reference_ang, angles, howmany=1, sym_class=None):
 	# We assume angles can be on the list of normals
-	from utilities import getfvec, angles_to_normals
+	from sp_utilities import getfvec, angles_to_normals
 
 	reference_normals = angles_to_normals(reference_ang)
 
@@ -4905,7 +4905,7 @@ def assign_projdirs_f(projdirs, refdirs, neighbors):
 
 
 def cone_ang(projangles, phi, tht, ant, symmetry="c1"):
-	from utilities import getvec, getfvec
+	from sp_utilities import getvec, getfvec
 	from math import cos, pi, degrees, radians
 
 	cone = cos(radians(ant))
@@ -4975,7 +4975,7 @@ def cone_ang(projangles, phi, tht, ant, symmetry="c1"):
 
 #  Push to C.  PAP  11/25/2016
 def cone_ang_f(projangles, phi, tht, ant, symmetry="c1"):
-	from utilities import getfvec
+	from sp_utilities import getfvec
 	from math import cos, pi, degrees, radians
 
 	cone = cos(radians(ant))
@@ -5066,7 +5066,7 @@ def cone_dirs_f( projdirs, ancordir, ant):
 
 """
 def cone_ang_f_with_index( projangles, phi, tht, ant ):
-	from utilities import getvec
+	from sp_utilities import getvec
 	from math import cos, pi, degrees, radians
 	# vec = getvec( phi, tht )
 	vec = getfvec( phi, tht )
@@ -5086,7 +5086,7 @@ def cone_ang_f_with_index( projangles, phi, tht, ant ):
 
 
 def cone_ang_with_index(projangles, phi, tht, ant):
-	from utilities import getvec
+	from sp_utilities import getvec
 	from math import cos, pi, degrees, radians
 
 	# vec = getvec( phi, tht )
@@ -5109,7 +5109,7 @@ def cone_ang_with_index(projangles, phi, tht, ant):
 
 """
 def cone_vectors( normvectors, phi, tht, ant ):
-	from utilities import getvec
+	from sp_utilities import getvec
 	from math import cos, pi, degrees, radians
 	vec = getvec( phi, tht )
 
@@ -5157,8 +5157,8 @@ def symmetry_related_normals(angles, symmetry):
 
 
 def angular_occupancy(params, angstep=15.0, sym="c1", method="S", inc_mirror=0):
-	from fundamentals import symclass
-	from utilities import nearest_fang, angles_to_normals
+	from sp_fundamentals import symclass
+	from sp_utilities import nearest_fang, angles_to_normals
 
 	smc = symclass(sym)
 	eah = smc.even_angles(angstep, inc_mirror=inc_mirror, method=method)
@@ -5215,7 +5215,7 @@ def angular_histogram(params, angstep=15.0, sym="c1", method="S", inc_mirror=0):
 
 
 def balance_angular_distribution(params, max_occupy=-1, angstep=15.0, sym="c1"):
-	from fundamentals import symclass
+	from sp_fundamentals import symclass
 
 	occupancy, eah = angular_occupancy(params, angstep, sym, method="S")
 
@@ -5365,7 +5365,7 @@ def rotation_between_anglesets(agls1, agls2):
 		],
 	]
 
-	from fundamentals import recmat
+	from sp_fundamentals import recmat
 
 	return recmat(r)
 
@@ -5377,7 +5377,7 @@ def angle_between_projections_directions(proj1, proj2):
 	  OUTPUT: angle (in degrees)
 	"""
 	from math import sin, cos, acos, radians, degrees
-	from utilities import lacos
+	from sp_utilities import lacos
 
 	theta1 = radians(proj1[1])
 	theta2 = radians(proj2[1])
@@ -5400,8 +5400,8 @@ def angles_between_anglesets(angleset1, angleset2, indexes=None):
 	  OUTPUT: list of floats - angles in degrees (the n-th element of the list equals the angle between n-th projections directions from the anglesets)
 	  The third parameter (indexes) is optional and may be set to list of indexes. In that case only elements from given list are taken into account.
 	"""
-	from fundamentals import rotate_params
-	from utilities import (
+	from sp_fundamentals import rotate_params
+	from sp_utilities import (
 		rotation_between_anglesets,
 		angle_between_projections_directions,
 	)
@@ -5525,7 +5525,7 @@ def group_proj_by_phitheta_slow(
 	def ang_diff(v1, v2):
 		# The first return value is the angle between two vectors
 		# The second return value is whether we need to mirror one of them (0 - no need, 1 - need)
-		from utilities import lacos
+		from sp_utilities import lacos
 
 		v = v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
 		if v >= 0:
@@ -5713,7 +5713,7 @@ def group_proj_by_phitheta(proj_ang, symmetry="c1", img_per_grp=100, verbose=Fal
 	def ang_diff(v1, v2):
 		# The first return value is the angle between two vectors
 		# The second return value is whether we need to mirror one of them (0 - no need, 1 - need)
-		from utilities import lacos
+		from sp_utilities import lacos
 
 		v = v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
 		if v >= 0:
@@ -5810,7 +5810,7 @@ def mulvec(v1, v2):
 
 
 def nearest_proj(proj_ang, img_per_grp=100, List=[]):
-	from utilities import getfvec
+	from sp_utilities import getfvec
 	from math import exp, pi
 	from sets import Set
 	from time import time
@@ -5820,7 +5820,7 @@ def nearest_proj(proj_ang, img_per_grp=100, List=[]):
 		# The first return value is the angle between two vectors
 		# The second return value is whether we need to mirror one of them (0 - no need, 1 - need)
 		from math import acos, degrees
-		from utilities import lacos
+		from sp_utilities import lacos
 
 		v = v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
 		if v >= 0:
@@ -6573,7 +6573,7 @@ def eliminate_moons(my_volume, moon_elimination_params):
 	moon_elimination_params[1] - pixel size in A
 	"""
 
-	from morphology import binarize
+	from sp_morphology import binarize
 
 	histogram_threshold = (
 		my_volume.find_3d_threshold(
@@ -6596,7 +6596,7 @@ def eliminate_moons(my_volume, moon_elimination_params):
 	):
 		return my_volume
 	else:
-		from utilities import gauss_edge
+		from sp_utilities import gauss_edge
 
 		return gauss_edge(my_volume_binarized_with_no_moons) * my_volume
 
@@ -6702,7 +6702,7 @@ def print_with_time_info(msg):
 
 def if_error_then_all_processes_exit_program(error_status):
 	import sys, os
-	from utilities import print_msg
+	from sp_utilities import print_msg
 
 	# if "OMPI_COMM_WORLD_SIZE" not in os.environ:
 	if (
@@ -6779,9 +6779,9 @@ def get_shrink_data_huang(
 	# 10142015 --- preshift is set to True when doing 3-D sorting.
 	# chunk_id are set when data is read in
 
-	from fundamentals import resample, fshift
-	from filter import filt_ctf
-	from applications import MPI_start_end
+	from sp_fundamentals import resample, fshift
+	from sp_filter import filt_ctf
+	from sp_applications import MPI_start_end
 
 	"""
 	if( myid == main_node ):
@@ -6910,10 +6910,10 @@ def get_shrink_data(Tracker, nxinit, partids, partstack, bckgdata = None, myid =
 
 	"""
 	#from fundamentals import resample
-	from utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
-	from fundamentals import fdecimate, fshift, fft
-	from filter       import filt_ctf, filt_table
-	from applications import MPI_start_end
+	from sp_utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
+	from sp_fundamentals import fdecimate, fshift, fft
+	from sp_filter       import filt_ctf, filt_table
+	from sp_applications import MPI_start_end
 	from math         import sqrt
 
 
@@ -7015,7 +7015,7 @@ def get_shrink_data(Tracker, nxinit, partids, partstack, bckgdata = None, myid =
 				st = Util.infomask(bckg, mask2D, False)
 				bckg -= st[0]
 				bckg /= st[1]
-				from morphology import cosinemask
+				from sp_morphology import cosinemask
 				data[im] = cosinemask(data[im],radius = Tracker["constants"]["radius"], bckg = bckg)
 		else:
 			#  if no bckgnoise, do simple masking instead
@@ -7056,7 +7056,7 @@ def getindexdata(stack, partids, partstack, myid, nproc):
 	# So, the lengths of partids and partstack are the same.
 	#  The read data is properly distributed among MPI threads.
 
-	from applications import MPI_start_end
+	from sp_applications import MPI_start_end
 
 	lpartids = read_text_file(partids)
 	ndata = len(lpartids)
@@ -7178,7 +7178,7 @@ def program_state_stack(
 	"""
 
 	When used it needs: from inspect import currentframe, getframeinfo
-	Also: from utilities import program_state_stack
+	Also: from sp_utilities import program_state_stack
 
 	This function is used for restarting time consuming data processing programs/steps from the last saved point.
 
@@ -7209,7 +7209,7 @@ def program_state_stack(
 
 	from traceback import extract_stack
 	from mpi import mpi_comm_rank, mpi_bcast, MPI_COMM_WORLD, MPI_INT
-	from utilities import if_error_then_all_processes_exit_program
+	from sp_utilities import if_error_then_all_processes_exit_program
 	import os
 
 	def get_current_stack_info():
@@ -7470,7 +7470,7 @@ def get_attr_stack(data_stack, attr_string):
 
 
 def get_sorting_attr_stack(data_stack):
-	from utilities import get_params_proj
+	from sp_utilities import get_params_proj
 
 	attr_value_list = []
 	for idat in range(len(data_stack)):
@@ -7484,8 +7484,8 @@ def get_sorting_attr_stack(data_stack):
 
 def get_sorting_params(Tracker, data):
 	from mpi import mpi_barrier, MPI_COMM_WORLD
-	from utilities import read_text_row, wrap_mpi_bcast, even_angles
-	from applications import MPI_start_end
+	from sp_utilities import read_text_row, wrap_mpi_bcast, even_angles
+	from sp_applications import MPI_start_end
 
 	myid = Tracker["constants"]["myid"]
 	main_node = Tracker["constants"]["main_node"]
@@ -7513,8 +7513,8 @@ def get_sorting_params(Tracker, data):
 
 def get_sorting_params_refine(Tracker, data, ndata):
 	from mpi import mpi_barrier, MPI_COMM_WORLD
-	from utilities import read_text_row, wrap_mpi_bcast, even_angles
-	from applications import MPI_start_end
+	from sp_utilities import read_text_row, wrap_mpi_bcast, even_angles
+	from sp_applications import MPI_start_end
 
 	myid = Tracker["constants"]["myid"]
 	main_node = Tracker["constants"]["main_node"]
@@ -7694,9 +7694,9 @@ def get_resolution_mrk01(vol, radi, nnxo, fscoutputdir, mask_option):
 	# this function is single processor
 	#  Get updated FSC curves, user can also provide a mask using radi variable
 	import types
-	from statistics import fsc
-	from utilities import model_circle, get_im
-	from filter import fit_tanh1
+	from sp_statistics import fsc
+	from sp_utilities import model_circle, get_im
+	from sp_filter import fit_tanh1
 	import os
 
 	if type(radi) == int:
@@ -7771,7 +7771,7 @@ def merge_groups(stable_members_list):
 
 
 def save_alist(Tracker, name_of_the_text_file, alist):
-	from utilities import write_text_file
+	from sp_utilities import write_text_file
 	import os
 
 	log = Tracker["constants"]["log_main"]
@@ -7805,8 +7805,8 @@ def get_margin_of_error(this_group_of_data, Tracker):
 
 def do_two_way_comparison(Tracker):
 	from mpi import mpi_barrier, MPI_COMM_WORLD
-	from utilities import read_text_file, write_text_file
-	from statistics import k_means_match_clusters_asg_new
+	from sp_utilities import read_text_file, write_text_file
+	from sp_statistics import k_means_match_clusters_asg_new
 	import os
 
 	######
@@ -8030,7 +8030,7 @@ def select_two_runs(summed_scores, two_way_dict):
 
 
 def get_ali3d_params(ali3d_old_text_file, shuffled_list):
-	from utilities import read_text_row
+	from sp_utilities import read_text_row
 
 	ali3d_old = read_text_row(ali3d_old_text_file)
 	ali3d_new = []
@@ -8040,7 +8040,7 @@ def get_ali3d_params(ali3d_old_text_file, shuffled_list):
 
 
 def counting_projections(delta, ali3d_params, image_start):
-	from utilities import even_angles, angle_between_projections_directions
+	from sp_utilities import even_angles, angle_between_projections_directions
 
 	sampled_directions = {}
 	angles = even_angles(delta, 0, 180)
@@ -8092,8 +8092,8 @@ def load_dict(dict_angle_main_node, unloaded_dict_angles):
 
 def get_stat_proj(Tracker, delta, this_ali3d):
 	from mpi import mpi_barrier, MPI_COMM_WORLD
-	from utilities import read_text_row, wrap_mpi_bcast, even_angles
-	from applications import MPI_start_end
+	from sp_utilities import read_text_row, wrap_mpi_bcast, even_angles
+	from sp_applications import MPI_start_end
 
 	myid = Tracker["constants"]["myid"]
 	main_node = Tracker["constants"]["main_node"]
@@ -8126,7 +8126,7 @@ def get_stat_proj(Tracker, delta, this_ali3d):
 def create_random_list(Tracker):
 	import copy
 	import random
-	from utilities import wrap_mpi_bcast
+	from sp_utilities import wrap_mpi_bcast
 
 	myid = Tracker["constants"]["myid"]
 	main_node = Tracker["constants"]["main_node"]
@@ -8159,8 +8159,8 @@ def recons_mref(Tracker):
 	from mpi import mpi_barrier, MPI_COMM_WORLD
 	import os
 	from time import sleep
-	from reconstruction import recons3d_4nn_ctf_MPI
-	from utilities import get_shrink_data_huang
+	from sp_reconstruction import recons3d_4nn_ctf_MPI
+	from sp_utilities import get_shrink_data_huang
 
 	myid = Tracker["constants"]["myid"]
 	main_node = Tracker["constants"]["main_node"]
@@ -8180,7 +8180,7 @@ def recons_mref(Tracker):
 		]
 		a_group_list.sort()
 		Tracker["this_data_list"] = a_group_list
-		from utilities import write_text_file
+		from sp_utilities import write_text_file
 
 		particle_list_file = os.path.join(Tracker["this_dir"], "iclass%d.txt" % igrp)
 		if myid == main_node:
@@ -8210,7 +8210,7 @@ def recons_mref(Tracker):
 
 
 def apply_low_pass_filter(refvol, Tracker):
-	from filter import filt_tanl
+	from sp_filter import filt_tanl
 
 	for iref in range(len(refvol)):
 		refvol[iref] = filt_tanl(refvol[iref], Tracker["low_pass_filter"], 0.1)
@@ -8327,7 +8327,7 @@ def set_filter_parameters_from_adjusted_fsc(n1, n2, Tracker):
 
 def get_class_members(sort3d_dir):
 	import os
-	from utilities import read_text_file
+	from sp_utilities import read_text_file
 
 	maximum_generations = 100
 	maximum_groups = 100
@@ -8378,7 +8378,7 @@ def get_stable_members_from_two_runs(SORT3D_rootdirs, ad_hoc_number, log_main):
 	# ad_hoc_number would be a number larger than the id simply for handling two_way comparison of non-equal number of groups from two partitions.
 	########
 	from string import split
-	from statistics import k_means_match_clusters_asg_new
+	from sp_statistics import k_means_match_clusters_asg_new
 	from numpy import array
 
 	sort3d_rootdir_list = split(SORT3D_rootdirs)
@@ -8464,8 +8464,8 @@ def get_stable_members_from_two_runs(SORT3D_rootdirs, ad_hoc_number, log_main):
 
 def two_way_comparison_single(partition_A, partition_B, Tracker):
 	###############
-	from statistics import k_means_match_clusters_asg_new
-	from utilities import count_chunk_members, margin_of_error
+	from sp_statistics import k_means_match_clusters_asg_new
+	from sp_utilities import count_chunk_members, margin_of_error
 	from numpy import array
 
 	# two_way_comparison_single
@@ -8575,11 +8575,11 @@ def get_leftover_from_stable(stable_list, N_total, smallest_group):
 
 
 def Kmeans_exhaustive_run(ref_vol_list, Tracker):
-	from applications import ali3d_mref_Kmeans_MPI
-	from utilities import write_text_file
-	from reconstruction import rec3D_two_chunks_MPI
-	from morphology import get_shrink_3dmask
-	from utilities import wrap_mpi_bcast
+	from sp_applications import ali3d_mref_Kmeans_MPI
+	from sp_utilities import write_text_file
+	from sp_reconstruction import rec3D_two_chunks_MPI
+	from sp_morphology import get_shrink_3dmask
+	from sp_utilities import wrap_mpi_bcast
 	import os
 	from mpi import MPI_COMM_WORLD, mpi_barrier
 
@@ -8706,13 +8706,13 @@ def print_a_line_with_timestamp(string_to_be_printed):
 
 def split_a_group(workdir, list_of_a_group, Tracker):
 	### Using EQ-Kmeans and Kmeans to split a group
-	from utilities import wrap_mpi_bcast
+	from sp_utilities import wrap_mpi_bcast
 	from random import shuffle
 	from mpi import MPI_COMM_WORLD, mpi_barrier
-	from utilities import get_shrink_data_huang
-	from reconstruction import recons3d_4nn_ctf_MPI
-	from filter import filt_tanl
-	from applications import mref_ali3d_EQ_Kmeans
+	from sp_utilities import get_shrink_data_huang
+	from sp_reconstruction import recons3d_4nn_ctf_MPI
+	from sp_filter import filt_tanl
+	from sp_applications import mref_ali3d_EQ_Kmeans
 
 	################
 	myid = Tracker["constants"]["myid"]
@@ -8822,7 +8822,7 @@ def search_lowpass(fsc):
 
 
 def angular_distribution(params_file, output_folder, prefix, method, pixel_size, delta, symmetry, box_size, particle_radius, dpi, do_print=True, exclude=None):
-	import fundamentals
+	import sp_fundamentals
 	import numpy
 	import scipy.spatial as scipy_spatial
 	import errno
@@ -8922,7 +8922,7 @@ def angular_distribution(params_file, output_folder, prefix, method, pixel_size,
 	# Create 2 symclass objects.
 	# One C1 object for the inital reference angles.
 	# One related to the actual symmetry, to deal with mirror projections.
-	sym_class = fundamentals.symclass(symmetry)
+	sym_class = sp_fundamentals.symclass(symmetry)
 
 
 	# data_params = [[0.0, 0.0, 0.0], [22,91,45]]
@@ -9034,7 +9034,7 @@ def angular_distribution(params_file, output_folder, prefix, method, pixel_size,
 
 def angular_distribution_old(params_file, output_folder, prefix, method, pixel_size, delta, symmetry, box_size,
 						 particle_radius, dpi, do_print=True):
-	import fundamentals
+	import sp_fundamentals
 	import numpy
 	import scipy.spatial as scipy_spatial
 	import errno
@@ -9230,7 +9230,7 @@ def angular_distribution_old(params_file, output_folder, prefix, method, pixel_s
 	# Create 2 symclass objects.
 	# One C1 object for the inital reference angles.
 	# One related to the actual symmetry, to deal with mirror projections.
-	sym_class = fundamentals.symclass(symmetry)
+	sym_class = sp_fundamentals.symclass(symmetry)
 
 	if do_print:
 		sxprint('Reduce data to symmetry - This might take some time for high symmetries')
@@ -9497,16 +9497,16 @@ import scipy.ndimage
 from zlib import compress, decompress
 
 # EMAN2 / sparx basics
-from global_def import *
+from sp_global_def import *
 
 import EMAN2
 from EMAN2 import EMNumPy
 
 # EMAN2 / sparx modules
-import morphology
+import sp_morphology
 
 # MPI imports (NOTE: import mpi after EMAN2)
-from applications import MPI_start_end
+from sp_applications import MPI_start_end
 import mpi
 from mpi import mpi_comm_size, mpi_bcast, MPI_FLOAT, MPI_COMM_WORLD
 from mpi import mpi_recv, mpi_send, mpi_barrier

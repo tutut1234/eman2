@@ -32,9 +32,9 @@ from __future__ import print_function
 #
 
 from builtins import range
-import global_def
-from global_def import sxprint, ERROR
-from   global_def import *
+import sp_global_def
+from sp_global_def import sxprint, ERROR
+from   sp_global_def import *
 from   optparse import OptionParser
 from   string import atoi,replace
 from   EMAN2 import EMUtil
@@ -75,8 +75,8 @@ def main():
 
 	(options,args) = parser.parse_args(arglist[1:])
 
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 		disable_bdb_cache()
 
 	if len(args) == 2:
@@ -99,9 +99,9 @@ def main():
 		ERROR( "options group and list cannot be used together" )
 		return
 
-	from applications import recons3d_n, recons3d_trl_MPI
+	from sp_applications import recons3d_n, recons3d_trl_MPI
 
-	global_def.BATCH = True
+	sp_global_def.BATCH = True
 	if options.interpolation_method == "4nn":
 		recons3d_n(prj_stack, pid_list, vol_stack, options.CTF, options.snr, 1, options.npad,\
 		 options.sym, options.list, options.group, options.verbose, options.MPI,options.xysize, options.zsize, options.smearstep, options.upweighted, options.compensate,options.chunk_id)
@@ -116,12 +116,12 @@ def main():
 		ERROR( "Wrong interpolation method. The current options are 4nn, and tril. 4nn is the defalut one." )
 		return
 		
-	global_def.BATCH = False
+	sp_global_def.BATCH = False
 
 
 if __name__=="__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

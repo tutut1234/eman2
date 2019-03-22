@@ -6,29 +6,29 @@
 #  
 from __future__ import print_function
 import EMAN2_cppwrap
-import sparx_applications
+import sp_sparx_applications
 import copy
-import sparx_filter
-import sparx_fundamentals
-import sparx_global_def
+import sp_sparx_filter
+import sp_sparx_fundamentals
+import sp_sparx_global_def
 import json
-import sparx_logger
-import sparx_morphology
+import sp_sparx_logger
+import sp_sparx_morphology
 import mpi
 import numpy
 import numpy as np
 import optparse
 import os
-import sparx_projection
+import sp_sparx_projection
 import random
-import sparx_reconstruction
+import sp_sparx_reconstruction
 import scipy
 import shutil
-import sparx_statistics
+import sp_sparx_statistics
 import string
 import sys
 import time
-import sparx_utilities
+import sp_sparx_utilities
 
 from builtins import range
 
@@ -1066,7 +1066,7 @@ def create_masterdir():
 	else: 
 		restart = 0
 		li = 0
-	global_def.write_command(masterdir)
+	sp_global_def.write_command(masterdir)
 	restart   = sparx_utilities.bcast_number_to_all(restart,       Blockdata["main_node"], mpi.MPI_COMM_WORLD)
 	li        = mpi.mpi_bcast(li,       1,   mpi.MPI_INT,  Blockdata["main_node"], mpi.MPI_COMM_WORLD)[0]
 	masterdir = mpi.mpi_bcast(masterdir,li,  mpi.MPI_CHAR, Blockdata["main_node"], mpi.MPI_COMM_WORLD)
@@ -7195,7 +7195,7 @@ def main():
 			log_main.add('                                 SORT3D MULTI-LAYER finished')
 			log_main.add('----------------------------------------------------------------------------------------------------------------' )
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
+	sp_global_def.print_timestamp( "Start" )
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

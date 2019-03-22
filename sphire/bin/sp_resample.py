@@ -32,12 +32,12 @@ from __future__ import print_function
 #
 
 from builtins import range
-import global_def
-from global_def import sxprint, ERROR
-from   global_def import *
+import sp_global_def
+from sp_global_def import sxprint, ERROR
+from   sp_global_def import *
 
 from   EMAN2 import *
-from   sparx import *
+from   sp_sparx import *
 from   numpy import *
 from   time import time
 from   optparse import OptionParser
@@ -105,7 +105,7 @@ def resample_finish( rectors, fftvols, wgtvols, volfile, niter, nprj, info=None 
 		info.write( "    Volume finished.\t time: %10.3f\n" % (time() - overall_start) )
 
 def resample_prepare( prjfile, nvol, snr, CTF, npad ):
-	from utilities import get_im
+	from sp_utilities import get_im
 	nx = get_im( prjfile, 0 ).get_xsize()
 	fftvols = [None]*nvol
 	wgtvols = [None]*nvol
@@ -127,7 +127,7 @@ def resample_prepare( prjfile, nvol, snr, CTF, npad ):
 def resample( prjfile, outdir, bufprefix, nbufvol, nvol, seedbase,\
 		delta, d, snr, CTF, npad,\
 		MPI, myid, ncpu, verbose = 0 ):
-	from   utilities import even_angles
+	from   sp_utilities import even_angles
 	from   random import seed, jumpahead, shuffle
 	import os
 	from   sys import exit
@@ -146,17 +146,17 @@ def resample( prjfile, outdir, bufprefix, nbufvol, nvol, seedbase,\
 
 		if myid == 0:
 			os.makedirs(outdir)
-			global_def.write_command(outdir)
+			sp_global_def.write_command(outdir)
 		mpi.mpi_barrier( mpi.MPI_COMM_WORLD )
 	else:
 		if os.path.exists(outdir):
 			ERROR('Output directory exists, please change the name and restart the program', "resample", 1,0)
 		os.makedirs(outdir)
-		global_def.write_command(outdir)
+		sp_global_def.write_command(outdir)
 	if(verbose == 1):  finfo=open( os.path.join(outdir, "progress%04d.txt" % myid), "w" )
 	else:              finfo = None
 	#print  " before evenangles",myid
-	from utilities import getvec
+	from sp_utilities import getvec
 	from numpy import array, reshape
 	refa = even_angles(delta)
 	nrefa = len(refa)
@@ -187,7 +187,7 @@ def resample( prjfile, outdir, bufprefix, nbufvol, nvol, seedbase,\
 	if  MPI:
 		#print " will bcast",myid
 		vct = mpi.mpi_bcast( vct, len(vct), mpi.MPI_FLOAT, 0, mpi.MPI_COMM_WORLD )
-		from utilities import  bcast_list_to_all
+		from sp_utilities import  bcast_list_to_all
 		tetprj = bcast_list_to_all(tetprj, myid, 0)
 	#print  "  reshape  ",myid
 	vct = reshape(vct,(nprj,3))
@@ -309,8 +309,8 @@ def main():
 		myid = 0
 		ncpu = 1
 
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 		disable_bdb_cache()
 
 	outdir = args[1]
@@ -321,7 +321,7 @@ def main():
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
+	sp_global_def.print_timestamp( "Start" )
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

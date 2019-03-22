@@ -33,9 +33,9 @@ import argparse
 import subprocess
 import time
 
-import global_def
-import applications
-import utilities
+import sp_global_def
+import sp_applications
+import sp_utilities
 import mpi
 
 mpi.mpi_init( 0, [] )
@@ -122,19 +122,19 @@ def sanity_checks(args, myid):
 
 	if args['gain_file'] is not None:
 		if not os.path.isfile(args['gain_file']):
-			global_def.ERROR('If the gain_file option is provided, the gain file must exist!', myid=myid)
+			sp_global_def.ERROR('If the gain_file option is provided, the gain file must exist!', myid=myid)
 
 	if args['additional_dose_unadjusted'] and args['skip_dose_adjustment']:
-		global_def.ERROR('If the additional_dose_unadjusted option is provided, the skip_dose_adjustment cannot be provided as well!', myid=myid)
+		sp_global_def.ERROR('If the additional_dose_unadjusted option is provided, the skip_dose_adjustment cannot be provided as well!', myid=myid)
 
 	if args['selection_file'] is not None and not os.path.isfile(args.selection_file):
-		global_def.ERROR('If the selection_file option is provided, the specified file needs to exist!', myid=myid)
+		sp_global_def.ERROR('If the selection_file option is provided, the specified file needs to exist!', myid=myid)
 
 	if not glob.glob(args['input_micrograph_pattern']):
-		global_def.ERROR('No files found with the specified pattern!: {0}'.format(args['input_micrograph_pattern']), myid=myid)
+		sp_global_def.ERROR('No files found with the specified pattern!: {0}'.format(args['input_micrograph_pattern']), myid=myid)
 
 	if os.path.exists(args['output_directory']) and not args['overwrite']:
-		global_def.ERROR('Output directory is not allowed to exist!', myid=myid)
+		sp_global_def.ERROR('Output directory is not allowed to exist!', myid=myid)
 
 
 def load_file_names_by_pattern(pattern, selection_file):
@@ -149,12 +149,12 @@ def load_file_names_by_pattern(pattern, selection_file):
 	None
 	"""
 	file_names_raw = sorted(glob.glob(pattern))
-	global_def.sxprint('Found {0} movie files based on the provided pattern.'.format(len(file_names_raw)))
+	sp_global_def.sxprint('Found {0} movie files based on the provided pattern.'.format(len(file_names_raw)))
 
 	if selection_file is not None:
 		with open(selection_file, 'r') as read:
 			lines_raw = read.readlines()
-		global_def.sxprint('Found {0} file_names in the selection file.'.format(len(lines_raw)))
+		sp_global_def.sxprint('Found {0} file_names in the selection file.'.format(len(lines_raw)))
 
 		selection_list = [
 			os.path.basename(os.path.splitext(entry.strip())[0])
@@ -165,7 +165,7 @@ def load_file_names_by_pattern(pattern, selection_file):
 			for entry in input_frames_raw
 			if os.path.basename(os.path.splitext(entry)[0]) in selection_list
 			]
-		global_def.sxprint('Found {0} movie files after applying the selection file.'.format(len(file_names)))
+		sp_global_def.sxprint('Found {0} movie files after applying the selection file.'.format(len(file_names)))
 	else:
 		file_names = file_names_raw
 	return file_names
@@ -300,9 +300,9 @@ def main(args):
 	sanity_checks(args, my_mpi_proc_id)
 	if my_mpi_proc_id == main_mpi_proc:
 		if args['Expert options']:
-			global_def.sxprint('Expert option detected! The program will enable expert mode!')
+			sp_global_def.sxprint('Expert option detected! The program will enable expert mode!')
 		if args['Magnification correction']:
-			global_def.sxprint('Magnification correction option detected! The program will enable magnification correction mode!')
+			sp_global_def.sxprint('Magnification correction option detected! The program will enable magnification correction mode!')
 		file_names = load_file_names_by_pattern(
 			args['input_micrograph_pattern'],
 			args['selection_file']
@@ -310,19 +310,19 @@ def main(args):
 	else:
 		file_names = []
 
-	file_names = utilities.wrap_mpi_bcast(file_names, main_mpi_proc)
+	file_names = sp_utilities.wrap_mpi_bcast(file_names, main_mpi_proc)
 
 	# Split the list indices by node
 	max_proc = min(n_mpi_procs, len(file_names))
 	if my_mpi_proc_id in list(range(max_proc)):
-		idx_start, idx_end = applications.MPI_start_end(len(file_names), max_proc, my_mpi_proc_id)
+		idx_start, idx_end = sp_applications.MPI_start_end(len(file_names), max_proc, my_mpi_proc_id)
 	else:
 		idx_start = 0
 		idx_end = 0
 
 	nima = idx_end - idx_start
-	max_nima_list = utilities.wrap_mpi_gatherv([nima], main_mpi_proc, mpi.MPI_COMM_WORLD)
-	max_nima_list = utilities.wrap_mpi_bcast(max_nima_list, main_mpi_proc, mpi.MPI_COMM_WORLD)
+	max_nima_list = sp_utilities.wrap_mpi_gatherv([nima], main_mpi_proc, mpi.MPI_COMM_WORLD)
+	max_nima_list = sp_utilities.wrap_mpi_bcast(max_nima_list, main_mpi_proc, mpi.MPI_COMM_WORLD)
 	max_nima = max(max_nima_list)
 	mpi_print_id = max_nima_list.index(max_nima)
 
@@ -335,7 +335,7 @@ def main(args):
 				average_time = 0
 			else:
 				average_time = total_time / float(idx)
-			global_def.sxprint('{0: 6.2f}% => Elapsed time: {1: 6.2f}min | Estimated total time: {2: 6.2f}min | Time per micrograph: {3: 5.2f}min/mic'.format(
+			sp_global_def.sxprint('{0: 6.2f}% => Elapsed time: {1: 6.2f}min | Estimated total time: {2: 6.2f}min | Time per micrograph: {3: 5.2f}min/mic'.format(
 				100 * idx / float(max_nima),
 				total_time / float(60),
 				(max_nima) * average_time / float(60),
@@ -368,7 +368,7 @@ def main(args):
 		for dose_adjustment, dir_name, log_dir_name in unblur_list:
 			try:
 				os.makedirs(dir_name)
-				global_def.write_command(dir_name)
+				sp_global_def.write_command(dir_name)
 			except OSError:
 				pass
 			try:
@@ -414,7 +414,7 @@ def main(args):
 				child = subprocess.Popen(execute_command, shell=True, stdout=log, stderr=err)
 				child.wait()
 				if child.returncode != 0:
-					global_def.sxprint('Process failed for image {0}.\nPlease make sure that the unblur path is correct\nand check the respective logfile.'.format(file_path))
+					sp_global_def.sxprint('Process failed for image {0}.\nPlease make sure that the unblur path is correct\nand check the respective logfile.'.format(file_path))
 				log.write('Time => {0:.2f} for command: {1}'.format(time.time() - start, execute_command))
 
 	mpi.mpi_barrier(mpi.MPI_COMM_WORLD)
@@ -423,7 +423,7 @@ def main(args):
 		idx = idx + 1
 		total_time = time.time() - start_unblur
 		average_time = total_time / float(idx)
-		global_def.sxprint('{0: 6.2f}% => Elapsed time: {1: 6.2f}min | Estimated total time: {2: 6.2f}min | Time per micrograph: {3: 5.2f}min/mic'.format(
+		sp_global_def.sxprint('{0: 6.2f}% => Elapsed time: {1: 6.2f}min | Estimated total time: {2: 6.2f}min | Time per micrograph: {3: 5.2f}min/mic'.format(
 			100 * idx / float(max_nima),
 			total_time / float(60),
 			(max_nima) * average_time / float(60),
@@ -432,9 +432,9 @@ def main(args):
 
 
 if __name__ == '__main__':
-	global_def.print_timestamp('Start')
-	global_def.BATCH = True
+	sp_global_def.print_timestamp('Start')
+	sp_global_def.BATCH = True
 	main(parse_args())
-	global_def.BATCH = False
-	global_def.print_timestamp('Finish')
+	sp_global_def.BATCH = False
+	sp_global_def.print_timestamp('Finish')
 	mpi.mpi_finalize()

@@ -3,22 +3,22 @@ import os
 import EMAN2
 from EMAN2 import EMData
 #from EMAN2 import EMUtil, EMArgumentParser, EMANVERSION
-from applications import header, project3d, mref_ali2d
-from utilities import get_im, write_header, model_circle, read_text_row, set_params2D, write_text_row, set_params_proj, compose_transform3, model_blank
-from statistics import ccc
-from fundamentals import rops_table, fft, rot_shift2D
-from projection import prep_vol, prgl
+from sp_applications import header, project3d, mref_ali2d
+from sp_utilities import get_im, write_header, model_circle, read_text_row, set_params2D, write_text_row, set_params_proj, compose_transform3, model_blank
+from sp_statistics import ccc
+from sp_fundamentals import rops_table, fft, rot_shift2D
+from sp_projection import prep_vol, prgl
 from math import sqrt, degrees, atan2
-from filter import filt_table
-import global_def
+from sp_filter import filt_table
+import sp_global_def
 from datetime import datetime
-from logger import Logger, BaseLogger_Files, BaseLogger_Print
+from sp_logger import Logger, BaseLogger_Files, BaseLogger_Print
 import shutil
 import numpy as np
-from alignment import Numrinit, ringwe, search_range, align2d, align2d_scf, align2d_direct3
-from global_def import Util
+from sp_alignment import Numrinit, ringwe, search_range, align2d, align2d_scf, align2d_direct3
+from sp_global_def import Util
 import glob
-from pixel_error import angle_diff
+from sp_pixel_error import angle_diff
 import argparse
 
 # Set default values (global variables written in ALL CAPS)
@@ -252,7 +252,7 @@ def main_proj_compare(classavgstack, reconfile, outdir, options, mode='viper', p
 		
 		# You need either input angles (mode viper) or to calculate them on the fly (mode projmatch)
 		if mode=='viper':
-			global_def.ERROR("\nERROR!! Input alignment parameters not specified.", __file__, 1)
+			sp_global_def.ERROR("\nERROR!! Input alignment parameters not specified.", __file__, 1)
 			print('Type %s --help to see available options\n' % os.path.basename(__file__))
 			exit()
 	
@@ -265,7 +265,7 @@ def main_proj_compare(classavgstack, reconfile, outdir, options, mode='viper', p
 	voldim = EMAN2.EMData(reconfile).get_xsize()
 	imgdim = EMAN2.EMData(classavgstack,0).get_xsize()
 	if voldim != imgdim:
-			global_def.ERROR("\nERROR!! Dimension of input volume doesn't match that of image stack: %s vs. %s" % 
+			sp_global_def.ERROR("\nERROR!! Dimension of input volume doesn't match that of image stack: %s vs. %s" % 
 					(voldim, imgdim), __file__, 1)
 			
 			scale = float(imgdim)/voldim  # only approximate, since full-sized particle radius is arbitrary
@@ -284,7 +284,7 @@ def main_proj_compare(classavgstack, reconfile, outdir, options, mode='viper', p
 	elif prjmethod=='nn':
 		method_num = 0
 	else:
-		global_def.ERROR("\nERROR!! Valid projection methods are: trilinear (default), gridding, and nn (nearest neighbor).", __file__, 1)
+		sp_global_def.ERROR("\nERROR!! Valid projection methods are: trilinear (default), gridding, and nn (nearest neighbor).", __file__, 1)
 		print('Usage:\n%s' % USAGE)
 		exit()
 	
@@ -371,7 +371,7 @@ def main_proj_compare(classavgstack, reconfile, outdir, options, mode='viper', p
 		continueTF = True  # Will proceed unless some information is missing
 		
 		if not partangles:
-			global_def.ERROR("\nERROR!! Input alignment parameters not provided.", __file__, 1)
+			sp_global_def.ERROR("\nERROR!! Input alignment parameters not provided.", __file__, 1)
 			continueTF = False
 	
 		if not continueTF:
@@ -470,7 +470,7 @@ def prepare_outdir_log(outdir='.', verbose=False, is_main=True):
 		else:
 			log = Logger(base_logger=BaseLogger_Files(), file_name=logname)
 	except TypeError:
-		if is_main: print("WARNING: Using old logger.py library")
+		if is_main: print("WARNING: Using old sp_logger.py library")
 		log = Logger(base_logger=BaseLogger_Files())#, file_name=logname)
 		logname = 'log.txt'
 		
@@ -850,7 +850,7 @@ def average_angles(alignlist, partdoc, selectdoc=None, init_angles=None, thresho
 			numalignparts = len(alignlist)
 			msg += "\nAlignment doc file has only %s entries" % (numalignparts)
 			msg += "\nMaybe try substack selection file with flag '--select <substack_select>'?"
-			global_def.ERROR(msg, __file__, 1)
+			sp_global_def.ERROR(msg, __file__, 1)
 			exit()
 		
 		if init_angles:
@@ -1064,7 +1064,7 @@ if __name__ == "__main__":
 	elif options.mode == 'meridien':
 		selectdoc = options.partselect
 	else:
-		global_def.ERROR("\nERROR!! Valid mode not specified. Valid modes are: viper, projmatch, and meridien.", __file__, 1)
+		sp_global_def.ERROR("\nERROR!! Valid mode not specified. Valid modes are: viper, projmatch, and meridien.", __file__, 1)
 		print('Type %s --help to see available options\n' % os.path.basename(__file__))
 		exit()
 

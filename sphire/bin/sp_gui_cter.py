@@ -61,9 +61,9 @@ except ImportError:
 		print("Warning: PyQt4 or 5 must be installed")
 		sys.exit(1)
 
-from sparx import *
+from sp_sparx import *
 from optparse import OptionParser
-from statistics import hist_list
+from sp_statistics import hist_list
 
 '''
 Scipy now calls numpy 1.15, which generates numerous warnings of the form 
@@ -74,7 +74,7 @@ import warnings
 warnings.filterwarnings("ignore", message="numpy.dtype")
 from scipy import interpolate, optimize
 
-from morphology import ampcont2angle
+from sp_morphology import ampcont2angle
 from collections import OrderedDict
 
 def main():

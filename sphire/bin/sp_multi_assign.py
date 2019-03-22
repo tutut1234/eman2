@@ -35,9 +35,9 @@ from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
 import os
-import global_def
-from global_def import sxprint, ERROR
-from   global_def import *
+import sp_global_def
+from sp_global_def import sxprint, ERROR
+from   sp_global_def import *
 from   optparse import OptionParser
 import sys, configparser
 
@@ -77,20 +77,20 @@ def main():
 	if len(args) == 4:	mask = args[3]
 	else:	mask = None
 
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 		disable_bdb_cache()
 
-	from development import multi_assign
-	global_def.BATCH = True
+	from sp_development import multi_assign
+	sp_global_def.BATCH = True
 	multi_assign(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr, options.yr, options.ts,  
 			options.CTF, options.CUDA, options.GPUID, options.SA, options.T, options.F, options.heads_up, options.MPI)
-	global_def.BATCH = False
+	sp_global_def.BATCH = False
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

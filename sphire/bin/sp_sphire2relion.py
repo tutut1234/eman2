@@ -40,8 +40,8 @@ import argparse
 import numpy as np
 
 import EMAN2_cppwrap
-from global_def import sxprint
-import global_def
+from sp_global_def import sxprint
+import sp_global_def
 
 
 def parse_args():
@@ -135,7 +135,7 @@ def main(args):
 	Returns:
 	None
 	"""
-	global_def.BATCH = True
+	sp_global_def.BATCH = True
 	output_file = sanity_checks(args)
 
 	output_dtype = []
@@ -264,7 +264,7 @@ def main(args):
 		create_particle_stack(args.particle_stack, args.output_dir, particle_data)
 
 	sxprint("Done!")
-	global_def.BATCH = False
+	sp_global_def.BATCH = False
 
 
 def create_particle_stack(particle_stack, output_dir, particle_data):
@@ -291,7 +291,7 @@ def create_particle_stack(particle_stack, output_dir, particle_data):
 		output_name = os.path.join(output_dir, ptcl_names[particle_idx])
 		try:
 			os.makedirs(os.path.dirname(output_name))
-			global_def.write_command(os.path.dirname(output_name))
+			sp_global_def.write_command(os.path.dirname(output_name))
 		except OSError:
 			pass
 		emdata.write_image(output_name, -1)
@@ -352,7 +352,7 @@ def import_params(params_file, dim):
 			("shift_y", float),
 		]
 	else:
-		global_def.ERROR(
+		sp_global_def.ERROR(
 			"Dimension {0} not supported. Only '2d' and '3d' are supported.".format(
 				dim
 			),
@@ -425,7 +425,7 @@ def import_partres_file(partres_file):
 			("_rlnVoltage", float),
 		]
 	else:
-		global_def.ERROR(
+		sp_global_def.ERROR(
 			"Number of columns in partres file not known: {0}".format(
 				number_of_columns
 			),
@@ -488,7 +488,7 @@ def sanity_checks(args):
 	]
 
 	if not args.particle_stack and not args.partres_file:
-		global_def.ERROR(
+		sp_global_def.ERROR(
 			"Particle_stack or partres_file option needs to be present!",
 			"sxsphire2relion",
 			1,
@@ -496,7 +496,7 @@ def sanity_checks(args):
 
 	for option in stack_dependency_check:
 		if option and not args.particle_stack:
-			global_def.ERROR(
+			sp_global_def.ERROR(
 				"{0} requires particle stack option!".format(option),
 				"sxsphire2relion",
 				1,
@@ -515,40 +515,40 @@ def sanity_checks(args):
 					basename = os.path.basename(option[4:])
 				option = "{0}/EMAN2DB/{1}.bdb".format(dirnames, basename)
 			if not os.path.isfile(option):
-				global_def.ERROR(
+				sp_global_def.ERROR(
 					"{0} stack must exist!".format(option), "sxsphire2relion", 1
 				)
 
 	if args.list and args.exlist:
-		global_def.ERROR(
+		sp_global_def.ERROR(
 			"Arguments list and exlist cannot be used at the same time.",
 			"sxsphire2relion",
 			1,
 		)
 
 	if args.params_2d_file and args.params_3d_file:
-		global_def.ERROR(
+		sp_global_def.ERROR(
 			"Arguments params_2d_file and params_3d_file cannot be used at the same time.",
 			"sxsphire2relion",
 			1,
 		)
 
 	if args.params_3d_index_file and not args.params_3d_file:
-		global_def.ERROR(
+		sp_global_def.ERROR(
 			"Arguments params_3d_index_file requires params_3d_file to be set.",
 			"sxsphire2relion",
 			1,
 		)
 
 	if args.params_3d_chunk_file_0 and not args.params_3d_file:
-		global_def.ERROR(
+		sp_global_def.ERROR(
 			"Arguments params_3d_chunk_files requires params_3d_file to be set.",
 			"sxsphire2relion",
 			1,
 		)
 
 	if args.params_3d_chunk_file_1 and not args.params_3d_file:
-		global_def.ERROR(
+		sp_global_def.ERROR(
 			"Arguments params_3d_chunk_files requires params_3d_file to be set.",
 			"sxsphire2relion",
 			1,
@@ -563,7 +563,7 @@ def sanity_checks(args):
 	if os.path.exists(output_path) and args.force:
 		pass
 	elif os.path.exists(output_path) and not args.force:
-		global_def.ERROR(
+		sp_global_def.ERROR(
 			"Output file {0} must not exist! Use the --force flag to overwrite existing files".format(
 				output_path
 			),
@@ -780,6 +780,6 @@ def import_particle_stack(particle_stack, output_dir):
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp("Start")
+	sp_global_def.print_timestamp("Start")
 	main(parse_args())
-	global_def.print_timestamp("Finish")
+	sp_global_def.print_timestamp("Finish")

@@ -34,10 +34,10 @@ from __future__ import print_function
 import os
 import sys
 from optparse import OptionParser
-from global_def import SPARXVERSION, ERROR
+from sp_global_def import SPARXVERSION, ERROR
 
-import global_def
-from global_def import sxprint, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
 from builtins import range
 
@@ -98,7 +98,7 @@ def main():
 		ERROR( "Invalid number of parameters used. Please see usage information above." )
 		return
 	else:
-		global_def.BATCH = True
+		sp_global_def.BATCH = True
 		# Convert input arguments in the units/format as expected by ihrsr_MPI in applications.
 		if options.apix < 0:
 			ERROR( "Please specify pixel size apix","sxheliconlocal" )
@@ -117,7 +117,7 @@ def main():
 		rminp = int((float(options.rmin)/options.apix) + 0.5)
 		rmaxp = int((float(options.rmax)/options.apix) + 0.5)
 		
-		from utilities import get_input_from_string, get_im
+		from sp_utilities import get_input_from_string, get_im
 
 		xr = get_input_from_string(options.xr)
 		txs = get_input_from_string(options.txs)
@@ -138,11 +138,11 @@ def main():
 		for i in range(len(y_restrict)): y_restrict2 +=  str(float(y_restrict[i])/options.apix)+" "
 		y_restrict2 = y_restrict2[:-1]
 
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sp_global_def.CACHE_DISABLE:
+			from sp_utilities import disable_bdb_cache
 			disable_bdb_cache()
 
-		from applications import localhelicon_MPI, localhelicon_MPInew, localhelicon_MPIming
+		from sp_applications import localhelicon_MPI, localhelicon_MPInew, localhelicon_MPIming
 		if len(args) < 4:  mask = None
 		else:              mask = args[3]
 		if options.new:  localhelicon_MPInew(args[0], args[1], args[2], options.seg_ny, mask, irp, oup, options.rs, xrp, options.ynumber, \
@@ -160,12 +160,12 @@ def main():
 				options.dp, options.dphi, options.psi_max, \
 			rminp, rmaxp, options.fract, options.npad,options.sym, options.function,\
 			options.apix, options.debug, y_restrict2, options.searchit, options.slowIO)
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 	
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

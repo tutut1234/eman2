@@ -35,14 +35,14 @@ from __future__ import print_function
 
 from builtins import range
 import os
-import global_def
-from global_def import sxprint, ERROR
-from   global_def     import *
+import sp_global_def
+from sp_global_def import sxprint, ERROR
+from   sp_global_def     import *
 from   optparse       import OptionParser
 import sys
 
 def main():
-	from utilities import get_input_from_string
+	from sp_utilities import get_input_from_string
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + " stack output_average --radius=particle_radius --xr=xr --yr=yr --ts=ts --thld_err=thld_err --num_ali=num_ali --fl=fl --aa=aa --CTF --verbose --stables"
 	parser = OptionParser(usage,version=SPARXVERSION)
@@ -68,15 +68,15 @@ def main():
     		ERROR( "Invalid number of parameters used. Please see usage information above." )
     		return
 	else:
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sp_global_def.CACHE_DISABLE:
+			from sp_utilities import disable_bdb_cache
 			disable_bdb_cache()
 
-		from applications   import within_group_refinement, ali2d_ras
-		from pixel_error    import multi_align_stability
-		from utilities      import write_text_file, write_text_row
+		from sp_applications   import within_group_refinement, ali2d_ras
+		from sp_pixel_error    import multi_align_stability
+		from sp_utilities      import write_text_file, write_text_row
 
-		global_def.BATCH = True
+		sp_global_def.BATCH = True
 
 		xrng = get_input_from_string(options.xr)
 
@@ -93,11 +93,11 @@ def main():
 		ou = options.radius
 		num_ali = options.num_ali
 		if ou == -1: ou = nx/2-2
-		from utilities import model_circle, get_params2D, set_params2D
+		from sp_utilities import model_circle, get_params2D, set_params2D
 		mask = model_circle(ou, nx, nx)
 
 		if options.CTF :
-			from filter import filt_ctf
+			from sp_filter import filt_ctf
 			for im in range(len(class_data)):
 				#  Flip phases
 				class_data[im] = filt_ctf(class_data[im], class_data[im].get_attr("ctf"), binary=1)
@@ -127,7 +127,7 @@ def main():
 			else:
 				avet = within_group_refinement(class_data, mask, True, 1, ou, 1, xrng, yrng, step, 90.0, \
 						maxit = options.maxit, FH=options.fl, FF=options.aa, method = options.method)
-				from utilities import info
+				from sp_utilities import info
 				#print "  avet  ",info(avet)
 			for im in class_data:
 				alpha, sx, sy, mirror, scale = get_params2D(im)
@@ -142,7 +142,7 @@ def main():
 				write_text_file([ALPHA, SX, SY, MIRROR], "ali_params_run_%d"%ii)
 		"""
 		avet = class_data[0]
-		from utilities import read_text_file
+		from sp_utilities import read_text_file
 		all_ali_params = []
 		for ii in xrange(5):
 			temp = read_text_file( "ali_params_run_%d"%ii,-1)
@@ -168,7 +168,7 @@ def main():
 			for s in stable_set:
 				stable_set_id.append(s[1])
 				particle_pixerr.append(s[0])
-			from fundamentals import rot_shift2D
+			from sp_fundamentals import rot_shift2D
 			avet.to_zero()
 			l = -1
 			sxprint("average parameters:  angle, x-shift, y-shift, mirror")
@@ -182,10 +182,10 @@ def main():
 			avet.set_attr('pixerr', particle_pixerr)
 			avet.write_image(args[1])
 
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

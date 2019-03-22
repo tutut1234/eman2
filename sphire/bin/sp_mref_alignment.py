@@ -34,11 +34,11 @@ from __future__ import print_function
 
 
 import os, sys
-import global_def
-from global_def import sxprint, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
-from   global_def     import *
-from   user_functions import *
+from   sp_global_def     import *
+from   sp_user_functions import *
 from   optparse       import OptionParser
 
 import mpi
@@ -74,20 +74,20 @@ def main():
 		return
 		
 	else:
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sp_global_def.CACHE_DISABLE:
+			from sp_utilities import disable_bdb_cache
 			disable_bdb_cache()
 
-		global_def.BATCH = True
-		from development import mref_alignment
+		sp_global_def.BATCH = True
+		from sp_development import mref_alignment
 		mref_alignment(args[0], args[1], args[2], options.ou, options.xr, options.ts, options.maxit, options.function, options.snr, options.CTF, 
 				options.Fourvar, options.Ng, options.K, options.dst, options.center, options.CUDA, options.GPUID, options.MPI)
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 		
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

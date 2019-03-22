@@ -34,11 +34,11 @@ from __future__ import print_function
 
 
 import os
-import global_def
-from global_def import sxprint
+import sp_global_def
+from sp_global_def import sxprint
 
-from global_def     import *
-from user_functions import *
+from sp_global_def     import *
+from sp_user_functions import *
 from optparse       import OptionParser
 import sys
 
@@ -81,12 +81,12 @@ def main():
 	if len(args) < 2 or len(args) > 3:
 		sxprint( "Usage: " + usage )
 		sxprint( "Please run \'" + progname + " -h\' for detailed options" )
-		global_def.ERROR( "Invalid number of parameters used. Please see usage information above." )
+		sp_global_def.ERROR( "Invalid number of parameters used. Please see usage information above." )
 		return
 
 	elif(options.rotational):
-		from applications import ali2d_rotationaltop
-		global_def.BATCH = True
+		from sp_applications import ali2d_rotationaltop
+		sp_global_def.BATCH = True
 		ali2d_rotationaltop(args[1], args[0], options.randomize, options.orient, options.ir, options.ou, options.rs, options.psi_max, options.mode, options.maxit)
 	else:
 		if args[1] == 'None': 
@@ -99,13 +99,13 @@ def main():
 		else:              
 			mask = args[2]
 		
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sp_global_def.CACHE_DISABLE:
+			from sp_utilities import disable_bdb_cache
 			disable_bdb_cache()
 		
-		global_def.BATCH = True
+		sp_global_def.BATCH = True
 		if  options.MPI:
-			from applications import ali2d_base
+			from sp_applications import ali2d_base
 			from mpi import mpi_comm_size, mpi_comm_rank, MPI_COMM_WORLD
 
 			number_of_proc = mpi_comm_size(MPI_COMM_WORLD)
@@ -114,7 +114,7 @@ def main():
 
 			if(myid == main_node):
 				import subprocess
-				from logger import Logger, BaseLogger_Files
+				from sp_logger import Logger, BaseLogger_Files
 				#  Create output directory
 				log = Logger(BaseLogger_Files())
 				log.prefix = os.path.join(outdir)
@@ -124,10 +124,10 @@ def main():
 			else:
 				outcome = 0
 				log = None
-			from utilities       import bcast_number_to_all
+			from sp_utilities       import bcast_number_to_all
 			outcome  = bcast_number_to_all(outcome, source_node = main_node)
 			if(outcome == 1):
-				global_def.ERROR( "Output directory exists, please change the name and restart the program", myid=myid )
+				sp_global_def.ERROR( "Output directory exists, please change the name and restart the program", myid=myid )
 
 			dummy = ali2d_base(args[0], outdir, mask, options.ir, options.ou, options.rs, options.xr, options.yr, \
 				options.ts, options.nomirror, options.dst, \
@@ -138,19 +138,19 @@ def main():
 		else:
 			sxprint( " Non-MPI is no more in use, try MPI option, please." )
 			"""
-			from applications import ali2d
+			from sp_applications import ali2d
 			ali2d(args[0], outdir, mask, options.ir, options.ou, options.rs, options.xr, options.yr, \
 				options.ts, options.nomirror, options.dst, \
 				options.center, options.maxit, options.CTF, options.snr, options.Fourvar, \
 				-1, options.function, False, "", options.MPI, \
 				options.template, random_method = options.random_method)
 	    	"""
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

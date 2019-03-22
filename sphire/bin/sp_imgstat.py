@@ -31,10 +31,10 @@ from __future__ import print_function
 #
 #
 
-import global_def
-from global_def import sxprint, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
-from   global_def     import *
+from   sp_global_def     import *
 
 import os
 import sys
@@ -63,17 +63,17 @@ def main():
 		ERROR( "Invalid number of parameters. Please see usage information above" )
 		return
 
-	if global_def.CACHE_DISABLE:
-		from utilities import disable_bdb_cache
+	if sp_global_def.CACHE_DISABLE:
+		from sp_utilities import disable_bdb_cache
 		disable_bdb_cache()
 
-	from applications import imgstat
+	from sp_applications import imgstat
 
-	global_def.BATCH = True
+	sp_global_def.BATCH = True
 	imgstat( args, options.ccc, options.fsc, options.inf, options.rad )
 
 if __name__=="__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

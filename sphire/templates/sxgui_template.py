@@ -48,8 +48,8 @@ except ImportError:
     from PyQt5 import QtCore
 from EMAN2 import *
 from EMAN2_cppwrap import *
-from global_def import *
-from sparx import *
+from sp_global_def import *
+from sp_sparx import *
 from optparse import OptionParser
 from functools import partial  # Use to connect event-source widget and event handler
 from subprocess import *

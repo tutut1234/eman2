@@ -29,7 +29,7 @@
 #
 #
 from EMAN2_cppwrap import *
-from global_def import *
+from sp_global_def import *
 
 #  This file contains code under development or not currently used.
 
@@ -62,14 +62,14 @@ def rtsh(image, angle, sx=0., sy=0.):
 	return grotshift2d(image, angle, kb, npad, sx, sy)
 '''
 def list_send_im(list, dst):
-	from utilities import send_EMData, model_blank
+	from sp_utilities import send_EMData, model_blank
 	N    = len(list)
 	data = model_blank(N)
 	for n in xrange(N): data.set_value_at(n, float(list[n]))
 	send_EMData(data, dst, 0)
 
 def list_recv_im(org):
-	from utilities import recv_EMData
+	from sp_utilities import recv_EMData
 	data = recv_EMData(org, 0)
 	N    = data.get_xsize()
 	list = [0] * N
@@ -78,7 +78,7 @@ def list_recv_im(org):
 
 # list must be allocated
 def list_bcast_im(list, myid, main_node):
-	from utilities import bcast_EMData_to_all, model_blank
+	from sp_utilities import bcast_EMData_to_all, model_blank
 	N   = len(list)
 	data = model_blank(N)
 	for n in xrange(N): data.set_value_at(n, float(list[n]))
@@ -92,15 +92,15 @@ def list_bcast_im(list, myid, main_node):
 ###############################################################################################
 
 def ali2d_rac_MPI(stack, maskfile = None, kmeans = 'None', ir = 1, ou = -1, rs = 1, nclass = 2, maxit = 10, maxin = 10, check_mirror = False, rand_seed = 10):
-	from global_def import MPI
-	from utilities  import bcast_EMData_to_all, reduce_EMData_to_root, bcast_number_to_all
-	from utilities  import send_EMData, recv_EMData
-	from utilities  import model_circle, combine_params2
-	from utilities  import get_arb_params, set_arb_params
-	from statistics import MPIlogfile_init, MPIlogfile_print, MPIlogfile_end
-	from statistics import kmnr, kmn
+	from sp_global_def import MPI
+	from sp_utilities  import bcast_EMData_to_all, reduce_EMData_to_root, bcast_number_to_all
+	from sp_utilities  import send_EMData, recv_EMData
+	from sp_utilities  import model_circle, combine_params2
+	from sp_utilities  import get_arb_params, set_arb_params
+	from sp_statistics import MPIlogfile_init, MPIlogfile_print, MPIlogfile_end
+	from sp_statistics import kmnr, kmn
 	from random     import randint, seed, shuffle
-	from alignment  import Numrinit, ringwe, ang_n
+	from sp_alignment  import Numrinit, ringwe, ang_n
 	from copy       import deepcopy
 	import time
 	import sys
@@ -825,7 +825,7 @@ def ali2d_rac_MPI(stack, maskfile = None, kmeans = 'None', ir = 1, ou = -1, rs =
 
 	
 def SSNR_func(args, data):
-	from utilities import print_msg
+	from sp_utilities import print_msg
 	
 	img_data = data[0]
 	nima = data[1]
@@ -1057,8 +1057,8 @@ def SSNR_grad(args, data):
 
 
 def SSNR_func_MPI(args, data):
-	from applications import MPI_start_end
-	from utilities import reduce_EMData_to_root, print_msg
+	from sp_applications import MPI_start_end
+	from sp_utilities import reduce_EMData_to_root, print_msg
 	from mpi import mpi_comm_size, mpi_comm_rank, mpi_bcast, MPI_COMM_WORLD, MPI_FLOAT
 
 	number_of_proc = mpi_comm_size(MPI_COMM_WORLD)
@@ -1129,7 +1129,7 @@ def SSNR_func_MPI(args, data):
 		print_msg("SSNR = %20.7f\n"%(sum_SSNR))
 
 		if SSNR_fit:
-			from fundamentals import rot_avg_table
+			from sp_fundamentals import rot_avg_table
 			beta = 10.0
 			avgimg_2 = Util.pack_complex_to_real(avgimg_2)
 			var   = Util.pack_complex_to_real(var)
@@ -1161,9 +1161,9 @@ def SSNR_func_MPI(args, data):
 
 def SSNR_grad_MPI(args, data):
 	from numpy import zeros, array, float32, float64
-	from applications import MPI_start_end
-	from utilities import reduce_EMData_to_root, bcast_EMData_to_all 
-	from utilities import reduce_array_to_root, bcast_array_to_all
+	from sp_applications import MPI_start_end
+	from sp_utilities import reduce_EMData_to_root, bcast_EMData_to_all 
+	from sp_utilities import reduce_array_to_root, bcast_array_to_all
 	from mpi import mpi_comm_size, mpi_comm_rank, mpi_bcast, MPI_COMM_WORLD, MPI_FLOAT
 
 	number_of_proc = mpi_comm_size(MPI_COMM_WORLD)
@@ -1250,7 +1250,7 @@ def SSNR_grad_MPI(args, data):
 	Util.div_filter(dSSNR, var)
 
 	if SSNR_fit:
-		from fundamentals import rot_avg_table
+		from sp_fundamentals import rot_avg_table
 		from math import sqrt, pi
 		beta = 10.0
 		avgimg_2 = Util.pack_complex_to_real(avgimg_2)
@@ -1343,15 +1343,15 @@ def ali_SSNR(stack, maskfile=None, ou=-1, maxit=10, CTF=False, opti_method="CG",
 		return
 		
 	from math import pi, sqrt
-	from fundamentals import fftip, mirror
+	from sp_fundamentals import fftip, mirror
 	from numpy import Inf
 	from scipy.optimize.lbfgsb import fmin_l_bfgs_b
 	from scipy.optimize.optimize import fmin_cg
-	from utilities import get_image, get_params2D, set_params2D, print_begin_msg, print_end_msg, print_msg
+	from sp_utilities import get_image, get_params2D, set_params2D, print_begin_msg, print_end_msg, print_msg
 	
 	if CTF:
-		from utilities import get_arb_params
-		from morphology import ctf_img
+		from sp_utilities import get_arb_params
+		from sp_morphology import ctf_img
 
 	print_begin_msg("ali_SSNR")
 
@@ -1382,7 +1382,7 @@ def ali_SSNR(stack, maskfile=None, ou=-1, maxit=10, CTF=False, opti_method="CG",
 			print_msg("Maskfile                    : user provided in-core mask\n\n")
 			mask = maskfile
 	else :
-		from utilities import model_circle 
+		from sp_utilities import model_circle 
 		print_msg("Maskfile                    : default, a circle with radius %i\n\n"%(last_ring))
 		mask = model_circle(last_ring, nx, nx)
 	
@@ -1556,19 +1556,19 @@ def ali_SSNR(stack, maskfile=None, ou=-1, maxit=10, CTF=False, opti_method="CG",
 
 def ali_SSNR_MPI(stack, maskfile=None, ou=-1, maxit=10, CTF=False, opti_method="CG", SSNR_fit=False, SSNR=[]):
 
-	from applications import MPI_start_end
+	from sp_applications import MPI_start_end
 	from math import pi, sqrt
-	from fundamentals import fftip, mirror
+	from sp_fundamentals import fftip, mirror
 	from numpy import Inf
 	from scipy.optimize.lbfgsb import fmin_l_bfgs_b
 	from scipy.optimize.optimize import fmin_cg
 	from mpi import mpi_comm_size, mpi_comm_rank, mpi_bcast, MPI_COMM_WORLD, mpi_barrier
-	from utilities import get_image, set_params2D, get_params2D, print_begin_msg, print_end_msg, print_msg
-	from utilities import model_circle
+	from sp_utilities import get_image, set_params2D, get_params2D, print_begin_msg, print_end_msg, print_msg
+	from sp_utilities import model_circle
 	
 	if CTF:
-		from utilities import get_arb_params
-		from morphology import ctf_img
+		from sp_utilities import get_arb_params
+		from sp_morphology import ctf_img
 
 	number_of_proc = mpi_comm_size(MPI_COMM_WORLD)
 	myid = mpi_comm_rank(MPI_COMM_WORLD)
@@ -1784,15 +1784,15 @@ def ali3d_eB_MPI_LAST_USED(stack, ref_vol, outdir, maskfile, ou=-1,  delta=2, ma
 	'''
 		Cone
 	'''
-	from alignment	    import proj_ali_incore_cone
-	from filter         import filt_ctf, filt_params, filt_table, filt_from_fsc, filt_btwl, filt_tanl
-	from fundamentals   import fshift, rot_avg_image
-	from projection     import prep_vol, prgs
-	from utilities      import model_circle, get_arb_params, set_arb_params, drop_spider_doc
-	from utilities      import get_image, drop_image, bcast_EMData_to_all, send_attr_dict, recv_attr_dict
-	from utilities      import read_spider_doc, get_im
-	from reconstruction import rec3D_MPI
-	from statistics     import ccc
+	from sp_alignment	    import proj_ali_incore_cone
+	from sp_filter         import filt_ctf, filt_params, filt_table, filt_from_fsc, filt_btwl, filt_tanl
+	from sp_fundamentals   import fshift, rot_avg_image
+	from sp_projection     import prep_vol, prgs
+	from sp_utilities      import model_circle, get_arb_params, set_arb_params, drop_spider_doc
+	from sp_utilities      import get_image, drop_image, bcast_EMData_to_all, send_attr_dict, recv_attr_dict
+	from sp_utilities      import read_spider_doc, get_im
+	from sp_reconstruction import rec3D_MPI
+	from sp_statistics     import ccc
 	from math           import pi, sqrt
 	from string         import replace
 	import os
@@ -1806,8 +1806,8 @@ def ali3d_eB_MPI_LAST_USED(stack, ref_vol, outdir, maskfile, ou=-1,  delta=2, ma
 	if(myid == main_node):
 		if os.path.exists(outdir):  os.system('rm -rf '+outdir)
 		os.mkdir(outdir)
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 	mpi_barrier(MPI_COMM_WORLD)
 
 	nima = EMUtil.get_image_count(stack)
@@ -1865,7 +1865,7 @@ def ali3d_eB_MPI_LAST_USED(stack, ref_vol, outdir, maskfile, ou=-1,  delta=2, ma
 			if data[im].get_attr('ctf_applied') == 0:
 				st = Util.infomask(data[im], mask2D, False)
 				data[im] -= st[0]
-				from filter import filt_ctf
+				from sp_filter import filt_ctf
 				data[im] = filt_ctf(data[im], ctf_params)
 				data[im].set_attr('ctf_applied', 1)
 
@@ -1876,13 +1876,13 @@ def ali3d_eB_MPI_LAST_USED(stack, ref_vol, outdir, maskfile, ou=-1,  delta=2, ma
 
 	if (myid == main_node):
 		# initialize data for the reference preparation function
-		from utilities import read_text_file
+		from sp_utilities import read_text_file
 		ref_data = []
 		ref_data.append( mask3D )
 		ref_data.append( read_text_file("pwpdb.txt", 1) )
 
-	from utilities      import bcast_number_to_all
-	from morphology     import threshold, threshold_to_minval
+	from sp_utilities      import bcast_number_to_all
+	from sp_morphology     import threshold, threshold_to_minval
 
 	par_str=["phi", "theta", "psi", "s2x", "s2y"]
 
@@ -1895,12 +1895,12 @@ def ali3d_eB_MPI_LAST_USED(stack, ref_vol, outdir, maskfile, ou=-1,  delta=2, ma
 		ib, ie = MPI_start_end(nima, number_of_proc, im)
 		recvcount.append( ie - ib )
 
-	from utilities import even_angles
+	from sp_utilities import even_angles
 	xrng = 0.0
 	yrng = 0.0
 	step = 1.0
 	template_angles = even_angles(0.2, 0.0, 0.4, phiEqpsi = 'Zero', method = 'P')
-	from filter import  filt_tophatb, filt_gaussl
+	from sp_filter import  filt_tophatb, filt_gaussl
 	fifi = True
 	for iteration in xrange(maxit):
 		outf.write("  iteration = "+str(iteration)+"   ")
@@ -1949,7 +1949,7 @@ def ali3d_eB_MPI_LAST_USED(stack, ref_vol, outdir, maskfile, ou=-1,  delta=2, ma
 
 			soto = []
 			for imn in xrange(image_start, image_end):
-				from utilities import set_params_proj, get_params_proj
+				from sp_utilities import set_params_proj, get_params_proj
 				phi,theta,psi,s2x,s2y = get_params_proj( dataim[imn-image_start] )
 				soto.append([phi,theta,psi,s2x,s2y,imn])
 			drop_spider_doc(os.path.join(outdir, replace("new_params%3d_%3d_%3d"%(iteration, ic, myid),' ','0')), soto," phi, theta, psi, s2x, s2y, image number")
@@ -1968,17 +1968,17 @@ def ali3d_eB_CCC(stack, ref_vol, outdir, maskfile, ou=-1,  delta=2, maxit=10, CT
 		Cone, modified version to test CCC
 		single processor version
 	'''
-	from utilities      import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg
 
-	from alignment	    import proj_ali_incore_cone
-	from filter         import filt_ctf, filt_params, filt_table, filt_from_fsc, filt_btwl, filt_tanl
-	from fundamentals   import fshift, rot_avg_image
-	from projection     import prep_vol, prgs
-	from utilities      import model_circle, get_arb_params, set_arb_params, drop_spider_doc
-	from utilities      import get_image, drop_image, send_attr_dict, recv_attr_dict
-	from utilities      import read_spider_doc, get_im
-	from statistics     import ccc
-	from statistics     import fsc_mask
+	from sp_alignment	    import proj_ali_incore_cone
+	from sp_filter         import filt_ctf, filt_params, filt_table, filt_from_fsc, filt_btwl, filt_tanl
+	from sp_fundamentals   import fshift, rot_avg_image
+	from sp_projection     import prep_vol, prgs
+	from sp_utilities      import model_circle, get_arb_params, set_arb_params, drop_spider_doc
+	from sp_utilities      import get_image, drop_image, send_attr_dict, recv_attr_dict
+	from sp_utilities      import read_spider_doc, get_im
+	from sp_statistics     import ccc
+	from sp_statistics     import fsc_mask
 	from math           import pi, sqrt
 	from string         import replace
 	import os
@@ -1990,11 +1990,11 @@ def ali3d_eB_CCC(stack, ref_vol, outdir, maskfile, ou=-1,  delta=2, maxit=10, CT
 	
 	if os.path.exists(outdir):  os.system('rm -rf '+outdir)
 	os.mkdir(outdir)
-	import user_functions
-	user_func = user_functions.factory[user_func_name]
+	import sp_user_functions
+	user_func = sp_user_functions.factory[user_func_name]
 
-	if CTF :from reconstruction import recons3d_4nn_ctf
-	else   : from reconstruction import recons3d_4nn
+	if CTF :from sp_reconstruction import recons3d_4nn_ctf
+	else   : from sp_reconstruction import recons3d_4nn
 
 
 	nima = EMUtil.get_image_count(stack)
@@ -2054,7 +2054,7 @@ def ali3d_eB_CCC(stack, ref_vol, outdir, maskfile, ou=-1,  delta=2, maxit=10, CT
 			if ima.get_attr('ctf_applied') == 0:
 				st = Util.infomask(ima, mask2D, False)
 				ima -= st[0]
-				from filter import filt_ctf
+				from sp_filter import filt_ctf
 				ima = filt_ctf(ima, ctf_params)
 				ima.set_attr('ctf_applied', 1)
 		dataim.append(ima)
@@ -2064,17 +2064,17 @@ def ali3d_eB_CCC(stack, ref_vol, outdir, maskfile, ou=-1,  delta=2, maxit=10, CT
 
 
 	# initialize data for the reference preparation function
-	from utilities import read_text_file
+	from sp_utilities import read_text_file
 	ref_data = []
 	ref_data.append( mask3D )
 	ref_data.append( read_text_file("pwpdb.txt", 1) )
-	from utilities import read_text_file
+	from sp_utilities import read_text_file
 	fscc = [read_text_file("resolution000_000",0), read_text_file("resolution000_000",1)]
  	jtep = 0
 
 	par_str=["phi", "theta", "psi", "s2x", "s2y"]
 
-	from utilities import even_angles
+	from sp_utilities import even_angles
 	xrng = 0.0
 	yrng = 0.0
 	step = 1.0
@@ -2108,7 +2108,7 @@ def ali3d_eB_CCC(stack, ref_vol, outdir, maskfile, ou=-1,  delta=2, maxit=10, CT
 
 			soto = []
 			for imn in xrange(image_start, image_end):
-				from utilities import set_params_proj, get_params_proj
+				from sp_utilities import set_params_proj, get_params_proj
 				phi,theta,psi,s2x,s2y = get_params_proj( dataim[imn-image_start] )
 				soto.append([phi,theta,psi,s2x,s2y,imn])
 			drop_spider_doc(os.path.join(outdir, replace("new_params%3d_%3d"%(iteration, ic),' ','0')), soto," phi, theta, psi, s2x, s2y, image number")
@@ -2144,15 +2144,15 @@ def ali3d_eB_MPI_conewithselect(stack, ref_vol, outdir, maskfile, ou=-1,  delta=
 	'''
 		Cone
 	'''
-	from alignment	    import proj_ali_incore_cone
-	from filter         import filt_ctf, filt_params, filt_table, filt_from_fsc, filt_btwl, filt_tanl
-	from fundamentals   import fshift, rot_avg_image
-	from projection     import prep_vol, prgs
-	from utilities      import model_circle, get_arb_params, set_arb_params, drop_spider_doc
-	from utilities      import get_image, drop_image, bcast_EMData_to_all, send_attr_dict, recv_attr_dict
-	from utilities      import read_spider_doc, get_im
-	from reconstruction import rec3D_MPI
-	from statistics     import ccc
+	from sp_alignment	    import proj_ali_incore_cone
+	from sp_filter         import filt_ctf, filt_params, filt_table, filt_from_fsc, filt_btwl, filt_tanl
+	from sp_fundamentals   import fshift, rot_avg_image
+	from sp_projection     import prep_vol, prgs
+	from sp_utilities      import model_circle, get_arb_params, set_arb_params, drop_spider_doc
+	from sp_utilities      import get_image, drop_image, bcast_EMData_to_all, send_attr_dict, recv_attr_dict
+	from sp_utilities      import read_spider_doc, get_im
+	from sp_reconstruction import rec3D_MPI
+	from sp_statistics     import ccc
 	from math           import pi, sqrt
 	from string         import replace
 	import os
@@ -2168,7 +2168,7 @@ def ali3d_eB_MPI_conewithselect(stack, ref_vol, outdir, maskfile, ou=-1,  delta=
 	if(myid == main_node):
 		if os.path.exists(outdir):  os.system('rm -rf '+outdir)
 		os.mkdir(outdir)
-		from utilities import read_text_file
+		from sp_utilities import read_text_file
 		pwpdb = read_text_file("pwpdb.txt", 1)
 	mpi_barrier(MPI_COMM_WORLD)
 
@@ -2226,7 +2226,7 @@ def ali3d_eB_MPI_conewithselect(stack, ref_vol, outdir, maskfile, ou=-1,  delta=
 			if ima.get_attr('ctf_applied') == 0:
 				st = Util.infomask(ima, mask2D, False)
 				ima -= st[0]
-				from filter import filt_ctf
+				from sp_filter import filt_ctf
 				ima = filt_ctf(ima, ctf_params)
 				ima.set_attr('ctf_applied', 1)
 		dataim.append(ima)
@@ -2234,8 +2234,8 @@ def ali3d_eB_MPI_conewithselect(stack, ref_vol, outdir, maskfile, ou=-1,  delta=
 	outf.write("\n")
 	outf.flush()
 
-	from utilities      import bcast_number_to_all
-	from morphology     import threshold, threshold_to_minval
+	from sp_utilities      import bcast_number_to_all
+	from sp_morphology     import threshold, threshold_to_minval
 
 	par_str=["phi", "theta", "psi", "s2x", "s2y"]
 
@@ -2248,12 +2248,12 @@ def ali3d_eB_MPI_conewithselect(stack, ref_vol, outdir, maskfile, ou=-1,  delta=
 		ib, ie = MPI_start_end(nima, number_of_proc, im)
 		recvcount.append( ie - ib )
 
-	from utilities import even_angles
+	from sp_utilities import even_angles
 	xrng = 0.0
 	yrng = 0.0
 	step = 1.0
 	template_angles = even_angles(0.2, 0.0, 0.4, phiEqpsi = 'Zero', method = 'P')
-	from filter import  filt_tophatb, filt_gaussl
+	from sp_filter import  filt_tophatb, filt_gaussl
 	volftb = vol.copy()
 	for iteration in xrange(maxit):
 		outf.write("  iteration = "+str(iteration)+"   ")
@@ -2360,12 +2360,12 @@ def ali3d_eB_MPI_conewithselect(stack, ref_vol, outdir, maskfile, ou=-1,  delta=
 				vol -= stat[0]
 				vol /= stat[1]
 				vol = threshold(vol)
-				from  fundamentals  import  rops_table
+				from  sp_fundamentals  import  rops_table
 				pwem = rops_table(vol)
 				ftb = []
 				for idum in xrange(len(pwem)):
 					ftb.append(sqrt(pwpdb[idum]/pwem[idum]))
-				from filter import filt_table, fit_tanh
+				from sp_filter import filt_table, fit_tanh
 				vol = filt_table(vol, ftb)
 				del ftb, stat
 				Util.mul_img(vol, mask3D)
@@ -2395,7 +2395,7 @@ def ali3d_eB_MPI_conewithselect(stack, ref_vol, outdir, maskfile, ou=-1,  delta=
 
 			soto = []
 			for imn in xrange(image_start, image_end):
-				from utilities import set_params_proj, get_params_proj
+				from sp_utilities import set_params_proj, get_params_proj
 				phi,theta,psi,s2x,s2y = get_params_proj( dataim[imn-image_start] )
 				soto.append([phi,theta,psi,s2x,s2y,imn])
 			drop_spider_doc(os.path.join(outdir, replace("new_params%3d_%3d_%3d"%(iteration, ic, myid),' ','0')), soto," phi, theta, psi, s2x, s2y, image number")
@@ -2413,8 +2413,8 @@ def ali3d_eB_MPI_conewithselect(stack, ref_vol, outdir, maskfile, ou=-1,  delta=
 """
 """
 def proj_ali_incore_index(volref, iref, mask3D, projdata, first_ring, last_ring, rstep, xrng, yrng, step, delta, ref_a, symmetry, MPI):
-	from utilities    import even_angles, model_circle, compose_transform2, get_params_proj, set_params_proj
-	from alignment    import prepare_refprojs
+	from sp_utilities    import even_angles, model_circle, compose_transform2, get_params_proj, set_params_proj
+	from sp_alignment    import prepare_refprojs
 	#  DO NOT USE THIS ONE< WILL BE OBSOLETED SOON  PAP 01/25/08
 	mode    = "F"
 	# generate list of Eulerian angles for reference projections
@@ -2447,7 +2447,7 @@ def proj_ali_incore_index(volref, iref, mask3D, projdata, first_ring, last_ring,
 	#soto = []
 	for imn in xrange(len(projdata)):
 		peako = projdata[imn].get_attr('peak')
-		from utilities import set_params_proj, get_params_proj
+		from sp_utilities import set_params_proj, get_params_proj
 		phi,theta,psi,sxo,syo = get_params_proj( projdata[imn] )
 		[ang, sxs, sys, mirror, nref, peak] = Util.multiref_polar_ali_2d(projdata[imn].process("normalize.mask", {"mask":mask2D, "no_sigma":1}), ref_proj_rings, xrng, yrng, step, mode, numr, cnx-sxo, cny-syo)
 		if(peak > peako):
@@ -2471,7 +2471,7 @@ def proj_ali_incore_index(volref, iref, mask3D, projdata, first_ring, last_ring,
                 		psi = (ref_angles[numref][2]+angb+360.0)%360.0
                 		s2x = sxb + sxo
                 		s2y = syb + syo
-			from utilities import set_params_proj, get_params_proj
+			from sp_utilities import set_params_proj, get_params_proj
                 	set_params_proj( projdata[imn], [phi, theta, psi, s2x, s2y] )
 			#soto.append( [phi, theta,psi,s2x, s2y, mirror, numref, peak] )
 	#from utilities import drop_spider_doc
@@ -2479,8 +2479,8 @@ def proj_ali_incore_index(volref, iref, mask3D, projdata, first_ring, last_ring,
 
 def proj_ali_incore_localB(volref, mask3D, projdata, first_ring, last_ring, rstep, xrng, yrng, step, delta, an, ref_a, symmetry, info=None, MPI=False):
 	#This is for Berlin only
-	from utilities    import even_angles, model_circle, compose_transform2, bcast_EMData_to_all
-	from alignment    import prepare_refprojs
+	from sp_utilities    import even_angles, model_circle, compose_transform2, bcast_EMData_to_all
+	from sp_alignment    import prepare_refprojs
 	from math         import cos, sin, pi
 	qv = pi/180.
         
@@ -2521,15 +2521,15 @@ def proj_ali_incore_localB(volref, mask3D, projdata, first_ring, last_ring, rste
 
 	ant = abs(cos(an*qv))
 	for imn in xrange(len(projdata)):
-		from utilities import set_params_proj, get_params_proj
+		from sp_utilities import set_params_proj, get_params_proj
 		phi,theta,psi,sxo,syo = get_params_proj( projdata[imn] )
 		if not(info is None):
 			info.write( "prj %4d old params: %8.3f %8.3f %8.3f %8.3f %8.3f\n" %(imn, phi, theta, psi, sxo, syo) )
 			info.flush()
 		# This is for Berlin only
-		from utilities import get_arb_params
+		from sp_utilities import get_arb_params
 		ctf_params = projdata[imn].get_attr('ctf')
-		from morphology import ctf_2
+		from sp_morphology import ctf_2
 		ctf2 = ctf_2(nx, ctf_params)
 		nct = len(ctf2)
 		from math import exp
@@ -2542,7 +2542,7 @@ def proj_ali_incore_localB(volref, mask3D, projdata, first_ring, last_ring, rste
 			ht = 1.0-0.6*exp(-xs**2/2.0/0.012**2)
 			fmt = et/(bckgt + ctf2[i]*et**2/10.0)*ht
 			envt.append(fmt)
-		from filter import filt_table
+		from sp_filter import filt_table
 		ima = filt_table(projdata[imn], envt)
 		#from utilities import drop_spider_doc
 		#if(myid == main_node):
@@ -2569,7 +2569,7 @@ def proj_ali_incore_localB(volref, mask3D, projdata, first_ring, last_ring, rste
 				s2x = sxb+sxo
 				s2y = syb+syo
 
-			from utilities import set_params_proj, get_params_proj
+			from sp_utilities import set_params_proj, get_params_proj
 			set_params_proj( projdata[imn], [phi, theta, psi, s2x, s2y])
 
 			# if -1 local search did not have any neighbors, simply skip it
@@ -2581,8 +2581,8 @@ def proj_ali_incore_localB(volref, mask3D, projdata, first_ring, last_ring, rste
 def proj_ali_incore_cone(volref, kb, template_angles, projdata, first_ring, last_ring, rstep, xrng, yrng, step, finfo=None):
 	#alignment within a cone, no mirror considered
 
-	from utilities    import even_angles, model_circle, compose_transform2, print_msg
-	from alignment    import refprojs
+	from sp_utilities    import even_angles, model_circle, compose_transform2, print_msg
+	from sp_alignment    import refprojs
 	mode    = "F"
 	#  Volume is prepared earlier
 	nx   = projdata.get_xsize()
@@ -2599,7 +2599,7 @@ def proj_ali_incore_cone(volref, kb, template_angles, projdata, first_ring, last
 	if(first_ring > 0): mask2D -= model_circle(first_ring, nx, ny)
 	#  Generate ref_angles according to angles of the current projection
 
-	from utilities import set_params_proj, get_params_proj
+	from sp_utilities import set_params_proj, get_params_proj
 	phi, theta, psi, sxo, syo = get_params_proj( projdata )
 	R2  = Transform({"type":"spider", "phi":phi,"theta":theta,"psi":0.0})
 	ref_angles = []
@@ -2613,7 +2613,7 @@ def proj_ali_incore_cone(volref, kb, template_angles, projdata, first_ring, last
 	ref_proj_rings = refprojs( volref, kb, ref_angles, last_ring, mask2D, cnx, cny, numr, mode, wr )
 
 	#if(imn%10 == 0):  print_msg("%d  "%(imn))
-	from utilities import set_params_proj, get_params_proj
+	from sp_utilities import set_params_proj, get_params_proj
 	phi,theta,psi,sxo,syo = get_params_proj( projdata )
 	if not(finfo is None):
 		finfo.write( "old params: %8.3f %8.3f %8.3f %8.3f %8.3f\n" %(phi, theta, psi, sxo, syo) )
@@ -2632,7 +2632,7 @@ def proj_ali_incore_cone(volref, kb, template_angles, projdata, first_ring, last
         s2y   = syb + syo
 	projdata.set_attr( "peak", peak )
 
-	from utilities import set_params_proj, get_params_proj
+	from sp_utilities import set_params_proj, get_params_proj
 	set_params_proj( projdata, [phi, theta, psi, s2x, s2y] )
         if not(finfo is None):
 		finfo.write( "new params: %8.3f %8.3f %8.3f %8.3f %8.3f\n" %(phi, theta, psi, s2x, s2y) )
@@ -2643,11 +2643,11 @@ def realid(stack, averages, out_averages, output_dir, ou, xr, ts, maxit, fun, sn
 	if MPI:
 		realid_MPI(stack, averages, out_averages, output_dir, ou, xr, ts, maxit, fun, snr, CTF, Fourvar, Ng, num_ali, th_mir, th_err, dst, center_type, CUDA, GPUID)
 		return
-	from applications import header, cpy
-	from utilities    import get_im, file_type, write_header, get_params2D, set_params2D, get_input_from_string
-	from statistics   import aves, aves_adw
+	from sp_applications import header, cpy
+	from sp_utilities    import get_im, file_type, write_header, get_params2D, set_params2D, get_input_from_string
+	from sp_statistics   import aves, aves_adw
 	from string	  import replace
-	from pixel_error  import multi_align_stability
+	from sp_pixel_error  import multi_align_stability
 	import os, logging, sys
 
 
@@ -2793,11 +2793,11 @@ def realid(stack, averages, out_averages, output_dir, ou, xr, ts, maxit, fun, sn
 	
 def realid_MPI(stack, averages, out_averages, output_dir, ou, xr, ts, maxit, fun, snr, CTF, Fourvar, Ng, num_ali, th_mir, th_err, dst, center_type, CUDA, GPUID):
 
-	from applications import header, cpy
-	from utilities    import get_im, file_type, write_header, get_params2D, set_params2D, get_input_from_string
-	from statistics   import aves, aves_adw
+	from sp_applications import header, cpy
+	from sp_utilities    import get_im, file_type, write_header, get_params2D, set_params2D, get_input_from_string
+	from sp_statistics   import aves, aves_adw
 	from string	  import replace
-	from pixel_error  import multi_align_stability
+	from sp_pixel_error  import multi_align_stability
 	import os, logging, sys
 	from subprocess   import call
 
@@ -3026,33 +3026,33 @@ def ali3d_n(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 			header: the alignment parameters are stored in the headers of input files as Transform Object xform.proj
 	"""
 	if MPI:
-		from development import ali3d_new_MPI
+		from sp_development import ali3d_new_MPI
 		ali3d_new_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, yr, ts,
 	        	delta, an, deltapsi, startpsi, center, maxit, CTF, snr, ref_a, sym, user_func_name,
 			fourvar, npad, debug, termprec, chunk)
 		return
 
-	from alignment      import proj_ali_incore, proj_ali_incore_local
-	from utilities      import model_circle, drop_image, get_image, get_input_from_string
-	from utilities      import get_params_proj
-	from utilities      import estimate_3D_center, rotate_3D_shift
-	from filter         import filt_params, fit_tanh, filt_tanl, filt_ctf
-	from statistics     import fsc_mask
+	from sp_alignment      import proj_ali_incore, proj_ali_incore_local
+	from sp_utilities      import model_circle, drop_image, get_image, get_input_from_string
+	from sp_utilities      import get_params_proj
+	from sp_utilities      import estimate_3D_center, rotate_3D_shift
+	from sp_filter         import filt_params, fit_tanh, filt_tanl, filt_ctf
+	from sp_statistics     import fsc_mask
 	import os
 	import types
-	from utilities      import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg
 	print_begin_msg("ali3d")
 
-	from alignment      import Numrinit, prepare_refrings
-	from projection     import prep_vol
+	from sp_alignment      import Numrinit, prepare_refrings
+	from sp_projection     import prep_vol
 
-	import user_functions
-	user_func = user_functions.factory[user_func_name]
+	import sp_user_functions
+	user_func = sp_user_functions.factory[user_func_name]
 
 	if os.path.exists(outdir):  ERROR('Output directory exists, please change the name and restart the program', "ali3d", 1)
 	os.mkdir(outdir)
-	import global_def
-	global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+	import sp_global_def
+	sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 	print_begin_msg("ali3d")
 
 	xrng        = get_input_from_string(xr)
@@ -3104,9 +3104,9 @@ def ali3d_n(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 	numr   = Numrinit(first_ring, last_ring, rstep, "F")
 
 	if CTF:
-		from reconstruction import recons3d_4nn_ctf
-		from filter         import filt_ctf
-	else: from reconstruction import recons3d_4nn
+		from sp_reconstruction import recons3d_4nn_ctf
+		from sp_filter         import filt_ctf
+	else: from sp_reconstruction import recons3d_4nn
 
 	if debug:  outf = file(os.path.join(outdir, "progress"), "w")
 	else:      outf = None
@@ -3179,7 +3179,7 @@ def ali3d_n(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 
 			drop_image(vol, os.path.join(outdir, "volf%04d.hdf"%(N_step*max_iter+Iter+1)))
 			#  here we write header info
-			from utilities import write_headers
+			from sp_utilities import write_headers
 			#from utilities import write_select_headers
 			if CTF:
 				for dat in data:  dat.set_attr('ctf_applied',0)
@@ -3195,22 +3195,22 @@ def ali3d_new_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 	    center = -1, maxit = 5, CTF = False, snr = 1.0,  ref_a = "S", sym = "c1",  user_func_name = "ref_ali3d",
 	    fourvar = True, npad = 4, debug = False, termprec = 0.0, chunk = 0.2):
 
-	from alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local
-	from utilities       import model_circle, get_image, drop_image, get_input_from_string
-	from utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
-	from utilities       import send_attr_dict
-	from utilities       import get_params_proj, file_type
-	from fundamentals    import rot_avg_image
+	from sp_alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local
+	from sp_utilities       import model_circle, get_image, drop_image, get_input_from_string
+	from sp_utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
+	from sp_utilities       import send_attr_dict
+	from sp_utilities       import get_params_proj, file_type
+	from sp_fundamentals    import rot_avg_image
 	import os
 	import types
-	from utilities       import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities       import print_begin_msg, print_end_msg, print_msg
 	from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi             import mpi_reduce, MPI_INT, MPI_SUM
-	from filter          import filt_ctf
-	from projection      import prep_vol, prgs
-	from statistics      import hist_list, varf3d_MPI
+	from sp_filter          import filt_ctf
+	from sp_projection      import prep_vol, prgs
+	from sp_statistics      import hist_list, varf3d_MPI
 	from random import shuffle
-	from applications import MPI_start_end
+	from sp_applications import MPI_start_end
 
 
 	number_of_proc = mpi_comm_size(MPI_COMM_WORLD)
@@ -3222,8 +3222,8 @@ def ali3d_new_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 	
 	if myid == main_node:
 		os.mkdir(outdir)
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 		print_begin_msg("ali3d_MPI")
 	mpi_barrier(MPI_COMM_WORLD)
 
@@ -3272,8 +3272,8 @@ def ali3d_new_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 	if last_ring < 0:	last_ring = int(nx/2) - 2
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                 : %s\n"%(stack))
 		print_msg("Reference volume            : %s\n"%(ref_vol))	
@@ -3308,9 +3308,9 @@ def ali3d_new_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 
 	fscmask = mask3D  #model_circle(last_ring,nx,nx,nx)  For a fancy mask circle would work better  PAP 7/21/11
 	if CTF:
-		from reconstruction import rec3D_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import rec3D_MPI_noCTF
+		from sp_reconstruction import rec3D_MPI
+		from sp_filter         import filt_ctf
+	else:	 from sp_reconstruction import rec3D_MPI_noCTF
 
 	if myid == main_node:
 		# horatio active_refactoring Jy51i1EwmLD4tWZ9_00000_1
@@ -3442,7 +3442,7 @@ def ali3d_new_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 				for im in xrange( anima[nch] ):
 
 					if deltapsi[N_step] > 0.0:
-						from alignment import proj_ali_incore_delta
+						from sp_alignment import proj_ali_incore_delta
 						peak, pixer[list1[im]] = proj_ali_incore_delta(adata[im],refrings,numr,xrng[N_step],yrng[N_step],step[N_step],startpsi[N_step],deltapsi[N_step],finfo)						
 					elif an[N_step] == -1:
 						peak, pixer[list1[im]] = proj_ali_incore(adata[im],refrings,numr,xrng[N_step],yrng[N_step],step[N_step],finfo)
@@ -3458,7 +3458,7 @@ def ali3d_new_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 			terminate = 0
 			if(myid == main_node):
 				recvbuf = map(float, recvbuf)
-				from statistics import hist_list
+				from sp_statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if(region[0] < 0.0):  region[0] = 0.0
@@ -3482,7 +3482,7 @@ def ali3d_new_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 			terminate = int(terminate[0])
 
 			if(center == -1):
-				from utilities      import estimate_3D_center_MPI, rotate_3D_shift
+				from sp_utilities      import estimate_3D_center_MPI, rotate_3D_shift
 				cs[0], cs[1], cs[2], dummy, dummy = estimate_3D_center_MPI(data, total_nima, myid, number_of_proc, main_node)
 				if myid == main_node:
 					msg = " Average center x = %10.3f        Center y = %10.3f        Center z = %10.3f\n"%(cs[0], cs[1], cs[2])
@@ -3525,10 +3525,10 @@ def ali3d_new_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 			par_str = ['xform.projection', 'ID']
 			if myid == main_node:
 	   			if(file_type(stack) == "bdb"):
-	        			from utilities import recv_attr_dict_bdb
+	        			from sp_utilities import recv_attr_dict_bdb
 	        			recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 	        		else:
-	        			from utilities import recv_attr_dict
+	        			from sp_utilities import recv_attr_dict
 	        			recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 				print_msg("Time to write header information= %d\n"%(time()-start_time))
 				start_time = time()
@@ -3548,22 +3548,22 @@ def ali3d_new_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 			fourvar, debug)
 		return
 
-	from alignment      import proj_ali_incore, proj_ali_incore_local
-	from utilities      import model_circle, drop_image, get_image, get_input_from_string
-	from utilities      import get_params_proj, even_angles, assign_projangles
-	from utilities      import estimate_3D_center, rotate_3D_shift
-	from filter         import filt_params, fit_tanh, filt_tanl, filt_ctf
-	from statistics     import fsc_mask
+	from sp_alignment      import proj_ali_incore, proj_ali_incore_local
+	from sp_utilities      import model_circle, drop_image, get_image, get_input_from_string
+	from sp_utilities      import get_params_proj, even_angles, assign_projangles
+	from sp_utilities      import estimate_3D_center, rotate_3D_shift
+	from sp_filter         import filt_params, fit_tanh, filt_tanl, filt_ctf
+	from sp_statistics     import fsc_mask
 	import os
 	import types
-	from utilities      import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg
 	print_begin_msg("ali3d_n")
 
-	from alignment      import Numrinit, ringwe, prepare_refrings
-	from projection     import prep_vol
+	from sp_alignment      import Numrinit, ringwe, prepare_refrings
+	from sp_projection     import prep_vol
 
-	import user_functions
-	user_func = user_functions.factory[user_func_name]
+	import sp_user_functions
+	user_func = sp_user_functions.factory[user_func_name]
 
 	if os.path.exists(outdir):  ERROR('Output directory exists, please change the name and restart the program', " ", 1)
 	os.mkdir(outdir)
@@ -3619,9 +3619,9 @@ def ali3d_new_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 	wr     = ringwe(numr,"F")
 
 	if CTF:
-		from reconstruction import recons3d_4nn_ctf
-		from filter         import filt_ctf
-	else: from reconstruction import recons3d_4nn
+		from sp_reconstruction import recons3d_4nn_ctf
+		from sp_filter         import filt_ctf
+	else: from sp_reconstruction import recons3d_4nn
 
 	if debug:  outf = file(os.path.join(outdir, "progress"), "w")
 	else:      outf = None
@@ -3659,8 +3659,8 @@ def ali3d_new_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 			elif(N_step*max_iter+Iter+1 == 1): funct = "conemove"
 			else:  funct = "conepsi"
 			print  funct
-			from utilities    import get_params_proj, set_params_proj
-			from alignment    import refprojs
+			from sp_utilities    import get_params_proj, set_params_proj
+			from sp_alignment    import refprojs
 			from random       import random
 			if(funct == "individual"):
 				volft,kb = prep_vol( vol )
@@ -3793,7 +3793,7 @@ def ali3d_new_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 		#  END OF CONES
 
 			#  here we write header info
-			from utilities import write_headers
+			from sp_utilities import write_headers
 			if CTF:
 				for dat in data:  dat.del_attr('ctf_applied')
 			write_headers(stack, data, list_of_particles)
@@ -3816,7 +3816,7 @@ def nearest_ref( vecs, vec ) :
 	return best_i
 
 def assign_torefs(vecs, refangles):
-	from utilities import getvec
+	from sp_utilities import getvec
 	refnormal = [None]*len(refangles)
 	for i in xrange(len(refangles)):
 		refnormal[i] = getvec( refangles[i][0], refangles[i][1] )
@@ -3829,18 +3829,18 @@ def assign_torefs(vecs, refangles):
 """
 def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, frepa = "default", pca=False, pcamask=None, pcanvec=None, CTF = False):
 	from string       import atoi, replace, split, atof
-	from utilities    import get_im, circumference, model_circle, model_blank
-	from utilities    import bcast_EMData_to_all, reduce_EMData_to_root
-	from filter       import filt_tanl
+	from sp_utilities    import get_im, circumference, model_circle, model_blank
+	from sp_utilities    import bcast_EMData_to_all, reduce_EMData_to_root
+	from sp_filter       import filt_tanl
 	from mpi          import mpi_comm_rank, mpi_comm_size, mpi_barrier, mpi_bcast, mpi_reduce, mpi_send, mpi_recv
 	from mpi          import MPI_COMM_WORLD, MPI_INT, MPI_FLOAT, MPI_SUM
-	from utilities    import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
-	from utilities    import send_attr_dict
-	from utilities    import get_params_proj, file_type, print_msg, print_begin_msg, print_end_msg
-	from applications import MPI_start_end
-	from projection   import prep_vol
-	from statistics   import im_diff
-	from morphology   import square_root
+	from sp_utilities    import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
+	from sp_utilities    import send_attr_dict
+	from sp_utilities    import get_params_proj, file_type, print_msg, print_begin_msg, print_end_msg
+	from sp_applications import MPI_start_end
+	from sp_projection   import prep_vol
+	from sp_statistics   import im_diff
+	from sp_morphology   import square_root
 	from time import time	
 	import os
 	from sys import exit
@@ -3935,7 +3935,7 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 	if fl>0.0:
 		for k in list_of_particles:
 			data[k] = filt_tanl(data[k], fl ,aa)
-	from utilities import getvec, even_angles
+	from sp_utilities import getvec, even_angles
 	#  Here only those that are on the list of particles should remain, do it later
 	vecs = [None]*nimages
 	for i in xrange(nimages):
@@ -3945,7 +3945,7 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 
 	bunch = 18#len(even_angles(30.0))
 	nset = nimages//bunch
-	from reconstruction import recons3d_wbp
+	from sp_reconstruction import recons3d_wbp
 	for i in xrange(nset):
 		# set of vectors in a given bunch
 		#refa = even_angles(30.0,11.0/(nset-1)*i)
@@ -3965,9 +3965,9 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 	mask2D = model_circle( radcir, nx, ny)
 
 	if CTF:
-		from filter import filt_ctf
-		from fundamentals import fftip, fft
-		from morphology  import  ctf_img
+		from sp_filter import filt_ctf
+		from sp_fundamentals import fftip, fft
+		from sp_morphology  import  ctf_img
 		#  Compute sum_CTF^2+1.0/snr  in 2D
 		sumCTF2 = EMData(nx,ny,1, False)
 		previous_defocus = -1.0
@@ -3992,7 +3992,7 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 		start_time = time()
 
 # Step 3 - compute overall 3D
-	from reconstruction import recons3d_wbp	
+	from sp_reconstruction import recons3d_wbp	
 	'''
 	avg1 = recons3d_wbp(data, list_of_particles)
 
@@ -4013,7 +4013,7 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 
 	lin = range(total_nima)
 	from random import shuffle
-	from reconstruction import one_swbp
+	from sp_reconstruction import one_swbp
 	nvpercpu = 20000/ncpu
 	remove= 100
 	for b in xrange(nvpercpu):
@@ -4031,7 +4031,7 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 # Step 4 - bootstrap
 
 	from random import randint
-	from reconstruction import one_swbp
+	from sp_reconstruction import one_swbp
 	for b in xrange(10000//ncpu):
 		lin = [0]*total_nima
 		for k in xrange(total_nima):  lin[k] = list_of_particles[randint(0,total_nima-1)]
@@ -4114,18 +4114,18 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 # proportional resampling
 def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, frepa = "default", pca=False, pcamask=None, pcanvec=None, CTF = False):
 	from string       import atoi, replace, split, atof
-	from utilities    import get_im, circumference, model_circle, model_blank
-	from utilities    import bcast_EMData_to_all, reduce_EMData_to_root
-	from filter       import filt_tanl
+	from sp_utilities    import get_im, circumference, model_circle, model_blank
+	from sp_utilities    import bcast_EMData_to_all, reduce_EMData_to_root
+	from sp_filter       import filt_tanl
 	from mpi          import mpi_comm_rank, mpi_comm_size, mpi_barrier, mpi_bcast, mpi_reduce, mpi_send, mpi_recv
 	from mpi          import MPI_COMM_WORLD, MPI_INT, MPI_FLOAT, MPI_SUM
-	from utilities    import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
-	from utilities    import send_attr_dict
-	from utilities    import get_params_proj, file_type, print_msg, print_begin_msg, print_end_msg
-	from applications import MPI_start_end
-	from projection   import prep_vol
-	from statistics   import im_diff
-	from morphology   import square_root
+	from sp_utilities    import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
+	from sp_utilities    import send_attr_dict
+	from sp_utilities    import get_params_proj, file_type, print_msg, print_begin_msg, print_end_msg
+	from sp_applications import MPI_start_end
+	from sp_projection   import prep_vol
+	from sp_statistics   import im_diff
+	from sp_morphology   import square_root
 	from time import time	
 	import os
 	from sys import exit
@@ -4213,7 +4213,7 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 	else:            radcir = radccc
 	mask2D = model_circle( radcir, nx, ny)
 	if CTF:
-		from filter import filt_ctf
+		from sp_filter import filt_ctf
 		for im in xrange(total_nima):
 			st = Util.infomask(data[im], mask2D, False)
 			data[im] -= st[0]
@@ -4228,13 +4228,13 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 
 # Step 4 - jackknife-d proportionally drawn.
 	if  CTF:
-		from reconstruction import recons3d_4nn_ctf
+		from sp_reconstruction import recons3d_4nn_ctf
 	else:
-		from reconstruction import recons3d_4nn
+		from sp_reconstruction import recons3d_4nn
 	from mpi import MPI_TAG_UB
-	from utilities import even_angles
+	from sp_utilities import even_angles
 	refa = even_angles(10.4)#14.5)#6.51)  # yields 500;  14.5) # yields 100
-	from utilities import assign_projangles
+	from sp_utilities import assign_projangles
 	from random import randint, seed, jumpahead
 	ang = [None]*total_nima
 	for k in xrange(total_nima):
@@ -4283,18 +4283,18 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 #This worked on 07/25/10
 def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, frepa = "default", pca=False, pcamask=None, pcanvec=None, CTF = False):
 	from string       import atoi, replace, split, atof
-	from utilities    import get_im, circumference, model_circle, model_blank
-	from utilities    import bcast_EMData_to_all, reduce_EMData_to_root
-	from filter       import filt_tanl
+	from sp_utilities    import get_im, circumference, model_circle, model_blank
+	from sp_utilities    import bcast_EMData_to_all, reduce_EMData_to_root
+	from sp_filter       import filt_tanl
 	from mpi          import mpi_comm_rank, mpi_comm_size, mpi_barrier, mpi_bcast, mpi_reduce, mpi_send, mpi_recv
 	from mpi          import MPI_COMM_WORLD, MPI_INT, MPI_FLOAT, MPI_SUM
-	from utilities    import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
-	from utilities    import send_attr_dict
-	from utilities    import get_params_proj, file_type, print_msg, print_begin_msg, print_end_msg
-	from applications import MPI_start_end
-	from projection   import prep_vol
-	from statistics   import im_diff
-	from morphology   import square_root
+	from sp_utilities    import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
+	from sp_utilities    import send_attr_dict
+	from sp_utilities    import get_params_proj, file_type, print_msg, print_begin_msg, print_end_msg
+	from sp_applications import MPI_start_end
+	from sp_projection   import prep_vol
+	from sp_statistics   import im_diff
+	from sp_morphology   import square_root
 	from time import time	
 	import os
 	from sys import exit
@@ -4392,7 +4392,7 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 	else:            radcir = radccc
 	mask2D = model_circle( radcir, nx, ny)
 	if CTF:
-		from filter import filt_ctf
+		from sp_filter import filt_ctf
 		for im in xrange(total_nima):
 			st = Util.infomask(data[im], mask2D, False)
 			data[im] -= st[0]
@@ -4408,9 +4408,9 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 # Step 1 - compute sum_CTF^2
 
 	if CTF:
-		from filter import filt_ctf
-		from fundamentals import fftip, fft
-		from morphology  import  ctf_img
+		from sp_filter import filt_ctf
+		from sp_fundamentals import fftip, fft
+		from sp_morphology  import  ctf_img
 		#  Compute sum_CTF^2+1.0/snr  in 2D
 		sumCTF2 = EMData(nx,ny,1, False)
 		previous_defocus = -1.0
@@ -4448,7 +4448,7 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 		del t, d
 	dm = bcast_list_to_all(dm, source_node = main_node)
 	ss = bcast_list_to_all(ss, source_node = main_node)
-	from reconstruction import weight_swbp	
+	from sp_reconstruction import weight_swbp	
 	for k in xrange(image_start, image_end):
 		t = data[k].get_attr("xform.projection")
 		if(fl > 0.0):
@@ -4472,7 +4472,7 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 	'''
 	'''
 # Step 3 - compute overall 3D
-	from reconstruction import backproject_swbp	
+	from sp_reconstruction import backproject_swbp	
 	avg1 = model_blank(nx,ny,nz)
 	for k in xrange(image_start, image_end):
 		Util.add_img(avg1, backproject_swbp(data[k], list_of_particles[k], dm) )
@@ -4486,10 +4486,10 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 	if myid == main_node:  start_time = time()
 
 	if  CTF:  
-		from reconstruction import recons3d_4nn_ctf
+		from sp_reconstruction import recons3d_4nn_ctf
 		volr = recons3d_4nn_ctf(data, list_of_particles, snr = 1.0)
 	else:     
-		from reconstruction import recons3d_4nn
+		from sp_reconstruction import recons3d_4nn
 		volr = recons3d_4nn(data, list_of_particles)
 
 	if myid== main_node:
@@ -4541,7 +4541,7 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 
 	lin = range(total_nima)
 	from random import shuffle
-	from reconstruction import one_swbp
+	from sp_reconstruction import one_swbp
 	nvpercpu = 20000/ncpu
 	remove= 100
 	for b in xrange(nvpercpu):
@@ -4560,7 +4560,7 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 # Step 4 - bootstrap
 
 	from random import randint
-	from reconstruction import one_swbp
+	from sp_reconstruction import one_swbp
 	for b in xrange(10000//ncpu):
 		lin = [0]*total_nima
 		for k in xrange(total_nima):  lin[k] = randint(0,total_nima-1)
@@ -4587,9 +4587,9 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 	'''
 # Step 4 - jackknife-d evenly drawn.
 	if  CTF:
-		from reconstruction import recons3d_4nn_ctf
+		from sp_reconstruction import recons3d_4nn_ctf
 	else:
-		from reconstruction import recons3d_4nn
+		from sp_reconstruction import recons3d_4nn
 	'''
 	d = 0.001 #percent to be taken out
 	#from utilities import write_text_file
@@ -4620,9 +4620,9 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 	'''
 	from mpi import MPI_TAG_UB
 	if myid == main_node:
-		from utilities import even_angles
+		from sp_utilities import even_angles
 		refa = even_angles(6.51)  # yields 500;  14.5) # yields 100
-		from utilities import assign_projangles
+		from sp_utilities import assign_projangles
 		from random import randint
 		ang = [None]*total_nima
 		for k in xrange(total_nima):
@@ -4766,19 +4766,19 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, frepa = "default",\
        pca=False, pcamask=None, pcanvec=None, CTF = False):
 	from string       import atoi, replace, split, atof
-	from utilities    import get_im, circumference, model_circle, model_blank
-	from utilities    import bcast_EMData_to_all, reduce_EMData_to_root
-	from filter       import filt_tanl
+	from sp_utilities    import get_im, circumference, model_circle, model_blank
+	from sp_utilities    import bcast_EMData_to_all, reduce_EMData_to_root
+	from sp_filter       import filt_tanl
 	from mpi          import mpi_comm_rank, mpi_comm_size, mpi_barrier, mpi_bcast, mpi_reduce
 	from mpi          import MPI_COMM_WORLD, MPI_INT, MPI_FLOAT, MPI_SUM
-	from utilities    import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
-	from utilities    import send_attr_dict
-	from utilities    import get_params_proj, file_type, print_msg, print_begin_msg, print_end_msg
-	from applications import MPI_start_end
-	from projection   import prep_vol
-	from statistics   import im_diff
-	from morphology   import square_root
-        from reconstruction import recons3d_swbp, backproject_swbp
+	from sp_utilities    import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
+	from sp_utilities    import send_attr_dict
+	from sp_utilities    import get_params_proj, file_type, print_msg, print_begin_msg, print_end_msg
+	from sp_applications import MPI_start_end
+	from sp_projection   import prep_vol
+	from sp_statistics   import im_diff
+	from sp_morphology   import square_root
+        from sp_reconstruction import recons3d_swbp, backproject_swbp
 	from time import time	
 	import os
 	from sys import exit
@@ -4878,10 +4878,10 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 # Step 1 - Compute 3D
 	if myid == main_node:  start_time = time()
 	if  CTF:  
-		from reconstruction import recons3d_4nn_ctf_MPI
+		from sp_reconstruction import recons3d_4nn_ctf_MPI
 		volr = recons3d_4nn_ctf_MPI(myid, data, snr = 1.0)
 	else:     
-		from reconstruction import recons3d_4nn_MPI
+		from sp_reconstruction import recons3d_4nn_MPI
 		volr = recons3d_4nn_MPI(myid, data)
 	from sys import exit
 	
@@ -4899,11 +4899,11 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 	else:            radcir = radccc
 	mask2D = model_circle( radcir, nx, ny)
 
-	from projection import prgs, prep_vol
+	from sp_projection import prgs, prep_vol
 	if CTF:
-		from filter import filt_ctf
-		from fundamentals import fftip, fft
-		from morphology  import  ctf_img
+		from sp_filter import filt_ctf
+		from sp_fundamentals import fftip, fft
+		from sp_morphology  import  ctf_img
 		fftip(volr)
 		#  Compute sum_CTF^2+1.0/snr  in 2D
 		sumCTF2 = EMData(nx,ny,1, False)
@@ -5018,7 +5018,7 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 	'''
 	if myid == main_node:  start_time = time()
 
-	from statistics import pcanalyzer
+	from sp_statistics import pcanalyzer
 	if(myid == 0):
 		if(pcamask != None):
 			pcamask = get_im( pcamask )
@@ -5096,18 +5096,18 @@ def var_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fre
 #  This one worked and produced newt9 on 07/13/10.
 def OKvar_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, frepa = "default", pca=False, pcamask=None, pcanvec=None, CTF = False):
 	from string       import atoi, replace, split, atof
-	from utilities    import get_im, circumference, model_circle, model_blank
-	from utilities    import bcast_EMData_to_all, reduce_EMData_to_root
-	from filter       import filt_tanl
+	from sp_utilities    import get_im, circumference, model_circle, model_blank
+	from sp_utilities    import bcast_EMData_to_all, reduce_EMData_to_root
+	from sp_filter       import filt_tanl
 	from mpi          import mpi_comm_rank, mpi_comm_size, mpi_barrier, mpi_bcast, mpi_reduce
 	from mpi          import MPI_COMM_WORLD, MPI_INT, MPI_FLOAT, MPI_SUM
-	from utilities    import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
-	from utilities    import send_attr_dict
-	from utilities    import get_params_proj, file_type, print_msg, print_begin_msg, print_end_msg
-	from applications import MPI_start_end
-	from projection   import prep_vol
-	from statistics   import im_diff
-	from morphology   import square_root
+	from sp_utilities    import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
+	from sp_utilities    import send_attr_dict
+	from sp_utilities    import get_params_proj, file_type, print_msg, print_begin_msg, print_end_msg
+	from sp_applications import MPI_start_end
+	from sp_projection   import prep_vol
+	from sp_statistics   import im_diff
+	from sp_morphology   import square_root
 	from time import time	
 	import os
 	from sys import exit
@@ -5190,7 +5190,7 @@ def OKvar_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, f
 
 # Step 1 - Compute 3D
 	if myid == main_node:  start_time = time()
-	from reconstruction import recons3d_4nn_MPI, recons3d_swbp, backproject_swbp
+	from sp_reconstruction import recons3d_4nn_MPI, recons3d_swbp, backproject_swbp
 	if  CTF:  vol1 = recons3d_4nn_MPI(myid, data)#  FIX
 	else:
 		vol1 = recons3d_4nn_MPI(myid, data)
@@ -5201,7 +5201,7 @@ def OKvar_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, f
 			vol1 = filt_tanl( vol1, fl, aa )
 		vol1.write_image(os.path.join(outdir,"avg1.hdf"),0)
 	bcast_EMData_to_all(vol1, myid, main_node)
-	from projection import prgs, prep_vol
+	from sp_projection import prgs, prep_vol
 	vol1,kb = prep_vol(vol1)
 	if myid== main_node:
 		print_msg( "Time to compute 3D: %d\n" % (time()-start_time) )
@@ -5287,7 +5287,7 @@ def OKvar_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, f
 
 	if myid == main_node:  var1.write_image(os.path.join(outdir,"var1.hdf"),0)
 
-	from statistics import pcanalyzer
+	from sp_statistics import pcanalyzer
 	if(myid == 0):
 		if(pcamask != None):
 			pcamask = get_im( pcamask)
@@ -5364,18 +5364,18 @@ def OKvar_mpi_new(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, f
 # In memory
 def var_mpi_new___(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, frepa = "default", pca=False, pcamask=None, pcanvec=None, CTF = False):
 	from string       import atoi, replace, split, atof
-	from utilities    import get_im, circumference, model_circle, model_blank
-	from utilities    import bcast_EMData_to_all, reduce_EMData_to_root
-	from filter       import filt_tanl
+	from sp_utilities    import get_im, circumference, model_circle, model_blank
+	from sp_utilities    import bcast_EMData_to_all, reduce_EMData_to_root
+	from sp_filter       import filt_tanl
 	from mpi          import mpi_comm_rank, mpi_comm_size, mpi_barrier, mpi_bcast, mpi_reduce
 	from mpi          import MPI_COMM_WORLD, MPI_INT, MPI_FLOAT, MPI_SUM
-	from utilities    import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
-	from utilities    import send_attr_dict
-	from utilities    import get_params_proj, file_type, print_msg, print_begin_msg, print_end_msg
-	from applications import MPI_start_end
-	from projection   import prep_vol
-	from statistics   import im_diff
-	from morphology   import square_root
+	from sp_utilities    import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
+	from sp_utilities    import send_attr_dict
+	from sp_utilities    import get_params_proj, file_type, print_msg, print_begin_msg, print_end_msg
+	from sp_applications import MPI_start_end
+	from sp_projection   import prep_vol
+	from sp_statistics   import im_diff
+	from sp_morphology   import square_root
 	from time import time	
 	import os
 	from sys import exit
@@ -5456,7 +5456,7 @@ def var_mpi_new___(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, 
 		print_msg( "Time to read data: %d\n" % (time()-start_time) )
 		start_time = time()
 
-	from reconstruction import recons3d_4nn_MPI, recons3d_swbp, backproject_swbp
+	from sp_reconstruction import recons3d_4nn_MPI, recons3d_swbp, backproject_swbp
 
 # Step 2 - compute difference projections
 	nx = data[0].get_xsize()
@@ -5544,7 +5544,7 @@ def var_mpi_new___(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, 
 	bcast_EMData_to_all( var1, myid )
 	#del avg1
 
-	from statistics import pcanalyzebck
+	from sp_statistics import pcanalyzebck
 	pcaer = pcanalyzebck(pcamask, pcanvec, data, list_of_particles, dm, var1, fl, aa, True)
 
 # Step 5 - divide difference projections by the standard deviation (square root of the variance)
@@ -5608,18 +5608,18 @@ def var_mpi_new___(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, 
 # I do not know what this one was supposed to be....
 def var_mpi_new_(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, frepa = "default", pca=False, pcamask=None, pcanvec=None, CTF = False):
 	from string       import atoi, replace, split, atof
-	from utilities    import get_im, circumference, model_circle, model_blank
-	from utilities    import bcast_EMData_to_all, reduce_EMData_to_root
-	from filter       import filt_tanl
+	from sp_utilities    import get_im, circumference, model_circle, model_blank
+	from sp_utilities    import bcast_EMData_to_all, reduce_EMData_to_root
+	from sp_filter       import filt_tanl
 	from mpi          import mpi_comm_rank, mpi_comm_size, mpi_barrier, mpi_bcast, mpi_reduce
 	from mpi          import MPI_COMM_WORLD, MPI_INT, MPI_FLOAT, MPI_SUM
-	from utilities    import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
-	from utilities    import send_attr_dict
-	from utilities    import get_params_proj, file_type, print_msg, print_begin_msg, print_end_msg
-	from applications import MPI_start_end
-	from projection   import prep_vol,prgs
-	from statistics   import im_diff
-	from morphology   import square_root
+	from sp_utilities    import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
+	from sp_utilities    import send_attr_dict
+	from sp_utilities    import get_params_proj, file_type, print_msg, print_begin_msg, print_end_msg
+	from sp_applications import MPI_start_end
+	from sp_projection   import prep_vol,prgs
+	from sp_statistics   import im_diff
+	from sp_morphology   import square_root
 	from time import time	
 	import os
 	from sys import exit
@@ -5699,7 +5699,7 @@ def var_mpi_new_(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fr
 		print_msg( "Time to read data: %d\n" % (time()-start_time) )
 		start_time = time()
 
-	from reconstruction import recons3d_4nn_MPI, recons3d_swbp, backproject_swbp
+	from sp_reconstruction import recons3d_4nn_MPI, recons3d_swbp, backproject_swbp
 
 # Step 2 - compute difference projections
 	nx = data[0].get_xsize()
@@ -5711,7 +5711,7 @@ def var_mpi_new_(stack, outdir, scratch, fl, aa, radccc, writelp, writestack, fr
 
 
 
-	from statistics import pcanalyzer
+	from sp_statistics import pcanalyzer
 	if(myid == 0):
 		if(pcamask != None):
 			pcamask = get_im( pcamask)
@@ -5873,20 +5873,20 @@ def ali3d_rantest_old(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, 
 	    center = -1, maxit = 5, CTF = False, snr = 1.0,  ref_a = "S", sym = "c1",  user_func_name = "ref_ali3d",
 	    fourvar = True, debug = False):
 
-	from alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local
-	from utilities       import model_circle, get_image, drop_image, get_input_from_string
-	from utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
-	from utilities       import send_attr_dict
-	from utilities       import get_params_proj, file_type
-	from fundamentals    import rot_avg_image
+	from sp_alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local
+	from sp_utilities       import model_circle, get_image, drop_image, get_input_from_string
+	from sp_utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all 
+	from sp_utilities       import send_attr_dict
+	from sp_utilities       import get_params_proj, file_type
+	from sp_fundamentals    import rot_avg_image
 	import os
 	import types
-	from utilities       import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities       import print_begin_msg, print_end_msg, print_msg
 	from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi             import mpi_reduce, MPI_INT, MPI_SUM
-	from filter          import filt_ctf
-	from projection      import prep_vol, prgs
-	from statistics      import hist_list, varf3d_MPI
+	from sp_filter          import filt_ctf
+	from sp_projection      import prep_vol, prgs
+	from sp_statistics      import hist_list, varf3d_MPI
 
 
 	number_of_proc = mpi_comm_size(MPI_COMM_WORLD)
@@ -5935,8 +5935,8 @@ def ali3d_rantest_old(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, 
 	if last_ring < 0:	last_ring = int(nx/2) - 2
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                 : %s\n"%(stack))
 		print_msg("Reference volume            : %s\n"%(ref_vol))	
@@ -5967,9 +5967,9 @@ def ali3d_rantest_old(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, 
 
 	fscmask = model_circle(last_ring,nx,nx,nx)
 	if CTF:
-		from reconstruction import rec3D_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import rec3D_MPI_noCTF
+		from sp_reconstruction import rec3D_MPI
+		from sp_filter         import filt_ctf
+	else:	 from sp_reconstruction import rec3D_MPI_noCTF
 
 	'''
 	if myid == main_node:
@@ -6090,7 +6090,7 @@ def ali3d_rantest_old(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, 
 			terminate = 0
 			if(myid == main_node):
 				recvbuf = map(float, recvbuf)
-				from statistics import hist_list
+				from sp_statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if(region[0] < 0.0):  region[0] = 0.0
@@ -6111,7 +6111,7 @@ def ali3d_rantest_old(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, 
 			terminate = int(terminate[0])
 
 			if(center == -1):
-				from utilities      import estimate_3D_center_MPI, rotate_3D_shift
+				from sp_utilities      import estimate_3D_center_MPI, rotate_3D_shift
 				cs[0], cs[1], cs[2], dummy, dummy = estimate_3D_center_MPI(data, total_nima, myid, number_of_proc, main_node)				
 				if myid == main_node:
 					msg = " Average center x = %10.3f        Center y = %10.3f        Center z = %10.3f\n"%(cs[0], cs[1], cs[2])
@@ -6159,14 +6159,14 @@ def ali3d_rantest_old(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, 
 	        			recv_attr_dict_rantest(main_node, stack, data, par_str, image_start, image_end, number_of_proc, "log.txt")
 					#write_attr_rantest(main_node, stack, data, par_str, image_start, image_end, number_of_proc,outdir)
 	        		else:
-	        			from utilities import recv_attr_dict
+	        			from sp_utilities import recv_attr_dict
 	        			recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 	        	else:	       send_attr_dict(main_node, data, par_str, image_start, image_end)
 	if myid == main_node: print_end_msg("ali3d_MPI")
 
 def recv_attr_dict_rantest(main_node, stack, data, list_params, image_start, image_end, number_of_proc, fexport, comm = -1):
 	import types
-	from  utilities import  get_arb_params, set_arb_params, write_text_row
+	from  sp_utilities import  get_arb_params, set_arb_params, write_text_row
 	from  mpi 	import mpi_recv
 	from  mpi 	import MPI_FLOAT, MPI_INT, MPI_TAG_UB, MPI_COMM_WORLD
 	#  bdb version!
@@ -6268,21 +6268,21 @@ def ali3d_rantest(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 	    center = -1, maxit = 5, CTF = False, snr = 1.0,  ref_a = "S", sym = "c1",  user_func_name = "ref_ali3d",
 	    fourvar = True, npad = 4, debug = False, termprec = 0.0):
 
-	from alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local
-	from utilities       import model_circle, get_image, drop_image, get_input_from_string
-	from utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
-	from utilities       import send_attr_dict
-	from utilities       import get_params_proj, file_type
-	from fundamentals    import rot_avg_image
+	from sp_alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local
+	from sp_utilities       import model_circle, get_image, drop_image, get_input_from_string
+	from sp_utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
+	from sp_utilities       import send_attr_dict
+	from sp_utilities       import get_params_proj, file_type
+	from sp_fundamentals    import rot_avg_image
 	import os
 	import types
-	from applications     import MPI_start_end
-	from utilities       import print_begin_msg, print_end_msg, print_msg
+	from sp_applications     import MPI_start_end
+	from sp_utilities       import print_begin_msg, print_end_msg, print_msg
 	from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi             import mpi_reduce, MPI_INT, MPI_SUM, mpi_recv, mpi_send, MPI_TAG_UB
-	from filter          import filt_ctf
-	from projection      import prep_vol, prgs
-	from statistics      import hist_list, varf3d_MPI
+	from sp_filter          import filt_ctf
+	from sp_projection      import prep_vol, prgs
+	from sp_statistics      import hist_list, varf3d_MPI
 
 
 
@@ -6342,8 +6342,8 @@ def ali3d_rantest(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 	if last_ring < 0:	last_ring = int(nx/2) - 2
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                 : %s\n"%(stack))
 		print_msg("Reference volume            : %s\n"%(ref_vol))	
@@ -6377,9 +6377,9 @@ def ali3d_rantest(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 
 	fscmask = model_circle(last_ring,nx,nx,nx)
 	if CTF:
-		from reconstruction import rec3D_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import rec3D_MPI_noCTF
+		from sp_reconstruction import rec3D_MPI
+		from sp_filter         import filt_ctf
+	else:	 from sp_reconstruction import rec3D_MPI_noCTF
 	
 	if(file_type(stack) == "bdb"):
 		from EMAN2db import db_open_dict
@@ -6455,7 +6455,7 @@ def ali3d_rantest(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 			for im in xrange( nima ):
 
 				if deltapsi[N_step] > 0.0:
-					from alignment import proj_ali_incore_delta
+					from sp_alignment import proj_ali_incore_delta
 					peak, pixer[im] = proj_ali_incore_delta(data[im],refrings,numr,xrng[N_step],yrng[N_step],step[N_step],startpsi[N_step],deltapsi[N_step],finfo)						
 				elif an[N_step] == -1:
 					peak, pixer[im] = proj_ali_incore(data[im],refrings,numr,xrng[N_step],yrng[N_step],step[N_step],finfo)
@@ -6473,7 +6473,7 @@ def ali3d_rantest(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 			terminate = 0
 			if(myid == main_node):
 				recvbuf = map(float, recvbuf)
-				from statistics import hist_list
+				from sp_statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if(region[0] < 0.0):  region[0] = 0.0
@@ -6497,7 +6497,7 @@ def ali3d_rantest(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 			terminate = int(terminate[0])
 
 			if(center == -1):
-				from utilities      import estimate_3D_center_MPI, rotate_3D_shift
+				from sp_utilities      import estimate_3D_center_MPI, rotate_3D_shift
 				cs[0], cs[1], cs[2], dummy, dummy = estimate_3D_center_MPI(data, total_nima, myid, number_of_proc, main_node)				
 				if myid == main_node:
 					msg = " Average center x = %10.3f        Center y = %10.3f        Center z = %10.3f\n"%(cs[0], cs[1], cs[2])
@@ -6567,10 +6567,10 @@ def ali3d_rantest(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 				del nvalue
 	if myid == main_node:
 	   	if(file_type(stack) == "bdb"):
-	        	from utilities import recv_attr_dict_bdb
+	        	from sp_utilities import recv_attr_dict_bdb
 	        	recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 	        else:
-	        	from utilities import recv_attr_dict
+	        	from sp_utilities import recv_attr_dict
 	        	recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 		print_msg("Time to write header information= %d\n"%(time()-start_time))
 		start_time = time()
@@ -6589,9 +6589,9 @@ def recons3d_n_new(prj_stack, pid_list, vol_stack, CTF=False, snr=1.0, sign=1, n
 		#recons3d_n_MPI_new(prj_stack, pid_list, vol_stack, CTF, snr, 1, npad, sym, listfile, group, verbose)
 		#return
 	#	exit()
-	from reconstruction import recons3d_4nn_ctf, recons3d_4nn
-	from utilities import drop_image
-	from utilities import print_begin_msg, print_end_msg, print_msg
+	from sp_reconstruction import recons3d_4nn_ctf, recons3d_4nn
+	from sp_utilities import drop_image
+	from sp_utilities import print_begin_msg, print_end_msg, print_msg
 
 	print_begin_msg("recons3d_nn4_rect")
 	print_msg("Input stack                 : %s\n"%(prj_stack))
@@ -6602,7 +6602,7 @@ def recons3d_n_new(prj_stack, pid_list, vol_stack, CTF=False, snr=1.0, sign=1, n
 	print_msg("CTF sign                    : %i\n"%(sign))
 	print_msg("Symmetry group              : %s\n\n"%(sym))
 	if(listfile):
-		from utilities import read_text_file
+		from sp_utilities import read_text_file
 		pid_list = read_text_file(listfile, 0)
 		pid_list = map(int, pid_list)
 		print_msg("Reconstruction for images listed in file : %s\n\n"%(listfile))
@@ -6762,9 +6762,9 @@ def recons3d_4nn_ctf_new(stack_name,rx,ry,list_proj = [], snr = 10.0, sign=1, sy
 def recons3d_n_MPI_new(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym, listfile, group, verbose,rx,ry):
 	#from reconstruction import recons3d_4nn_ctf_MPI 
 	#recons3d_4nn_MPI_new
-	from applications import MPI_start_end
-	from utilities      import get_im, drop_image, bcast_number_to_all
-	from utilities      import print_begin_msg, print_end_msg, print_msg
+	from sp_applications import MPI_start_end
+	from sp_utilities      import get_im, drop_image, bcast_number_to_all
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg
 	from string         import replace
 	from time           import time
 	from mpi 	    import mpi_comm_size, mpi_comm_rank, mpi_bcast, MPI_INT, MPI_COMM_WORLD
@@ -6785,7 +6785,7 @@ def recons3d_n_MPI_new(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym
 		
 		#print "rx==%f,ry==%f\t"%(rx,ry)
 		if(listfile):
-			from utilities import read_text_file
+			from sp_utilities import read_text_file
 			pid_list = read_text_file(listfile, 0)
 			pid_list = map(int, pid_list)
 			print_msg("Reconstruction for images listed in file : %s\n\n"%(listfile))
@@ -6834,7 +6834,7 @@ def recons3d_n_MPI_new(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym
 			finfo.flush()
 
 def recons3d_4nn_MPI_new(myid, prjlist, symmetry="c1", info=None, npad = 4,rx=1,ry=1):
-	from utilities import reduce_EMData_to_root
+	from sp_utilities import reduce_EMData_to_root
 	
 	if( len(prjlist) == 0 ):
 		ERROR("empty input list","recons3d_4nn_MPI",1)
@@ -6887,7 +6887,7 @@ def recons3d_4nn_MPI_new(myid, prjlist, symmetry="c1", info=None, npad = 4,rx=1,
 		vol = r.finish(True)
 		print "volume size%d %d %d \t"%(vol.get_xsize(),vol.get_ysize(),vol.get_zsize())
 	else:
-		from utilities import model_blank
+		from sp_utilities import model_blank
 		vol = model_blank(sizex,sizey,imgsize)
 	return vol
 
@@ -6904,7 +6904,7 @@ def recons3d_4nn_ctf_MPI_new(myid, prjlist, snr, sign=1, symmetry="c1", info=Non
 	#if(myid==0):
 		#print "recon_ctf 4nn mpi myid==%drx==%f,ry==%f\t"%(myid,rx,ry)
 	#print "3d_4nn_ctf_MPI_new  myid==%drx==%f,ry==%f\t"%(myid,rx,ry)
-	from utilities import reduce_EMData_to_root
+	from sp_utilities import reduce_EMData_to_root
 	if( len(prjlist) == 0 ):
 	    ERROR("empty input list","recons3d_4nn_ctf_MPI",1)
 
@@ -6956,17 +6956,17 @@ def recons3d_4nn_ctf_MPI_new(myid, prjlist, snr, sign=1, symmetry="c1", info=Non
 		vol = r.finish(True)
 		print "recon_ctf 4nn mpi myid==%drx==%f,ry==%fsizex=%dsizey=%d\t"%(myid,rx,ry,sizex,sizey)
 	else:
-		from utilities import model_blank
+		from sp_utilities import model_blank
 		vol = model_blank(sizex,sizey,imgsize)
 
 	return vol
 
 def project3d_new(volume, stack, mask = None, delta = 5, method = "S", phiEqpsi = "Minus", symmetry = "c1", listagls = None , listctfs = None, noise = None):
-	from projection    import   prgs
+	from sp_projection    import   prgs
 	#prep_vol
-	from utilities     import   even_angles, read_text_row, set_params_proj, model_gauss_noise, info
+	from sp_utilities     import   even_angles, read_text_row, set_params_proj, model_gauss_noise, info
 	from string        import   split
-	from filter        import   filt_ctf,filt_gaussl
+	from sp_filter        import   filt_ctf,filt_gaussl
 	import os
 	import types
 
@@ -7091,11 +7091,11 @@ def project3d_new(volume, stack, mask = None, delta = 5, method = "S", phiEqpsi 
 	if(not Disk):  return out
 	
 def project3d_new_fast(volume, stack, mask = None, delta = 5, method = "S", phiEqpsi = "Minus", symmetry = "c1", listagls = None , listctfs = None, noise = None):
-	from projection    import   prgs
+	from sp_projection    import   prgs
 	#prep_vol
-	from utilities     import   even_angles, read_text_row, set_params_proj, model_gauss_noise, info
+	from sp_utilities     import   even_angles, read_text_row, set_params_proj, model_gauss_noise, info
 	from string        import   split
-	from filter        import   filt_ctf,filt_gaussl
+	from sp_filter        import   filt_ctf,filt_gaussl
 	import os
 	import types
 
@@ -7273,8 +7273,8 @@ def prgs_new(volft, kbx, kby, kbz, params):
 			proj: generated 2-D projection
 	"""
 	#  params:  phi, theta, psi, sx, sy
-	from fundamentals import fft
-	from utilities import set_params_proj
+	from sp_fundamentals import fft
+	from sp_utilities import set_params_proj
 	R = Transform({"type":"spider", "phi":params[0], "theta":params[1], "psi":params[2]})
 	temp = volft.extract_plane_rect(R,kbx,kby,kbz)
 	temp.fft_shuffle()
@@ -7304,8 +7304,8 @@ def prgs_new_fast(volft,sizez,kbx, kby, kbz, params):
 	"""
 	#  params:  phi, theta, psi, sx, sy
 	#print "fast projection is called"
-	from fundamentals import fft
-	from utilities import set_params_proj
+	from sp_fundamentals import fft
+	from sp_utilities import set_params_proj
 	R = Transform({"type":"spider", "phi":params[0], "theta":params[1], "psi":params[2]})
 	temp = volft.extract_plane_rect_fast(R,kbx,kby,kbz)
 	temp.fft_shuffle()
@@ -7334,20 +7334,20 @@ def ihrsr_new(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 			fourvar, debug)
 		return
 
-	from utilities      import model_circle, drop_image
-	from utilities      import get_image, get_input_from_string
-	from utilities      import get_params_proj, set_params_proj
-	from alignment	    import proj_ali_helical, helios, Numrinit, prepare_refrings
-	from projection     import prep_vol
-	from statistics     import ccc
-	from fundamentals   import cyclic_shift, rot_shift3D
+	from sp_utilities      import model_circle, drop_image
+	from sp_utilities      import get_image, get_input_from_string
+	from sp_utilities      import get_params_proj, set_params_proj
+	from sp_alignment	    import proj_ali_helical, helios, Numrinit, prepare_refrings
+	from sp_projection     import prep_vol
+	from sp_statistics     import ccc
+	from sp_fundamentals   import cyclic_shift, rot_shift3D
 	import os
 	import types
-	from utilities      import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg
 	print_begin_msg("ihrsr")
 
-	import user_functions
-	user_func = user_functions.factory[user_func_name]
+	import sp_user_functions
+	user_func = sp_user_functions.factory[user_func_name]
 
 	if os.path.exists(outdir):  ERROR('Output directory exists, please change the name and restart the program', "ihrsr", 1)
 	os.mkdir(outdir)
@@ -7407,10 +7407,10 @@ def ihrsr_new(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 	numr   = Numrinit(first_ring, last_ring, rstep, "F")
 
 	if CTF:
-		from reconstruction import recons3d_4nn_ctf
-		from filter import filt_ctf
+		from sp_reconstruction import recons3d_4nn_ctf
+		from sp_filter import filt_ctf
 
-	else: from reconstruction import recons3d_4nn
+	else: from sp_reconstruction import recons3d_4nn
 
 
 	#drop_image(vol, os.path.join(outdir,"ref_vol00.hdf"))
@@ -7481,7 +7481,7 @@ def ihrsr_new(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 				#print_msg("Image %i,  psi %9.2f,    s2x  %9.2f, s2y  %9.2f,  peak  %10.3e \n"%(im, paramali[2], paramali[3], paramali[4], peak))
 
 			# histogram of phi's
-			from statistics import hist_list
+			from sp_statistics import hist_list
 			lhist = 30
 			region, histo = hist_list(phihi, lhist)
 			msg = "      Histogram of phi angles\n      phi         number of particles\n"
@@ -7518,7 +7518,7 @@ def ihrsr_new(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 			fofo.close()
 			drop_image(vol, os.path.join(outdir, "aligned%04d.hdf"%(N_step*max_iter+Iter+1)) )
 			#  here we  write header info
-			from utilities import write_headers
+			from sp_utilities import write_headers
 			write_headers( stack, data, list_of_particles)
 	print_end_msg("ihrsr_new")
 
@@ -7527,24 +7527,24 @@ def ihrsr_MPI_new(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 	rmin, rmax, fract, nise, npad, sym, user_func_name, datasym,
 	fourvar, debug):
 
-	from alignment      import Numrinit, proj_ali_helical 
-	from utilities      import model_circle, get_image, drop_image, get_input_from_string
-	from utilities      import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
-	from utilities      import send_attr_dict
-	from utilities      import get_params_proj, set_params_proj, file_type
-	from fundamentals   import rot_avg_image
-	from pixel_error    import max_3D_pixel_error
+	from sp_alignment      import Numrinit, proj_ali_helical 
+	from sp_utilities      import model_circle, get_image, drop_image, get_input_from_string
+	from sp_utilities      import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
+	from sp_utilities      import send_attr_dict
+	from sp_utilities      import get_params_proj, set_params_proj, file_type
+	from sp_fundamentals   import rot_avg_image
+	from sp_pixel_error    import max_3D_pixel_error
 	import os
 	import types
-	from utilities      import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg
 	from mpi            import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi            import mpi_recv,  mpi_send, MPI_TAG_UB
 	from mpi            import mpi_reduce, MPI_INT, MPI_SUM
-	from filter         import filt_ctf
+	from sp_filter         import filt_ctf
 	#from projection     import prep_vol, prgs
-	from development    import prep_vol_new,prgs_new,prepare_refrings_new,helios7_new
-	from statistics     import hist_list, varf3d_MPI
-	from applications   import MPI_start_end
+	from sp_development    import prep_vol_new,prgs_new,prepare_refrings_new,helios7_new
+	from sp_statistics     import hist_list, varf3d_MPI
+	from sp_applications   import MPI_start_end
 
 
 	number_of_proc = mpi_comm_size(MPI_COMM_WORLD)
@@ -7620,8 +7620,8 @@ def ihrsr_MPI_new(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 	if last_ring < 0:	last_ring = int(nx/2) - 2
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                               : %s\n"%(stack))
 		print_msg("Reference volume                          : %s\n"%(ref_vol))	
@@ -7657,9 +7657,9 @@ def ihrsr_MPI_new(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 	mask2D  = model_circle(last_ring,nz,nz) - model_circle(first_ring,nz,nz)
 
 	if CTF:
-		from development import recons3d_4nn_ctf_MPI_new
-		from filter         import filt_ctf
-	else:	 from development import recons3d_4nn_MPI_new
+		from sp_development import recons3d_4nn_ctf_MPI_new
+		from sp_filter         import filt_ctf
+	else:	 from sp_development import recons3d_4nn_MPI_new
 
 	if myid == main_node:
 		if(file_type(stack) == "bdb"):
@@ -7803,9 +7803,9 @@ def ihrsr_MPI_new(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 			terminate = 0
 			if(myid == main_node):
 				recvbuf = map(float, recvbuf)
-				from utilities import write_text_file
+				from sp_utilities import write_text_file
 				write_text_file([range(len(recvbuf)), recvbuf], os.path.join(outdir, "pixer_%04d_%04d.txt"%(N_step+1,Iter)) )
-				from statistics import hist_list
+				from sp_statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if(region[0] < 0.0):  region[0] = 0.0
@@ -7989,10 +7989,10 @@ def ihrsr_MPI_new(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 	par_str = ["xform.projection"]
 	if myid == main_node:
 	   	if(file_type(stack) == "bdb"):
-	        	from utilities import recv_attr_dict_bdb
+	        	from sp_utilities import recv_attr_dict_bdb
 	        	recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 	        else:
-	        	from utilities import recv_attr_dict
+	        	from sp_utilities import recv_attr_dict
 	        	recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 		print_msg("Time to write header information= %d\n"%(time()-start_time))
 		start_time = time()
@@ -8002,11 +8002,11 @@ def ihrsr_MPI_new(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 	
 def prepare_refrings_new( volft, kbx,kby,kbz, nz, delta, ref_a, sym, numr, MPI=False, phiEqpsi = "Minus"):
         #from projection   import prep_vol, prgs
-	from development   import prgs_new
+	from sp_development   import prgs_new
         from math         import sin, cos, pi
-	from applications import MPI_start_end
-	from utilities    import even_angles
-	from alignment	  import ringwe
+	from sp_applications import MPI_start_end
+	from sp_utilities    import even_angles
+	from sp_alignment	  import ringwe
 	# generate list of Eulerian angles for reference projections
 	#  phi, theta, psi
 	mode = "F"
@@ -8024,7 +8024,7 @@ def prepare_refrings_new( volft, kbx,kby,kbz, nz, delta, ref_a, sym, numr, MPI=F
 	else:
 		ncpu = 1
 		myid = 0
-	from applications import MPI_start_end
+	from sp_applications import MPI_start_end
 	ref_start,ref_end = MPI_start_end( num_ref, ncpu, myid )
 
 	refrings = []     # list of (image objects) reference projections in Fourier representation
@@ -8046,7 +8046,7 @@ def prepare_refrings_new( volft, kbx,kby,kbz, nz, delta, ref_a, sym, numr, MPI=F
 		refrings[i] = cimage
 
 	if MPI:
-		from utilities import bcast_EMData_to_all
+		from sp_utilities import bcast_EMData_to_all
 		for i in xrange(num_ref):
 			for j in xrange(ncpu):
 				ref_start,ref_end = MPI_start_end(num_ref,ncpu,j)
@@ -8074,7 +8074,7 @@ def helios_func_new(params, data):
 	return  q	
 	
 def helios7_new(vol, pixel_size, dp, dphi, section_use = 0.75, radius = 0.0, rmin = 0.0):
-	from development    import helios_func_new
+	from sp_development    import helios_func_new
 	nx = vol.get_xsize()
 	ny = vol.get_ysize()
 	nz = vol.get_zsize()
@@ -8125,18 +8125,18 @@ def mrefeq_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0,
 		mref_ali2d_MPI(stack, refim, outdir, maskfile, ir, ou, rs, xrng, yrng, step, center, maxit, CTF, snr, user_func_name, rand_seed)
 		return
 
-	from utilities      import   model_circle, combine_params2, inverse_transform2, drop_image, get_image
-	from utilities	    import   center_2D, get_im, get_params2D, set_params2D
-	from statistics     import   fsc
-	from alignment      import   Numrinit, ringwe, fine_2D_refinement
-	from fundamentals   import   rot_shift2D, fshift
-	from morphology     import   ctf_2
-	from filter         import   filt_btwl, filt_params
+	from sp_utilities      import   model_circle, combine_params2, inverse_transform2, drop_image, get_image
+	from sp_utilities	    import   center_2D, get_im, get_params2D, set_params2D
+	from sp_statistics     import   fsc
+	from sp_alignment      import   Numrinit, ringwe, fine_2D_refinement
+	from sp_fundamentals   import   rot_shift2D, fshift
+	from sp_morphology     import   ctf_2
+	from sp_filter         import   filt_btwl, filt_params
 	from random         import   seed, randint
 	import os
 	import sys
 
-	from utilities      import   print_begin_msg, print_end_msg, print_msg
+	from sp_utilities      import   print_begin_msg, print_end_msg, print_msg
 	
 	# create the output directory, if it does not exist
 	if os.path.exists(outdir):  ERROR('Output directory exists, please change the name and restart the program', "mref_ali2d", 1)
@@ -8176,8 +8176,8 @@ def mrefeq_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0,
 
 	output = sys.stdout
 
-	import user_functions
-	user_func = user_functions.factory[user_func_name]
+	import sp_user_functions
+	user_func = sp_user_functions.factory[user_func_name]
 
 	if maskfile:
 		import types
@@ -8250,7 +8250,7 @@ def mrefeq_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0,
 				if data[im].get_attr("ctf_applied") == 0:
 					st = Util.infomask(data[im], mask, False)
 					data[im] -= st[0]
-					from filter import filt_ctf
+					from sp_filter import filt_ctf
 					data[im] = filt_ctf(data[im], ctf_params)
 					data[im].set_attr('ctf_applied', 1)
 			alpha, sx, sy, mirror, scale = get_params2D(data[im])
@@ -8279,7 +8279,7 @@ def mrefeq_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0,
 		'''
 
 		from sys import exit
-		from utilities import write_text_file
+		from sp_utilities import write_text_file
 		#write_text_file(peak_list,"ttt.txt")
 		#exit()
 		d = [0.0]*(numref*nima)
@@ -8357,7 +8357,7 @@ def mrefeq_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0,
 						# Calculate averages at least ones, meaning even if no within group refinement was requested
 						if CTF:
 							for i in xrange(lctf):  ctm[i] = 1.0 / (ctf2[j][0][i] + 1.0/snr)
-							from filter import filt_table
+							from sp_filter import filt_table
 							av1 = filt_table(refi[j][0], ctm)
 							for i in xrange(lctf):  ctm[i] = 1.0 / (ctf2[j][1][i] + 1.0/snr)
 							av2 = filt_table(refi[j][1], ctm)
@@ -8419,7 +8419,7 @@ def mrefeq_ali2d(stack, refim, outdir, maskfile=None, ir=1, ou=-1, rs=1, xrng=0,
 	if CTF:
 		if data_had_ctf == 0:
 			for im in xrange(nima): data[im].set_attr('ctf_applied', 0)
-	from utilities import write_headers
+	from sp_utilities import write_headers
 	write_headers(stack, data, range(nima))
 	print_end_msg("mrefEQ_ali2d")
 
@@ -8452,18 +8452,18 @@ def mrefeq_ali2df(stack, refim, maskfile=None, ir=1, ou=-1, rs=1, xrng=0, yrng=0
 	if MPI:
 		mrefeq_ali2df_MPI(stack, refim, maskfile, ir, ou, rs, xrng, yrng, step, center, maxit, CTF, snr, user_func_name, rand_seed)
 		return
-	from utilities      import   model_circle, combine_params2, inverse_transform2, drop_image, get_image
-	from utilities	    import   center_2D, get_im, get_params2D, set_params2D, model_blank
-	from statistics     import   fsc
-	from alignment      import   Numrinit, ringwe, fine_2D_refinement
-	from fundamentals   import   rot_shift2D, fshift
-	from morphology     import   ctf_2
-	from filter         import   filt_tanl, filt_params
+	from sp_utilities      import   model_circle, combine_params2, inverse_transform2, drop_image, get_image
+	from sp_utilities	    import   center_2D, get_im, get_params2D, set_params2D, model_blank
+	from sp_statistics     import   fsc
+	from sp_alignment      import   Numrinit, ringwe, fine_2D_refinement
+	from sp_fundamentals   import   rot_shift2D, fshift
+	from sp_morphology     import   ctf_2
+	from sp_filter         import   filt_tanl, filt_params
 	from random         import   seed, randint
 	import os
 	import sys
 	from time import localtime
-	from utilities      import   print_begin_msg, print_end_msg, print_msg
+	from sp_utilities      import   print_begin_msg, print_end_msg, print_msg
 	
 	first_ring=int(ir); last_ring=int(ou); rstep=int(rs); max_iter=int(maxit)
 	if max_iter == 0:
@@ -8548,7 +8548,7 @@ def mrefeq_ali2df(stack, refim, maskfile=None, ir=1, ou=-1, rs=1, xrng=0, yrng=0
 				if data[im].get_attr("ctf_applied") == 0:
 					st = Util.infomask(data[im], mask, False)
 					data[im] -= st[0]
-					from filter import filt_ctf
+					from sp_filter import filt_ctf
 					data[im] = filt_ctf(data[im], ctf_params)
 					data[im].set_attr('ctf_applied', 1)
 			alpha, sx, sy, mirror, scale = get_params2D(data[im])
@@ -8626,7 +8626,7 @@ def mrefeq_ali2df(stack, refim, maskfile=None, ir=1, ou=-1, rs=1, xrng=0, yrng=0
 					if(Iter<4 or Iter%3 != 0):
 						if CTF:
 							for i in xrange(lctf):  ctm[i] = 1.0 / (ctf2[j][0][i] + 1.0/snr)
-							from filter import filt_table
+							from sp_filter import filt_table
 							av1 = filt_table(refi[j][0], ctm)
 							for i in xrange(lctf):  ctm[i] = 1.0 / (ctf2[j][1][i] + 1.0/snr)
 							av2 = filt_table(refi[j][1], ctm)
@@ -8688,20 +8688,20 @@ def mrefeq_ali2df(stack, refim, maskfile=None, ir=1, ou=-1, rs=1, xrng=0, yrng=0
 def mrefeq_ali2df_MPI(stack, refim, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yrng=0, step=1, center=1, maxit=10, CTF=False, snr=1.0, user_func_name="ref_ali2d", rand_seed=1000, stability = False):
 # 2D multi-reference alignment using rotational ccf in polar coordinates and quadratic interpolation
 
-	from utilities      import   model_circle, combine_params2, inverse_transform2, drop_image, get_image, get_im
-	from utilities      import   reduce_EMData_to_root, bcast_EMData_to_all, bcast_number_to_all
-	from applications   import   MPI_start_end
-	from utilities      import   send_attr_dict
-	from utilities	    import   center_2D
-	from statistics     import   fsc_mask
-	from alignment      import   Numrinit, ringwe
-	from fundamentals   import   rot_shift2D, fshift
-	from utilities      import   get_params2D, set_params2D
+	from sp_utilities      import   model_circle, combine_params2, inverse_transform2, drop_image, get_image, get_im
+	from sp_utilities      import   reduce_EMData_to_root, bcast_EMData_to_all, bcast_number_to_all
+	from sp_applications   import   MPI_start_end
+	from sp_utilities      import   send_attr_dict
+	from sp_utilities	    import   center_2D
+	from sp_statistics     import   fsc_mask
+	from sp_alignment      import   Numrinit, ringwe
+	from sp_fundamentals   import   rot_shift2D, fshift
+	from sp_utilities      import   get_params2D, set_params2D
 	from random         import   seed, randint
-	from morphology     import   ctf_2
-	from filter         import   filt_tanl, filt_params
+	from sp_morphology     import   ctf_2
+	from sp_filter         import   filt_tanl, filt_params
 	from numpy          import   reshape, shape
-	from utilities      import   print_msg, print_begin_msg, print_end_msg
+	from sp_utilities      import   print_msg, print_begin_msg, print_end_msg
 	import os
 	import sys
 	from mpi 	    import mpi_comm_size, mpi_comm_rank, MPI_COMM_WORLD, mpi_barrier
@@ -8790,7 +8790,7 @@ def mrefeq_ali2df_MPI(stack, refim, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, 
 			if data[im-image_start].get_attr("ctf_applied") == 0:
 				st = Util.infomask(data[im-image_start], mask, False)
 				data[im-image_start] -= st[0]
-				from filter import filt_ctf
+				from sp_filter import filt_ctf
 				data[im-image_start] = filt_ctf(data[im-image_start], ctf_params)
 				data[im-image_start].set_attr('ctf_applied', 1)
 	if myid == main_node:  seed(rand_seed)
@@ -8969,7 +8969,7 @@ def mrefeq_ali2df_MPI(stack, refim, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, 
 							# and so on
 				del assign
 			mpi_barrier(comm)
-			from utilities import recv_EMData, send_EMData 
+			from sp_utilities import recv_EMData, send_EMData 
 			for sts in xrange(1,number_of_proc):
 				for j in xrange(sts,numref,number_of_proc):
 					if( myid == 0):
@@ -8996,7 +8996,7 @@ def ihrsr_n(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 	  rmin, rmax, fract, nise, npad, sym, user_func_name, datasym,
 	  fourvar, debug = False, MPI = False, chunk = 0.2):
 	if MPI:
-		from development import ihrsr_n_MPI
+		from sp_development import ihrsr_n_MPI
 		ihrsr_n_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber, 
 			txs, delta, initial_theta, delta_theta, an, maxit, CTF, snr, dp, ndp, dp_step, dphi, ndhpi, dphi_step, psi_max,
 			rmin, rmax, fract, nise, npad, sym, user_func_name, datasym,
@@ -9009,23 +9009,23 @@ def ihrsr_n_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 	rmin, rmax, fract, nise, npad, sym, user_func_name, datasym,
 	fourvar, debug, chunk):
 
-	from alignment      import Numrinit, prepare_refrings, proj_ali_helical, proj_ali_helical_90, proj_ali_helical_local, proj_ali_helical_90_local, helios,helios7
-	from utilities      import model_circle, get_image, drop_image, get_input_from_string
-	from utilities      import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
-	from utilities      import send_attr_dict
-	from utilities      import get_params_proj, set_params_proj, file_type
-	from fundamentals   import rot_avg_image
-	from pixel_error    import max_3D_pixel_error
+	from sp_alignment      import Numrinit, prepare_refrings, proj_ali_helical, proj_ali_helical_90, proj_ali_helical_local, proj_ali_helical_90_local, helios,helios7
+	from sp_utilities      import model_circle, get_image, drop_image, get_input_from_string
+	from sp_utilities      import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
+	from sp_utilities      import send_attr_dict
+	from sp_utilities      import get_params_proj, set_params_proj, file_type
+	from sp_fundamentals   import rot_avg_image
+	from sp_pixel_error    import max_3D_pixel_error
 	import os
 	import types
-	from utilities      import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg
 	from mpi            import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi            import mpi_recv,  mpi_send, MPI_TAG_UB
 	from mpi            import mpi_reduce, MPI_INT, MPI_SUM
-	from filter         import filt_ctf
-	from projection     import prep_vol, prgs
-	from statistics     import hist_list, varf3d_MPI
-	from applications   import MPI_start_end
+	from sp_filter         import filt_ctf
+	from sp_projection     import prep_vol, prgs
+	from sp_statistics     import hist_list, varf3d_MPI
+	from sp_applications   import MPI_start_end
 	from EMAN2 import Vec2f
 	from string    import lower,split
 	from math import cos, pi
@@ -9046,8 +9046,8 @@ def ihrsr_n_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 
 	if myid == main_node:
 		os.mkdir(outdir)
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 	mpi_barrier(MPI_COMM_WORLD)
 	
 	'''ndp    = 12
@@ -9114,8 +9114,8 @@ def ihrsr_n_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 	if last_ring < 0:	last_ring = int(nx/2) - 2
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                               : %s\n"%(stack))
 		print_msg("Reference volume                          : %s\n"%(ref_vol))	
@@ -9152,9 +9152,9 @@ def ihrsr_n_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 	mask2D  = model_circle(last_ring,nz,nz) - model_circle(first_ring,nz,nz)
 
 	if CTF:
-		from reconstruction import recons3d_4nn_ctf_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import recons3d_4nn_MPI
+		from sp_reconstruction import recons3d_4nn_ctf_MPI
+		from sp_filter         import filt_ctf
+	else:	 from sp_reconstruction import recons3d_4nn_MPI
 
 	if myid == main_node:
 		if(file_type(stack) == "bdb"):
@@ -9406,7 +9406,7 @@ def ihrsr_n_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 						else:
 							k1=360.0/sn
 						k3 = k1 +180
-						from utilities import get_sym
+						from sp_utilities import get_sym
 						T = get_sym_sparx(symmetry_string[0:])
 
 						for i in xrange( len(T) ):
@@ -9487,9 +9487,9 @@ def ihrsr_n_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 			terminate = 0
 			if(myid == main_node):
 				recvbuf = map(float, recvbuf)
-				from utilities import write_text_file
+				from sp_utilities import write_text_file
 				write_text_file([range(len(recvbuf)), recvbuf], os.path.join(outdir, "pixer_%04d_%04d.txt"%(N_step+1,Iter)) )
-				from statistics import hist_list
+				from sp_statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if(region[0] < 0.0):  region[0] = 0.0
@@ -9671,10 +9671,10 @@ def ihrsr_n_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 	par_str = ["xform.projection"]
 	if myid == main_node:
 	   	if(file_type(stack) == "bdb"):
-	        	from utilities import recv_attr_dict_bdb
+	        	from sp_utilities import recv_attr_dict_bdb
 	        	recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 	        else:
-	        	from utilities import recv_attr_dict
+	        	from sp_utilities import recv_attr_dict
 	        	recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 		print_msg("Time to write header information= %d\n"%(time()-start_time))
 		start_time = time()
@@ -9682,9 +9682,9 @@ def ihrsr_n_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,
 	if myid == main_node: print_end_msg("ihrsr_MPI")
 
 def generate_sections(volstkpref,stack,miclistfile,fname_params, xysize, zsize,pixel_size,dphi,dp,rmax,rmin=0,section_use=-1,fract= 0.67,Nuse=-1,nsegthr=3):
-	from utilities import read_text_row, get_im, set_params_proj, model_blank
-	from reconstruction import recons3d_4nn_ctf
-	from filter import filt_tanl, filt_gaussl
+	from sp_utilities import read_text_row, get_im, set_params_proj, model_blank
+	from sp_reconstruction import recons3d_4nn_ctf
+	from sp_filter import filt_tanl, filt_gaussl
 	from math import fmod
 	from mpi            import mpi_comm_size, mpi_comm_rank, MPI_COMM_WORLD, mpi_barrier
 
@@ -9737,8 +9737,8 @@ def generate_sections(volstkpref,stack,miclistfile,fname_params, xysize, zsize,p
 
 def avgvol_helical(volname, stack, fname_params,miclistfile,pixel_size,dphi,dp,nx, ny,nz ,rmax,rmin=0.0,fract= 0.67, nsegthr=3):
 	from mpi            import mpi_comm_size, mpi_comm_rank, MPI_COMM_WORLD, mpi_barrier
-	from utilities      import reduce_EMData_to_root,set_params_proj, read_text_row, model_blank
-	from reconstruction import recons3d_4nn_ctf
+	from sp_utilities      import reduce_EMData_to_root,set_params_proj, read_text_row, model_blank
+	from sp_reconstruction import recons3d_4nn_ctf
 	nproc = mpi_comm_size(MPI_COMM_WORLD)
 	myid = mpi_comm_rank(MPI_COMM_WORLD)
 	main_node=0
@@ -9774,7 +9774,7 @@ def avgvol_helical(volname, stack, fname_params,miclistfile,pixel_size,dphi,dp,n
 		avgvol.write_image(volname)
 
 def get_nfil_segs(fmiclist, fnewmiclist, fstack, fnewstack, nrows):
-	from utilities import read_text_row, write_text_row, get_im
+	from sp_utilities import read_text_row, write_text_row, get_im
 	miclist = read_text_row(fmiclist)
 	newmiclist = miclist[0:nrows]
 	write_text_row(newmiclist,fnewmiclist)
@@ -9791,7 +9791,7 @@ def get_nfil_segs(fmiclist, fnewmiclist, fstack, fnewstack, nrows):
 		counter += 1
 
 def get_params_by_thr(fmiclist, fstack='', fnewstack='', fparams='', fnewparams='', segthr=3):
-	from utilities import read_text_row, get_im, write_text_row
+	from sp_utilities import read_text_row, get_im, write_text_row
 	
 	'''
 
@@ -9828,8 +9828,8 @@ def get_params_by_thr(fmiclist, fstack='', fnewstack='', fparams='', fnewparams=
 
 
 def reconsvolhelical(stack, fparams, newvol, xysize,zsize, dp, dphi, pixel_size, rmax, rmin=0,fract = 0.67,sym='c1'):
-	from utilities import read_text_row, set_params_proj
-	from reconstruction import recons3d_4nn_ctf
+	from sp_utilities import read_text_row, set_params_proj
+	from sp_reconstruction import recons3d_4nn_ctf
 	from os import system
 	
 	params=read_text_row(fparams)
@@ -9844,7 +9844,7 @@ def reconsvolhelical(stack, fparams, newvol, xysize,zsize, dp, dphi, pixel_size,
 	fvol.write_image(newvol)
 
 def makefilstack(stack, newstack, nfil, miclist, thr=3):
-	from utilities import read_text_row, get_im
+	from sp_utilities import read_text_row, get_im
 	miclist = read_text_row(miclist)
 	mic= miclist[nfil][6:]
 	if len(mic) <thr:
@@ -9863,19 +9863,19 @@ def makefilstack(stack, newstack, nfil, miclist, thr=3):
 
 def helicalrecons3D_MPI(nx,ny,nz, stack, miclist, dp, pixel_size, dphi,avgvol, user_func_name, rmax, rmin=0,CTF=False, fract=0.67,outdir='.'):
 	from mpi              import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_COMM_WORLD, mpi_barrier, MPI_INT, MPI_TAG_UB, MPI_FLOAT, mpi_recv, mpi_send
-	from utilities        import get_params_proj, read_text_row, model_cylinder,pad, set_params3D, get_params3D, reduce_EMData_to_root, bcast_EMData_to_all, bcast_number_to_all, drop_image, bcast_EMData_to_all, model_blank
-	from utilities        import send_attr_dict, file_type
-	from fundamentals     import resample, rot_shift3D
-	from applications     import MPI_start_end
+	from sp_utilities        import get_params_proj, read_text_row, model_cylinder,pad, set_params3D, get_params3D, reduce_EMData_to_root, bcast_EMData_to_all, bcast_number_to_all, drop_image, bcast_EMData_to_all, model_blank
+	from sp_utilities        import send_attr_dict, file_type
+	from sp_fundamentals     import resample, rot_shift3D
+	from sp_applications     import MPI_start_end
 	from math             import fmod, atan, pi
-	from utilities        import model_blank
-	from filter           import filt_tanl, filt_ctf
+	from sp_utilities        import model_blank
+	from sp_filter           import filt_tanl, filt_ctf
 	import os
-	from statistics       import fsc_mask
+	from sp_statistics       import fsc_mask
 	from copy             import copy
 	from os               import sys
 	from time import time	
-	from reconstruction import recons3d_4nn_ctf
+	from sp_reconstruction import recons3d_4nn_ctf
 	myid  = mpi_comm_rank(MPI_COMM_WORLD)
 	nproc = mpi_comm_size(MPI_COMM_WORLD)
 	main_node = 0
@@ -9935,8 +9935,8 @@ def helicalrecons3D_MPI(nx,ny,nz, stack, miclist, dp, pixel_size, dphi,avgvol, u
 	# see var_MPI in applications.py
 	reduce_EMData_to_root(volsum, myid)
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 		# calculate average
 		Util.mul_scalar(volsum, 1.0 /float(total_nvols) )
 		volsum = volsum.helicise(pixel_size,dp, dphi, fract, rmax, rmin)
@@ -9950,21 +9950,21 @@ def diskaliD_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fu
 					 CTF=False, maxit=1, sym = "d1"):
 	#  This version is for D symmetries, which have to be handled differently from C.
 	from mpi              import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_COMM_WORLD, mpi_barrier, MPI_INT, MPI_TAG_UB, MPI_FLOAT, mpi_recv, mpi_send
-	from utilities        import get_params_proj, read_text_row, model_cylinder,pad, set_params3D, get_params3D, reduce_EMData_to_root, bcast_EMData_to_all, bcast_number_to_all, drop_image, bcast_EMData_to_all, model_blank
-	from utilities        import send_attr_dict, file_type, sym_vol, get_image
-	from fundamentals     import resample, rot_shift3D
-	from applications     import MPI_start_end, cylindrical_trans, alihelical3, stack_disks, ordersegments
+	from sp_utilities        import get_params_proj, read_text_row, model_cylinder,pad, set_params3D, get_params3D, reduce_EMData_to_root, bcast_EMData_to_all, bcast_number_to_all, drop_image, bcast_EMData_to_all, model_blank
+	from sp_utilities        import send_attr_dict, file_type, sym_vol, get_image
+	from sp_fundamentals     import resample, rot_shift3D
+	from sp_applications     import MPI_start_end, cylindrical_trans, alihelical3, stack_disks, ordersegments
 	from math             import fmod, atan, pi
-	from utilities        import model_blank
-	from filter           import filt_tanl, filt_ctf
+	from sp_utilities        import model_blank
+	from sp_filter           import filt_tanl, filt_ctf
 	import os
-	from statistics       import fsc_mask
+	from sp_statistics       import fsc_mask
 	from copy             import copy
 	from os               import sys
 	from time             import time	
-	from alignment        import Numrinit, ringwe
-	from reconstruction   import recons3d_wbp
-	from morphology       import ctf_2
+	from sp_alignment        import Numrinit, ringwe
+	from sp_reconstruction   import recons3d_wbp
+	from sp_morphology       import ctf_2
 	import types
 	
 	myid  = mpi_comm_rank(MPI_COMM_WORLD)
@@ -9992,7 +9992,7 @@ def diskaliD_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fu
 	#  implicit symmetrizations are done using C
 	sym = "C"+sym[1:]
 
-	from utilities import get_im
+	from sp_utilities import get_im
 	refvol = get_im(ref_vol)
 	ref_nx = refvol.get_xsize()
 	ref_ny = refvol.get_ysize()
@@ -10029,7 +10029,7 @@ def diskaliD_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fu
 	if( myid == 0 ):
 		# Build a 3D dedicated correction function
 		if CTF:
-			from morphology import ctf_2
+			from sp_morphology import ctf_2
 			cc = EMUtil.get_all_attributes(stack, 'ctf')
 			ctf2 = ctf_2(ref_nz, cc[0])
 			ncc = len(ctf2)
@@ -10090,7 +10090,7 @@ def diskaliD_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fu
 		fullvol0 -= stat[0]
 		fullvol0 *= ms3
 		"""
-		from filter import filt_tanl
+		from sp_filter import filt_tanl
 		fullvol0 = filt_tanl(fullvol0, 0.3, 0.2)
 		fullvol0 = fullvol0.helicise(pixel_size, dp, dphi, fract, rmax, rmin)
 		fullvol0 = sym_vol(fullvol0, symmetry=sym)
@@ -10158,8 +10158,8 @@ def diskaliD_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fu
 				refvol -= stat[0]
 				refvol *= model_cylinder(rmax-1, ref_nx, ref_ny, ref_nz)
 
-			import user_functions
-			user_func = user_functions.factory[user_func_name]
+			import sp_user_functions
+			user_func = sp_user_functions.factory[user_func_name]
 
 			ref_data = [refvol, mask3D]
 			refvol = user_func(ref_data)
@@ -10183,7 +10183,7 @@ def diskaliD_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fu
 	forg = []
 	helisym = Transform({"type":"spider","phi":dphi,"tz":dpp})
 	ihelisym = helisym.inverse()
-	from utilities import get_params_proj, set_params_proj
+	from sp_utilities import get_params_proj, set_params_proj
 	permitrange = rise/2.0
 	
 	for ivol in xrange(nfils):
@@ -10242,10 +10242,10 @@ def diskaliD_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fu
 	par_str = ['xform.projection', 'ID']
 	if myid == main_node:
 		if(file_type(stack) == "bdb"):
-			from utilities import recv_attr_dict_bdb
+			from sp_utilities import recv_attr_dict_bdb
 			recv_attr_dict_bdb(main_node, stack, data, par_str, 0, nima, nproc)
 		else:
-			from utilities import recv_attr_dict
+			from sp_utilities import recv_attr_dict
 			recv_attr_dict(main_node, stack, data, par_str, 0, nima, nproc)
 	else:
 		send_attr_dict(main_node, data, par_str, 0, nima)
@@ -10254,7 +10254,7 @@ def diskaliD_MPI(stack, ref_vol, outdir, maskfile, dp, dphi, pixel_size, user_fu
 """
 #  This is a python version of what I put on 10/09/2012 in emdata_sparx.cpp PAP.
 def heli(vol,  pixel_size=1.82, dp=27.6, dphi=166.5, section_use=0.67, radius=70., minrad=0.):
-	from utilities import model_blank
+	from sp_utilities import model_blank
 	nx = vol.get_xsize()
 	ny = vol.get_ysize()
 	nz = vol.get_zsize()
@@ -10349,10 +10349,10 @@ def make_test_stack(vol, stack, proj_stack, dphi, dp, pixel_size, fil_attr='fila
 	'''
 	
 	from random         import uniform, random
-	from projection     import prep_vol, prgs
-	from applications   import get_dist, ordersegments
-	from filter			import filt_ctf
-	from utilities		import get_im, write_text_row
+	from sp_projection     import prep_vol, prgs
+	from sp_applications   import get_dist, ordersegments
+	from sp_filter			import filt_ctf
+	from sp_utilities		import get_im, write_text_row
 	
 	
 	filaments = ordersegments(stack)
@@ -10443,10 +10443,10 @@ def make_test_stack2(vol, stack, proj_stack, dphi, dp, pixel_size, fil_attr='fil
 	'''
 	
 	from random         import uniform, random
-	from projection     import prep_vol, prgs
-	from applications   import get_dist,ordersegments
-	from filter			import filt_ctf
-	from utilities		import get_im, write_text_row
+	from sp_projection     import prep_vol, prgs
+	from sp_applications   import get_dist,ordersegments
+	from sp_filter			import filt_ctf
+	from sp_utilities		import get_im, write_text_row
 	
 	
 	filaments = ordersegments(stack)
@@ -10528,22 +10528,22 @@ def rotline(alpha, v0):
 def Gehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobble, pixel_size, dp, dphi, fract, rmax, rmin, maskfile = None, \
 	    maxit = 1, CTF = False, snr = 1.0, sym = "c1",  user_func_name = "helical", npad = 2, debug = False):
 
-	from alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
-	from alignment       import ringwe, ang_n
-	from utilities       import model_circle, get_image, drop_image, get_input_from_string, peak_search, model_cylinder, pad, model_blank
-	from utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
-	from utilities       import send_attr_dict, sym_vol, get_input_from_string
-	from utilities       import get_params_proj, set_params_proj, file_type, compose_transform2
-	from fundamentals    import rot_avg_image, ccf, fft, rot_shift2D
+	from sp_alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
+	from sp_alignment       import ringwe, ang_n
+	from sp_utilities       import model_circle, get_image, drop_image, get_input_from_string, peak_search, model_cylinder, pad, model_blank
+	from sp_utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
+	from sp_utilities       import send_attr_dict, sym_vol, get_input_from_string
+	from sp_utilities       import get_params_proj, set_params_proj, file_type, compose_transform2
+	from sp_fundamentals    import rot_avg_image, ccf, fft, rot_shift2D
 	import os
 	import types
-	from utilities       import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities       import print_begin_msg, print_end_msg, print_msg
 	from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi             import mpi_reduce, MPI_INT, MPI_SUM
-	from filter          import filt_ctf
-	from projection      import prep_vol, prgs
+	from sp_filter          import filt_ctf
+	from sp_projection      import prep_vol, prgs
 	#from statistics      import hist_list, varf3d_MPI, fsc_mask
-	from applications	 import MPI_start_end, ordersegments, header
+	from sp_applications	 import MPI_start_end, ordersegments, header
 	from time            import time	
 	from copy 			 import copy
 	from math 			 import sqrt
@@ -10591,8 +10591,8 @@ def Gehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobb
 	delta       = get_input_from_string(delta)[0]
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                               : %s\n"%(stack))
 		print_msg("Reference volume                          : %s\n"%(ref_vol))	
@@ -10617,9 +10617,9 @@ def Gehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobb
 
 	fscmask = mask3D  #model_circle(last_ring,nx,nx,nx)  For a fancy mask circle would work better  PAP 7/21/11
 	if CTF:
-		from reconstruction import recons3d_4nn_ctf_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import recons3d_4nn_MPI
+		from sp_reconstruction import recons3d_4nn_ctf_MPI
+		from sp_filter         import filt_ctf
+	else:	 from sp_reconstruction import recons3d_4nn_MPI
 
 	filaments = ordersegments(stack)
 
@@ -10710,7 +10710,7 @@ def Gehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobb
 		refproj = [None]*nphi
 		if( not Dsym):  rotproj = [None]*nphi
 		"""
-		from fundamentals import rot_shift3D
+		from sp_fundamentals import rot_shift3D
 		volft180x, kbx, kby, kbz = prep_vol( rot_shift3D(vol,-90,180.0,90) )
 		volft180y, kbx, kby, kbz = prep_vol( rot_shift3D(vol,180.0) )
 		"""
@@ -10994,10 +10994,10 @@ def Gehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobb
 		par_str = ['xform.projection', 'ID']
 		if myid == main_node:
 			if(file_type(stack) == "bdb"):
-				from utilities import recv_attr_dict_bdb
+				from sp_utilities import recv_attr_dict_bdb
 				recv_attr_dict_bdb(main_node, stack, data, par_str, 0, nima, nproc)
 			else:
-				from utilities import recv_attr_dict
+				from sp_utilities import recv_attr_dict
 				recv_attr_dict(main_node, stack, data, par_str, 0, nima, nproc)
 			print_msg("Time to write header information= %d\n"%(time()-start_time))
 			start_time = time()
@@ -11012,27 +11012,27 @@ def Gehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobb
 def Iehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, pixel_size, dp, dphi, fract, rmax, rmin, maskfile = None, \
 	    maxit = 1, CTF = False, snr = 1.0, sym = "c1",  user_func_name = "helical", npad = 2, debug = False):
 
-	from alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
-	from alignment       import ringwe, ang_n
-	from utilities       import model_circle, get_image, drop_image, get_input_from_string, peak_search, model_cylinder, pad, model_blank
-	from utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
-	from utilities       import send_attr_dict, sym_vol, get_input_from_string
-	from utilities       import get_params_proj, set_params_proj, file_type, compose_transform2
-	from fundamentals    import rot_avg_image, ccf, fft, rot_shift2D
+	from sp_alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
+	from sp_alignment       import ringwe, ang_n
+	from sp_utilities       import model_circle, get_image, drop_image, get_input_from_string, peak_search, model_cylinder, pad, model_blank
+	from sp_utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
+	from sp_utilities       import send_attr_dict, sym_vol, get_input_from_string
+	from sp_utilities       import get_params_proj, set_params_proj, file_type, compose_transform2
+	from sp_fundamentals    import rot_avg_image, ccf, fft, rot_shift2D
 	import os
 	import types
-	from utilities       import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities       import print_begin_msg, print_end_msg, print_msg
 	from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi             import mpi_reduce, MPI_INT, MPI_SUM
-	from filter          import filt_ctf
-	from projection      import prep_vol, prgs
+	from sp_filter          import filt_ctf
+	from sp_projection      import prep_vol, prgs
 	#from statistics      import hist_list, varf3d_MPI, fsc_mask
-	from applications	 import MPI_start_end, ordersegments, header
+	from sp_applications	 import MPI_start_end, ordersegments, header
 	from time            import time	
 	from copy 			 import copy
 	from math 			 import sqrt
 	
-	from utilities import info
+	from sp_utilities import info
 	
 	nproc     = mpi_comm_size(MPI_COMM_WORLD)
 	myid      = mpi_comm_rank(MPI_COMM_WORLD)
@@ -11077,8 +11077,8 @@ def Iehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, pixel
 	delta       = get_input_from_string(delta)[0]
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                               : %s\n"%(stack))
 		print_msg("Reference volume                          : %s\n"%(ref_vol))	
@@ -11103,9 +11103,9 @@ def Iehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, pixel
 
 	fscmask = mask3D  #model_circle(last_ring,nx,nx,nx)  For a fancy mask circle would work better  PAP 7/21/11
 	if CTF:
-		from reconstruction import recons3d_4nn_ctf_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import recons3d_4nn_MPI
+		from sp_reconstruction import recons3d_4nn_ctf_MPI
+		from sp_filter         import filt_ctf
+	else:	 from sp_reconstruction import recons3d_4nn_MPI
 
 	filaments = ordersegments(stack)
 	print filaments
@@ -11202,7 +11202,7 @@ def Iehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, pixel
 		refproj = [None]*nphi
 		if( not Dsym):  rotproj = [None]*nphi
 		"""
-		from fundamentals import rot_shift3D
+		from sp_fundamentals import rot_shift3D
 		volft180x, kbx, kby, kbz = prep_vol( rot_shift3D(vol,-90,180.0,90) )
 		volft180y, kbx, kby, kbz = prep_vol( rot_shift3D(vol,180.0) )
 		"""
@@ -11416,10 +11416,10 @@ def Iehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, pixel
 		par_str = ['xform.projection', 'ID']
 		if myid == main_node:
 			if(file_type(stack) == "bdb"):
-				from utilities import recv_attr_dict_bdb
+				from sp_utilities import recv_attr_dict_bdb
 				recv_attr_dict_bdb(main_node, stack, data, par_str, 0, nima, nproc)
 			else:
-				from utilities import recv_attr_dict
+				from sp_utilities import recv_attr_dict
 				recv_attr_dict(main_node, stack, data, par_str, 0, nima, nproc)
 			print_msg("Time to write header information= %d\n"%(time()-start_time))
 			start_time = time()
@@ -11435,30 +11435,30 @@ def Iehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, pixel
 defXehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobble, pixel_size, dp, dphi, fract, rmax, rmin, maskfile = None, \
 	    maxit = 1, CTF = False, snr = 1.0, sym = "c1",  user_func_name = "helical", npad = 2, debug = False):
 
-	from alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
-	from alignment       import ringwe, ang_n
-	from utilities       import model_circle, get_image, drop_image, get_input_from_string, peak_search, model_cylinder, pad, model_blank
-	from utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
-	from utilities       import send_attr_dict, sym_vol, get_input_from_string
-	from utilities       import get_params_proj, set_params_proj, file_type, compose_transform2
-	from fundamentals    import rot_avg_image, ccf, fft, rot_shift2D
+	from sp_alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
+	from sp_alignment       import ringwe, ang_n
+	from sp_utilities       import model_circle, get_image, drop_image, get_input_from_string, peak_search, model_cylinder, pad, model_blank
+	from sp_utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
+	from sp_utilities       import send_attr_dict, sym_vol, get_input_from_string
+	from sp_utilities       import get_params_proj, set_params_proj, file_type, compose_transform2
+	from sp_fundamentals    import rot_avg_image, ccf, fft, rot_shift2D
 	import os
 	import types
-	from utilities       import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities       import print_begin_msg, print_end_msg, print_msg
 	from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi             import mpi_reduce, MPI_INT, MPI_SUM
-	from filter          import filt_ctf
-	from projection      import prep_vol, prgs
+	from sp_filter          import filt_ctf
+	from sp_projection      import prep_vol, prgs
 	#from statistics      import hist_list, varf3d_MPI, fsc_mask
-	from applications	 import MPI_start_end, header
-	from pixel_error     import ordersegments
+	from sp_applications	 import MPI_start_end, header
+	from sp_pixel_error     import ordersegments
 	from time            import time
 	from copy 			 import copy
 	from math 			 import sqrt
 
 	def rot2pad(imi, alpha=0.0, sx=0.0, sy=0.0):
-		from utilities    import pad
-		from fundamentals import rot_shift2D
+		from sp_utilities    import pad
+		from sp_fundamentals import rot_shift2D
 		lnx = imi.get_xsize()
 		lny = imi.get_ysize()
 		ln = max(lnx,lny)
@@ -11479,8 +11479,8 @@ defXehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobbl
 
 	if myid == main_node:
 		os.mkdir(outdir)
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 		print_begin_msg("ehelix_MPI")
 	mpi_barrier(MPI_COMM_WORLD)
 
@@ -11509,8 +11509,8 @@ defXehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobbl
 	delta       = get_input_from_string(delta)[0]
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                               : %s\n"%(stack))
 		print_msg("Reference volume                          : %s\n"%(ref_vol))	
@@ -11535,9 +11535,9 @@ defXehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobbl
 
 	fscmask = mask3D
 	if CTF:
-		from reconstruction import recons3d_4nn_ctf_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import recons3d_4nn_MPI
+		from sp_reconstruction import recons3d_4nn_ctf_MPI
+		from sp_filter         import filt_ctf
+	else:	 from sp_reconstruction import recons3d_4nn_MPI
 	if( myid == 0):
 		infils = EMUtil.get_all_attributes(stack, "filament")
 		ptlcoords = EMUtil.get_all_attributes(stack, 'ptcl_source_coord')
@@ -11609,11 +11609,11 @@ defXehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobbl
 		if(file_type(stack) == "bdb"):
 			sts = time()
 			print  "  writing !!! ",myid
-			from utilities import recv_attr_dict_bdb
+			from sp_utilities import recv_attr_dict_bdb
 			recv_attr_dict_bdb(main_node, stack, data, par_str, 0, nima, nproc)
 			print  " main wrote stuff",myid,time()-sts
 		else:
-			from utilities import recv_attr_dict
+			from sp_utilities import recv_attr_dict
 			recv_attr_dict(main_node, stack, data, par_str, 0, nima, nproc)
 		print_msg("Time to write header information= %d\n"%(time()-start_time))
 		start_time = time()
@@ -11629,8 +11629,8 @@ defXehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobbl
 '''
 
 def filament_balanced_load(stack, nproc):
-	from pixel_error     import ordersegments
-	from utilities 		 import chunks_distribution
+	from sp_pixel_error     import ordersegments
+	from sp_utilities 		 import chunks_distribution
 	infils = EMUtil.get_all_attributes(stack, "filament")
 	ptlcoords = EMUtil.get_all_attributes(stack, 'ptcl_source_coord')
 	filaments = ordersegments(infils, ptlcoords)
@@ -11655,30 +11655,30 @@ def filament_balanced_load(stack, nproc):
 defXehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobble, pixel_size, dp, dphi, fract, rmax, rmin, FindPsi = True, maskfile = None, \
 	    maxit = 1, CTF = False, snr = 1.0, sym = "c1",  user_func_name = "helical", npad = 2, debug = False):
 
-	from alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
-	from alignment       import ringwe, ang_n
-	from utilities       import model_circle, get_image, drop_image, get_input_from_string, peak_search, model_cylinder, pad, model_blank
-	from utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
-	from utilities       import send_attr_dict, sym_vol, get_input_from_string
-	from utilities       import get_params_proj, set_params_proj, file_type, compose_transform2
-	from fundamentals    import rot_avg_image, ccf, fft, rot_shift2D
+	from sp_alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
+	from sp_alignment       import ringwe, ang_n
+	from sp_utilities       import model_circle, get_image, drop_image, get_input_from_string, peak_search, model_cylinder, pad, model_blank
+	from sp_utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
+	from sp_utilities       import send_attr_dict, sym_vol, get_input_from_string
+	from sp_utilities       import get_params_proj, set_params_proj, file_type, compose_transform2
+	from sp_fundamentals    import rot_avg_image, ccf, fft, rot_shift2D
 	import os
 	import types
-	from utilities       import print_begin_msg, print_end_msg, print_msg, chunks_distribution
+	from sp_utilities       import print_begin_msg, print_end_msg, print_msg, chunks_distribution
 	from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi             import mpi_reduce, MPI_INT, MPI_SUM
-	from filter          import filt_ctf
-	from projection      import prep_vol, prgs
+	from sp_filter          import filt_ctf
+	from sp_projection      import prep_vol, prgs
 	#from statistics      import hist_list, varf3d_MPI, fsc_mask
-	from applications	 import MPI_start_end, header
-	from pixel_error     import ordersegments
+	from sp_applications	 import MPI_start_end, header
+	from sp_pixel_error     import ordersegments
 	from time            import time
 	from copy 			 import copy
 	from math 			 import sqrt
 
 	def rot2pad(imi, alpha=0.0, sx=0.0, sy=0.0):
-		from utilities    import pad
-		from fundamentals import rot_shift2D
+		from sp_utilities    import pad
+		from sp_fundamentals import rot_shift2D
 		lnx = imi.get_xsize()
 		lny = imi.get_ysize()
 		ln = max(lnx,lny)
@@ -11699,8 +11699,8 @@ defXehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobbl
 
 	if myid == main_node:
 		os.mkdir(outdir)
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 		print_begin_msg("ehelix_MPI")
 	mpi_barrier(MPI_COMM_WORLD)
 
@@ -11729,8 +11729,8 @@ defXehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobbl
 	delta       = get_input_from_string(delta)[0]
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                               : %s\n"%(stack))
 		print_msg("Reference volume                          : %s\n"%(ref_vol))	
@@ -11756,9 +11756,9 @@ defXehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobbl
 
 	fscmask = mask3D
 	if CTF:
-		from reconstruction import recons3d_4nn_ctf_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import recons3d_4nn_MPI
+		from sp_reconstruction import recons3d_4nn_ctf_MPI
+		from sp_filter         import filt_ctf
+	else:	 from sp_reconstruction import recons3d_4nn_MPI
 
 	if( myid == 0):
 		infils = EMUtil.get_all_attributes(stack, "filament")
@@ -11969,10 +11969,10 @@ defXehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobbl
 		if myid == main_node:
 			start_time = time()
 			if(file_type(stack) == "bdb"):
-				from utilities import recv_attr_dict_bdb
+				from sp_utilities import recv_attr_dict_bdb
 				recv_attr_dict_bdb(main_node, stack, data, par_str, 0, nima, nproc)
 			else:
-				from utilities import recv_attr_dict
+				from sp_utilities import recv_attr_dict
 				recv_attr_dict(main_node, stack, data, par_str, 0, nima, nproc)
 			print_msg("Time to write header information= %d\n"%(time()-start_time))
 			start_time = time()
@@ -11986,9 +11986,9 @@ defXehelix_MPI(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobbl
 
 def constrained_helix(data, fdata, refproj, rotproj, dp, dphi, rise, delta, nphi, symrestrict, phiwobble, rng, ywobble, ystep,\
 					 Dsym, nwx, nwy, nwxc, nwyc, FindPsi, psi_max, crefim, numr, maxrin, mode, cnx, cny, myid, main_node):
-	from alignment       import ringwe, ang_n
-	from fundamentals    import ccf, fft, rot_shift2D
-	from utilities       import get_params_proj, set_params_proj, file_type, compose_transform2, get_dist
+	from sp_alignment       import ringwe, ang_n
+	from sp_fundamentals    import ccf, fft, rot_shift2D
+	from sp_utilities       import get_params_proj, set_params_proj, file_type, compose_transform2, get_dist
 	from math            import sqrt
 	from time import time
 	#  Here rise is in PIXELS
@@ -12268,9 +12268,9 @@ def constrained_helix(data, fdata, refproj, rotproj, dp, dphi, rise, delta, nphi
 
 '''
 def constrained_helix_SHC(data, fdata, refproj, rotproj, dp, dphi, rise, delta, nphi, phiwobble, rng, ywobble, Dsym, nwx, nwy, nwxc, nwyc, FindPsi, psi_max, crefim, numr, maxrin, mode, cnx, cny, myid, main_node):
-	from alignment       import ringwe, ang_n
-	from fundamentals    import ccf, fft, rot_shift2D
-	from utilities       import get_params_proj, set_params_proj, file_type, compose_transform2
+	from sp_alignment       import ringwe, ang_n
+	from sp_fundamentals    import ccf, fft, rot_shift2D
+	from sp_utilities       import get_params_proj, set_params_proj, file_type, compose_transform2
 	from math            import sqrt
 	from random          import shuffle
 	from time import time
@@ -12629,10 +12629,10 @@ def generate_projections_helical(vol, stack, proj_stack, consparams, trueparams,
 	'''
 	
 	from random         import uniform, random
-	from projection     import prep_vol, prgs
-	from applications   import get_dist,ordersegments, header
-	from filter			import filt_ctf
-	from utilities		import get_im, write_text_row
+	from sp_projection     import prep_vol, prgs
+	from sp_applications   import get_dist,ordersegments, header
+	from sp_filter			import filt_ctf
+	from sp_utilities		import get_im, write_text_row
 	
 	
 	filaments = ordersegments(stack)
@@ -12781,10 +12781,10 @@ def generate_projections_helical_xwobble(vol, stack, proj_stack, consparams, tru
 	'''
 	
 	from random         import uniform, random
-	from projection     import prep_vol, prgs
-	from applications   import get_dist,ordersegments, header
-	from filter			import filt_ctf
-	from utilities		import get_im, write_text_row
+	from sp_projection     import prep_vol, prgs
+	from sp_applications   import get_dist,ordersegments, header
+	from sp_filter			import filt_ctf
+	from sp_utilities		import get_im, write_text_row
 	import sys
 	
 	xpermitrange = xpermitrange/pixel_size
@@ -12920,8 +12920,8 @@ def generate_projections_helical_xwobble(vol, stack, proj_stack, consparams, tru
 """
 
 def newparams_3D_to_2D(stack):
-	from utilities import print_begin_msg, print_end_msg, print_msg, set_params2D, write_header
-	from development import newparams_3D_2D
+	from sp_utilities import print_begin_msg, print_end_msg, print_msg, set_params2D, write_header
+	from sp_development import newparams_3D_2D
 	
 	print_begin_msg("newparams_3D_to_2D")
 	print_msg("Input stack                 : %s\n\n"%(stack))
@@ -12930,7 +12930,7 @@ def newparams_3D_to_2D(stack):
 	ima = EMData()
 	for im in xrange(nima):
 		ima.read_image(stack, im, True)
-		from utilities import set_params_proj, get_params_proj
+		from sp_utilities import set_params_proj, get_params_proj
 		phi,theta,psi,s2x,s2y = get_params_proj( ima )
 		alpha, sx, sy, mirror = newparams_3D_2D(phi, theta, psi, s2x, s2y)
 		set_params2D(ima, [alpha, sx, sy, mirror, 1.0])
@@ -12941,7 +12941,7 @@ def newparams_3D_2D(phi, theta, psi, s2x, s2y):
 		Convert 3D alignment parameters (phi, theta, psi, s2x, s2y)  # there is no mirror in 3D! 
 		into 2D alignment parameters (alpha, sx, sy, mirror)
 	"""
-	from utilities import compose_transform2, print_msg
+	from sp_utilities import compose_transform2, print_msg
 	
 	if theta > 90.0:
 		mirror = 1
@@ -12959,8 +12959,8 @@ def newparams_3D_2D(phi, theta, psi, s2x, s2y):
 	return  alpha, sx, sy, mirror
 
 def applyxshift(stack, newstack):
-	from utilities import get_im, get_params2D, set_params2D
-	from fundamentals import cyclic_shift
+	from sp_utilities import get_im, get_params2D, set_params2D
+	from sp_fundamentals import cyclic_shift
 	
 	nima	=EMUtil.get_image_count(stack)
 	for im in xrange(nima):
@@ -13018,31 +13018,31 @@ def ali3d_shc_simple_mpi(stack, ref_vol, maskfile = None, ir = 1, ou = -1, rs = 
 	    center = -1, maxit = 5, CTF = False, snr = 1.0,  ref_a = "S", sym = "c1",  user_func_name = "ref_ali3d",
 	    fourvar = False, npad = 4, debug = False, termprec = 0.0, mpi_comm = None, log = None, proc_of_checked_refs=2 ):
 
-	from alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
-	from utilities       import model_circle, get_image, drop_image, get_input_from_string
-	from utilities       import reduce_EMData_to_root, bcast_EMData_to_all
-	from utilities       import send_attr_dict
-	from utilities       import get_params_proj, file_type, set_params_proj
-	from fundamentals    import rot_avg_image
+	from sp_alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
+	from sp_utilities       import model_circle, get_image, drop_image, get_input_from_string
+	from sp_utilities       import reduce_EMData_to_root, bcast_EMData_to_all
+	from sp_utilities       import send_attr_dict
+	from sp_utilities       import get_params_proj, file_type, set_params_proj
+	from sp_fundamentals    import rot_avg_image
 	import os
 	import types
-	from utilities       import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities       import print_begin_msg, print_end_msg, print_msg
 	from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi             import mpi_reduce, MPI_INT, MPI_SUM
-	from filter          import filt_ctf
-	from projection      import prep_vol, prgs
-	from statistics      import hist_list, varf3d_MPI
-	from applications    import MPI_start_end
+	from sp_filter          import filt_ctf
+	from sp_projection      import prep_vol, prgs
+	from sp_statistics      import hist_list, varf3d_MPI
+	from sp_applications    import MPI_start_end
 	from math            import sqrt
 	from random import random
-	from utilities       import wrap_mpi_gatherv, wrap_mpi_bcast
-	from reconstruction  import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
-	from development     import shc
+	from sp_utilities       import wrap_mpi_gatherv, wrap_mpi_bcast
+	from sp_reconstruction  import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
+	from sp_development     import shc
 
 	if mpi_comm == None: mpi_comm = MPI_COMM_WORLD
 
 	if log == None:
-		from logger import Logger
+		from sp_logger import Logger
 		log = Logger()
 
 	number_of_proc = mpi_comm_size(mpi_comm)
@@ -13089,8 +13089,8 @@ def ali3d_shc_simple_mpi(stack, ref_vol, maskfile = None, ir = 1, ou = -1, rs = 
 	if last_ring < 0:	last_ring = int(nx/2) - 2
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 	if maskfile:
 		mask3D = maskfile
@@ -13102,9 +13102,9 @@ def ali3d_shc_simple_mpi(stack, ref_vol, maskfile = None, ir = 1, ou = -1, rs = 
 
 	fscmask = mask3D  #model_circle(last_ring,nx,nx,nx)  For a fancy mask circle would work better  PAP 7/21/11
 	if CTF:
-		from reconstruction import rec3D_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import rec3D_MPI_noCTF
+		from sp_reconstruction import rec3D_MPI
+		from sp_filter         import filt_ctf
+	else:	 from sp_reconstruction import rec3D_MPI_noCTF
 
 	if myid == main_node:
 		
@@ -13236,7 +13236,7 @@ def ali3d_shc_simple_mpi(stack, ref_vol, maskfile = None, ir = 1, ou = -1, rs = 
 			if myid == main_node:
 				recvbuf = map(float, recvbuf)
 				total_checked_refs = sum(total_checked_refs)
-				from statistics import hist_list
+				from sp_statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				log.add("=========================")
@@ -13254,7 +13254,7 @@ def ali3d_shc_simple_mpi(stack, ref_vol, maskfile = None, ir = 1, ou = -1, rs = 
 			#=========================================================================
 			# centering
 			if center == -1 and sym[0] == 'c':
-				from utilities      import estimate_3D_center_MPI, rotate_3D_shift
+				from sp_utilities      import estimate_3D_center_MPI, rotate_3D_shift
 				cs[0], cs[1], cs[2], dummy, dummy = estimate_3D_center_MPI(data, total_nima, myid, number_of_proc, main_node, mpi_comm=mpi_comm)
 # 				if myid == main_node:
 # 					msg = " Average center x = %10.3f        Center y = %10.3f        Center z = %10.3f\n"%(cs[0], cs[1], cs[2])
@@ -13328,7 +13328,7 @@ def ali3d_shc_simple_mpi(stack, ref_vol, maskfile = None, ir = 1, ou = -1, rs = 
 
 
 def shc(data, refrings, numr, xrng, yrng, step, an, finfo=None):
-	from utilities    import compose_transform2
+	from sp_utilities    import compose_transform2
 	from math         import cos, sin, pi
 	from EMAN2 import Vec2f
 
@@ -13379,7 +13379,7 @@ def shc(data, refrings, numr, xrng, yrng, step, an, finfo=None):
 		t2 = Transform({"type":"spider","phi":phi,"theta":theta,"psi":psi})
 		t2.set_trans(Vec2f(-s2x, -s2y))
 		data.set_attr("xform.projection", t2)
-		from pixel_error import max_3D_pixel_error
+		from sp_pixel_error import max_3D_pixel_error
 		pixel_error = max_3D_pixel_error(t1, t2, numr[-3])
 		if finfo:
 			finfo.write( "New parameters: %9.4f %9.4f %9.4f %9.4f %9.4f %10.5f  %11.3e\n\n" %(phi, theta, psi, s2x, s2y, peak, pixel_error))
@@ -13431,22 +13431,22 @@ def ali3d_shcMPI2(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 	    center = -1, maxit = 5, CTF = False, snr = 1.0,  ref_a = "S", sym = "c1",  user_func_name = "ref_ali3d",
 	    fourvar = True, npad = 4, debug = False, termprec = 0.0 ):
 
-	from alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
-	from utilities       import model_circle, get_image, drop_image, get_input_from_string
-	from utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
-	from utilities       import send_attr_dict, angle_between_projections_directions
-	from utilities       import get_params_proj, file_type, set_params_proj
-	from fundamentals    import rot_avg_image
+	from sp_alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
+	from sp_utilities       import model_circle, get_image, drop_image, get_input_from_string
+	from sp_utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
+	from sp_utilities       import send_attr_dict, angle_between_projections_directions
+	from sp_utilities       import get_params_proj, file_type, set_params_proj
+	from sp_fundamentals    import rot_avg_image
 	import os
 	import types
-	from utilities       import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities       import print_begin_msg, print_end_msg, print_msg
 	from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi             import mpi_reduce, MPI_INT, MPI_SUM
-	from filter          import filt_ctf
-	from projection      import prep_vol, prgs
-	from statistics      import hist_list, varf3d_MPI
-	from applications    import MPI_start_end
-	from development     import shc
+	from sp_filter          import filt_ctf
+	from sp_projection      import prep_vol, prgs
+	from sp_statistics      import hist_list, varf3d_MPI
+	from sp_applications    import MPI_start_end
+	from sp_development     import shc
 	from math            import sqrt
 	from random import random
 
@@ -13459,8 +13459,8 @@ def ali3d_shcMPI2(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 
 	if myid == main_node:
 		os.mkdir(outdir)
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 		print_begin_msg("ali3d_shcMPI")
 	mpi_barrier(MPI_COMM_WORLD)
 
@@ -13513,8 +13513,8 @@ def ali3d_shcMPI2(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 	if last_ring < 0:	last_ring = int(nx/2) - 2
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                 : %s\n"%(stack))
 		print_msg("Reference volume            : %s\n"%(ref_vol))	
@@ -13549,9 +13549,9 @@ def ali3d_shcMPI2(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 
 	fscmask = mask3D  #model_circle(last_ring,nx,nx,nx)  For a fancy mask circle would work better  PAP 7/21/11
 	if CTF:
-		from reconstruction import rec3D_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import rec3D_MPI_noCTF
+		from sp_reconstruction import rec3D_MPI
+		from sp_filter         import filt_ctf
+	else:	 from sp_reconstruction import rec3D_MPI_noCTF
 
 	if myid == main_node:
 		if file_type(stack) == "bdb":
@@ -13697,7 +13697,7 @@ def ali3d_shcMPI2(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 				#print im, get_params_proj(data[im])
 				"""
 				if deltapsi[N_step] > 0.0:
-					from alignment import proj_ali_incore_delta
+					from sp_alignment import proj_ali_incore_delta
 					peak, pixer[im] = proj_ali_incore_delta(data[im],refrings,numr,xrng[N_step],yrng[N_step],step[N_step],startpsi[N_step],deltapsi[N_step],finfo)						
 				elif an[N_step] == -1:
 					peak, pixer[im] = proj_ali_incore(data[im],refrings,numr,xrng[N_step],yrng[N_step],step[N_step],finfo)
@@ -13722,7 +13722,7 @@ def ali3d_shcMPI2(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 			terminate = 0
 			if myid == main_node:
 				recvbuf = map(float, recvbuf)
-				from statistics import hist_list
+				from sp_statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if region[0] < 0.0:  region[0] = 0.0
@@ -13750,7 +13750,7 @@ def ali3d_shcMPI2(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 			#=========================================================================
 			# centering
 			if center == -1 and sym[0] == 'c':
-				from utilities      import estimate_3D_center_MPI, rotate_3D_shift
+				from sp_utilities      import estimate_3D_center_MPI, rotate_3D_shift
 				cs[0], cs[1], cs[2], dummy, dummy = estimate_3D_center_MPI(data, total_nima, myid, number_of_proc, main_node)
 				if myid == main_node:
 					msg = " Average center x = %10.3f        Center y = %10.3f        Center z = %10.3f\n"%(cs[0], cs[1], cs[2])
@@ -13770,10 +13770,10 @@ def ali3d_shcMPI2(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 			par_str = ['xform.projection', 'previousmax', 'ID']
 			if myid == main_node:
 				if(file_type(stack) == "bdb"):
-					from utilities import recv_attr_dict_bdb
+					from sp_utilities import recv_attr_dict_bdb
 					recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 				else:
-					from utilities import recv_attr_dict
+					from sp_utilities import recv_attr_dict
 					recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 				# save parameters to file
 				paro = [None]*total_nima
@@ -13782,7 +13782,7 @@ def ali3d_shcMPI2(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 					a1,a2,a3,a4,a5 = get_params_proj(projs_headers[im])
 					previousmax = projs_headers[im].get_attr("previousmax")
 					paro[im] = [a1,a2,a3,a4,a5,previousmax]
-				from utilities import write_text_row
+				from sp_utilities import write_text_row
 				write_text_row(paro,os.path.join(outdir, "params%04d.txt"%(total_iter)))
 				final_params = paro
 				del projs_headers
@@ -13841,9 +13841,9 @@ def ali3d_shcMPI2(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 
 
 def assign_projs_to_refs_hungarian(projs, refrings, numr, xrng, yrng, step):
-	from utilities  import compose_transform2
-	from global_def import Util
-	from pixel_error import max_3D_pixel_error
+	from sp_utilities  import compose_transform2
+	from sp_global_def import Util
+	from sp_pixel_error import max_3D_pixel_error
 	nx = projs[0].get_xsize()
 	ny = projs[0].get_ysize()
 	mode = "F"
@@ -13905,25 +13905,25 @@ def ali3d_saturn2_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, 
 	    center = -1, maxit = 5, CTF = False, snr = 1.0,  ref_a = "S", sym = "c1",
 	    user_func_name = "ref_ali3d", fourvar = True, npad = 4, debug = False, termprec = 0.0):
 
-	from alignment      import proj_ali_incore_local
-	from utilities      import model_circle, drop_image, get_image, get_input_from_string
-	from utilities      import get_params_proj, file_type, bcast_EMData_to_all
-	from utilities      import estimate_3D_center_MPI, rotate_3D_shift
-	from filter         import filt_params, fit_tanh, filt_tanl, filt_ctf
-	from statistics     import fsc_mask, hist_list
+	from sp_alignment      import proj_ali_incore_local
+	from sp_utilities      import model_circle, drop_image, get_image, get_input_from_string
+	from sp_utilities      import get_params_proj, file_type, bcast_EMData_to_all
+	from sp_utilities      import estimate_3D_center_MPI, rotate_3D_shift
+	from sp_filter         import filt_params, fit_tanh, filt_tanl, filt_ctf
+	from sp_statistics     import fsc_mask, hist_list
 	import os
 	import types
-	from utilities      import print_begin_msg, print_end_msg, print_msg
-	from alignment      import Numrinit, prepare_refrings
-	from projection     import prep_vol
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg
+	from sp_alignment      import Numrinit, prepare_refrings
+	from sp_projection     import prep_vol
 	from math           import sqrt
 	from mpi            import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, mpi_barrier, MPI_INT, MPI_COMM_WORLD
-	from utilities      import wrap_mpi_bcast, wrap_mpi_gatherv
-	from applications   import MPI_start_end
+	from sp_utilities      import wrap_mpi_bcast, wrap_mpi_gatherv
+	from sp_applications   import MPI_start_end
 	from random         import shuffle
 
-	import user_functions
-	user_func = user_functions.factory[user_func_name]
+	import sp_user_functions
+	user_func = sp_user_functions.factory[user_func_name]
 
 	mpi_comm = MPI_COMM_WORLD
 	main_node = 0
@@ -13934,8 +13934,8 @@ def ali3d_saturn2_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, 
 	if myid == 0:
 		if os.path.exists(outdir):  ERROR('Output directory exists, please change the name and restart the program', "ali3d", 1)
 		os.mkdir(outdir)
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 		print_begin_msg("ali3d_saturn")
 
 	xrng        = get_input_from_string(xr)
@@ -13988,10 +13988,10 @@ def ali3d_saturn2_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, 
 	numr   = Numrinit(first_ring, last_ring, rstep, "F")
 
 	if CTF:
-		from reconstruction import recons3d_4nn_ctf_MPI
-		from filter         import filt_ctf
+		from sp_reconstruction import recons3d_4nn_ctf_MPI
+		from sp_filter         import filt_ctf
 	else: 
-		from reconstruction import recons3d_4nn_MPI
+		from sp_reconstruction import recons3d_4nn_MPI
 
 	#if debug:  outf = file(os.path.join(outdir, "progress"), "w")
 	#else:      outf = None
@@ -14087,7 +14087,7 @@ def ali3d_saturn2_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, 
 				
 				# =============== Hungarian algorithm
 				if myid == 0:
-					from statistics import Munkres
+					from sp_statistics import Munkres
 					m = Munkres()
 					assignment_raw = m.compute(peaks)
 					assignment = [0] * total_nima
@@ -14169,12 +14169,12 @@ def ali3d_saturn2_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, 
 				paro[im] = [a1,a2,a3,a4,a5]
 			paro = wrap_mpi_gatherv(paro, 0)
 			if myid == 0:
-				from utilities import write_text_row
+				from sp_utilities import write_text_row
 				write_text_row(paro,os.path.join(outdir, "params%04d.txt"%(N_step*max_iter+Iter+1)))
 				del paro
 			"""
 			#  here we write header info
-			from utilities import write_headers
+			from sp_utilities import write_headers
 			#from utilities import write_select_headers
 			if CTF:
 				for dat in data:  dat.set_attr('ctf_applied',0)
@@ -14234,13 +14234,13 @@ def ali3d_saturn2(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs =
 
 # returns [ref_id, peak, pixel_error, Transform3D]*number_of_assigned_refs sorted by peak (desc)
 def proj_ali_incore_peaklist(data, refrings, numr, xrng, yrng, step, finfo=None, number_of_assigned_refs=1):
-	from utilities   import compose_transform2
+	from sp_utilities   import compose_transform2
 	from EMAN2       import Vec2f
-	from pixel_error import max_3D_pixel_error
+	from sp_pixel_error import max_3D_pixel_error
 
 	ID = data.get_attr("ID")
 	if finfo:
-		from utilities    import get_params_proj
+		from sp_utilities    import get_params_proj
 		phi, theta, psi, s2x, s2y = get_params_proj(data)
 		finfo.write("Image id: %6d\n"%(ID))
 		finfo.write("Old parameters: %9.4f %9.4f %9.4f %9.4f %9.4f\n"%(phi, theta, psi, s2x, s2y))
@@ -14307,25 +14307,25 @@ def ali3d_saturnMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs
 	    center = -1, maxit = 5, CTF = False, snr = 1.0,  ref_a = "S", sym = "c1",
 	    user_func_name = "ref_ali3d", fourvar = True, npad = 4, debug = False, termprec = 0.0):
 
-	from alignment      import proj_ali_incore_local
-	from utilities      import model_circle, drop_image, get_image, get_input_from_string
-	from utilities      import get_params_proj, file_type, bcast_EMData_to_all
-	from utilities      import estimate_3D_center_MPI, rotate_3D_shift
-	from filter         import filt_params, fit_tanh, filt_tanl, filt_ctf
-	from statistics     import fsc_mask, hist_list
+	from sp_alignment      import proj_ali_incore_local
+	from sp_utilities      import model_circle, drop_image, get_image, get_input_from_string
+	from sp_utilities      import get_params_proj, file_type, bcast_EMData_to_all
+	from sp_utilities      import estimate_3D_center_MPI, rotate_3D_shift
+	from sp_filter         import filt_params, fit_tanh, filt_tanl, filt_ctf
+	from sp_statistics     import fsc_mask, hist_list
 	import os
 	import types
-	from utilities      import print_begin_msg, print_end_msg, print_msg
-	from alignment      import Numrinit, prepare_refrings
-	from projection     import prep_vol
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg
+	from sp_alignment      import Numrinit, prepare_refrings
+	from sp_projection     import prep_vol
 	from math           import sqrt
 	from mpi            import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, mpi_barrier, MPI_INT, MPI_COMM_WORLD
-	from utilities      import wrap_mpi_bcast, wrap_mpi_gatherv
-	from applications   import MPI_start_end
+	from sp_utilities      import wrap_mpi_bcast, wrap_mpi_gatherv
+	from sp_applications   import MPI_start_end
 	from random         import shuffle
 
-	import user_functions
-	user_func = user_functions.factory[user_func_name]
+	import sp_user_functions
+	user_func = sp_user_functions.factory[user_func_name]
 
 	mpi_comm = MPI_COMM_WORLD
 	main_node = 0
@@ -14336,8 +14336,8 @@ def ali3d_saturnMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs
 	if myid == 0:
 		if os.path.exists(outdir):  ERROR('Output directory exists, please change the name and restart the program', "ali3d", 1)
 		os.mkdir(outdir)
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 		print_begin_msg("ali3d_saturn")
 
 	xrng        = get_input_from_string(xr)
@@ -14390,10 +14390,10 @@ def ali3d_saturnMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs
 	numr   = Numrinit(first_ring, last_ring, rstep, "F")
 
 	if CTF:
-		from reconstruction import recons3d_4nn_ctf_MPI
-		from filter         import filt_ctf
+		from sp_reconstruction import recons3d_4nn_ctf_MPI
+		from sp_filter         import filt_ctf
 	else: 
-		from reconstruction import recons3d_4nn_MPI
+		from sp_reconstruction import recons3d_4nn_MPI
 
 	#if debug:  outf = file(os.path.join(outdir, "progress"), "w")
 	#else:      outf = None
@@ -14594,12 +14594,12 @@ def ali3d_saturnMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs
 				paro[im] = [a1,a2,a3,a4,a5]
 			paro = wrap_mpi_gatherv(paro, 0)
 			if myid == 0:
-				from utilities import write_text_row
+				from sp_utilities import write_text_row
 				write_text_row(paro,os.path.join(outdir, "params%04d.txt"%(N_step*max_iter+Iter+1)))
 				del paro
 			"""
 			#  here we write header info
-			from utilities import write_headers
+			from sp_utilities import write_headers
 			#from utilities import write_select_headers
 			if CTF:
 				for dat in data:  dat.set_attr('ctf_applied',0)
@@ -14622,28 +14622,28 @@ def ali3d_a(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
             xr = "4 2 2 1", yr = "-1", ts = "1 1 0.5 0.25", delta="10 6 4 4", an="-1", 
 	    center = 1.0, maxit = 5, CTF = False, ref_a = "S", sym="c1", user_func_name="ref_ali3d"):
 
-	from utilities      import model_circle, drop_image
-	from utilities      import get_image, get_input_from_string
-	from utilities      import get_arb_params, set_arb_params
-	from filter         import filt_params, filt_btwl, filt_from_fsc, filt_table, fit_tanh, filt_tanl
-	from alignment	    import proj_ali_incore, proj_ali_incore_local
-	from statistics     import fsc_mask
-	from fundamentals   import fft
-	from reconstruction import recons3d_nn_SSNR
+	from sp_utilities      import model_circle, drop_image
+	from sp_utilities      import get_image, get_input_from_string
+	from sp_utilities      import get_arb_params, set_arb_params
+	from sp_filter         import filt_params, filt_btwl, filt_from_fsc, filt_table, fit_tanh, filt_tanl
+	from sp_alignment	    import proj_ali_incore, proj_ali_incore_local
+	from sp_statistics     import fsc_mask
+	from sp_fundamentals   import fft
+	from sp_reconstruction import recons3d_nn_SSNR
 	import os
 	import types
-	from utilities      import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg
 
-	import user_functions
-	user_func = user_functions.factory[user_func_name]
+	import sp_user_functions
+	user_func = sp_user_functions.factory[user_func_name]
 
-	if CTF : from reconstruction import recons3d_4nn_ctf
-	else   : from reconstruction import recons3d_4nn
+	if CTF : from sp_reconstruction import recons3d_4nn_ctf
+	else   : from sp_reconstruction import recons3d_4nn
 
 	if os.path.exists(outdir):  ERROR('Output directory exists, please change the name and restart the program', " ali3d_a", 1)
 	os.mkdir(outdir)
-	import global_def
-	global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+	import sp_global_def
+	sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 	print_begin_msg("ali3d_a")
 
 	xrng        = get_input_from_string(xr)
@@ -14737,11 +14737,11 @@ def ali3d_a(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 			#  call user-supplied function to prepare reference image, i.e., center and filter it
 			vol, cs = user_func( ref_data )
 			if center == 1:
-				from utilities import rotate_3D_shift
+				from sp_utilities import rotate_3D_shift
 				rotate_3D_shift(data, [-cs[0], -cs[1], -cs[2]])
 			drop_image(vol, os.path.join(outdir, "volf%04d.hdf"%(N_step*max_iter+Iter+1)))
 	#  here we  write header info
-	from utilities import write_headers
+	from sp_utilities import write_headers
 	write_headers( stack, data, range(nima))
 	print_end_msg("ali3d_a")
 
@@ -14751,30 +14751,30 @@ def ali3d_a(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 def Xehelix_MPI_test(stack, ref_vol, outdir, delta, psi_max, search_rng, range, ywobble, pixel_size, dp, dphi, fract, rmax, rmin, FindPsi = True, maskfile = None, \
 	    maxit = 1, CTF = False, snr = 1.0, sym = "c1",  user_func_name = "helical", npad = 2, debug = False):
 
-	from alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
-	from alignment       import ringwe, ang_n
-	from utilities       import model_circle, get_image, drop_image, get_input_from_string, peak_search, model_cylinder, pad, model_blank
-	from utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
-	from utilities       import send_attr_dict, sym_vol, get_input_from_string
-	from utilities       import get_params_proj, set_params_proj, file_type, compose_transform2
-	from fundamentals    import rot_avg_image, ccf, fft, rot_shift2D
+	from sp_alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
+	from sp_alignment       import ringwe, ang_n
+	from sp_utilities       import model_circle, get_image, drop_image, get_input_from_string, peak_search, model_cylinder, pad, model_blank
+	from sp_utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
+	from sp_utilities       import send_attr_dict, sym_vol, get_input_from_string
+	from sp_utilities       import get_params_proj, set_params_proj, file_type, compose_transform2
+	from sp_fundamentals    import rot_avg_image, ccf, fft, rot_shift2D
 	import os
 	import types
-	from utilities       import print_begin_msg, print_end_msg, print_msg, chunks_distribution
+	from sp_utilities       import print_begin_msg, print_end_msg, print_msg, chunks_distribution
 	from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi             import mpi_reduce, MPI_INT, MPI_SUM
-	from filter          import filt_ctf
-	from projection      import prep_vol, prgs
+	from sp_filter          import filt_ctf
+	from sp_projection      import prep_vol, prgs
 	#from statistics      import hist_list, varf3d_MPI, fsc_mask
-	from applications	 import MPI_start_end, header
-	from pixel_error     import ordersegments
+	from sp_applications	 import MPI_start_end, header
+	from sp_pixel_error     import ordersegments
 	from time            import time
 	from copy 			 import copy
 	from math 			 import sqrt
 
 	def rot2pad(imi, alpha=0.0, sx=0.0, sy=0.0):
-		from utilities    import pad
-		from fundamentals import rot_shift2D
+		from sp_utilities    import pad
+		from sp_fundamentals import rot_shift2D
 		lnx = imi.get_xsize()
 		lny = imi.get_ysize()
 		ln = max(lnx,lny)
@@ -14795,8 +14795,8 @@ def Xehelix_MPI_test(stack, ref_vol, outdir, delta, psi_max, search_rng, range, 
 
 	if myid == main_node:
 		os.mkdir(outdir)
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 		print_begin_msg("ehelix_MPI")
 	mpi_barrier(MPI_COMM_WORLD)
 
@@ -14825,8 +14825,8 @@ def Xehelix_MPI_test(stack, ref_vol, outdir, delta, psi_max, search_rng, range, 
 	delta       = get_input_from_string(delta)[0]
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                               : %s\n"%(stack))
 		print_msg("Reference volume                          : %s\n"%(ref_vol))	
@@ -14852,9 +14852,9 @@ def Xehelix_MPI_test(stack, ref_vol, outdir, delta, psi_max, search_rng, range, 
 
 	fscmask = mask3D
 	if CTF:
-		from reconstruction import recons3d_4nn_ctf_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import recons3d_4nn_MPI
+		from sp_reconstruction import recons3d_4nn_ctf_MPI
+		from sp_filter         import filt_ctf
+	else:	 from sp_reconstruction import recons3d_4nn_MPI
 
 	if( myid == 0):
 		infils = EMUtil.get_all_attributes(stack, "filament")
@@ -15065,10 +15065,10 @@ def Xehelix_MPI_test(stack, ref_vol, outdir, delta, psi_max, search_rng, range, 
 		if myid == main_node:
 			start_time = time()
 			if(file_type(stack) == "bdb"):
-				from utilities import recv_attr_dict_bdb
+				from sp_utilities import recv_attr_dict_bdb
 				recv_attr_dict_bdb(main_node, stack, data, par_str, 0, nima, nproc)
 			else:
-				from utilities import recv_attr_dict
+				from sp_utilities import recv_attr_dict
 				recv_attr_dict(main_node, stack, data, par_str, 0, nima, nproc)
 			print_msg("Time to write header information= %d\n"%(time()-start_time))
 			start_time = time()
@@ -15086,8 +15086,8 @@ def consistency(params, coords,pixel_size, dp, dphi):
 	params: parameters for segments in this filament
 	coords: coordinates for segments in this filament
 	'''
-	from development import predict
-	from pixel_error   import angle_diff
+	from sp_development import predict
+	from sp_pixel_error   import angle_diff
 	from copy import copy
 
 	def get_dist(c1, c2):
@@ -15144,9 +15144,9 @@ def consistency(params, coords,pixel_size, dp, dphi):
 
 # Calculate averages per filament to a given stack (wrap for ave_var in statistics)
 def ave_ali_filament(name_stack, name_out = None, ali = False, active = False, param_to_save_size = None, set_as_member_id = None):
-	from statistics 	import ave_var, add_ave_varf, k_means_list_active
-	from utilities  	import file_type
-	from pixel_error  	import ordersegments
+	from sp_statistics 	import ave_var, add_ave_varf, k_means_list_active
+	from sp_utilities  	import file_type
+	from sp_pixel_error  	import ordersegments
 	"""
 	   This function is called by sxave_ali.py
 	"""
@@ -15174,7 +15174,7 @@ def ave_ali_filament(name_stack, name_out = None, ali = False, active = False, p
 			ave.write_image(name_out, i)
 
 def sum_lines(img):
-	from utilities import model_blank
+	from sp_utilities import model_blank
 	nx  = img.get_xsize()
 	ny  = img.get_ysize()
 
@@ -15189,23 +15189,23 @@ def symsearch_MPI(ref_vol, outdir, maskfile, dp, ndp, dp_step, dphi, ndphi, dphi
 	rmin, rmax, fract, sym, user_func_name, datasym,\
 	pixel_size, debug):
 
-	from alignment      import Numrinit, prepare_refrings, proj_ali_helical, proj_ali_helical_90, proj_ali_helical_local, proj_ali_helical_90_local, helios,helios7
-	from utilities      import model_circle, get_image, drop_image, get_input_from_string, pad, model_blank, sym_vol
-	from utilities      import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
-	from utilities      import send_attr_dict
-	from utilities      import get_params_proj, set_params_proj, file_type
-	from fundamentals   import rot_avg_image
-	from pixel_error    import max_3D_pixel_error
+	from sp_alignment      import Numrinit, prepare_refrings, proj_ali_helical, proj_ali_helical_90, proj_ali_helical_local, proj_ali_helical_90_local, helios,helios7
+	from sp_utilities      import model_circle, get_image, drop_image, get_input_from_string, pad, model_blank, sym_vol
+	from sp_utilities      import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
+	from sp_utilities      import send_attr_dict
+	from sp_utilities      import get_params_proj, set_params_proj, file_type
+	from sp_fundamentals   import rot_avg_image
+	from sp_pixel_error    import max_3D_pixel_error
 	import os
 	import types
-	from utilities      import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg
 	from mpi            import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi            import mpi_recv,  mpi_send, MPI_TAG_UB
 	from mpi            import mpi_reduce, MPI_INT, MPI_SUM
-	from filter         import filt_ctf
-	from projection     import prep_vol, prgs
-	from statistics     import hist_list, varf3d_MPI
-	from applications   import MPI_start_end
+	from sp_filter         import filt_ctf
+	from sp_projection     import prep_vol, prgs
+	from sp_statistics     import hist_list, varf3d_MPI
+	from sp_applications   import MPI_start_end
 	from EMAN2 import Vec2f
 	from string    import lower,split
 	from math import cos, pi
@@ -15225,8 +15225,8 @@ def symsearch_MPI(ref_vol, outdir, maskfile, dp, ndp, dp_step, dphi, ndphi, dphi
 
 	if myid == main_node:
 		os.mkdir(outdir)
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 	mpi_barrier(MPI_COMM_WORLD)
 
 	nlprms = (2*ndp+1)*(2*ndphi+1)
@@ -15248,8 +15248,8 @@ def symsearch_MPI(ref_vol, outdir, maskfile, dp, ndp, dp_step, dphi, ndphi, dphi
 	vol.read_image(ref_vol)
 	
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Reference volume                          : %s\n"%(ref_vol))	
 		print_msg("Output directory                          : %s\n"%(outdir))
@@ -15354,20 +15354,20 @@ def nlocal_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cent
 	"""
 		
 	"""
-	from alignment        import eqproj_cascaded_ccc
-	from filter           import filt_ctf
-	from projection       import prep_vol
-	from utilities        import bcast_number_to_all, model_circle, get_params_proj, set_params_proj
-	from utilities        import bcast_EMData_to_all, bcast_list_to_all, send_attr_dict
-	from utilities        import get_image, drop_image, file_type
-	from utilities        import amoeba_multi_level, rotate_3D_shift, estimate_3D_center_MPI
-	from utilities        import print_begin_msg, print_end_msg, print_msg
-	from reconstruction   import rec3D_MPI, rec3D_MPI_noCTF
-	from statistics       import varf3d_MPI
+	from sp_alignment        import eqproj_cascaded_ccc
+	from sp_filter           import filt_ctf
+	from sp_projection       import prep_vol
+	from sp_utilities        import bcast_number_to_all, model_circle, get_params_proj, set_params_proj
+	from sp_utilities        import bcast_EMData_to_all, bcast_list_to_all, send_attr_dict
+	from sp_utilities        import get_image, drop_image, file_type
+	from sp_utilities        import amoeba_multi_level, rotate_3D_shift, estimate_3D_center_MPI
+	from sp_utilities        import print_begin_msg, print_end_msg, print_msg
+	from sp_reconstruction   import rec3D_MPI, rec3D_MPI_noCTF
+	from sp_statistics       import varf3d_MPI
 	from math             import pi
 	from mpi              import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi              import mpi_reduce, MPI_INT, MPI_SUM
-	from applications     import MPI_start_end
+	from sp_applications     import MPI_start_end
 	from EMAN2 import Processor
 	import os
 	import sys
@@ -15378,7 +15378,7 @@ def nlocal_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cent
 	myid = mpi_comm_rank(MPI_COMM_WORLD)
 
 	if CTF:
-		from filter import filt_ctf
+		from sp_filter import filt_ctf
 
 	main_node = 0
 	
@@ -15387,11 +15387,11 @@ def nlocal_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cent
 
 	if myid == main_node:
 		os.mkdir(outdir)
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 		print_begin_msg("local_ali3d_MPI")
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 		if CTF:
 			ima = EMData()
 			ima.read_image(stack, 0)
@@ -15454,8 +15454,8 @@ def nlocal_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cent
 	n_of_chunks = int(1.0/chunk)
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                 : %s\n"%(stack))
 		print_msg("Output directory            : %s\n"%(outdir))
@@ -15616,7 +15616,7 @@ def nlocal_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cent
 				t1 = dataim[imn-image_start].get_attr("xform.projection")
 				dp = t1.get_params("spider")
 				data[5] = [dp["phi"], dp["theta"], dp["psi"], -dp["tx"], -dp["ty"]]
-				from development import EVAL
+				from sp_development import EVAL
 				if debug:
 					initial = EVAL(data[5], data) # this is if we need initial discrepancy
 					finfo.write("Image "+str(imn)+"\n")
@@ -15624,7 +15624,7 @@ def nlocal_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cent
 					#print "init  ",data[5],initial
 				#from random import random
 				#data[5] = [(random()-0.5)*2,(random()-0.5)*2]  #  HERE !!!!!!!!!!!
-				from development import cshcca
+				from sp_development import cshcca
 				initialPoint = [dp["phi"], dp["theta"], dp["psi"], -dp["tx"], -dp["ty"]]
 				initialStepSizes = [delta/1.2,delta/1.2, delta/1.2, ts/1.2, ts/1.2 ]
 				optm_params, score = cshcca( initialPoint, initialStepSizes,  EVAL, data)
@@ -15639,7 +15639,7 @@ def nlocal_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cent
 				t2 = Transform({"type":"spider","phi":optm_params[0],"theta":optm_params[1],"psi":optm_params[2]})
 				t2.set_trans(Vec2f(-optm_params[3], -optm_params[4]))
 				dataim[imn-image_start].set_attr("xform.projection", t2)
-				from pixel_error import max_3D_pixel_error
+				from sp_pixel_error import max_3D_pixel_error
 				pixer[imn-image_start] = max_3D_pixel_error(t1, t2, last_ring)
 				#set_params_proj(dataim[imn-image_start], optm_params[0])
 				if( myid == main_node ):
@@ -15653,12 +15653,12 @@ def nlocal_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cent
 			mpi_barrier(MPI_COMM_WORLD)
 			par_str = ['xform.projection', 'ID']
 			if myid == main_node:
-				from utilities import file_type
+				from sp_utilities import file_type
 				if(file_type(stack) == "bdb"):
-					from utilities import recv_attr_dict_bdb
+					from sp_utilities import recv_attr_dict_bdb
 					recv_attr_dict_bdb(main_node, stack, dataim, par_str, image_start, image_end, number_of_proc)
 				else:
-					from utilities import recv_attr_dict
+					from sp_utilities import recv_attr_dict
 					recv_attr_dict(main_node, stack, dataim, par_str, image_start, image_end, number_of_proc)
 			else:	        send_attr_dict(main_node, dataim, par_str, image_start, image_end)
 			if myid == main_node:
@@ -15672,7 +15672,7 @@ def nlocal_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cent
 		terminate = 0
 		if(myid == main_node):
 			recvbuf = map(float, recvbuf)
-			from statistics import hist_list
+			from sp_statistics import hist_list
 			lhist = 20
 			region, histo = hist_list(recvbuf, lhist)
 			if(region[0] < 0.0):  region[0] = 0.0
@@ -15749,8 +15749,8 @@ def cshcca( initialPoint, initialStepSizes,  EVAL, data, someAcceleration=1.2, e
 			return currentPoint, qv;
 
 def EVAL(x, data):
-	from statistics import ccc
-	from projection import prgs
+	from sp_statistics import ccc
+	from sp_projection import prgs
 	return ccc(prgs(data[0], data[1], x), data[2], data[3])
 	
 
@@ -15758,30 +15758,30 @@ def EVAL(x, data):
 def ehelix_MPI_lastringtest(stack, ref_vol, outdir, seg_ny, delta, psi_max, search_rng, rng, ywobble, pixel_size, dp, dphi, fract, rmax, rmin, FindPsi = True, maskfile = None, \
 	    maxit = 1, CTF = False, snr = 1.0, sym = "c1",  user_func_name = "helical", npad = 2, debug = False, doExhaustive=False, termprec=5.0):
 
-	from alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
-	from alignment       import ringwe, ang_n
-	from utilities       import model_circle, get_image, drop_image, get_input_from_string, peak_search, model_cylinder, pad, model_blank
-	from utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all, write_text_file
-	from utilities       import send_attr_dict, sym_vol, get_input_from_string
-	from utilities       import get_params_proj, set_params_proj, file_type, compose_transform2
-	from fundamentals    import rot_avg_image, ccf, fft, rot_shift2D
+	from sp_alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
+	from sp_alignment       import ringwe, ang_n
+	from sp_utilities       import model_circle, get_image, drop_image, get_input_from_string, peak_search, model_cylinder, pad, model_blank
+	from sp_utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all, write_text_file
+	from sp_utilities       import send_attr_dict, sym_vol, get_input_from_string
+	from sp_utilities       import get_params_proj, set_params_proj, file_type, compose_transform2
+	from sp_fundamentals    import rot_avg_image, ccf, fft, rot_shift2D
 	import os
 	import types
-	from utilities       import print_begin_msg, print_end_msg, print_msg, chunks_distribution
+	from sp_utilities       import print_begin_msg, print_end_msg, print_msg, chunks_distribution
 	from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi             import mpi_reduce, MPI_INT, MPI_SUM
-	from filter          import filt_ctf
-	from projection      import prep_vol, prgs
+	from sp_filter          import filt_ctf
+	from sp_projection      import prep_vol, prgs
 	#from statistics      import hist_list, varf3d_MPI, fsc_mask
-	from applications	 import MPI_start_end, header
-	from pixel_error     import ordersegments, max_3D_pixel_error
+	from sp_applications	 import MPI_start_end, header
+	from sp_pixel_error     import ordersegments, max_3D_pixel_error
 	from time            import time
 	from copy 			 import copy
 	from math 			 import sqrt
 	'''
 	def rot2pad(imi, alpha=0.0, sx=0.0, sy=0.0):
-		from utilities    import pad
-		from fundamentals import rot_shift2D
+		from sp_utilities    import pad
+		from sp_fundamentals import rot_shift2D
 		lnx = imi.get_xsize()
 		lny = imi.get_ysize()
 		ln = max(lnx,lny)
@@ -15802,8 +15802,8 @@ def ehelix_MPI_lastringtest(stack, ref_vol, outdir, seg_ny, delta, psi_max, sear
 
 	if myid == main_node:
 		os.mkdir(outdir)
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 		print_begin_msg("ehelix_MPI")
 	mpi_barrier(MPI_COMM_WORLD)
 
@@ -15843,8 +15843,8 @@ def ehelix_MPI_lastringtest(stack, ref_vol, outdir, seg_ny, delta, psi_max, sear
 	delta       = get_input_from_string(delta)[0]
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                               : %s\n"%(stack))
 		print_msg("Reference volume                          : %s\n"%(ref_vol))	
@@ -15872,9 +15872,9 @@ def ehelix_MPI_lastringtest(stack, ref_vol, outdir, seg_ny, delta, psi_max, sear
 
 	fscmask = mask3D
 	if CTF:
-		from reconstruction import recons3d_4nn_ctf_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import recons3d_4nn_MPI
+		from sp_reconstruction import recons3d_4nn_ctf_MPI
+		from sp_filter         import filt_ctf
+	else:	 from sp_reconstruction import recons3d_4nn_MPI
 
 	if( myid == 0):
 		infils = EMUtil.get_all_attributes(stack, "filament")
@@ -16138,7 +16138,7 @@ def ehelix_MPI_lastringtest(stack, ref_vol, outdir, seg_ny, delta, psi_max, sear
 			for ii in xrange(total_nima):
 				recvbuford.append( recvbuf[maptoimgID[ii]])
 			write_text_file([range(len(recvbuford)), recvbuford], os.path.join(outdir, "pixer_%04d.txt"%(Iter)) )
-			from statistics import hist_list
+			from sp_statistics import hist_list
 			lhist = 20
 			region, histo = hist_list(recvbuford, lhist)
 			if region[0] < 0.0:  region[0] = 0.0
@@ -16187,10 +16187,10 @@ def ehelix_MPI_lastringtest(stack, ref_vol, outdir, seg_ny, delta, psi_max, sear
 		if myid == main_node:
 			start_time = time()
 			if(file_type(stack) == "bdb"):
-				from utilities import recv_attr_dict_bdb
+				from sp_utilities import recv_attr_dict_bdb
 				recv_attr_dict_bdb(main_node, stack, data, par_str, 0, nima, nproc)
 			else:
-				from utilities import recv_attr_dict
+				from sp_utilities import recv_attr_dict
 				recv_attr_dict(main_node, stack, data, par_str, 0, nima, nproc)
 			print_msg("Time to write header information= %d\n"%(time()-start_time))
 			start_time = time()
@@ -16244,26 +16244,26 @@ def ali3d_saturn(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 					, snr, ref_a, sym, user_func_name, fourvar, npad, debug, termprec, gamma)
 		return
 
-	from alignment      import proj_ali_incore, proj_ali_incore_local
-	from utilities      import model_circle, drop_image, get_image, get_input_from_string
-	from utilities      import get_params_proj
-	from utilities      import estimate_3D_center, rotate_3D_shift
-	from filter         import filt_params, fit_tanh, filt_tanl, filt_ctf
-	from statistics     import fsc_mask
+	from sp_alignment      import proj_ali_incore, proj_ali_incore_local
+	from sp_utilities      import model_circle, drop_image, get_image, get_input_from_string
+	from sp_utilities      import get_params_proj
+	from sp_utilities      import estimate_3D_center, rotate_3D_shift
+	from sp_filter         import filt_params, fit_tanh, filt_tanl, filt_ctf
+	from sp_statistics     import fsc_mask
 	import os
 	import types
-	from utilities      import print_begin_msg, print_end_msg, print_msg, angle_between_projections_directions
-	from alignment      import Numrinit, prepare_refrings
-	from projection     import prep_vol
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg, angle_between_projections_directions
+	from sp_alignment      import Numrinit, prepare_refrings
+	from sp_projection     import prep_vol
 	from math           import sqrt
 
-	import user_functions
-	user_func = user_functions.factory[user_func_name]
+	import sp_user_functions
+	user_func = sp_user_functions.factory[user_func_name]
 
 	if os.path.exists(outdir):  ERROR('Output directory exists, please change the name and restart the program', "ali3d", 1)
 	os.mkdir(outdir)
-	import global_def
-	global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+	import sp_global_def
+	sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 	print_begin_msg("ali3d_saturn")
 
 	xrng        = get_input_from_string(xr)
@@ -16315,9 +16315,9 @@ def ali3d_saturn(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 	numr   = Numrinit(first_ring, last_ring, rstep, "F")
 
 	if CTF:
-		from reconstruction import recons3d_4nn_ctf
-		from filter         import filt_ctf
-	else: from reconstruction import recons3d_4nn
+		from sp_reconstruction import recons3d_4nn_ctf
+		from sp_filter         import filt_ctf
+	else: from sp_reconstruction import recons3d_4nn
 
 	if debug:  outf = file(os.path.join(outdir, "progress"), "w")
 	else:      outf = None
@@ -16378,7 +16378,7 @@ def ali3d_saturn(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 				else:
 					peak, pixel_error[im] = proj_ali_incore_local(data[im],refrings,numr,xrng[N_step],yrng[N_step],step[N_step],an[N_step])
 
-			from statistics import hist_list
+			from sp_statistics import hist_list
 			lhist = 20
 			region, histo = hist_list(pixel_error, lhist)
 			if region[0] < 0.0:  region[0] = 0.0
@@ -16434,12 +16434,12 @@ def ali3d_saturn(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 			for im in xrange(nima):
 				a1,a2,a3,a4,a5 = get_params_proj(data[im])
 				paro[im] = [a1,a2,a3,a4,a5]
-			from utilities import write_text_row
+			from sp_utilities import write_text_row
 			write_text_row(paro,os.path.join(outdir, "params%04d.txt"%(N_step*max_iter+Iter+1)))
 			del paro
 			"""
 			#  here we write header info
-			from utilities import write_headers
+			from sp_utilities import write_headers
 			#from utilities import write_select_headers
 			if CTF:
 				for dat in data:  dat.set_attr('ctf_applied',0)
@@ -16458,21 +16458,21 @@ def ali3d_MPI_chunks(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, r
 	    center = -1, maxit = 5, CTF = False, snr = 1.0,  ref_a = "S", sym = "c1",  user_func_name = "ref_ali3d",
 	    fourvar = True, npad = 4, debug = False, termprec = 0.0):
 
-	from alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
-	from utilities       import model_circle, get_image, drop_image, get_input_from_string
-	from utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
-	from utilities       import send_attr_dict
-	from utilities       import get_params_proj, file_type
-	from fundamentals    import rot_avg_image
+	from sp_alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
+	from sp_utilities       import model_circle, get_image, drop_image, get_input_from_string
+	from sp_utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
+	from sp_utilities       import send_attr_dict
+	from sp_utilities       import get_params_proj, file_type
+	from sp_fundamentals    import rot_avg_image
 	import os
 	import types
-	from utilities       import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities       import print_begin_msg, print_end_msg, print_msg
 	from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi             import mpi_reduce, MPI_INT, MPI_SUM
-	from filter          import filt_ctf
-	from projection      import prep_vol, prgs
-	from statistics      import hist_list, varf3d_MPI
-	from applications    import MPI_start_end
+	from sp_filter          import filt_ctf
+	from sp_projection      import prep_vol, prgs
+	from sp_statistics      import hist_list, varf3d_MPI
+	from sp_applications    import MPI_start_end
 
 
 	number_of_proc = mpi_comm_size(MPI_COMM_WORLD)
@@ -16484,8 +16484,8 @@ def ali3d_MPI_chunks(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, r
 
 	if myid == main_node:
 		os.mkdir(outdir)
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 		print_begin_msg("ali3d_MPI")
 	mpi_barrier(MPI_COMM_WORLD)
 
@@ -16538,8 +16538,8 @@ def ali3d_MPI_chunks(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, r
 	if last_ring < 0:	last_ring = int(nx/2) - 2
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                 : %s\n"%(stack))
 		print_msg("Reference volume            : %s\n"%(ref_vol))	
@@ -16575,9 +16575,9 @@ def ali3d_MPI_chunks(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, r
 
 	fscmask = mask3D  #model_circle(last_ring,nx,nx,nx)  For a fancy mask circle would work better  PAP 7/21/11
 	if CTF:
-		from reconstruction import rec3D_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import rec3D_MPI_noCTF
+		from sp_reconstruction import rec3D_MPI
+		from sp_filter         import filt_ctf
+	else:	 from sp_reconstruction import rec3D_MPI_noCTF
 
 	if myid == main_node:
 		if file_type(stack) == "bdb":
@@ -16671,7 +16671,7 @@ def ali3d_MPI_chunks(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, r
 	#  Please put he explanation what the equation is.  Where 1024**3 is coming from??  
 	#  In addition, it is unclear whether the equation is meant to be int or fload, now both re confused.
 	# Revized TD
-	schunk = int((global_def.MEM_PER_CPU_GB*gb_to_byte - mem_occupied*float_bytes) / mem_refring*float_bytes)
+	schunk = int((sp_global_def.MEM_PER_CPU_GB*gb_to_byte - mem_occupied*float_bytes) / mem_refring*float_bytes)
 
 
 # 	phiEqpsi is an argument of prepare_refrings(). In ali3d_MPI when prepare_refrings() is called no
@@ -16717,7 +16717,7 @@ def ali3d_MPI_chunks(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, r
 	
 				for im in xrange(nima):
 					if deltapsi[N_step] > 0.0:
-						from alignment import proj_ali_incore_delta
+						from sp_alignment import proj_ali_incore_delta
 						peak, pxr = proj_ali_incore_delta(data[im],refrings,numr,xrng[N_step],yrng[N_step],step[N_step],startpsi[N_step],deltapsi[N_step],finfo)						
 					elif an[N_step] == -1:
 						peak, pxr = proj_ali_incore(data[im],refrings,numr,xrng[N_step],yrng[N_step],step[N_step],finfo)
@@ -16744,7 +16744,7 @@ def ali3d_MPI_chunks(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, r
 			terminate = 0
 			if myid == main_node:
 				recvbuf = map(float, recvbuf)
-				from statistics import hist_list
+				from sp_statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if region[0] < 0.0:  region[0] = 0.0
@@ -16768,7 +16768,7 @@ def ali3d_MPI_chunks(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, r
 			terminate = int(terminate[0])
 
 			if center == -1 and sym[0] == 'c':
-				from utilities      import estimate_3D_center_MPI, rotate_3D_shift
+				from sp_utilities      import estimate_3D_center_MPI, rotate_3D_shift
 				cs[0], cs[1], cs[2], dummy, dummy = estimate_3D_center_MPI(data, total_nima, myid, number_of_proc, main_node)
 				if myid == main_node:
 					msg = " Average center x = %10.3f        Center y = %10.3f        Center z = %10.3f\n"%(cs[0], cs[1], cs[2])
@@ -16786,10 +16786,10 @@ def ali3d_MPI_chunks(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, r
 			par_str = ['xform.projection', 'previousmax', 'ID']
 			if myid == main_node:
 	   			if(file_type(stack) == "bdb"):
-	        			from utilities import recv_attr_dict_bdb
+	        			from sp_utilities import recv_attr_dict_bdb
 	        			recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 	        		else:
-	        			from utilities import recv_attr_dict
+	        			from sp_utilities import recv_attr_dict
 	        			recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 				print_msg("Time to write header information= %d\n"%(time()-start_time))
 				start_time = time()
@@ -16836,9 +16836,9 @@ def prepare_refrings_chunks( volft, kb, nz, ref_angles, ref_a, sym = "c1", numr 
 		ant - neighborhood for local searches.  I believe the fastest way to deal with it in case of point-group symmetry
 		        it to generate cushion projections within an/2 of the border of unique zone
 	"""
-	from projection   import prep_vol, prgs
-	from applications import MPI_start_end
-	from utilities    import even_angles, getfvec
+	from sp_projection   import prep_vol, prgs
+	from sp_applications import MPI_start_end
+	from sp_utilities    import even_angles, getfvec
 	from types import BooleanType
 
 	# mpi communicator can be sent by the MPI parameter
@@ -16900,7 +16900,7 @@ def prepare_refrings_chunks( volft, kb, nz, ref_angles, ref_a, sym = "c1", numr 
 			refrings[i] = cimage
 
 	if MPI:
-		from utilities import bcast_EMData_to_all
+		from sp_utilities import bcast_EMData_to_all
 		for i in xrange(num_ref):
 			for j in xrange(ncpu):
 				ref_start, ref_end = MPI_start_end(num_ref, ncpu, j)
@@ -16921,21 +16921,21 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 	    center = -1, maxit = 5, CTF = False, snr = 1.0,  ref_a = "S", sym = "c1",  user_func_name = "ref_ali3d",
 	    fourvar = True, npad = 2, debug = False, termprec = 0.0):
 
-	from alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
-	from utilities       import model_circle, get_image, drop_image, get_input_from_string
-	from utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
-	from utilities       import send_attr_dict
-	from utilities       import get_params_proj, file_type
-	from fundamentals    import rot_avg_image
+	from sp_alignment       import Numrinit, prepare_refrings, proj_ali_incore, proj_ali_incore_local, proj_ali_incore_local_psi
+	from sp_utilities       import model_circle, get_image, drop_image, get_input_from_string
+	from sp_utilities       import bcast_list_to_all, bcast_number_to_all, reduce_EMData_to_root, bcast_EMData_to_all
+	from sp_utilities       import send_attr_dict
+	from sp_utilities       import get_params_proj, file_type
+	from sp_fundamentals    import rot_avg_image
 	import os
 	import types
-	from utilities       import print_begin_msg, print_end_msg, print_msg
+	from sp_utilities       import print_begin_msg, print_end_msg, print_msg
 	from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi             import mpi_reduce, MPI_INT, MPI_SUM
-	from filter          import filt_ctf
-	from projection      import prep_vol, prgs
-	from statistics      import hist_list, varf3d_MPI
-	from applications    import MPI_start_end
+	from sp_filter          import filt_ctf
+	from sp_projection      import prep_vol, prgs
+	from sp_statistics      import hist_list, varf3d_MPI
+	from sp_applications    import MPI_start_end
 
 
 	number_of_proc = mpi_comm_size(MPI_COMM_WORLD)
@@ -16947,8 +16947,8 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 
 	if myid == main_node:
 		os.mkdir(outdir)
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 		print_begin_msg("ali3d_MPI")
 	mpi_barrier(MPI_COMM_WORLD)
 
@@ -17001,8 +17001,8 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 	if last_ring < 0:	last_ring = int(nx/2) - 2
 
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                 : %s\n"%(stack))
 		print_msg("Reference volume            : %s\n"%(ref_vol))
@@ -17038,9 +17038,9 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 
 	fscmask = mask3D  #model_circle(last_ring,nx,nx,nx)  For a fancy mask circle would work better  PAP 7/21/11
 	if CTF:
-		from reconstruction import rec3D_MPI
-		from filter         import filt_ctf
-	else:	 from reconstruction import rec3D_MPI_noCTF
+		from sp_reconstruction import rec3D_MPI
+		from sp_filter         import filt_ctf
+	else:	 from sp_reconstruction import rec3D_MPI_noCTF
 
 	if myid == main_node:
 		if file_type(stack) == "bdb":
@@ -17131,7 +17131,7 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 			for im in xrange(nima):
 				if deltapsi[N_step] > 0.0:
 					print "A1"
-					from alignment import proj_ali_incore_delta
+					from sp_alignment import proj_ali_incore_delta
 					peak, pixer[im] = proj_ali_incore_delta(data[im],refrings,numr,xrng[N_step],yrng[N_step],step[N_step],startpsi[N_step],deltapsi[N_step],finfo)
 				elif an[N_step] == -1:
 					print "A2"
@@ -17164,7 +17164,7 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 			terminate = 0
 			if myid == main_node:
 				recvbuf = map(float, recvbuf)
-				from statistics import hist_list
+				from sp_statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
 				if region[0] < 0.0:  region[0] = 0.0
@@ -17188,7 +17188,7 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 			terminate = int(terminate[0])
 
 			if center == -1 and sym[0] == 'c':
-				from utilities      import estimate_3D_center_MPI, rotate_3D_shift
+				from sp_utilities      import estimate_3D_center_MPI, rotate_3D_shift
 				cs[0], cs[1], cs[2], dummy, dummy = estimate_3D_center_MPI(data, total_nima, myid, number_of_proc, main_node)
 				if myid == main_node:
 					msg = " Average center x = %10.3f        Center y = %10.3f        Center z = %10.3f\n"%(cs[0], cs[1], cs[2])
@@ -17206,10 +17206,10 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 			par_str = ['xform.projection', 'previousmax', 'ID']
 			if myid == main_node:
 	   			if(file_type(stack) == "bdb"):
-	        			from utilities import recv_attr_dict_bdb
+	        			from sp_utilities import recv_attr_dict_bdb
 	        			recv_attr_dict_bdb(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 	        		else:
-	        			from utilities import recv_attr_dict
+	        			from sp_utilities import recv_attr_dict
 	        			recv_attr_dict(main_node, stack, data, par_str, image_start, image_end, number_of_proc)
 				print_msg("Time to write header information= %d\n"%(time()-start_time))
 				start_time = time()
@@ -17265,13 +17265,13 @@ def doCones_Horatio01():
 	# os.system("e2proc3d.py tmp.hdf my_volume.hdf --process=filter.lowpass.tanh:cutoff_abs=0.25:fall_off=0.35")
 
 
-	from utilities import get_symt, even_angles
+	from sp_utilities import get_symt, even_angles
 
 	from math import sin, cos, radians
 	from sys import exit
-	from morphology import  bracket_def
-	from utilities import assign_projangles
-	from projection import prep_vol
+	from sp_morphology import  bracket_def
+	from sp_utilities import assign_projangles
+	from sp_projection import prep_vol
 
 
 	def get_latest_output_file_increment_value(file_prefix):
@@ -17512,13 +17512,13 @@ def doCones_Horatio():
 	# os.system("e2proc3d.py tmp.hdf my_volume.hdf --process=filter.lowpass.tanh:cutoff_abs=0.25:fall_off=0.35")
 
 
-	from utilities import get_symt, even_angles
+	from sp_utilities import get_symt, even_angles
 
 	from math import sin, cos, radians
 	from sys import exit
-	from morphology import  bracket_def
-	from utilities import assign_projangles
-	from projection import prep_vol
+	from sp_morphology import  bracket_def
+	from sp_utilities import assign_projangles
+	from sp_projection import prep_vol
 
 	ref_a="S"
 	# cnx=0
@@ -17660,9 +17660,9 @@ def do_volume_mrk01(data, Tracker, iter, mpi_comm = None):
 	"""
 	from EMAN2          import Util
 	from mpi            import mpi_comm_rank, MPI_COMM_WORLD
-	from filter         import filt_table
-	from reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
-	from utilities      import bcast_EMData_to_all
+	from sp_filter         import filt_table
+	from sp_reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
+	from sp_utilities      import bcast_EMData_to_all
 	import types
 
 	if(mpi_comm == None):  mpi_comm = MPI_COMM_WORLD
@@ -17681,22 +17681,22 @@ def do_volume_mrk01(data, Tracker, iter, mpi_comm = None):
 		vol = data
 
 	if myid == 0:
-		from morphology import threshold
-		from filter     import filt_tanl, filt_btwl
-		from utilities  import model_circle, get_im
+		from sp_morphology import threshold
+		from sp_filter     import filt_tanl, filt_btwl
+		from sp_utilities  import model_circle, get_im
 		import types
 		nx = vol.get_xsize()
 		if(Tracker["constants"]["mask3D"] == None):
 			mask3D = model_circle(int(Tracker["constants"]["radius"]*float(nx)/float(Tracker["constants"]["nnxo"])+0.5), nx, nx, nx)
 		elif(Tracker["constants"]["mask3D"] == "auto"):
-			from utilities import adaptive_mask
+			from sp_utilities import adaptive_mask
 			mask3D = adaptive_mask(vol)
 		else:
 			if( type(Tracker["constants"]["mask3D"]) == types.StringType ):  mask3D = get_im(Tracker["constants"]["mask3D"])
 			else:  mask3D = (Tracker["constants"]["mask3D"]).copy()
 			nxm = mask3D.get_xsize()
 			if( nx != nxm):
-				from fundamentals import rot_shift3D
+				from sp_fundamentals import rot_shift3D
 				mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
 				nxm = mask3D.get_xsize()
 				assert(nx == nxm)
@@ -17707,8 +17707,8 @@ def do_volume_mrk01(data, Tracker, iter, mpi_comm = None):
 		vol = threshold(vol)
 		#Util.mul_img(vol, mask3D)
 		if( Tracker["PWadjustment"] ):
-			from utilities    import read_text_file
-			from fundamentals import rops_table, fftip, fft
+			from sp_utilities    import read_text_file
+			from sp_fundamentals import rops_table, fftip, fft
 			rt = read_text_file( Tracker["PWadjustment"] )
 			fftip(vol)
 			ro = rops_table(vol)
@@ -17804,7 +17804,7 @@ def total_size_of_object_in_memory(my_object):
 	fp = open(file_name_my_python_code, "w")
 	fp.write("#!/usr/bin/env python\n\n")
 	fp.write("from EMAN2 import *\n")
-	fp.write("from sparx import *\n")
+	fp.write("from sp_sparx import *\n")
 
 	for line in inspect.getsourcelines(load_object)[0]: fp.write(line)
 	for line in inspect.getsourcelines(individual_process)[0]: fp.write(line)
@@ -17848,10 +17848,10 @@ def determine_maximum_number_of_processes_per_node_from_all_nodes_that_belong_to
 def calculate_number_of_cones(volft, kb, delta, sym, cnx, cny, numr, mode, wr_four):
 
 	import sys
-	from alignment import prepare_refrings, refprojs, Numrinit, ringwe
-	from morphology import bracket_def, goldsearch_astigmatism
-	from applications import computenumberofrefs
-	from utilities import even_angles, assign_projangles, cone_ang, print_from_process
+	from sp_alignment import prepare_refrings, refprojs, Numrinit, ringwe
+	from sp_morphology import bracket_def, goldsearch_astigmatism
+	from sp_applications import computenumberofrefs
+	from sp_utilities import even_angles, assign_projangles, cone_ang, print_from_process
 	
 	
 	LOW_LIMIT_FOR_NUMBER_OF_REFERENCES_THAT_FIT_MEMORY = 100
@@ -17886,7 +17886,7 @@ def calculate_number_of_cones(volft, kb, delta, sym, cnx, cny, numr, mode, wr_fo
 		error_status = [1]
 		
 	from mpi import mpi_reduce, MPI_INT, MPI_SUM, MPI_COMM_WORLD, mpi_comm_rank, mpi_comm_size
-	from utilities import if_error_all_processes_quit_program
+	from sp_utilities import if_error_all_processes_quit_program
 	error_status = mpi_reduce(error_status, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 	if_error_all_processes_quit_program(error_status)	
 
@@ -17913,14 +17913,14 @@ def calculate_number_of_cones(volft, kb, delta, sym, cnx, cny, numr, mode, wr_fo
 
 def generate_indices_and_refrings(number_of_cones, nima, projangles, volft, kb, nx, delta, an, rangle, ref_a, sym, numr, MPI, phiEqpsi = "Zero"):
 	
-	from alignment import prepare_refrings, refprojs, Numrinit, ringwe, generate_list_of_reference_angles_for_search
-	from alignment import reduce_indices_so_that_angles_map_only_to_asymmetrix_unit_and_keep_mirror_info
-	from morphology import bracket_def, goldsearch_astigmatism
-	from applications import computenumberofrefs
-	from utilities import even_angles, assign_projangles_f, assign_projangles, cone_ang_f
-	from utilities import cone_ang_with_index
+	from sp_alignment import prepare_refrings, refprojs, Numrinit, ringwe, generate_list_of_reference_angles_for_search
+	from sp_alignment import reduce_indices_so_that_angles_map_only_to_asymmetrix_unit_and_keep_mirror_info
+	from sp_morphology import bracket_def, goldsearch_astigmatism
+	from sp_applications import computenumberofrefs
+	from sp_utilities import even_angles, assign_projangles_f, assign_projangles, cone_ang_f
+	from sp_utilities import cone_ang_with_index
 	import sys
-	from projection import prep_vol
+	from sp_projection import prep_vol
 
 	cnx = cny = nx//2 + 1
 	# numr = Numrinit(1,15)
@@ -17937,7 +17937,7 @@ def generate_indices_and_refrings(number_of_cones, nima, projangles, volft, kb, 
 			ref_angles[0][1] = 0.01
 		if( rangle > 0.0 ):
 			# shake
-			from utilities import rotate_shift_params
+			from sp_utilities import rotate_shift_params
 			ref_angles = rotate_shift_params(anglelist, [ delta*rangle, delta*rangle, delta*rangle ])
 		
 		#=========================================================================
@@ -17974,7 +17974,7 @@ def generate_indices_and_refrings(number_of_cones, nima, projangles, volft, kb, 
 				ref_angles[0][1] = 0.01
 			if( rangle > 0.0 ):
 				# shake
-				from utilities import rotate_shift_params
+				from sp_utilities import rotate_shift_params
 				ref_angles = rotate_shift_params(anglelist, [ delta*rangle, delta*rangle, delta*rangle ])
 			
 			#=========================================================================
@@ -18225,22 +18225,22 @@ def sali3d_base_h_01(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift
 		
 	"""
 
-	from alignment       import Numrinit, prepare_refrings
-	from alignment       import proj_ali_incore,  proj_ali_incore_zoom,  proj_ali_incore_local, proj_ali_incore_local_zoom
-	from alignment       import shc, center_projections_3D, ringwe
-	from utilities       import bcast_number_to_all, bcast_EMData_to_all, 	wrap_mpi_gatherv, wrap_mpi_bcast, model_blank, print_from_process
-	from utilities       import get_im, file_type, model_circle, get_input_from_string, get_params_proj, set_params_proj, pad
-	from utilities       import even_angles
+	from sp_alignment       import Numrinit, prepare_refrings
+	from sp_alignment       import proj_ali_incore,  proj_ali_incore_zoom,  proj_ali_incore_local, proj_ali_incore_local_zoom
+	from sp_alignment       import shc, center_projections_3D, ringwe
+	from sp_utilities       import bcast_number_to_all, bcast_EMData_to_all, 	wrap_mpi_gatherv, wrap_mpi_bcast, model_blank, print_from_process
+	from sp_utilities       import get_im, file_type, model_circle, get_input_from_string, get_params_proj, set_params_proj, pad
+	from sp_utilities       import even_angles
 	from mpi             import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier, mpi_reduce, MPI_INT, MPI_SUM
-	from projection      import prep_vol
-	from statistics      import hist_list
-	from applications    import MPI_start_end
-	from filter          import filt_ctf, filt_table
-	from global_def      import Util
-	from fundamentals    import resample, fshift
-	from multi_shc       import shc_multi
+	from sp_projection      import prep_vol
+	from sp_statistics      import hist_list
+	from sp_applications    import MPI_start_end
+	from sp_filter          import filt_ctf, filt_table
+	from sp_global_def      import Util
+	from sp_fundamentals    import resample, fshift
+	from sp_multi_shc       import shc_multi
 	#from development     import do_volume_mrk01
-	import user_functions
+	import sp_user_functions
 	from EMAN2           import EMUtil, EMData
 	import types
 	from time            import time
@@ -18266,7 +18266,7 @@ def sali3d_base_h_01(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift
 	if mpi_comm == None: mpi_comm = MPI_COMM_WORLD
 
 	if log == None:
-		from logger import Logger
+		from sp_logger import Logger
 		log = Logger()
 
 	number_of_proc = mpi_comm_size(mpi_comm)
@@ -18512,7 +18512,7 @@ def sali3d_base_h_01(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift
 					# generate_list_of_reference_angles_for_search([[refrings[lr].get_attr("phi"), refrings[lr].get_attr("theta")] for lr in xrange(len(refrings))], sym=sym)			
 				else:  list_of_reference_angles = [[1.0,1.0]]
 				error_status = 0
-				from utilities import if_error_all_processes_quit_program
+				from sp_utilities import if_error_all_processes_quit_program
 
 				# for im in xrange(nima):
 				for im in image_indices:
@@ -18656,7 +18656,7 @@ def sali3d_base_h_01(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift
 				#=========================================================================
 				# centering
 				if center == -1 and sym[0] == 'c':
-					from utilities      import estimate_3D_center_MPI, rotate_3D_shift
+					from sp_utilities      import estimate_3D_center_MPI, rotate_3D_shift
 					cs[0], cs[1], cs[2], dummy, dummy = estimate_3D_center_MPI(data, total_nima, myid, number_of_proc, main_node, mpi_comm=mpi_comm)
 					if myid == main_node:
 						msg = " Average center x = %10.3f        Center y = %10.3f        Center z = %10.3f\n"%(cs[0], cs[1], cs[2])
@@ -18699,7 +18699,7 @@ def sali3d_base_h_01(stack, ref_vol = None, Tracker = None, rangle = 0.0, rshift
 					assert(total_nima == len(params))
 				previousmax = wrap_mpi_gatherv(previousmax, 0, mpi_comm)
 				if myid == main_node:
-					from utilities import write_text_row, write_text_file
+					from sp_utilities import write_text_row, write_text_file
 					write_text_row(params, "soft/params%04d.txt"%total_iter)
 					write_text_file(previousmax, "soft/previousmax%04d.txt"%total_iter)
 
@@ -19294,27 +19294,27 @@ def local_ali3d(stack, outdir, maskfile = None, ou = -1,  delta = 2, ts=0.25, ce
 				fourvar, npad, debug)
 		return
 
-	from alignment      import eqproj_cascaded_ccc
-	from projection     import prep_vol
-	from utilities      import model_circle, get_params_proj, set_params_proj
-	from utilities      import get_image, drop_image
-	from utilities      import amoeba_multi_level, rotate_3D_shift, estimate_3D_center
+	from sp_alignment      import eqproj_cascaded_ccc
+	from sp_projection     import prep_vol
+	from sp_utilities      import model_circle, get_params_proj, set_params_proj
+	from sp_utilities      import get_image, drop_image
+	from sp_utilities      import amoeba_multi_level, rotate_3D_shift, estimate_3D_center
 	from math           import pi
-	from statistics     import fsc_mask
-	from utilities      import print_begin_msg, print_end_msg, print_msg
+	from sp_statistics     import fsc_mask
+	from sp_utilities      import print_begin_msg, print_end_msg, print_msg
 	from EMAN2 import Processor
 	import os 
 	import sys
 
 	if os.path.exists(outdir): ERROR('Output directory exists, please change the name and restart the program', "local_ali3d", 1)
 	os.mkdir(outdir)
-	import global_def
-	global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+	import sp_global_def
+	sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 	
 	print_begin_msg('local_ali3d')
 
-	import user_functions
-	user_func = user_functions.factory[user_func_name]
+	import sp_user_functions
+	user_func = sp_user_functions.factory[user_func_name]
 
 	if CTF:
 		ima = EMData()
@@ -19322,9 +19322,9 @@ def local_ali3d(stack, outdir, maskfile = None, ou = -1,  delta = 2, ts=0.25, ce
 		ctf_applied = ima.get_attr("ctf_applied")
 		del ima
 		if ctf_applied == 1:  ERROR("local_ali3d does not work for CTF-applied data", "local_ali3d", 1)
-		from reconstruction import recons3d_4nn_ctf
-		from filter         import filt_ctf
-	else   : from reconstruction import recons3d_4nn
+		from sp_reconstruction import recons3d_4nn_ctf
+		from sp_filter         import filt_ctf
+	else   : from sp_reconstruction import recons3d_4nn
 
 	last_ring   = int(ou)
 	max_iter    = int(maxit)
@@ -19503,7 +19503,7 @@ def local_ali3d(stack, outdir, maskfile = None, ou = -1,  delta = 2, ts=0.25, ce
 				set_params_proj(dataim[imn], optm_params[0])
 
 			#  here we write header infomation
-			from utilities import write_headers
+			from sp_utilities import write_headers
 			#write_headers(stack, dataim, list_of_particles)
 
 def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
@@ -19511,17 +19511,17 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 	"""
 		
 	"""
-	from alignment        import eqproj_cascaded_ccc
-	from filter           import filt_ctf
-	from projection       import prep_vol
-	from fundamentals     import resample
-	from utilities        import bcast_number_to_all, model_circle, get_params_proj, set_params_proj
-	from utilities        import bcast_EMData_to_all, bcast_list_to_all, send_attr_dict, wrap_mpi_bcast, wrap_mpi_gatherv
-	from utilities        import get_image, drop_image, file_type, get_im, get_input_from_string, model_blank
-	from utilities        import amoeba_multi_level, rotate_3D_shift, estimate_3D_center_MPI
-	from utilities        import print_begin_msg, print_end_msg, print_msg
-	from multi_shc        import do_volume
-	from statistics       import varf3d_MPI
+	from sp_alignment        import eqproj_cascaded_ccc
+	from sp_filter           import filt_ctf
+	from sp_projection       import prep_vol
+	from sp_fundamentals     import resample
+	from sp_utilities        import bcast_number_to_all, model_circle, get_params_proj, set_params_proj
+	from sp_utilities        import bcast_EMData_to_all, bcast_list_to_all, send_attr_dict, wrap_mpi_bcast, wrap_mpi_gatherv
+	from sp_utilities        import get_image, drop_image, file_type, get_im, get_input_from_string, model_blank
+	from sp_utilities        import amoeba_multi_level, rotate_3D_shift, estimate_3D_center_MPI
+	from sp_utilities        import print_begin_msg, print_end_msg, print_msg
+	from sp_multi_shc        import do_volume
+	from sp_statistics       import varf3d_MPI
 	from math             import pi
 	from mpi              import mpi_bcast, mpi_comm_size, mpi_comm_rank, MPI_FLOAT, MPI_COMM_WORLD, mpi_barrier
 	from mpi              import mpi_reduce, MPI_INT, MPI_SUM
@@ -19544,7 +19544,7 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 
 
 	if log == None:
-		from logger import Logger
+		from sp_logger import Logger
 		log = Logger()
 
 
@@ -19564,11 +19564,11 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 	"""
 	if myid == main_node:
 		os.mkdir(outdir)
-		import global_def
-		global_def.LOGFILE =  os.path.join(outdir, global_def.LOGFILE)
+		import sp_global_def
+		sp_global_def.LOGFILE =  os.path.join(outdir, sp_global_def.LOGFILE)
 		print_begin_msg("local_ali3d_MPI")
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 		if CTF:
 			ima = EMData()
 			ima.read_image(stack, 0)
@@ -19683,8 +19683,8 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 
 	"""
 	if myid == main_node:
-		import user_functions
-		user_func = user_functions.factory[user_func_name]
+		import sp_user_functions
+		user_func = sp_user_functions.factory[user_func_name]
 
 		print_msg("Input stack                 : %s\n"%(stack))
 		print_msg("Output directory            : %s\n"%(outdir))
@@ -19903,7 +19903,7 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 				t2 = Transform({"type":"spider","phi":optm_params[0][0],"theta":optm_params[0][1],"psi":optm_params[0][2]})
 				t2.set_trans(Vec2f(-optm_params[0][3], -optm_params[0][4]))
 				dataim[imn].set_attr("xform.projection", t2)
-				from pixel_error import max_3D_pixel_error
+				from sp_pixel_error import max_3D_pixel_error
 				pixer[imn] = max_3D_pixel_error(t1, t2, last_ring)
 				#set_params_proj(dataim[imn], optm_params[0])
 				#if( myid == main_node and imn%4 == 0):
@@ -19924,7 +19924,7 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 		terminate = 0
 		if(myid == main_node):
 			pixer = map(float, pixer)
-			from statistics import hist_list
+			from sp_statistics import hist_list
 			lhist = 20
 			region, histo = hist_list(pixer, lhist)
 			log.add(" ")

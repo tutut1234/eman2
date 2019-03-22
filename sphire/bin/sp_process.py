@@ -33,14 +33,14 @@ from __future__ import print_function
 #
 
 from builtins import range
-import	global_def
-from global_def import ERROR  # sxprint,
-from	global_def 	import *
+import	sp_global_def
+from sp_global_def import ERROR  # sxprint,
+from	sp_global_def 	import *
 from	EMAN2 		import EMUtil, parsemodopt, EMAN2Ctf
 from    EMAN2jsondb import js_open_dict
 
-from	utilities 	import *
-from    statistics import mono
+from	sp_utilities 	import *
+from    sp_statistics import mono
 import  os
 
 
@@ -49,7 +49,7 @@ import  os
  rotate_shift_params(paramsin, transf) has been moved to utilities
 """
 
-from utilities import rotate_shift_params
+from sp_utilities import rotate_shift_params
 
 """
 	Traveling salesman problem solved using Simulated Annealing.
@@ -443,7 +443,7 @@ def main():
 
 	(options, args) = parser.parse_args()
 
-	global_def.BATCH = True
+	sp_global_def.BATCH = True
 
 	if options.phase_flip:
 		nargs = len(args)
@@ -456,7 +456,7 @@ def main():
 		instack = args[0]
 		outstack = args[1]
 		nima = EMUtil.get_image_count(instack)
-		from filter import filt_ctf
+		from sp_filter import filt_ctf
 		for i in range(nima):
 			img = EMData()
 			img.read_image(instack, i)
@@ -510,13 +510,13 @@ def main():
 			ERROR( "Must provide name of input and output file!" )
 			return
 
-		from utilities import get_im
+		from sp_utilities import get_im
 		instack = args[0]
 		outstack = args[1]
 		sub_rate = float(options.ratio)
 
 		nima = EMUtil.get_image_count(instack)
-		from fundamentals import resample
+		from sp_fundamentals import resample
 		for i in range(nima):
 			resample(get_im(instack, i), sub_rate).write_image(outstack, i)
 
@@ -526,13 +526,13 @@ def main():
 			ERROR( "Three files needed on input!" )
 			return
 
-		from utilities import get_im
+		from sp_utilities import get_im
 		instack = args[0]
 		m=get_im(args[1],int(options.isacgroup)).get_attr("members")
 		l = []
 		for k in m:
 			l.append(int(get_im(args[0],k).get_attr(options.params)))
-		from utilities import write_text_file
+		from sp_utilities import write_text_file
 		write_text_file(l, args[2])
 
 	elif options.isacselect:
@@ -541,13 +541,13 @@ def main():
 			ERROR( "Two files needed on input!" )
 			return
 
-		from utilities import get_im
+		from sp_utilities import get_im
 		nima = EMUtil.get_image_count(args[0])
 		m = []
 		for k in range(nima):
 			m += get_im(args[0],k).get_attr("members")
 		m.sort()
-		from utilities import write_text_file
+		from sp_utilities import write_text_file
 		write_text_file(m, args[1])
 
 	elif options.pw:
@@ -556,8 +556,8 @@ def main():
 			ERROR( "Must provide name of input and output file!" )
 			return
 
-		from utilities import get_im, write_text_file
-		from fundamentals import rops_table
+		from sp_utilities import get_im, write_text_file
+		from sp_fundamentals import rops_table
 		d = get_im(args[0])
 		ndim = d.get_ndim()
 		if ndim ==3:
@@ -576,7 +576,7 @@ def main():
 					return
 
 			n = EMUtil.get_image_count(args[0])
-			from utilities import model_blank, model_circle, pad
+			from sp_utilities import model_blank, model_circle, pad
 			from EMAN2 import periodogram
 			p = model_blank(wn,wn)
 
@@ -597,9 +597,9 @@ def main():
 
 		img_stack = args[0]
 		from math         import sqrt
-		from fundamentals import rops_table, fft
-		from utilities    import read_text_file, get_im
-		from filter       import  filt_tanl, filt_table
+		from sp_fundamentals import rops_table, fft
+		from sp_utilities    import read_text_file, get_im
+		from sp_filter       import  filt_tanl, filt_table
 		if(  args[1][-3:] == 'txt'):
 			rops_dst = read_text_file( args[1] )
 		else:
@@ -636,8 +636,8 @@ def main():
 			ERROR( "Only one input permitted" )
 			return
 
-		from utilities import write_text_file, get_im
-		from fundamentals import rops_table
+		from sp_utilities import write_text_file, get_im
+		from sp_fundamentals import rops_table
 		from math import log10
 		im = get_im(args[0])
 		ndim = im.get_ndim()
@@ -655,7 +655,7 @@ def main():
 			ERROR( "Please provide names of input and output files with orientation parameters" )
 			return
 
-		from utilities import read_text_row, write_text_row
+		from sp_utilities import read_text_row, write_text_row
 		transf = [0.0]*6
 		spl = options.transformparams.split(',')
 		for i in range(len(spl)):  transf[i] = float(spl[i])
@@ -744,9 +744,9 @@ def main():
 		if 'sigma_gauss_mic' in param_dict:
 			sigma_gauss_mic = float(param_dict['sigma_gauss_mic'])
 
-		from filter import filt_gaussl, filt_ctf
-		from utilities import drop_spider_doc, even_angles, model_gauss, delete_bdb, model_blank,pad,model_gauss_noise,set_params2D, set_params_proj
-		from projection import prep_vol,prgs
+		from sp_filter import filt_gaussl, filt_ctf
+		from sp_utilities import drop_spider_doc, even_angles, model_gauss, delete_bdb, model_blank,pad,model_gauss_noise,set_params2D, set_params_proj
+		from sp_projection import prep_vol,prgs
 		from time import time
 		seed(int(time()))
 		delta = 29
@@ -755,7 +755,7 @@ def main():
 
 		modelvol = []
 		nvlms = EMUtil.get_image_count(inpstr)
-		from utilities import get_im
+		from sp_utilities import get_im
 		for k in range(nvlms):  modelvol.append(get_im(inpstr,k))
 
 		nx = modelvol[0].get_xsize()
@@ -863,7 +863,7 @@ def main():
 
 	elif options.importctf != None:
 		print(' IMPORTCTF  ')
-		from utilities import read_text_row,write_text_row
+		from sp_utilities import read_text_row,write_text_row
 		from random import randint
 		import subprocess
 		grpfile = 'groupid%04d'%randint(1000,9999)
@@ -928,7 +928,7 @@ def main():
 		subprocess.call(cmd, shell=True)
 
 	elif options.scale > 0.0:
-		from utilities import read_text_row,write_text_row
+		from sp_utilities import read_text_row,write_text_row
 		scale = options.scale
 		nargs = len(args)
 
@@ -944,9 +944,9 @@ def main():
 
 	elif options.adaptive_mask:
 		print('DEPRECATION WARNING! This function is deprecated and no longer maintained. Please use sxmask.py instead')
-		from utilities import get_im
-		from morphology import adaptive_mask
-		from filter import filt_tanl
+		from sp_utilities import get_im
+		from sp_morphology import adaptive_mask
+		from sp_filter import filt_tanl
 		nargs = len(args)
 
 		if nargs ==0:
@@ -983,8 +983,8 @@ def main():
 	
 	elif options.binary_mask:
 		print('DEPRECATION WARNING! This function is deprecated and no longer maintained. Please use sxmask.py instead')
-		from utilities import get_im
-		from morphology import binarize, erosion, dilation
+		from sp_utilities import get_im
+		from sp_morphology import binarize, erosion, dilation
 		nargs = len(args)
 
 		if nargs == 0:
@@ -1017,19 +1017,19 @@ def main():
 		if options.output_dir !="./":
 			if not os.path.exists(options.output_dir):
 				os.makedirs(options.output_dir)
-				global_def.write_command(options.output_dir)
-		from logger import Logger,BaseLogger_Files
+				sp_global_def.write_command(options.output_dir)
+		from sp_logger import Logger,BaseLogger_Files
 		if os.path.exists(os.path.join(options.output_dir, "log.txt")): os.remove(os.path.join(options.output_dir, "log.txt"))
 		log_main=Logger(BaseLogger_Files())
 		log_main.prefix = os.path.join(options.output_dir, "./")
 		#line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 		log_main.add("--------------------------------------------")
 		log_main.add("------->>> SPHIRE combinemaps <<<-------")
-		from utilities    	import get_im, write_text_file, read_text_file
-		from fundamentals 	import rot_avg_table, fft
-		from morphology   	import compute_bfactor,power
-		from statistics   	import fsc, pearson
-		from filter       	import filt_table, filt_gaussinv, filt_tanl
+		from sp_utilities    	import get_im, write_text_file, read_text_file
+		from sp_fundamentals 	import rot_avg_table, fft
+		from sp_morphology   	import compute_bfactor,power
+		from sp_statistics   	import fsc, pearson
+		from sp_filter       	import filt_table, filt_gaussinv, filt_tanl
 		from EMAN2 			import periodogram
 		
 		nargs = len(args)
@@ -1252,7 +1252,7 @@ def main():
 				elif options.do_adaptive_mask:
 					log_main.add("Create an adaptive mask, let's wait...")
 					log_main.add("Options.threshold, options.ndilation, options.edge_width %f %5.2f %5.2f"%(options.threshold, options.ndilation, options.edge_width))
-					from morphology import adaptive_mask_scipy
+					from sp_morphology import adaptive_mask_scipy
 					if single_map:
 						input_vol_mask = map1
 					else:
@@ -1743,7 +1743,7 @@ def main():
 				if stack_is_bdb: output_stack_name  = "bdb:window_"+input_file_name_root[4:]
 				else: output_stack_name = "window_"+input_file_name_root+".hdf" # Only hdf file is output.
 			nimage = EMUtil.get_image_count(inputstack)
-			from utilities import get_im
+			from sp_utilities import get_im
 			for i in range(nimage):
 				im = get_im(inputstack,i)
 				if( i == 0 ):
@@ -1770,7 +1770,7 @@ def main():
 				if stack_is_bdb: output_stack_name  = "bdb:pad_"+input_file_name_root[4:]
 				else: output_stack_name = "pad_"+input_file_name_root+".hdf" # Only hdf file is output.
 			nimage = EMUtil.get_image_count(inputstack)
-			from utilities import get_im, pad
+			from sp_utilities import get_im, pad
 			for i in range(nimage):
 				im = get_im(inputstack,i)
 				if( i == 0 ):
@@ -1785,7 +1785,7 @@ def main():
 				pad(im, options.box, options.box, newz, float(options.background)).write_image(output_stack_name,i)
 
 	elif options.angular_distribution:
-		from utilities import angular_distribution
+		from sp_utilities import angular_distribution
 		nargs = len(args)
 		if nargs > 1:
 			ERROR( "Too many inputs are given, see usage and restart the program!" )
@@ -1801,9 +1801,9 @@ def main():
 			angular_distribution(inputfile=strInput, options=options, output=strOutput)
 			
 	elif options.subtract_stack:
-		from utilities  import get_im, set_params_proj, get_params_proj, write_text_row, model_circle
-		from filter     import filt_tanl
-		from statistics import im_diff
+		from sp_utilities  import get_im, set_params_proj, get_params_proj, write_text_row, model_circle
+		from sp_filter     import filt_tanl
+		from sp_statistics import im_diff
 		nargs = len(args)
 
 		if nargs<2 or nargs>4:
@@ -1851,7 +1851,7 @@ def main():
 					ssimage.write_image(result_stack, im)
 
 	elif options.balance_angular_distribution:
-		from utilities  import balance_angular_distribution, read_text_row, write_text_file
+		from sp_utilities  import balance_angular_distribution, read_text_row, write_text_file
 		write_text_file(balance_angular_distribution(read_text_row(args[0]), options.max_occupy, options.angstep, options.symmetry),args[1])
 
 	else: 
@@ -1859,7 +1859,7 @@ def main():
 		return
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
+	sp_global_def.print_timestamp( "Start" )
 	main()
 	print('Done!')
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

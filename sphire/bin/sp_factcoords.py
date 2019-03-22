@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-import global_def
-from global_def import sxprint, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
-from global_def import *
+from sp_global_def import *
 from optparse import OptionParser
 from EMAN2_cppwrap import *
 
@@ -44,25 +44,25 @@ def main():
 			ERROR( "Mask radius is not given" )
 			return
 
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sp_global_def.CACHE_DISABLE:
+			from sp_utilities import disable_bdb_cache
 			disable_bdb_cache()
 
-		from utilities import get_im
-		global_def.BATCH = True
+		from sp_utilities import get_im
+		sp_global_def.BATCH = True
 		
 		if( get_im( stacks[0]).get_zsize() == 1 and get_im( eigvol).get_zsize() > 1):
-			from applications import factcoords_prj
+			from sp_applications import factcoords_prj
 			factcoords_prj(stacks, avgvol, eigvol, output, options.rad, options.neigvol, options.fl, options.aa, options.CTF, options.MPI)
 		else:
-			from applications import factcoords_vol
+			from sp_applications import factcoords_vol
 			factcoords_vol(stacks, avgvol, eigvol, output, options.rad, options.neigvol, options.fl, options.aa, options.MPI)
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 		
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

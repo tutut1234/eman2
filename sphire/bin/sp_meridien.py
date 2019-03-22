@@ -92,16 +92,16 @@ Util.innerproduct(p2,p2,m)/(nx*nx/2) = Util.innerproduct(fp1,fp1,None)
 """
 
 from EMAN2 	import *
-from sparx 	import *
+from sp_sparx 	import *
 from EMAN2  import EMNumPy
-from logger import Logger, BaseLogger_Files
-import global_def
-from global_def import sxprint, ERROR
+from sp_logger import Logger, BaseLogger_Files
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
-import utilities
+import sp_utilities
 
-import user_functions
-from global_def import *
+import sp_user_functions
+from sp_global_def import *
 
 import mpi
 from mpi   	import  *
@@ -146,8 +146,8 @@ else: Blockdata["node_volume"] = [0,0]
 #  We have to send the two myids to all nodes so we can identify main nodes on two selected groups.
 Blockdata["main_shared_nodes"]	= [Blockdata["node_volume"][0]*Blockdata["no_of_processes_per_group"],Blockdata["node_volume"][1]*Blockdata["no_of_processes_per_group"]]
 # end of Blockdata
-global_def.BATCH = True
-global_def.MPI = True
+sp_global_def.BATCH = True
+sp_global_def.MPI = True
 
 def create_subgroup():
 	# select a subset of myids to be in subdivision
@@ -215,9 +215,9 @@ def params_changes( params, oldparams ):
 	#  params - contain parameters associated with these images
 	#  Both lists can be of different sizes, so we have to find a common subset
 	#  We do not compensate for random changes of grids.
-	from utilities    	import getang3
-	from utilities    	import rotate_shift_params
-	from pixel_error  	import max_3D_pixel_error
+	from sp_utilities    	import getang3
+	from sp_utilities    	import rotate_shift_params
+	from sp_pixel_error  	import max_3D_pixel_error
 	from EMAN2        	import Vec2f
 	from math 			import sqrt
 	import sets
@@ -654,7 +654,7 @@ def getindexdata(partids, partstack, particle_groups, original_data=None, small_
 	# So, the lengths of partids and partstack are the same.
 	#  The read data is properly distributed among MPI threads.
 	if( mpi_comm < 0 ):  mpi_comm = MPI_COMM_WORLD
-	from applications import MPI_start_end
+	from sp_applications import MPI_start_end
 	#  parameters
 	if( myid == 0 ):  partstack = read_text_row(partstack)
 	else:  			  partstack = 0
@@ -723,10 +723,10 @@ def get_shrink_data(nxinit, procid, original_data = None, oldparams = None, \
 	
 	"""
 	#from fundamentals import resample
-	from utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
-	from fundamentals import fdecimate, fshift, fft
-	from filter       import filt_ctf, filt_table
-	from applications import MPI_start_end
+	from sp_utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
+	from sp_fundamentals import fdecimate, fshift, fft
+	from sp_filter       import filt_ctf, filt_table
+	from sp_applications import MPI_start_end
 	from math         import sqrt
 	
 	if( Blockdata["myid"] == Blockdata["main_node"] ):
@@ -865,8 +865,8 @@ def subdict(d,u):
 
 def get_anger(angle1, angle2):
 	from math import acos, degrees
-	from utilities import lacos
-	from fundamentals import rotmatrix
+	from sp_utilities import lacos
+	from sp_fundamentals import rotmatrix
 	A1 = rotmatrix(angle1[0],angle1[1],angle1[2])
 	ar = Blockdata["symclass"].symmetry_related(angle2)
 	axes_dis_min = 1.0e23
@@ -1009,8 +1009,8 @@ def get_refvol(nxinit):
 
 def prepdata_ali3d(projdata, rshifts, shrink, method = "DIRECT"):
 	global Tracker, Blockdata
-	from fundamentals 	import prepi
-	from morphology 	import ctf_img_real
+	from sp_fundamentals 	import prepi
+	from sp_morphology 	import ctf_img_real
 	#  Data is NOT CTF-applied.
 	#  Data is shrank, in Fourier format
 	data = [[] for i in range(len(projdata))]
@@ -1049,7 +1049,7 @@ def do3d(procid, data, newparams, refang, rshifts, norm_per_particle, myid, smea
 	global Tracker, Blockdata
 
 	#  Without filtration
-	from reconstruction import recons3d_trl_struct_MPI
+	from sp_reconstruction import recons3d_trl_struct_MPI
 	import os
 	if (mpi_comm == -1): mpi_comm = MPI_COMM_WORLD
 	
@@ -1286,11 +1286,11 @@ def steptwo_mpi(tvol, tweight, treg, cfsc = None, regularized = True, color = 0)
 	else:  return None
 
 def calculate_2d_params_for_centering(kwargs):
-	from utilities 		import wrap_mpi_gatherv, read_text_row, write_text_row, bcast_number_to_all, get_im, combine_params2, model_circle, gather_compacted_EMData_to_root
-	from applications 	import MPI_start_end, ali2d_base 
-	from fundamentals 	import resample, rot_shift2D 
-	from filter 		import filt_ctf 
-	from global_def 	import ERROR
+	from sp_utilities 		import wrap_mpi_gatherv, read_text_row, write_text_row, bcast_number_to_all, get_im, combine_params2, model_circle, gather_compacted_EMData_to_root
+	from sp_applications 	import MPI_start_end, ali2d_base 
+	from sp_fundamentals 	import resample, rot_shift2D 
+	from sp_filter 		import filt_ctf 
+	from sp_global_def 	import ERROR
 	
 	
 	#################################################################################################################################################################
@@ -1339,7 +1339,7 @@ def calculate_2d_params_for_centering(kwargs):
 
 		if(Blockdata["myid"] == 0):
 			import subprocess
-			from logger import Logger, BaseLogger_Files
+			from sp_logger import Logger, BaseLogger_Files
 			#  Create output directory
 			log2d = Logger(BaseLogger_Files())
 			log2d.prefix = os.path.join(init2dir)
@@ -1455,9 +1455,9 @@ def Numrinit_local(first_ring, last_ring, skip=1, mode="F"):
 def ali3D_polar_ccc(refang, shifts, coarse_angles, coarse_shifts, procid, original_data = None, oldparams = None, \
 					preshift = False, apply_mask = True, nonorm = False, applyctf = True):
 	global Tracker, Blockdata
-	from projection 	import prgs,prgl
-	from fundamentals 	import fft
-	from utilities 		import wrap_mpi_gatherv
+	from sp_projection 	import prgs,prgl
+	from sp_fundamentals 	import fft
+	from sp_utilities 		import wrap_mpi_gatherv
 	from math 			import sqrt
 	#  Input data has to be CTF-multiplied, preshifted
 	#  Output - newpar, see structure
@@ -1477,10 +1477,10 @@ def ali3D_polar_ccc(refang, shifts, coarse_angles, coarse_shifts, procid, origin
 	#from operator 		import itemgetter#, attrgetter, methodcaller
 	#   params.sort(key=itemgetter(2))
 	#from fundamentals import resample
-	from utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
-	from fundamentals import fdecimate, fshift, fft
-	from filter       import filt_ctf, filt_table
-	from applications import MPI_start_end
+	from sp_utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
+	from sp_fundamentals import fdecimate, fshift, fft
+	from sp_filter       import filt_ctf, filt_table
+	from sp_applications import MPI_start_end
 	from math         import sqrt
 
 	if(Blockdata["myid"] == Blockdata["main_node"]):
@@ -2140,9 +2140,9 @@ def ali3D_polar_ccc(refang, shifts, coarse_angles, coarse_shifts, procid, origin
 def ali3D_primary_polar(refang, shifts, coarse_angles, coarse_shifts, procid, original_data = None, oldparams = None, \
 					preshift = False, apply_mask = True, nonorm = False, applyctf = True):
 	global Tracker, Blockdata
-	from projection 	import prgs,prgl
-	from fundamentals 	import fft
-	from utilities 		import wrap_mpi_gatherv
+	from sp_projection 	import prgs,prgl
+	from sp_fundamentals 	import fft
+	from sp_utilities 		import wrap_mpi_gatherv
 	from math 			import sqrt
 	#  Input data has to be CTF-multiplied, preshifted
 	#  Output - newpar, see structure
@@ -2162,10 +2162,10 @@ def ali3D_primary_polar(refang, shifts, coarse_angles, coarse_shifts, procid, or
 	#from operator 		import itemgetter, attrgetter, methodcaller
 	#   params.sort(key=itemgetter(2))
 	#from fundamentals import resample
-	from utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
-	from fundamentals import fdecimate, fshift, fft
-	from filter       import filt_ctf, filt_table
-	from applications import MPI_start_end
+	from sp_utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
+	from sp_fundamentals import fdecimate, fshift, fft
+	from sp_filter       import filt_ctf, filt_table
+	from sp_applications import MPI_start_end
 	from math         import sqrt
 
 	if(Blockdata["myid"] == Blockdata["main_node"]):
@@ -2882,9 +2882,9 @@ def ali3D_primary_polar(refang, shifts, coarse_angles, coarse_shifts, procid, or
 def ali3D_polar(refang, shifts, coarse_angles, coarse_shifts, procid, original_data = None, oldparams = None, \
 					preshift = False, apply_mask = True, nonorm = False, applyctf = True):
 	global Tracker, Blockdata
-	from projection 	import prgs,prgl
-	from fundamentals 	import fft
-	from utilities 		import wrap_mpi_gatherv
+	from sp_projection 	import prgs,prgl
+	from sp_fundamentals 	import fft
+	from sp_utilities 		import wrap_mpi_gatherv
 	from math 			import sqrt
 	#  Input data has to be CTF-multiplied, preshifted
 	#  Output - newpar, see structure
@@ -2904,10 +2904,10 @@ def ali3D_polar(refang, shifts, coarse_angles, coarse_shifts, procid, original_d
 	from operator 		import itemgetter#, attrgetter, methodcaller
 	#   params.sort(key=itemgetter(2))
 	#from fundamentals import resample
-	from utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
-	from fundamentals import fdecimate, fshift, fft
-	from filter       import filt_ctf, filt_table
-	from applications import MPI_start_end
+	from sp_utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
+	from sp_fundamentals import fdecimate, fshift, fft
+	from sp_filter       import filt_ctf, filt_table
+	from sp_applications import MPI_start_end
 	from math         import sqrt
 
 	if(Blockdata["myid"] == Blockdata["main_node"]):
@@ -3575,9 +3575,9 @@ def ali3D_primary_local_polar(refang, shifts, coarse_angles, coarse_shifts, proc
 	12/06/2017
 	"""
 	global Tracker, Blockdata
-	from projection 	import prgs,prgl
-	from fundamentals 	import fft
-	from utilities 		import wrap_mpi_gatherv
+	from sp_projection 	import prgs,prgl
+	from sp_fundamentals 	import fft
+	from sp_utilities 		import wrap_mpi_gatherv
 	from math 			import sqrt
 	#  Input data has to be CTF-multiplied, preshifted
 	#  Output - newpar, see structure
@@ -3597,10 +3597,10 @@ def ali3D_primary_local_polar(refang, shifts, coarse_angles, coarse_shifts, proc
 	#from operator 		import itemgetter, attrgetter, methodcaller
 	#   params.sort(key=itemgetter(2))
 	#from fundamentals import resample
-	from utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
-	from fundamentals import fdecimate, fshift, fft
-	from filter       import filt_ctf, filt_table
-	from applications import MPI_start_end
+	from sp_utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
+	from sp_fundamentals import fdecimate, fshift, fft
+	from sp_filter       import filt_ctf, filt_table
+	from sp_applications import MPI_start_end
 	from math         import sqrt
 
 	if(Blockdata["myid"] == Blockdata["main_node"]):
@@ -4654,9 +4654,9 @@ def ali3D_local_polar(refang, shifts, coarse_angles, coarse_shifts, procid, orig
 	02/07/2017
 	"""
 	global Tracker, Blockdata
-	from projection 	import prgs,prgl
-	from fundamentals 	import fft
-	from utilities 		import wrap_mpi_gatherv
+	from sp_projection 	import prgs,prgl
+	from sp_fundamentals 	import fft
+	from sp_utilities 		import wrap_mpi_gatherv
 	from math 			import sqrt
 	#  Input data has to be CTF-multiplied, preshifted
 	#  Output - newpar, see structure
@@ -4676,10 +4676,10 @@ def ali3D_local_polar(refang, shifts, coarse_angles, coarse_shifts, procid, orig
 	#from operator 		import itemgetter#, attrgetter, methodcaller
 	#   params.sort(key=itemgetter(2))
 	#from fundamentals import resample
-	from utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
-	from fundamentals import fdecimate, fshift, fft
-	from filter       import filt_ctf, filt_table
-	from applications import MPI_start_end
+	from sp_utilities    import get_im, model_gauss_noise, set_params_proj, get_params_proj
+	from sp_fundamentals import fdecimate, fshift, fft
+	from sp_filter       import filt_ctf, filt_table
+	from sp_applications import MPI_start_end
 	from math         import sqrt
 
 	if(Blockdata["myid"] == Blockdata["main_node"]):
@@ -6053,13 +6053,13 @@ def recons3d_final(masterdir, do_final_iter_init, memory_per_node, orgstack = No
 
 def recons3d_trl_struct_MPI_nosmearing(myid, main_node, prjlist, parameters, CTF, upweighted, mpi_comm, target_size):
 	global Tracker, Blockdata
-	from utilities      import reduce_EMData_to_root, random_string, get_im, findall, model_blank, info, get_params_proj
+	from sp_utilities      import reduce_EMData_to_root, random_string, get_im, findall, model_blank, info, get_params_proj
 	from EMAN2          import Reconstructors
-	from filter		    import filt_table
+	from sp_filter		    import filt_table
 	from mpi            import MPI_COMM_WORLD, mpi_barrier
-	from statistics     import fsc 
-	from reconstruction import insert_slices_pdf
-	from fundamentals   import fft
+	from sp_statistics     import fsc 
+	from sp_reconstruction import insert_slices_pdf
+	from sp_fundamentals   import fft
 	import datetime, types
 	import copy
 	imgsize = prjlist[0].get_ysize()  # It can be Fourier, so take y-size
@@ -6466,7 +6466,7 @@ def rec3d_make_maps(compute_fsc = True, regularized = True):
 							tvol0 = filt_table(tvol0, cfsc)
 							if( Blockdata["no_of_groups"] > 1 ):  del cfsc
 
-						user_func = user_functions.factory[Tracker["constants"]["user_func_volume"]]
+						user_func = sp_user_functions.factory[Tracker["constants"]["user_func_volume"]]
 						#ref_data = [tvol0, Tracker, mainiteration]
 						ref_data = [tvol0, Tracker, Tracker["mainiteration"]]
 						#--  #--  memory_check(Blockdata["myid"],"first node, after masking")
@@ -6498,7 +6498,7 @@ def rec3d_make_maps(compute_fsc = True, regularized = True):
 								elif( i > Tracker["constants"]["inires"]+1 ):  cfsc[i]  = 0.0
 							tvol1 = filt_table(tvol1, cfsc)
 							del cfsc
-						user_func = user_functions.factory[Tracker["constants"]["user_func_volume"]]
+						user_func = sp_user_functions.factory[Tracker["constants"]["user_func_volume"]]
 
 						#ref_data = [tvol1, Tracker, mainiteration]
 						ref_data = [tvol1, Tracker, Tracker["mainiteration"]]
@@ -6797,7 +6797,7 @@ def refinement_one_iteration(partids, partstack, original_data, oldparams, projd
 					)
 
 			for exclude_list, dir_name, suffix in exclude:
-				utilities.angular_distribution(
+				sp_utilities.angular_distribution(
 					params_file=partstack[procid],
 					output_folder=dir_name,
 					prefix='ang_dist{0}'.format(suffix),
@@ -6811,7 +6811,7 @@ def refinement_one_iteration(partids, partstack, original_data, oldparams, projd
 					do_print=False,
 					exclude=exclude_list,
 					)
-				utilities.angular_distribution(
+				sp_utilities.angular_distribution(
 					params_file=partstack[procid],
 					output_folder=dir_name,
 					prefix='full_ang_dist{0}'.format(suffix),
@@ -7062,7 +7062,7 @@ def get_image_statistics(image, mask, invert):
 	if Tracker['constants']['filament_width'] is None:
 		mask2d = mask
 	else:
-		mask2d = utilities.model_rotated_rectangle2D(
+		mask2d = sp_utilities.model_rotated_rectangle2D(
 			radius_long=int(np.sqrt(2 * image.get_xsize()**2) // 2),
 			radius_short=int(Tracker['constants']['filament_width'] * image.get_xsize() / float(Tracker['constants']['nnxo']) + 0.5),
 			nx=image.get_xsize(),
@@ -7164,14 +7164,14 @@ def reduce_shifts(sx, sy, img):
 
 def main():
 
-	from utilities import write_text_row, drop_image, model_gauss_noise, get_im, set_params_proj, wrap_mpi_bcast, model_circle
-	from applications  import MPI_start_end
+	from sp_utilities import write_text_row, drop_image, model_gauss_noise, get_im, set_params_proj, wrap_mpi_bcast, model_circle
+	from sp_applications  import MPI_start_end
 	from optparse      import OptionParser
-	from global_def    import SPARXVERSION
+	from sp_global_def    import SPARXVERSION
 	from EMAN2         import EMData
-	from multi_shc     import multi_shc
+	from sp_multi_shc     import multi_shc
 	from random        import random, uniform
-	from logger        import Logger, BaseLogger_Files
+	from sp_logger        import Logger, BaseLogger_Files
 	import sys
 	import os
 	import socket
@@ -7566,7 +7566,7 @@ def main():
 						os.makedirs(masterdir)
 					li = 0
 					keepchecking = 1
-				global_def.write_command(masterdir)
+				sp_global_def.write_command(masterdir)
 			else:
 				li = 0
 				keepchecking = 1
@@ -7779,7 +7779,7 @@ def main():
 					anger   = bcast_number_to_all(anger,                source_node = Blockdata["main_node"])
 					shifter = bcast_number_to_all(shifter,              source_node = Blockdata["main_node"])
 
-				func_ai = user_functions.factory[Tracker["constants"]["user_func_ai"]]
+				func_ai = sp_user_functions.factory[Tracker["constants"]["user_func_ai"]]
 				keepgoing = func_ai(Tracker, fff, anger, shifter, Tracker['constants']['do_local'], Blockdata['myid'] == Blockdata['main_node'])
 
 				if keepgoing == 1: # not converged
@@ -7908,8 +7908,8 @@ def main():
 			sxprint(line)
 		# ------------------------------------------------------------------------------------
 		#  INPUT PARAMETERS
-		global_def.BATCH = True
-		global_def.MPI   = True
+		sp_global_def.BATCH = True
+		sp_global_def.MPI   = True
 
 		###  VARIOUS SANITY CHECKES <-----------------------
 		if( options.memory_per_node < 0.0 ):
@@ -7923,11 +7923,11 @@ def main():
 		return
 
 if __name__=="__main__":
-	global_def.BATCH = True
-	global_def.MPI   = True
-	global_def.print_timestamp( "Start" )
+	sp_global_def.BATCH = True
+	sp_global_def.MPI   = True
+	sp_global_def.print_timestamp( "Start" )
 	main()
-	global_def.print_timestamp( "Finish" )
-	global_def.BATCH = False
-	global_def.MPI   = False
+	sp_global_def.print_timestamp( "Finish" )
+	sp_global_def.BATCH = False
+	sp_global_def.MPI   = False
 	mpi.mpi_finalize()

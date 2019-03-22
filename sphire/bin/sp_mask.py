@@ -30,12 +30,12 @@ from __future__ import division
 import argparse
 import os
 
-import global_def
-from global_def import sxprint, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
-import utilities
-import morphology
-import filter as sparx_filter
+import sp_utilities
+import sp_morphology
+import sp_filter as sparx_filter
 
 
 class NotSmallerZeroAction(argparse.Action):
@@ -375,14 +375,14 @@ def main():
 
 	# Import volume
 	sxprint('Import volume.')
-	input_vol = utilities.get_im(command_args.input_volume)
+	input_vol = sp_utilities.get_im(command_args.input_volume)
 
 	# Sanity checks
 	sanity_checks(command_args, input_vol)
 
 	try:
 		os.makedirs(command_args.output_dir)
-		global_def.write_command(command_args.output_dir)
+		sp_global_def.write_command(command_args.output_dir)
 	except OSError:
 		sxprint('Output directory already exists. No need to create it.')
 	else:
@@ -421,7 +421,7 @@ def main():
 	else:
 		assert False
 
-	mask_first = morphology.adaptive_mask_scipy(
+	mask_first = sp_morphology.adaptive_mask_scipy(
 		input_vol,
 		nsigma=nsigma,
 		threshold=density_threshold,
@@ -439,7 +439,7 @@ def main():
 	s_density_threshold = 1
 	s_nsigma = 1.0
 	if command_args.second_mask is not None:
-		s_mask = utilities.get_im(command_args.second_mask)
+		s_mask = sp_utilities.get_im(command_args.second_mask)
 		density_threshold = -9999.0
 		nsigma = 1.0
 		if command_args.s_mol_mass:
@@ -461,22 +461,22 @@ def main():
 			s_nx = command_args.s_nx
 			s_ny = command_args.s_ny
 			s_nz = command_args.s_nz
-			s_mask = utilities.model_blank(s_nx, s_ny, s_nz, 1)
+			s_mask = sp_utilities.model_blank(s_nx, s_ny, s_nz, 1)
 		elif command_args.second_mask_shape == 'cylinder':
 			s_radius = command_args.s_radius
 			s_nx = command_args.s_nx
 			s_ny = command_args.s_ny
 			s_nz = command_args.s_nz
-			s_mask = utilities.model_cylinder(s_radius, s_nx, s_ny, s_nz)
+			s_mask = sp_utilities.model_cylinder(s_radius, s_nx, s_ny, s_nz)
 		elif command_args.second_mask_shape == 'sphere':
 			s_radius = command_args.s_radius
 			s_nx = command_args.s_nx
 			s_ny = command_args.s_ny
 			s_nz = command_args.s_nz
-			s_mask = utilities.model_circle(s_radius, s_nx, s_ny, s_nz)
+			s_mask = sp_utilities.model_circle(s_radius, s_nx, s_ny, s_nz)
 		else:
 			assert False
-		s_mask = utilities.pad(s_mask, nx, ny, nz, 0)
+		s_mask = sp_utilities.pad(s_mask, nx, ny, nz, 0)
 
 	if s_mask is not None:
 		sxprint('Create second mask')
@@ -488,7 +488,7 @@ def main():
 		else:
 			assert False
 
-		s_mask = morphology.adaptive_mask_scipy(
+		s_mask = sp_morphology.adaptive_mask_scipy(
 			s_mask,
 			nsigma=s_nsigma,
 			threshold=s_density_threshold,
@@ -511,9 +511,9 @@ def main():
 
 
 if __name__ == '__main__':
-	global_def.print_timestamp( "Start" )
-	global_def.BATCH = True
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.BATCH = True
 	main()
-	global_def.BATCH = False
+	sp_global_def.BATCH = False
 	sxprint('Done!')
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )

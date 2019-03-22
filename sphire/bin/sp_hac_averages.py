@@ -34,10 +34,10 @@ from __future__ import print_function
 
 
 import os
-import global_def
-from global_def import sxprint, ERROR
+import sp_global_def
+from sp_global_def import sxprint, ERROR
 
-from   global_def import *
+from   sp_global_def import *
 from   optparse import OptionParser
 import sys
 def main():
@@ -55,17 +55,17 @@ def main():
 		return
 		
 	else:
-		if global_def.CACHE_DISABLE:
-			from utilities import disable_bdb_cache
+		if sp_global_def.CACHE_DISABLE:
+			from sp_utilities import disable_bdb_cache
 			disable_bdb_cache()
-		from  applications  import  HAC_averages
-		global_def.BATCH = True
+		from  sp_applications  import  HAC_averages
+		sp_global_def.BATCH = True
 		HAC_averages(args[0], args[1], args[2], options.K)
-		global_def.BATCH = False
+		sp_global_def.BATCH = False
 
 if __name__ == "__main__":
-	global_def.print_timestamp( "Start" )
-	global_def.write_command()
+	sp_global_def.print_timestamp( "Start" )
+	sp_global_def.write_command()
 	main()
-	global_def.print_timestamp( "Finish" )
+	sp_global_def.print_timestamp( "Finish" )
 	
