@@ -152,7 +152,7 @@ def identify_outliers(myid, main_node, rviper_iter, no_of_viper_runs_analyzed_to
 			else:
 				# still need to eliminate DUMMY_INDEX_USED_AS_BUFFER
 				found_outliers(list_of_independent_viper_run_indices_used_for_outlier_elimination[1:], outlier_percentile, 
-					rviper_iter, masterdir, bdb_stack_location, outlier_index_threshold_method, angle_threshold, symc, options)
+					rviper_iter, masterdir, bdb_stack_location, outlier_index_threshold_method, angle_threshold, symc, options, runs_iter)
 		
 	if_error_then_all_processes_exit_program(error_status)
 
