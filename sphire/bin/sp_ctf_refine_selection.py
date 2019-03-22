@@ -37,7 +37,7 @@ import argparse
 import numpy as np
 import EMAN2db
 import EMAN2
-import sxctf_refine
+import sp_ctf_refine_io
 import sp_global_def
 
 
@@ -111,7 +111,7 @@ def _main_():
 	num_particles_relevant = 0
 	for particle_index in range(number_of_particles):
 
-		particle = sxctf_refine.read_particle(
+		particle = sp_ctf_refine_io.read_particle(
 			path_stack, particle_index, header_only=True
 		)
 		particle_header = particle.get_attr_dict()
