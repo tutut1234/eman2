@@ -3801,6 +3801,7 @@ def ali3D_primary_local_polar(refang, shifts, coarse_angles, coarse_shifts, proc
 	####if( Blockdata["myid_on_node"] == 0  ):  sxprint( " MEMEST ", n_coarse_ang,numberofrefs_inmem)
 	#  number of references that will fit into one mode
 	#Blockdata['symclass_coarse'].set_angles(coarse_angles)
+	Blockdata['symclass_coarse'].set_angles(coarse_angles)
 	Blockdata['symclass_coarse'].build_kdtree()
 	#normals_set = angles_to_normals(coarse_angles)
 	Blockdata["angle_set"] = coarse_angles
@@ -3819,7 +3820,7 @@ def ali3D_primary_local_polar(refang, shifts, coarse_angles, coarse_shifts, proc
 			for m in q:
 				#print " m ",m,len(angles)
 
-				assignments_of_refangles_to_angles[m] = Blockdata['symclass_coarse'].find_nearest_neighbors(oldparams[m], Tracker["an"])
+				assignments_of_refangles_to_angles[m] = [entry for entry in Blockdata['symclass_coarse'].find_nearest_neighbors(oldparams[m], Tracker["an"]) if not entry < 0]
 				assignments_of_refangles_to_cones[i].extend(assignments_of_refangles_to_angles[m])
 
 			assignments_of_refangles_to_cones[i] = list(set(assignments_of_refangles_to_cones[i]))
@@ -3885,7 +3886,7 @@ def ali3D_primary_local_polar(refang, shifts, coarse_angles, coarse_shifts, proc
 					for m in q:
 						#print " m ",m,len(angles)
 
-						assignments_of_refangles_to_angles[m] = Blockdata['symclass_coarse'].find_nearest_neighbors(oldparams[m], Tracker["an"])
+						assignments_of_refangles_to_angles[m] = [entry for entry in Blockdata['symclass_coarse'].find_nearest_neighbors(oldparams[m], Tracker["an"]) if not entry < 0]
 						#if Blockdata["myid"] == 0:  sxprint( "assignments_of_refangles_to_angles[m] ", Blockdata["color"],i,m,assignments_of_refangles_to_angles[m])
 						assignments_of_refangles_to_cones[i].extend(assignments_of_refangles_to_angles[m])
 
@@ -4860,6 +4861,7 @@ def ali3D_local_polar(refang, shifts, coarse_angles, coarse_shifts, procid, orig
 	numberofrefs_inmem = int(Tracker["constants"]["memory_per_node"]/4/((size_of_one_image*disp_unit)/1.0e9))
 	####if( Blockdata["myid_on_node"] == 0  ):  sxprint( " MEMEST ", n_coarse_ang,numberofrefs_inmem)
 	#  number of references that will fit into one mode
+	Blockdata['symclass_coarse'].set_angles(coarse_angles)
 	Blockdata['symclass_coarse'].build_kdtree()
 	#normals_set = angles_to_normals(coarse_angles)
 	Blockdata["angle_set"] = coarse_angles
@@ -4878,7 +4880,7 @@ def ali3D_local_polar(refang, shifts, coarse_angles, coarse_shifts, procid, orig
 			for m in q:
 				#print " m ",m,len(angles)
 
-				assignments_of_refangles_to_angles[m] = Blockdata['symclass_coarse'].find_nearest_neighbors(oldparams[m], Tracker["an"])
+				assignments_of_refangles_to_angles[m] = [entry for entry in Blockdata['symclass_coarse'].find_nearest_neighbors(oldparams[m], Tracker["an"]) if not entry < 0]
 				assignments_of_refangles_to_cones[i].extend(assignments_of_refangles_to_angles[m])
 
 			assignments_of_refangles_to_cones[i] = list(set(assignments_of_refangles_to_cones[i]))
@@ -4944,7 +4946,7 @@ def ali3D_local_polar(refang, shifts, coarse_angles, coarse_shifts, procid, orig
 					for m in q:
 						#print " m ",m,len(angles)
 
-						assignments_of_refangles_to_angles[m] = Blockdata['symclass_coarse'].find_nearest_neighbors(oldparams[m], Tracker["an"])
+						assignments_of_refangles_to_angles[m] = [entry for entry in Blockdata['symclass_coarse'].find_nearest_neighbors(oldparams[m], Tracker["an"]) if not entry < 0]
 						#if Blockdata["myid"] == 0:  sxprint( "assignments_of_refangles_to_angles[m] ", Blockdata["color"],i,m,assignments_of_refangles_to_angles[m])
 						assignments_of_refangles_to_cones[i].extend(assignments_of_refangles_to_angles[m])
 
@@ -5070,7 +5072,16 @@ def ali3D_local_polar(refang, shifts, coarse_angles, coarse_shifts, procid, orig
 
 			for i in range(nang_start, nang_end, 1):  # This will take care of no of process on a node less than nang.  Some loops will not be executed
 				ic = assignments_of_refangles_to_cones[icone][i]
-				temp = prgl(volprep,[ coarse_angles[ic][0],coarse_angles[ic][1],0.0, 0.0,0.0], 1, True)
+				try:
+					temp = prgl(volprep,[ coarse_angles[ic][0],coarse_angles[ic][1],0.0, 0.0,0.0], 1, True)
+				except IndexError:
+					print(len(Blockdata['symclass_coarse'].kdneighbors))
+					print(Blockdata['symclass_coarse'].kdnneigbors)
+					print('ic', ic)
+					print('coarse_angles', coarse_angles)
+					print('len(coarse_angles)', len(coarse_angles))
+					print('assign', assignments_of_refangles_to_cones[icone])
+					raise
 				crefim = Util.Polar2Dm(temp, cnx, cnx, numr, mode)
 				Util.Frngs(crefim, numr)
 				Util.Applyws(crefim, numr, wr)
@@ -6210,6 +6221,7 @@ def update_tracker(shell_line_command):
 	parser_no_default.add_option("--continuation_iter",         type="int")
 	parser_no_default.add_option("--continuation_smearing",     type="int")
 	parser_no_default.add_option("--keep_groups",               action="store_true")
+	parser_no_default.add_option("--plot_ang_dist",               action="store_true")
 
 	(options_no_default_value, args) = parser_no_default.parse_args(shell_line_command)
 
@@ -6218,6 +6230,9 @@ def update_tracker(shell_line_command):
 
 	if options_no_default_value.local_refinement:
 		Tracker['constants']['do_local'] = True
+
+	if 	options_no_default_value.plot_ang_dist != None:
+		Tracker["constants"]["plot_ang_dist"] 				= options_no_default_value.plot_ang_dist
 
 	if 	options_no_default_value.limit_improvement != None:
 		Tracker["constants"]["limit_improvement"] 				= options_no_default_value.limit_improvement
@@ -6313,6 +6328,7 @@ def update_legacy_tracker(tracker):
 		'stack_prior_dtype': None,
 		'do_local': False,
 		'a_criterion': 0.75,
+		'plot_ang_dist': False,
 		}
 	backwards_dict = {
 		'theta_min': -1,
@@ -6775,7 +6791,7 @@ def refinement_one_iteration(partids, partstack, original_data, oldparams, projd
 			original_data[procid]	= []
 			original_outlier = []
 
-		if Blockdata['myid'] == Blockdata['main_node']:
+		if Blockdata['myid'] == Blockdata['main_node'] and Tracker['constants']['plot_ang_dist']:
 			### NEEDS TO BE REACTIVATED AFTER THE SYMCLASS CHANGE
 			sxprint('Create angular distribution plot for chunk {0}'.format(procid))
 			delta = np.maximum(Tracker['delta'], 3.75)
@@ -7241,6 +7257,7 @@ def main():
 		parser.add_option("--group_id",               	type="str",  	default=None,              	help="Group particles for outlier detection by header name. Useful ones are e.g. ISAC_class_id or filament_id (Default None)")
 		parser.add_option("--filament_width",         	type="int",  	default=None,              	help="Filament width used to normalize the particles. (Default None)")
 		parser.add_option("--helical_rise",         	type="float",  	default=None,              	help="Helical rise in angstrom. This is used to limit the shift along the helical axis. (Default None)")
+		parser.add_option("--plot_ang_dist",         	action='store_true',  	default=False,              	help="Plot the angular distribution plot for every iteration. This will take some time for high symmetries. (Default False)")
 		if do_continuation_mode:
 			# case1: local meridien run using parameters stored in headers
 			# case2: restart mode of standard meridien run. Parameters can be altered in the restart run.
@@ -7388,6 +7405,7 @@ def main():
 			Constants["filament_width"]			    = options.filament_width
 			Constants["helical_rise"]			    = options.helical_rise
 			Constants["do_local"]			    = do_continuation_mode
+			Constants["plot_ang_dist"]			    = options.plot_ang_dist
 			if options.group_id is None:
 				Constants['stack_prior'] = None
 				Constants['stack_prior_fmt'] = None
