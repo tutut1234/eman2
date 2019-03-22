@@ -196,7 +196,7 @@ def vomq(classavgstack, classmap, classdoc, log=None, verbose=False):
 	
 	# Generate class-to-particle lookup table
 	print_log_msg("Exporting members of stack %s to class map %s" % (classavgstack, classmap), log, verbose)
-	cmd = "sxheader.py %s --params=members --export=%s" % (classavgstack, classmap) 
+	cmd = "sp_header.py %s --params=members --export=%s" % (classavgstack, classmap) 
 	print_log_msg(cmd, log, verbose)
 	header(classavgstack, 'members', fexport=classmap)
 	

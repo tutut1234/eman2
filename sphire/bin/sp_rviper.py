@@ -772,7 +772,7 @@ output_directory: directory name into which the output files will be written.  I
 
 			junk = True
 			if not os.path.exists(bdb_path):
-				cmd = "{} {} {}".format("sxcpy.py  ", args[0], bdb_stack_location + "_000")
+				cmd = "{} {} {}".format("sp_cpy.py  ", args[0], bdb_stack_location + "_000")
 				junk = cmdexecute(cmd)
 				#cpy(args[0], bdb_stack_location + "_000")  # without subprocess
 

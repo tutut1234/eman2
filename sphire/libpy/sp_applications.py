@@ -16490,45 +16490,45 @@ def header(stack, params, zero=False, one=False, set = 0.0, randomize=False, ran
 						if ext == "bdb":
 							t = DB.get_attr(i,"xform.align2d")
 							d = t.get_params("2D")
-							sxprint("%16.6f %16.6f %16.6f %10d %10.3f"%(d["alpha"],d["tx"],d["ty"],d["mirror"],d["scale"]), end=' ')
+							print("%16.6f %16.6f %16.6f %10d %10.3f"%(d["alpha"],d["tx"],d["ty"],d["mirror"],d["scale"]), end=' ')
 							
 						elif ext == "hdf":
 							t = EMUtil.read_hdf_attribute(stack, "xform.align2d",i)
 							d = t.get_params("2D")
-							sxprint("%16.6f %16.6f %16.6f %10d %10.3f"%(d["alpha"],d["tx"],d["ty"],d["mirror"],d["scale"]), end=' ')
+							print("%16.6f %16.6f %16.6f %10d %10.3f"%(d["alpha"],d["tx"],d["ty"],d["mirror"],d["scale"]), end=' ')
 					elif p[:16] == "xform.projection":
 						#phi, theta, psi, s2x, s2y = get_params_proj(img, p)
 						if ext == "bdb":
 							t = DB.get_attr(i,"xform.projection")
 							d = t.get_params("spider")
-							sxprint("%16.6f %16.6f %16.6f %16.6f %16.6f"%(d["phi"],d["theta"],d["psi"],-d["tx"],-d["ty"]), end=' ')
+							print("%16.6f %16.6f %16.6f %16.6f %16.6f"%(d["phi"],d["theta"],d["psi"],-d["tx"],-d["ty"]), end=' ')
 						elif ext == "hdf":
 							t = EMUtil.read_hdf_attribute(stack, "xform.projection", i)
 							d = t.get_params("spider")
-							sxprint("%16.6f %16.6f %16.6f %16.6f %16.6f"%(d["phi"],d["theta"],d["psi"],-d["tx"],-d["ty"]), end=' ')
+							print("%16.6f %16.6f %16.6f %16.6f %16.6f"%(d["phi"],d["theta"],d["psi"],-d["tx"],-d["ty"]), end=' ')
 					elif p[:13] == "xform.align3d":
 						#phi, theta, psi, s3x, s3y, s3z, mirror, scale = get_params3D(img, p)
 						if ext == "bdb":
 							t = DB.get_attr(i, "xform.align3d")
 							d = t.get_params("spider")
-							sxprint("%16.6f %16.6f %16.6f %16.6f %16.6f %16.6f %10d %10.3f"%(d["phi"],d["theta"],d["psi"],d["tx"],d["ty"],d["tz"],d["mirror"],d["scale"]), end=' ')
+							print("%16.6f %16.6f %16.6f %16.6f %16.6f %16.6f %10d %10.3f"%(d["phi"],d["theta"],d["psi"],d["tx"],d["ty"],d["tz"],d["mirror"],d["scale"]), end=' ')
 						elif ext == "hdf":
 							t = EMUtil.read_hdf_attribute(stack, "xform.align3d", i)
 							d = t.get_params("spider")
-							sxprint("%16.6f %16.6f %16.6f %16.6f %16.6f %16.6f %10d %10.3f"%(d["phi"],d["theta"],d["psi"],d["tx"],d["ty"],d["tz"],d["mirror"],d["scale"]), end=' ')
+							print("%16.6f %16.6f %16.6f %16.6f %16.6f %16.6f %10d %10.3f"%(d["phi"],d["theta"],d["psi"],d["tx"],d["ty"],d["tz"],d["mirror"],d["scale"]), end=' ')
 					elif p == "ctf":
 						#defocus, cs, voltage, apix, bfactor, ampcont = get_ctf(img)
 						if ext == "bdb":
 							t = DB.get_attr(i, "ctf")
 						elif ext == "hdf":
 							t = EMUtil.read_hdf_attribute(stack,"ctf", i)
-						sxprint("%16.6f %16.6f %16.6f %16.6f %16.6f %16.6f %16.6f %16.6f"%(t.defocus, t.cs, t.voltage, t.apix, t.bfactor, t.ampcont, t.dfdiff, t.dfang), end=' ')
+						print("%16.6f %16.6f %16.6f %16.6f %16.6f %16.6f %16.6f %16.6f"%(t.defocus, t.cs, t.voltage, t.apix, t.bfactor, t.ampcont, t.dfdiff, t.dfang), end=' ')
 
 					else:
 						if ext == "bdb":
-							sxprint("%15s"%str(DB.get_attr(i, p)), end=' ')
+							print("%15s"%str(DB.get_attr(i, p)), end=' ')
 						elif ext == "hdf":
-							sxprint("%15s"%str(EMUtil.read_hdf_attribute(stack, p, i)), end=' ')
+							print("%15s"%str(EMUtil.read_hdf_attribute(stack, p, i)), end=' ')
 				elif backup:
 					#t = img.get_attr(p)
 					#img.set_attr(p+suffix, t)

@@ -1741,7 +1741,7 @@ def main(args):
 			"""%(shrink_ratio, radi)
 			fp.write(output_text); fp.flush() ;fp.close()
 			sxprint(output_text)
-			junk = cmdexecute("sxheader.py  --consecutive  --params=originalid   %s"%Blockdata["stack_ali2d"])
+			junk = cmdexecute("sp_header.py  --consecutive  --params=originalid   %s"%Blockdata["stack_ali2d"])
 
 			fp = open(os.path.join(init2dir, "Finished_initial_2d_alignment.txt"), "w"); fp.flush() ;fp.close()
 
@@ -1849,7 +1849,7 @@ def main(args):
 	mpi.mpi_barrier( mpi.MPI_COMM_WORLD )
 	if( Blockdata["myid"] == 0 ):
 		if( os.path.exists(os.path.join(Blockdata["masterdir"],"class_averages.hdf")) ):
-			cmd = "{} {} {} {} {} {} {} {} {} {}".format( "sxchains.py", 
+			cmd = "{} {} {} {} {} {} {} {} {} {}".format( "sp_chains.py", 
 														  os.path.join(Blockdata["masterdir"],"class_averages.hdf"),
 														  os.path.join(Blockdata["masterdir"],"junk.hdf"),
 														  os.path.join(Blockdata["masterdir"],"ordered_class_averages.hdf"),

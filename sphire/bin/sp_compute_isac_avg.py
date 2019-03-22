@@ -524,7 +524,7 @@ def main():
 	target_xr =3
 	target_yr =3
 	if( Blockdata["myid"] == 0):
-		cmd = "{} {} {} {} {} {} {} {} {} {}".format("sxchains.py", os.path.join(Tracker["constants"]["masterdir"],"class_averages.hdf"),\
+		cmd = "{} {} {} {} {} {} {} {} {} {}".format("sp_chains.py", os.path.join(Tracker["constants"]["masterdir"],"class_averages.hdf"),\
 		os.path.join(Tracker["constants"]["masterdir"],"junk.hdf"),os.path.join(Tracker["constants"]["masterdir"],"ordered_class_averages.hdf"),\
 		"--circular","--radius=%d"%Tracker["constants"]["radius"] , "--xr=%d"%(target_xr+1),"--yr=%d"%(target_yr+1),"--align", ">/dev/null")
 		junk = cmdexecute(cmd)

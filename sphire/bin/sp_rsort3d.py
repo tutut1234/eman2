@@ -298,11 +298,11 @@ def main():
 		######
 		if myid == main_node:
 			if(Tracker["orgstack"][:4] == "bdb:"):     cmd = "{} {} {}".format("e2bdb.py", Tracker["orgstack"],"--makevstack="+Tracker["constants"]["stack"])
-			else:  cmd = "{} {} {}".format("sxcpy.py", orgstack, Tracker["constants"]["stack"])
+			else:  cmd = "{} {} {}".format("sp_cpy.py", orgstack, Tracker["constants"]["stack"])
 			cmdexecute(cmd)
-			cmd = "{} {} {} {} ".format("sxheader.py", Tracker["constants"]["stack"],"--params=xform.projection","--export="+Tracker["constants"]["ali3d"])
+			cmd = "{} {} {} {} ".format("sp_header.py", Tracker["constants"]["stack"],"--params=xform.projection","--export="+Tracker["constants"]["ali3d"])
 			cmdexecute(cmd)
-			cmd = "{} {} {} {} ".format("sxheader.py", Tracker["constants"]["stack"],"--params=ctf","--export="+Tracker["constants"]["ctf_params"])
+			cmd = "{} {} {} {} ".format("sp_header.py", Tracker["constants"]["stack"],"--params=ctf","--export="+Tracker["constants"]["ctf_params"])
 			cmdexecute(cmd)
 			#keepchecking = False
 			total_stack = EMUtil.get_image_count(Tracker["orgstack"])

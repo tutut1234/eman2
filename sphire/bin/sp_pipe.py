@@ -575,7 +575,7 @@ def isac_substack(args):
 	# Import the total 2D alignment parameters to xform.align2d
 	sxprint(" ")
 	sxprint("Importing the total 2D alignment parameters in the original scale to the header entry...")
-	cmd_line = "sxheader.py {} --import={} --params={}".format( virtual_bdb_substack_path, # target stack
+	cmd_line = "sp_header.py {} --import={} --params={}".format( virtual_bdb_substack_path, # target stack
 																isac_substack_total_header_align2d_path, # import sp_alignment parameters from .txt file
 																"xform.align2d") # perform the import on the alignment parameters
 	status = cmdexecute(cmd_line)
@@ -584,7 +584,7 @@ def isac_substack(args):
 	# Transform xform.align2d to xform.projection
 	sxprint(" ")
 	sxprint("Creating projection parameters header entry from imported 2D alignment parameters using 2D-to-3D transformation...")
-	cmd_line = "sxparams_2D_to_3D.py {}".format(virtual_bdb_substack_path)
+	cmd_line = "sp_params_2D_to_3D.py {}".format(virtual_bdb_substack_path)
 	status = cmdexecute(cmd_line)
 	if status == 0: ERROR("\"{}\" execution failed. Exiting...".format(cmd_line), where=subcommand_name) # action=1 - fatal error, exit
 	
@@ -592,14 +592,14 @@ def isac_substack(args):
 	sxprint(" ")
 	sxprint("Exporting projection parameters from the header entry...")
 	isac_substack_total_header_projection_path = os.path.join(args.output_directory, "{}_header_projection.txt".format(args.substack_basename))
-	cmd_line = "sxheader.py {} --export={} --params=xform.projection".format(virtual_bdb_substack_path, isac_substack_total_header_projection_path)
+	cmd_line = "sp_header.py {} --export={} --params=xform.projection".format(virtual_bdb_substack_path, isac_substack_total_header_projection_path)
 	status = cmdexecute(cmd_line)
 	if status == 0: ERROR("\"{}\" execution failed. Exiting...".format(cmd_line), where=subcommand_name) # action=1 - fatal error, exit
 	
 	# Export class id values
 	sxprint(" ")
 	sxprint("Importing class membership information (also found in file \'particle_membership.txt\')...")
-	cmd_line = "sxheader.py {} --import={} --params={}".format( virtual_bdb_substack_path, # target stack
+	cmd_line = "sp_header.py {} --import={} --params={}".format( virtual_bdb_substack_path, # target stack
 																class_membership_file_path, # import sp_alignment parameters from .txt file
 																"ISAC_class_id") # perform the import on the alignment parameters
 	status = cmdexecute(cmd_line)

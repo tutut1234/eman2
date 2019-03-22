@@ -168,7 +168,7 @@ def main():
 			#if output_dir =="./": stack = "bdb:data"
 			stack = "bdb:"+current_output_dir+"/data"
 			delete_bdb(stack)
-			junk = cmdexecute("sxcpy.py  "+instack+"  "+stack)
+			junk = cmdexecute("sp_cpy.py  "+instack+"  "+stack)
 		else: stack = instack
 		
 		qt = EMUtil.get_all_attributes(stack,'xform.projection')

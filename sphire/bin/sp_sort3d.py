@@ -306,11 +306,11 @@ def main():
 		######################## Read/write bdb: data on main node ############################
 		if myid==main_node:
 			if(orgstack[:4] == "bdb:"):	cmd = "{} {} {}".format("e2bdb.py", orgstack,"--makevstack="+Tracker["constants"]["stack"])
-			else:  cmd = "{} {} {}".format("sxcpy.py", orgstack, Tracker["constants"]["stack"])
+			else:  cmd = "{} {} {}".format("sp_cpy.py", orgstack, Tracker["constants"]["stack"])
 			junk = cmdexecute(cmd)
-			cmd = "{} {} {}".format("sxheader.py  --params=xform.projection", "--export="+Tracker["constants"]["ali3d"],orgstack)
+			cmd = "{} {} {}".format("sp_header.py  --params=xform.projection", "--export="+Tracker["constants"]["ali3d"],orgstack)
 			junk = cmdexecute(cmd)
-			cmd = "{} {} {}".format("sxheader.py  --params=ctf", "--export="+Tracker["constants"]["ctf_params"],orgstack)
+			cmd = "{} {} {}".format("sp_header.py  --params=ctf", "--export="+Tracker["constants"]["ctf_params"],orgstack)
 			junk = cmdexecute(cmd)
 		mpi.mpi_barrier(mpi.MPI_COMM_WORLD)	   		   	
 		########-----------------------------------------------------------------------------

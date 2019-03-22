@@ -325,7 +325,7 @@ def main_proj_compare(classavgstack, reconfile, outdir, options, mode='viper', p
 		
 		# Export projection angles
 		print_log_msg("Exporting projection angles from %s to %s" % (refprojstack, refanglesdoc), log, verbose)
-		cmd = "sxheader.py %s --params=xform.projection --import=%s\n" % (refprojstack, refanglesdoc)
+		cmd = "sp_header.py %s --params=xform.projection --import=%s\n" % (refprojstack, refanglesdoc)
 		print_log_msg(cmd, log, verbose)
 		header(refprojstack, 'xform.projection', fexport=refanglesdoc)
 		
@@ -352,7 +352,7 @@ def main_proj_compare(classavgstack, reconfile, outdir, options, mode='viper', p
 			
 			# Export alignment parameters
 			print_log_msg('Exporting angles from %s into %s' % (classavgstack, classangles), log, verbose)
-			cmd = "sxheader.py %s --params=xform.align2d --export=%s\n" % (classavgstack, classangles)
+			cmd = "sp_header.py %s --params=xform.align2d --export=%s\n" % (classavgstack, classangles)
 			print_log_msg(cmd, log, verbose)
 			header(classavgstack, 'xform.align2d', fexport=classangles)	
 		
@@ -402,7 +402,7 @@ def main_proj_compare(classavgstack, reconfile, outdir, options, mode='viper', p
 		
 	# Import Euler angles
 	print_log_msg("Importing parameter information into %s from %s" % (classavgstack, classangles), log, verbose)
-	cmd = "sxheader.py %s --params=xform.projection --import=%s\n" % (classavgstack, classangles)
+	cmd = "sp_header.py %s --params=xform.projection --import=%s\n" % (classavgstack, classangles)
 	print_log_msg(cmd, log, verbose)
 	header(classavgstack, 'xform.projection', fimport=classangles)
 	
@@ -691,7 +691,7 @@ def vomq(classavgstack, classmap, classdoc, log=None, verbose=False):
 	
 	# Generate class-to-particle lookup table
 	print_log_msg("Exporting members of stack %s to class map %s" % (classavgstack, classmap), log, verbose)
-	cmd = "sxheader.py %s --params=members --export=%s" % (classavgstack, classmap) 
+	cmd = "sp_header.py %s --params=members --export=%s" % (classavgstack, classmap) 
 	print_log_msg(cmd, log, verbose)
 	header(classavgstack, 'members', fexport=classmap)
 	
