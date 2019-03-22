@@ -1784,7 +1784,11 @@ class SXCmdWidget(QWidget):
 				template_folder = os.environ['SPHIRE_SUBMISSION_SCRIPT_TEMPLATE_FOLDER']
 			else:
 				template_folder = SXLookFeelConst.file_dialog_dir
-			file_path = QFileDialog.getOpenFileName(self, "Select any file", template_folder, "All files (*)", options = QFileDialog.DontUseNativeDialog)
+			name = QFileDialog.getOpenFileName(self, "Select any file", template_folder, "All files (*)", options = QFileDialog.DontUseNativeDialog)
+			if isinstance(name, tuple):
+				file_path = str(name[0])
+			else:
+				file_path = str(name)
 		else:
 			if file_format:
 				name = QFileDialog.getOpenFileName(self, "Select %s file" % (file_format.upper()), SXLookFeelConst.file_dialog_dir, "%s files (*.%s)"  % (file_format.upper(), file_format), options = QFileDialog.DontUseNativeDialog)
