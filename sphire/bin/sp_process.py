@@ -1402,7 +1402,7 @@ def main():
 					for fsc, name in zip(plot_curves, plot_names):
 						idx += 1
 						fsc[1][0] = 1
-						label = r'FSC {0:14s}:  $0.5$: ${1}\AA$  |  $0.143$: ${2}\AA$'.format(
+						label = r'FSC {0:14s}:  $0.5$: ${1: 5.2f}\AA$  |  $0.143$: ${2: 5.2f}\AA$'.format(
 							name,
 							round(
 								freq_to_angstrom(
