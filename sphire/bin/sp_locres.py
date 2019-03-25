@@ -69,8 +69,6 @@ def makeAngRes(freqvol, nx, ny, nz, pxSize, freq_to_real=True):
 
 
 def output_volume(freqvol, resolut, apix, outdir, prefix, fsc, out_ang_res, nx, ny, nz, res_overall):
-	os.makedirs(outdir)
-	sp_global_def.write_command(outdir)
 	outvol = os.path.join(outdir, '{0}.hdf'.format(prefix))
 	outvol_ang = os.path.join(outdir, os.path.splitext(outvol)[0] + "_ang.hdf")
 	outvol_shifted = os.path.join(outdir, os.path.splitext(outvol)[0] + "_shift.hdf")
@@ -188,8 +186,11 @@ def main():
 			else:
 				m = sp_utilities.model_blank(nx, ny, nz)
 			outdir = args[3]
-		if os.path.exists(outdir):
+		if os.path.exists(outdir) and myid == 0:
 			sp_global_def.ERROR('Output directory already exists!')
+		elif myid == 0:
+			os.makedirs(outdir)
+			sp_global_def.write_command(outdir)
 		sp_utilities.bcast_EMData_to_all(m, myid, main_node)
 
 		"""Multiline Comment0"""
@@ -216,6 +217,9 @@ def main():
 			outdir = args[3]
 		if os.path.exists(outdir):
 			sp_global_def.ERROR('Output directory already exists!')
+		else:
+			os.makedirs(outdir)
+			sp_global_def.write_command(outdir)
 
 		mc = sp_utilities.model_blank(nn,nn,nn,1.0)-m
 

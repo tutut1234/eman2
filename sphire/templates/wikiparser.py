@@ -336,10 +336,6 @@ def handle_exceptional_cases(sxcmd):
 		sxcmd.token_dict["output_directory"].type = "output_continue"
 	elif sxcmd.name == "sp_mask":
 		sxcmd.token_dict["output_directory"].type = "dir"
-	elif sxcmd.name == "sp_locres":
-		assert(sxcmd.token_dict["directory"].key_base == "directory")
-		assert(sxcmd.token_dict["directory"].type == "output")
-		sxcmd.token_dict["directory"].type = "output_continue"
 	elif sxcmd.name == "sp_rviper":
 		assert(sxcmd.token_dict["stack"].key_base == "stack")
 		assert(sxcmd.token_dict["stack"].type == "bdb2d_stack")
@@ -402,6 +398,9 @@ def handle_exceptional_cases(sxcmd):
 		assert(sxcmd.token_dict["wn"].key_base == "wn")
 		assert(sxcmd.token_dict["wn"].type == "ctfwin")
 		sxcmd.token_dict["wn"].type = "int"
+		assert(sxcmd.token_dict["directory"].key_base == "directory")
+		assert(sxcmd.token_dict["directory"].type == "output")
+		sxcmd.token_dict["directory"].type = "output_continue"
 	elif sxcmd.name == "sp_filterlocal":
 		assert(sxcmd.token_dict["locres_volume"].key_base == "locres_volume")
 		assert(sxcmd.token_dict["locres_volume"].type == "output")
