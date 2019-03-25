@@ -33,6 +33,7 @@ Plotting stuff for CTF Refinement with error assessment in SPHIRE
 #
 """
 # pylint: disable=C0330
+import sys
 import os
 import matplotlib as mpl
 
