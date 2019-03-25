@@ -1751,16 +1751,12 @@ def add_sxcmd_subconfig_meridien_shared(token_edit_list):
 	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("symmetry"); token_edit_list.append(token_edit)
 	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("xr"); token_edit_list.append(token_edit)
 	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("ts"); token_edit_list.append(token_edit)
-	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("initialshifts"); token_edit_list.append(token_edit)
-	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("skip_prealignment"); token_edit_list.append(token_edit)
 	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("memory_per_node"); token_edit_list.append(token_edit)
 
 	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("theta_min"); token_edit_list.append(token_edit)
 	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("theta_max"); token_edit_list.append(token_edit)
 	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("even_angle_method"); token_edit_list.append(token_edit)
 	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("an"); token_edit_list.append(token_edit)
-	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("center_method"); token_edit_list.append(token_edit)
-	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("target_radius"); token_edit_list.append(token_edit)
 	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("shake"); token_edit_list.append(token_edit)
 	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("small_memory"); token_edit_list.append(token_edit)
 	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("ccfpercentage"); token_edit_list.append(token_edit)
@@ -1791,6 +1787,10 @@ def create_sxcmd_subconfig_meridien_standard_fresh():
 	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("stack"); token_edit.is_required = True; token_edit_list.append(token_edit)
 	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("output_directory"); token_edit.type = "output"; token_edit_list.append(token_edit)
 	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("initial_volume"); token_edit.is_required = True; token_edit_list.append(token_edit)
+	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("initialshifts"); token_edit_list.append(token_edit)
+	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("skip_prealignment"); token_edit_list.append(token_edit)
+	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("center_method"); token_edit_list.append(token_edit)
+	token_edit = sxgui_template.SXcmd_token(); token_edit.initialize_edit("target_radius"); token_edit_list.append(token_edit)
 
 	add_sxcmd_subconfig_meridien_standard_shared(token_edit_list)
 

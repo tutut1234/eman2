@@ -5,6 +5,7 @@
 #  New version of sort3D.
 #  
 from __future__ import print_function
+from sp_global_def import sxprint
 import EMAN2_cppwrap
 import sp_applications
 import copy
@@ -1415,18 +1416,10 @@ def do_one_way_anova_scipy(clusters, value_list, name_of_variable="variable", lo
 	log_main.add('================================================================================================================\n')
 	return res[0], res[1]
 ####============================== FCM related functions =================================
-def assignment_to_umat(iter_assignment):
-	group_dict = np.sort(np.unique(iter_assignment))
-	umat = np.full((len(iter_assignment), group_dict.shape[0]), 0.0, dtype = np.float64)
+def assignment_to_umat(iter_assignment, number_of_groups):
+	umat = np.full((len(iter_assignment), number_of_groups), 0.0, dtype = np.float64)
 	for im in range(len(iter_assignment)): 
-		try:
-			umat[im][iter_assignment[im]] = 1.0
-		except IndexError:
-			sxprint('iter2', len(iter_assignment))
-			sxprint('iter', iter_assignment)
-			sxprint('group2', group_dict.shape)
-			sxprint('group', group_dict)
-			raise
+		umat[im][iter_assignment[im]] = 1.0
 	return umat
 	
 def mix_assignment(umat, ngroups, iter_assignment, scale = 1.0, shake_rate = 0.1):
@@ -1879,7 +1872,7 @@ def Kmeans_minimum_group_size_orien_groups(nbox, iter_mstep, run_iter, cdata, fd
 	#volbuf = np.frombuffer(np.core.multiarray.int_asbuffer(base_vol, refvolsize*disp_unit), dtype = 'f4')
 	#volbuf = volbuf.reshape(Tracker["nxinit"], Tracker["nxinit"], Tracker["nxinit"])
 	#### ---end of shared memory----------------------------------------------
-	umat = assignment_to_umat(iter_assignment[image_start:image_end])
+	umat = assignment_to_umat(iter_assignment[image_start:image_end], Tracker['number_of_groups'])
 	while total_iter < max_iter: #### Kmeans
 		rest_time  = time.time()
 		if(Blockdata["myid"] == Blockdata["main_node"]):

@@ -57,10 +57,9 @@ def makeAngRes(freqvol, nx, ny, nz, pxSize, freq_to_real=True):
 
 	if freq_to_real:
 		mask = data_in > 0.0
-		data_out[mask] = pxSize / data_in[mask]
 	else:
-		mask = data_in >= 2 * pxSize
-		data_out[mask] = pxSize / data_in[mask]
+		mask = data_in > 0.0
+	data_out[mask] = pxSize / data_in[mask]
 
 	return outAngResVol
 
@@ -84,12 +83,12 @@ def output_volume(freqvol, resolut, apix, outdir, prefix, fsc, out_ang_res, nx, 
 			resolut[jfreq][1] = 0.0	
 
 		data_freqvol = freqvol.get_3dview()
-		mask = data_freqvol != 0
+		mask = data_freqvol > 0
 		percentile_25 = numpy.percentile(data_freqvol[mask], 25)
 		percentile_75 = numpy.percentile(data_freqvol[mask], 75)
 		iqr = percentile_75 - percentile_25
-		mask_low_pass = data_freqvol > percentile_75 + 1.5*iqr
-		mask_high_pass = data_freqvol < percentile_25 - 1.5*iqr
+		mask_low_pass = data_freqvol < percentile_75 + 1.5*iqr
+		mask_high_pass = data_freqvol > percentile_25 - 1.5*iqr
 		mean_real = 1 / float(numpy.mean(data_freqvol[mask & mask_low_pass & mask_high_pass]))
 		overall_res_real = 1 / float(res_overall)
 		#mean_ang = options.apix / float(EMAN2_cppwrap.Util.infomask(freqvol, m, True)[0])
@@ -99,7 +98,7 @@ def output_volume(freqvol, resolut, apix, outdir, prefix, fsc, out_ang_res, nx, 
 		volume_out = makeAngRes(volume_out_real, nx, ny, nz, 1, False)
 		volume_out.write_image(outvol_shifted)
 		if out_ang_res:
-			outAngResVol = makeAngRes(freqvol, nx, ny, nz, apix)
+			outAngResVol = makeAngRes(volume_out, nx, ny, nz, apix)
 			outAngResVol.write_image(outvol_shifted_ang)
 
 	if(fsc != None): sp_utilities.write_text_row(resolut, fsc)
@@ -118,7 +117,7 @@ def main():
 	parser.add_option("--prefix",           type="str",           default='localres',      help="Prefix for the output files. (default localres)")
 	parser.add_option("--wn",           type="int",           default=7,      help="Size of window within which local real-space FSC is computed. (default 7)")
 	parser.add_option("--step",         type="float",         default= 1.0,   help="Shell step in Fourier size in pixels. (default 1.0)")   
-	parser.add_option("--cutoff",       type="float",         default= 0.5,   help="Resolution cut-off for FSC. (default 0.5)")
+	parser.add_option("--cutoff",       type="float",         default= 0.143,   help="Resolution cut-off for FSC. (default 0.143)")
 	parser.add_option("--radius",       type="int",           default=-1,     help="If there is no maskfile, sphere with r=radius will be used. By default, the radius is nx/2-wn (default -1)")
 	parser.add_option("--fsc",          type="string",        default= None,  help="Save overall FSC curve (might be truncated). By default, the program does not save the FSC curve. (default none)")
 	parser.add_option("--res_overall",  type="float",         default= -1.0,  help="Overall resolution at the cutoff level estimated by the user [abs units]. (default None)")

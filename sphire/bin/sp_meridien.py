@@ -7260,7 +7260,7 @@ def main():
 		if do_continuation_mode:
 			# case1: local meridien run using parameters stored in headers
 			# case2: restart mode of standard meridien run. Parameters can be altered in the restart run.
-			parser.add_option("--inires",		       		type="float",	     	default= 25,		         	help="Resolution of the initial_volume volume. One can use -1 in local_refinement mode to filter to the resolution of the reconstructed volumes. (default 25A)")
+			parser.add_option("--inires",		       		type="float",	     	default= -1,		         	help="Resolution of the initial_volume volume. One can use -1 in local_refinement mode to filter to the resolution of the reconstructed volumes. (default -1A)")
 			parser.add_option("--delta",					type="float",			default=3.75,		     		help="Initial angular sampling step (default 3.75)")
 			(options, args) = parser.parse_args(sys.argv[1:])
 
@@ -7292,7 +7292,7 @@ def main():
 		else:
 			# case1: standard meridien run
 			# case2: restart mode of standard meridien run. Parameters can be altered in the restart run.
-			parser.add_option("--inires",		       		type="float",	     	default= -1,		         	help="Resolution of the initial_volume volume. One can use -1 in local_refinement mode to filter to the resolution of the reconstructed volumes. (default -1)")
+			parser.add_option("--inires",		       		type="float",	     	default= 25,		         	help="Resolution of the initial_volume volume. One can use -1 in local_refinement mode to filter to the resolution of the reconstructed volumes. (default 25)")
 			parser.add_option("--delta",					type="float",			default=7.5,		     		help="Initial angular sampling step (default 7.5)")
 			parser.add_option("--skip_prealignment",		action="store_true", 	default= False,		         	help="Skip 2-D pre-alignment step: to be used if images are already centered. (default False)")
 			parser.add_option("--initialshifts",         	action="store_true",  	default= False,	         		help="Use orientation parameters in the input file header to jumpstart the procedure. (default False)")
