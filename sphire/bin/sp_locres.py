@@ -51,9 +51,6 @@ mpi.mpi_init( 0, [] )
 
 #Transforms the local resolution file from frequency units to angstroms.
 def makeAngRes(freqvol, nx, ny, nz, pxSize, freq_to_real=True):
-	if (pxSize == 1.0):
-		sxprint("Using a value of 1 for the pixel size. Are you sure this is correct?")
-
 	outAngResVol = sp_utilities.model_blank(nx,ny,nz)
 	data_in = freqvol.get_3dview()
 	data_out = outAngResVol.get_3dview()
@@ -70,9 +67,9 @@ def makeAngRes(freqvol, nx, ny, nz, pxSize, freq_to_real=True):
 
 def output_volume(freqvol, resolut, apix, outdir, prefix, fsc, out_ang_res, nx, ny, nz, res_overall):
 	outvol = os.path.join(outdir, '{0}.hdf'.format(prefix))
-	outvol_ang = os.path.join(outdir, os.path.splitext(outvol)[0] + "_ang.hdf")
-	outvol_shifted = os.path.join(outdir, os.path.splitext(outvol)[0] + "_shift.hdf")
-	outvol_shifted_ang = os.path.join(outdir, os.path.splitext(outvol_shifted)[0] + "_ang.hdf")
+	outvol_ang = os.path.splitext(outvol)[0] + "_ang.hdf"
+	outvol_shifted = os.path.splitext(outvol)[0] + "_shift.hdf"
+	outvol_shifted_ang = os.path.splitext(outvol_shifted)[0] + "_ang.hdf"
 
 	freqvol.write_image(outvol)
 	if(out_ang_res):

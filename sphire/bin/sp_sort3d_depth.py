@@ -1419,7 +1419,14 @@ def assignment_to_umat(iter_assignment):
 	group_dict = np.sort(np.unique(iter_assignment))
 	umat = np.full((len(iter_assignment), group_dict.shape[0]), 0.0, dtype = np.float64)
 	for im in range(len(iter_assignment)): 
-		umat[im][iter_assignment[im]] = 1.0
+		try:
+			umat[im][iter_assignment[im]] = 1.0
+		except IndexError:
+			sxprint('iter2', len(iter_assignment))
+			sxprint('iter', iter_assignment)
+			sxprint('group2', group_dict.shape)
+			sxprint('group', group_dict)
+			raise
 	return umat
 	
 def mix_assignment(umat, ngroups, iter_assignment, scale = 1.0, shake_rate = 0.1):
@@ -1724,8 +1731,8 @@ def Kmeans_minimum_group_size_orien_groups(nbox, iter_mstep, run_iter, cdata, fd
 	### 3. EMAN2 functions python native int;
 	
 	#==========---------- >>>>EQKmeans initialization ==========------------ 
-	log_main	             = sp_logger.Logger()
-	log_main                 = sp_logger.Logger(sp_logger.BaseLogger_Files())
+	#log_main	             = sp_logger.Logger(do_print=False)
+	log_main                 = sp_logger.Logger(sp_logger.BaseLogger_Files(), do_print=False)
 	log_main.prefix          = Tracker["directory"]+"/"
 	number_of_groups         = Tracker["number_of_groups"]
 	stopercnt                = Tracker["stop_mgskmeans_percentage"]
