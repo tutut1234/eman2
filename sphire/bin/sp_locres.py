@@ -68,10 +68,13 @@ def makeAngRes(freqvol, nx, ny, nz, pxSize, freq_to_real=True):
 	return outAngResVol
 
 
-def output_volume(freqvol, resolut, apix, outvol, fsc, out_ang_res, nx, ny, nz, res_overall):
-	outvol_ang = os.path.splitext(outvol)[0] + "_ang.hdf"
-	outvol_shifted = os.path.splitext(outvol)[0] + "_shift.hdf"
-	outvol_shifted_ang = os.path.splitext(outvol_shifted)[0] + "_ang.hdf"
+def output_volume(freqvol, resolut, apix, outdir, prefix, fsc, out_ang_res, nx, ny, nz, res_overall):
+	os.makedirs(outdir)
+	sp_global_def.write_command(outdir)
+	outvol = os.path.join(outdir, '{0}.hdf'.format(prefix))
+	outvol_ang = os.path.join(outdir, os.path.splitext(outvol)[0] + "_ang.hdf")
+	outvol_shifted = os.path.join(outdir, os.path.splitext(outvol)[0] + "_shift.hdf")
+	outvol_shifted_ang = os.path.join(outdir, os.path.splitext(outvol_shifted)[0] + "_ang.hdf")
 
 	freqvol.write_image(outvol)
 	if(out_ang_res):
@@ -81,7 +84,7 @@ def output_volume(freqvol, resolut, apix, outvol, fsc, out_ang_res, nx, ny, nz, 
 	if res_overall !=-1.0:
 		for ifreq in range(len(resolut)):
 			if resolut[ifreq][0] > res_overall:
-				 break
+				break
 		for jfreq in range(ifreq, len(resolut)):
 			resolut[jfreq][1] = 0.0	
 
@@ -111,12 +114,13 @@ def main():
 	for arg in sys.argv:
 		arglist.append( arg )
 	progname = os.path.basename(arglist[0])
-	usage = progname + """ firstvolume  secondvolume  maskfile  outputfile  --wn  --step  --cutoff  --radius  --fsc  --res_overall  --out_ang_res  --apix  --MPI
+	usage = progname + """ firstvolume  secondvolume  maskfile  directory  --prefix  --wn  --step  --cutoff  --radius  --fsc  --res_overall  --out_ang_res  --apix  --MPI
 
 	Compute local resolution in real space within area outlined by the maskfile and within regions wn x wn x wn
 	"""
 	parser = optparse.OptionParser(usage,version=sp_global_def.SPARXVERSION)
 	
+	parser.add_option("--prefix",           type="str",           default='localres',      help="Prefix for the output files. (default localres)")
 	parser.add_option("--wn",           type="int",           default=7,      help="Size of window within which local real-space FSC is computed. (default 7)")
 	parser.add_option("--step",         type="float",         default= 1.0,   help="Shell step in Fourier size in pixels. (default 1.0)")   
 	parser.add_option("--cutoff",       type="float",         default= 0.5,   help="Resolution cut-off for FSC. (default 0.5)")
@@ -176,14 +180,16 @@ def main():
 
 		if len(args) == 3:
 			m = sp_utilities.model_circle((min(nx,ny,nz)-nk)//2,nx,ny,nz)
-			outvol = args[2]
+			outdir = args[2]
 		
 		elif len(args) == 4:
 			if(myid == main_node):
 				m = sp_morphology.binarize(sp_utilities.get_im(args[2]), 0.5)
 			else:
 				m = sp_utilities.model_blank(nx, ny, nz)
-			outvol = args[3]
+			outdir = args[3]
+		if os.path.exists(outdir):
+			sp_global_def.ERROR('Output directory already exists!')
 		sp_utilities.bcast_EMData_to_all(m, myid, main_node)
 
 		"""Multiline Comment0"""
@@ -191,7 +197,7 @@ def main():
 
 		if(myid == 0):
 			# Remove outliers based on the Interquartile range
-			output_volume(freqvol, resolut, options.apix, outvol, options.fsc, options.out_ang_res, nx, ny, nz, res_overall)
+			output_volume(freqvol, resolut, options.apix, outdir, options.prefix, options.fsc, options.out_ang_res, nx, ny, nz, res_overall)
 
 	else:
 		cutoff = options.cutoff
@@ -203,11 +209,13 @@ def main():
 	
 		if len(args) == 3:
 			m = sp_utilities.model_circle((nn-nk)//2,nn,nn,nn)
-			outvol = args[2]
+			outdir = args[2]
 		
 		elif len(args) == 4:
 			m = sp_morphology.binarize(sp_utilities.get_im(args[2]), 0.5)
-			outvol = args[3]
+			outdir = args[3]
+		if os.path.exists(outdir):
+			sp_global_def.ERROR('Output directory already exists!')
 
 		mc = sp_utilities.model_blank(nn,nn,nn,1.0)-m
 
@@ -267,11 +275,10 @@ def main():
 			if(bailout):  break
 		#print(len(resolut))
 		# remove outliers
-		output_volume(freqvol, resolut, options.apix, outvol, options.fsc, options.out_ang_res, nx, ny, nz, res_overall)
+		output_volume(freqvol, resolut, options.apix, outdir, options.prefix, options.fsc, options.out_ang_res, nx, ny, nz, res_overall)
 
 if __name__ == "__main__":
 	sp_global_def.print_timestamp( "Start" )
-	sp_global_def.write_command()
 	main()
 	sp_global_def.print_timestamp( "Finish" )
 	mpi.mpi_finalize()

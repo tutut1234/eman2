@@ -336,6 +336,10 @@ def handle_exceptional_cases(sxcmd):
 		sxcmd.token_dict["output_directory"].type = "output_continue"
 	elif sxcmd.name == "sp_mask":
 		sxcmd.token_dict["output_directory"].type = "dir"
+	elif sxcmd.name == "sp_locres":
+		assert(sxcmd.token_dict["directory"].key_base == "directory")
+		assert(sxcmd.token_dict["directory"].type == "output")
+		sxcmd.token_dict["directory"].type = "output_continue"
 	elif sxcmd.name == "sp_rviper":
 		assert(sxcmd.token_dict["stack"].key_base == "stack")
 		assert(sxcmd.token_dict["stack"].type == "bdb2d_stack")

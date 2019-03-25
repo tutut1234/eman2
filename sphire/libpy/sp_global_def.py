@@ -85,12 +85,26 @@ def print_timestamp( tag="" ):
 
 
 def write_command(output_folder=None):
-	command = " ".join(sys.argv) + "\n"
-	if output_folder:
-		with open(os.path.join(output_folder, 'command.txt'), 'a+') as the_command:
-			the_command.write(command)
+	try:
+		mpi_rank = int( os.environ['OMPI_COMM_WORLD_RANK'] )
 
-	sxprint(command)
+		# printing the "Start"-tag will sync up the log file names so that all processes use the same logfile
+		global SXPRINT_LOG, SXPRINT_LOG_SYNC
+		if not SXPRINT_LOG_SYNC and "start" in tag.lower():
+			SXPRINT_LOG = util.send_string_to_all( SXPRINT_LOG, 0 )
+			SXPRINT_LOG_SYNC = True
+
+	# if there is no such thing as OMPI_COMM_WORLD_RANK, then we're not using mpi
+	except KeyError:
+		mpi_rank = 0
+
+	if mpi_rank == 0:
+		command = " ".join(sys.argv) + "\n"
+		if output_folder:
+			with open(os.path.join(output_folder, 'command.txt'), 'a+') as the_command:
+				the_command.write(command)
+
+		sxprint(command)
 
 
 def sxprint( *args, **kwargs ):

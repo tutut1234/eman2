@@ -8,7 +8,7 @@ Local Resolution: Compute local resolution of a map.
 
 Usage in command line
 
-  sp_locres.py  firstvolume  secondvolume  maskfile  outputfile  --wn=WINDOW_SIZE  --step=SHELL_STEP_SIZE  --cutoff=RES_CRITERION  --radius=RADIUS  --fsc=OUTPUT_FILE_PATH  --res_overall=RESOLUTION  --out_ang_res=OUTPUT_FILE_PATH  --apix=PIXEL_SIZE  --MPI
+  sp_locres.py  firstvolume  secondvolume  maskfile  directory --prefix=PREFIX  --wn=WINDOW_SIZE  --step=SHELL_STEP_SIZE  --cutoff=RES_CRITERION  --radius=RADIUS  --fsc=OUTPUT_FILE_PATH  --res_overall=RESOLUTION  --out_ang_res=OUTPUT_FILE_PATH  --apix=PIXEL_SIZE  --MPI
 
 \\
 ===== Typical usage =====
@@ -23,7 +23,8 @@ sp_locres exists in for both MPI and non-MPI versions.
   ; firstvolume : First half-map: A sub-map computed from about half of input projection data. In case of quasi-independent half-refinements, it has to one of the two generated structures. (default required string)
   ; secondvolume : Second half-map: A sub-map computed from about half of input projection data. In case of quasi-independent half-refinements, it has to one of the two generated structures. (default required string)
   ; maskfile : 3D mask: Defines the region for which local resolution will be computed. It is advisable to eliminate irrelevant regions surrounding the structure. (default none)
-  ; outputfile : Output volume: Each voxel contains the associated resolution. It is expressed in [[definitions:absolute_frequency_units|absolute frequency]] units. (default required string)
+  ; directory : Output directory: Each voxel contains the associated resolution. It is expressed in [[definitions:absolute_frequency_units|absolute frequency]] units. (default required string)
+  ; %%--%%prefix : Output prefix: Prefix for output files. (default localres)
   ; %%--%%radius : Mask radius [Pixels]: In case no mask is provided, a hard sphere of this radius will be used. By default, radius = box_size/2 - (%%--%%wn). (default -1) : maskfile==none
 
   ; %%--%%wn : Window size [Pixels]: Size of window within which local real-space CCC (equivalent to FSC) is computed. (default 7)
