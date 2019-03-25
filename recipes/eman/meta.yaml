@@ -27,11 +27,20 @@ requirements:
     build:
         - cmake 3.9
         - {{ compiler('cxx') }}
+        - {{ cdt('libxcb') }}               # [linux]
+        - {{ cdt('libxi-devel') }}          # [linux]
+        - {{ cdt('libx11-devel') }}         # [linux]
+        - {{ cdt('libxau-devel') }}         # [linux]
+        - {{ cdt('libxext-devel') }}        # [linux]
+        - {{ cdt('libxfixes-devel') }}      # [linux]
+        - {{ cdt('mesa-libgl-devel') }}     # [linux]
+        - {{ cdt('xorg-x11-proto-devel') }} # [linux]
 
     host:
         {% for req in reqs_host %}
         - {{ req }}
         {% endfor %}
+        - libglu      # [linux]
     
 test:
   requires:
