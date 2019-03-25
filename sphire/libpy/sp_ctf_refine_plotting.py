@@ -40,7 +40,7 @@ mpl.use("Agg")
 from matplotlib import pyplot
 
 from tqdm import tqdm
-import sxctf_refine_io
+import sp_ctf_refine_io
 import numpy as np
 
 
@@ -66,7 +66,7 @@ def create_particles_plot_map(
 	y_coordinates = []
 	value_for_coloring = []
 	for value_index, particle_index in enumerate(indices):
-		particle = sxctf_refine_io.read_particle(
+		particle = sp_ctf_refine_io.read_particle(
 			stack_file_path, particle_index, header_only=True
 		)
 
@@ -127,7 +127,7 @@ def create_and_save_particle_plots(
 	mpl.rcParams["figure.dpi"] = 200
 	mpl.rcParams.update({"font.size": 7})
 	all_errors = []
-	with tqdm(total=len(refinement_results_per_micrograph)) as pbar:
+	with tqdm(total=len(refinement_results_per_micrograph), file=sys.stdout) as pbar:
 		for mic_name in refinement_results_per_micrograph:
 			particle_indices = refinement_results_per_micrograph[mic_name]["indices"]
 			particle_error = refinement_results_per_micrograph[mic_name]["error"]

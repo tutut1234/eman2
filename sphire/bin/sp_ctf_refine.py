@@ -47,8 +47,8 @@ import copy
 from tqdm import tqdm
 from scipy import ndimage
 
-import sxctf_refine_plotting
-import sxctf_refine_io
+import sp_ctf_refine_plotting
+import sp_ctf_refine_io
 import sp_filter as fltr
 import EMAN2
 import sp_global_def
@@ -333,7 +333,7 @@ def refine_set(particle_indices):
 		refined_ctfs = []
 		particle_micrographs = {}
 		for particle_index in particle_indices:
-			particle = sxctf_refine_io.read_particle(STACK_FILE_PATH, particle_index)
+			particle = sp_ctf_refine_io.read_particle(STACK_FILE_PATH, particle_index)
 			# particle.write_image("/home/twagner/temp/refine/"+str(particle_index)+"particle.hdf")
 			if RESOLUTION is not None and PIXEL_SIZE is not None:
 				particle = particle.process(
@@ -760,7 +760,7 @@ def _main_():
 
 	if "meridien" in sys.argv[1]:
 		meridien_path = args.meridien_path
-		files = sxctf_refine_io.read_meridien_data(meridien_path)
+		files = sp_ctf_refine_io.read_meridien_data(meridien_path)
 		volume1_file_path = files["first_halfmap"]
 		volume2_file_path = files["second_halfmap"]
 		chunk_file_path = files["chunk1"]
@@ -801,11 +801,11 @@ def _main_():
 	RESOLUTION = volume_nominal_resolution
 	PIXEL_SIZE = args.pixelsize
 
-	PROJECTION_PARAMETERS = sxctf_refine_io.read_meridien_params(params_file_path)
+	PROJECTION_PARAMETERS = sp_ctf_refine_io.read_meridien_params(params_file_path)
 
 	num_cpu = multiprocessing.cpu_count() - 1
 
-	volume1, volume2, MASK_VOLUME = sxctf_refine_io.read_volume(
+	volume1, volume2, MASK_VOLUME = sp_ctf_refine_io.read_volume(
 		path_vol_1=volume1_file_path,
 		path_vol_2=volume2_file_path,
 		path_mask=mask_file_path,
@@ -863,7 +863,7 @@ def _main_():
 		refinement_results=refinement_results
 	)
 
-	sxctf_refine_io.write_virtual_bdb_stack(
+	sp_ctf_refine_io.write_virtual_bdb_stack(
 		output_stack_path=output_virtual_stack_path,
 		origin_stack_path=STACK_FILE_PATH,
 		refined_ctfs=refined_ctfs_as_list,
@@ -876,7 +876,7 @@ def _main_():
 		os.makedirs(output_stats_path)
 
 	refinement_stats_per_micrograh = calc_statistics(refinement_results_per_micrograph)
-	sxctf_refine_io.write_statistics(output_stats_path, refinement_stats_per_micrograh)
+	sp_ctf_refine_io.write_statistics(output_stats_path, refinement_stats_per_micrograh)
 
 	# Estimate error Range
 	min_max_error, min_max_ratio = calculate_result_ranges(
@@ -887,7 +887,7 @@ def _main_():
 	path_output_img = os.path.join(output_stats_path, "img/")
 	if not os.path.exists(path_output_img):
 		os.makedirs(path_output_img)
-	sxctf_refine_plotting.create_and_save_particle_plots(
+	sp_ctf_refine_plotting.create_and_save_particle_plots(
 		path_output_img=path_output_img,
 		stack_file_path=STACK_FILE_PATH,
 		refinement_results_per_micrograph=refinement_results_per_micrograph,
