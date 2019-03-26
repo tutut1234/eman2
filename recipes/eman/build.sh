@@ -13,7 +13,7 @@ LDFLAGS=${LDFLAGS/-Wl,-pie/}
 CXXFLAGS=${CXXFLAGS/-std=c++17/-std=c++14}
 
 if [[ ${HOST} =~ .*linux.* ]]; then
-    cmake $SRC_DIR -DCMAKE_TOOLCHAIN_FILE="${RECIPE_DIR}/cross-linux.cmake"
+    cmake $SRC_DIR -DCMAKE_TOOLCHAIN_FILE="${RECIPE_DIR}/cross-linux.cmake" -DCMAKE_VERBOSE_MAKEFILE=ON
 else
     cmake $SRC_DIR
 fi
