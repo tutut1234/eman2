@@ -18,5 +18,4 @@ else
     cmake $SRC_DIR
 fi
 
-make -j${CPU_COUNT}
-make install
+make -j${CPU_COUNT} pyGLUtils2
