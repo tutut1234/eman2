@@ -18,4 +18,4 @@ else
     cmake $SRC_DIR
 fi
 
-make -j${CPU_COUNT} pyGLUtils2
+make -j${CPU_COUNT} pyGeometry2
