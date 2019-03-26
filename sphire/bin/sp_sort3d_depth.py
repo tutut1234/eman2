@@ -3035,9 +3035,9 @@ def compare_two_images_cross(data, ref_vol, ctfimgs):
 	return peaks		
 #####==========>>>  clustering assignment utilities  <<<=====================
 def isin(element, test_elements, assume_unique=False, invert=False):
-    element = np.asarray(element)
-    return np.in1d(element, test_elements, assume_unique=assume_unique, \
-        invert=invert).reshape(element.shape)
+	element = np.asarray(element)
+	return np.in1d(element, test_elements, assume_unique=assume_unique, \
+		invert=invert).reshape(element.shape)
 
 def split_partition_into_ordered_clusters_split_ucluster(partition_in, input_row_wise = True):
 	# group particles  by their cluster ids; take the last one as unaccounted group
@@ -5931,31 +5931,31 @@ def do3d_sorting_groups_nofsc_final(rdata, parameterstructure, norm_per_particle
 #####=============================================================================
 ####------->>> UNIX MEM related functions <<<--------------
 def _VmB(VmKey):
-    global _proc_status, _scale
-     # get pseudo file  /proc/<pid>/status
-    try:
-        t = open(_proc_status)
-        v = t.read()
-        t.close()
-    except:
-        return 0.0  # non-Linux?
-     # get VmKey line e.g. 'VmRSS:  9999  kB\n ...'
-    i = v.index(VmKey)
-    v = v[i:].split(None, 3)  # whitespace
-    if len(v) < 3:
-        return 0.0  # invalid format?
-     # convert Vm value to bytes
-    return float(v[1]) * _scale[v[2]]
-    
+	global _proc_status, _scale
+	 # get pseudo file  /proc/<pid>/status
+	try:
+		t = open(_proc_status)
+		v = t.read()
+		t.close()
+	except:
+		return 0.0  # non-Linux?
+	 # get VmKey line e.g. 'VmRSS:  9999  kB\n ...'
+	i = v.index(VmKey)
+	v = v[i:].split(None, 3)  # whitespace
+	if len(v) < 3:
+		return 0.0  # invalid format?
+	 # convert Vm value to bytes
+	return float(v[1]) * _scale[v[2]]
+	
 def memory(since=0.0):
-    '''Return memory usage in bytes.
-    '''
-    return _VmB('VmSize:') - since
+	'''Return memory usage in bytes.
+	'''
+	return _VmB('VmSize:') - since
 
 def resident(since=0.0):
-    '''Return resident memory usage in bytes.
-    '''
-    return _VmB('VmRSS:') - since
+	'''Return resident memory usage in bytes.
+	'''
+	return _VmB('VmRSS:') - since
 def sorting_main_mpi(log_main, not_include_unaccounted):
 	global Tracker, Blockdata
 	time_sorting_start = time.time()
