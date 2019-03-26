@@ -24,6 +24,7 @@ import sp_projection
 import random
 import sp_reconstruction
 import scipy
+import scipy.stats
 import shutil
 import sp_statistics
 import string
