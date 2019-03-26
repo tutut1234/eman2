@@ -7262,6 +7262,7 @@ def main():
 			# case2: restart mode of standard meridien run. Parameters can be altered in the restart run.
 			parser.add_option("--inires",		       		type="float",	     	default= -1,		         	help="Resolution of the initial_volume volume. One can use -1 in local_refinement mode to filter to the resolution of the reconstructed volumes. (default -1A)")
 			parser.add_option("--delta",					type="float",			default=3.75,		     		help="Initial angular sampling step (default 3.75)")
+			parser.add_option("--main000",					type="str",			default=None,		     		help="Main000 folder of a previous refinement to presever chunk and group information. By default it will assign new chunks and groups. (default None)")
 			(options, args) = parser.parse_args(sys.argv[1:])
 
 			if( len(args) == 2 ):
@@ -7299,6 +7300,8 @@ def main():
 			parser.add_option("--center_method",			type="int",			 	default= -1,			     	help="Method for centering: of average during initial 2D prealignment of data (0 : no centering; -1 : average shift  method;  please see center_2D in utilities.py for methods 1-7) (default -1)")
 			parser.add_option("--target_radius", 			type="int",			 	default= 29,			     	help="Target particle radius for 2D prealignment. Images will be shrank/enlarged to this radius (default 29)")
 			(options, args) = parser.parse_args(sys.argv[1:])
+
+			setattr(options, 'main000', None)
 
 			if( len(args) == 3 ):
 				volinit 	= args[2]
@@ -7658,10 +7661,36 @@ def main():
 				partstack[procid] = os.path.join(initdir,"params-chunk_%01d_000.txt"%procid)
 
 			if(Blockdata["myid"] == Blockdata["main_node"]):
-				sxprint('Assign particles to groups')
-				l1, l2 = assign_particles_to_groups(minimum_group_size = 10, name_tag=options.group_by)
-				write_text_file(l1,partids[0])
-				write_text_file(l2,partids[1])
+				if options.main000 is None:
+					sxprint('Assign particles to groups')
+					l1, l2 = assign_particles_to_groups(minimum_group_size = 10, name_tag=options.group_by)
+					write_text_file(l1,partids[0])
+					write_text_file(l2,partids[1])
+				else:
+					sxprint('Copy chunk and group information from existing directory.')
+					names = (
+						'chunk_0_000.txt',
+						'chunk_1_000.txt',
+						'groupids_000.txt',
+						'groupids_001.txt',
+						'groupids.txt',
+						'indexes_000.txt',
+						'micids.txt',
+						'micids_000.txt',
+						'micids_001.txt',
+						'number_of_particles_per_group.txt',
+						'particle_groups_0.txt',
+						'particle_groups_1.txt',
+						)
+					for name_entry in names:
+						shutil.copy2(
+							os.path.join(options.main000, name_entry),
+							os.path.join(Tracker['constants']['masterdir'], 'main000', name_entry)
+							)
+					l1 = read_text_file(partids[0])
+					l2 = read_text_file(partids[1])
+					Tracker['nima_per_chunk'] = [len(l1), len(l2)]
+					Tracker['constants']['number_of_groups'] = len(read_text_row(os.path.join(Tracker['constants']['masterdir'], 'main000', 'groupids.txt')))
 				if options.initialshifts: # Always True for continue mode as initialised in the option parser
 					tp_list = EMUtil.get_all_attributes(Tracker["constants"]["stack"], "xform.projection")
 					for i in range(len(tp_list)):
