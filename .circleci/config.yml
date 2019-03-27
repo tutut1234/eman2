@@ -3,9 +3,8 @@ version: 2
 jobs:
   build_no_recipe:
     docker:
-      - image: centos:7.6.1810
+      - image: condaforge/linux-anvil-comp7
     steps:
-      - run: sudo apt-get update && sudo apt-get install freeglut3-dev
       - checkout
       - restore_cache:
           keys:
@@ -18,9 +17,8 @@ jobs:
 
   build_recipe:
     docker:
-      - image: centos:7.6.1810
+      - image: condaforge/linux-anvil-comp7
     steps:
-      - run: sudo apt-get update && sudo apt-get install freeglut3-dev
       - checkout
       - restore_cache:
           keys:
