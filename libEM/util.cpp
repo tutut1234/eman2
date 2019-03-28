@@ -36,17 +36,12 @@
 
 #include <fcntl.h>
 #include <iomanip>
-#include <sstream>
 
 #include <cstring>
 #include <cfloat>
 
-#include <ctype.h>
 #include <cctype> // tolower
-#include <sys/types.h>
 #include <gsl/gsl_linalg.h>
-#include <algorithm> // using accumulate, inner_product, transform
-
 #ifndef WIN32
 	#include <unistd.h>
 	#include <sys/param.h>
