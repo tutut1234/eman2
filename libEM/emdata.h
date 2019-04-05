@@ -52,9 +52,6 @@ using std::string;
 using std::vector;
 using std::map;
 //using std::complex;	//comment this out for conflict with ACML
-using std::ostream;
-
-using std::pair;
 
 namespace EMAN
 {
