@@ -43,6 +43,7 @@
 #include <cfloat>
 
 #include <ctype.h>
+#include <cctype> // tolower
 #include <sys/types.h>
 #include <gsl/gsl_linalg.h>
 #include <algorithm> // using accumulate, inner_product, transform
