@@ -15,6 +15,7 @@ requirements:
             "ftgl",
             "freetype 2.8.*",  # [osx]
             "freetype 2.7.*",  # [not osx]
+            "freeglut",
             "gsl",
             "hdf5 1.8.18",
             "jpeg",
