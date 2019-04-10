@@ -17,6 +17,7 @@ IF(WIN32)
 		)
 ENDIF(WIN32)
 
+# FindGit¶
 find_program(GIT_EXECUTABLE git)
 if(GIT_EXECUTABLE)
 	execute_process(COMMAND ${GIT_EXECUTABLE} describe --always --dirty
