@@ -65,6 +65,8 @@ if(NOT WIN32)
 endif()
 
 if(ENABLE_OPENGL)
+	include(${CMAKE_SOURCE_DIR}/cmake/OpenGL.cmake)
+
 	ADD_PYSTE_LIB(pyGLUtils2)
 	ADD_PYSTE_LIB(pyMarchingCubes2)
 	
@@ -76,8 +78,8 @@ if(ENABLE_OPENGL)
 				   ${CMAKE_SOURCE_DIR}/libEM/glutil.cpp
 				   ${CMAKE_SOURCE_DIR}/libEM/marchingcubes.cpp
 				   )
-	target_link_libraries(pyGLUtils2       OpenGL::OpenGL FTGL::FTGL)
-	target_link_libraries(pyMarchingCubes2 OpenGL::OpenGL)
+	target_link_libraries(pyGLUtils2       OpenGL::GL FTGL::FTGL)
+	target_link_libraries(pyMarchingCubes2 OpenGL::GL)
 endif()
 
 file(GLOB empythonlibs "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
