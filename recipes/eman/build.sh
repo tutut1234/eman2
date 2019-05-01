@@ -12,6 +12,8 @@ LDFLAGS=${LDFLAGS/-Wl,-dead_strip_dylibs/}
 LDFLAGS=${LDFLAGS/-Wl,-pie/}
 CXXFLAGS=${CXXFLAGS/-std=c++17/-std=c++14}
 
+conda install libcxx=4.0.1=h579ed51_0 -y
+
 cmake $SRC_DIR
 
 make -j${CPU_COUNT}
