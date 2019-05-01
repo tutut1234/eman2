@@ -8,19 +8,16 @@ source:
 requirements:
     {% set reqs_host = [
             "msinttypes",  # [win]
-            "python 3.6.*",    # [not osx]
-            "python",  # [osx]
+            "python 3.6.*",
             "boost 1.63.*",
             "fftw-mpi",
             "numpy 1.13.*",
             "ftgl",
-            "freetype 2.8.*",  # [osx]
-            "freetype 2.7.*",  # [not osx]
+            "freetype",
             "gsl",
             "hdf5 1.8.18",
             "jpeg",
-            "libtiff 4.0.9",             # [not win]
-            "libtiff 4.0.9 hafacce9_0",  # [win]
+            "libtiff 4.0.9",
             "libpng 1.6.36",
             "zlib",
             "future",
