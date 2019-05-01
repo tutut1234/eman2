@@ -7,33 +7,8 @@ env:
   global:
     - MINICONDA_FILE="Miniconda3-latest-MacOSX-x86_64.sh"
   matrix:
-    - CONFIG=2.7
     - CONFIG=3.6.2=0
-    - CONFIG=3.6.1=2
-    - CONFIG=3.6.1=0
-    - CONFIG=3.6.0
-    - CONFIG=3.5.6
-    - CONFIG=3.5.5=*_3
-    - CONFIG=3.5.5=*_1
-    - CONFIG=3.5.5=*_0
-    - CONFIG=3.5.4=*_12
-    - CONFIG=3.5.4=*_27
-    - CONFIG=3.5.4=*_23
-    - CONFIG=3.5.4=*_22
-    - CONFIG=3.5.4=*_21
-    - CONFIG=3.5.4=*_19
-    - CONFIG=3.5.4=*_18
-    - CONFIG=3.5.4=*_15
-    - CONFIG=3.5.4=*_14
-    - CONFIG=3.5.4=0
-    - CONFIG=3.5.3=1
-    - CONFIG=3.5.3=0
-    - CONFIG=3.5.2=0
-    - CONFIG=3.5.1=5
-    - CONFIG=3.5.1=0
-    - CONFIG=3.5.0=1
-    - CONFIG=3.5.0=0
-    - CONFIG=3.4.5=0
+    - CONFIG=3.6.*
 
 
 before_install:
