@@ -12,7 +12,9 @@ LDFLAGS=${LDFLAGS/-Wl,-dead_strip_dylibs/}
 LDFLAGS=${LDFLAGS/-Wl,-pie/}
 CXXFLAGS=${CXXFLAGS/-std=c++17/-std=c++14}
 
+set +x
 conda install libcxx=4.0.1=h579ed51_0 -y
+set -x
 
 cmake $SRC_DIR
 
