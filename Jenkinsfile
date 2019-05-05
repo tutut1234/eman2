@@ -159,7 +159,7 @@ pipeline {
       }
       
       steps {
-        echo "bash ci_support/package.sh ${INSTALLERS_DIR} " + '${WORKSPACE}/ci_support/'
+        sh "bash ci_support/package.sh ${INSTALLERS_DIR} " + '${WORKSPACE}/ci_support/'
       }
     }
     
@@ -180,7 +180,7 @@ pipeline {
       }
       
       steps {
-        deployPackage()
+        echo 'deployPackage()'
       }
     }
   }
